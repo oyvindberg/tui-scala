@@ -1,9 +1,6 @@
 [submodule "submodules/tui-rs"]
 	path = submodules/tui-rs
 	url = https://github.com/fdehau/tui-rs.git
-[submodule "submodules/crossterm"]
-	path = submodules/crossterm
-	url = https://github.com/crossterm-rs/crossterm.git
 [submodule "submodules/cassowary-rs"]
 	path = submodules/cassowary-rs
 	url = https://github.com/dylanede/cassowary-rs.git

@@ -1,0 +1,12 @@
+[package]
+name = "crossterm-jvm"
+version = "0.1.0"
+authors = ["Øyvind Raddum Berg <elacin@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+jni = "0.20.0"
+crossterm = "0.25"
+
+[lib]
+crate_type = ["cdylib"]

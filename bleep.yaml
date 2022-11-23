@@ -1,19 +1,45 @@
 $schema: https://raw.githubusercontent.com/oyvindberg/bleep/master/schema.json
 $version: 0.0.1-M21
 jvm:
-  name: graalvm-java17:22.2.0
+  name: graalvm-java17:22.3.0
 projects:
+  scripts:
+    dependencies:
+    - build.bleep::bleep-plugin-jni:0.0.1-M21+14-44fcb2d4+20221130-0048-SNAPSHOT
+    - build.bleep::bleep-plugin-native-image:0.0.1-M21+14-44fcb2d4+20221130-0048-SNAPSHOT
+    extends: template-scala-3-jvm
   tests:
     dependencies: org.scalatest::scalatest:3.2.13
     dependsOn: tui-scala
     extends: template-cross-all
     isTestProject: true
-  tui-scala:
-    dependencies: com.lihaoyi::fansi:0.3.1
+    sources: ../submodules/cassowary-rs/tests
+  crossterm-jvm: {}
+  cassowary-scala:
     extends: template-cross-all
-    sources: ../submodules/tui-rs/src
+    sources:
+      - ../submodules/cassowary-rs/src
+  tui-scala:
+    dependsOn:
+      - crossterm-jvm
+      - cassowary-scala
+    extends: template-cross-all
     platform:
-      mainClass: com.foo.App
+      mainClass: tui.Crossterm
+    sources:
+      - ../submodules/tui-rs/src
+  demo:
+    dependencies:
+    - org.graalvm.nativeimage:svm:22.3.0
+    dependsOn: tui-scala
+    extends: template-cross-all
+    platform:
+      mainClass: tui.examples.barchart.Main
+    sources: ../submodules/tui-rs/examples
+scripts:
+  gen-graalvm-native-binary: scripts/tui.scripts.GenNativeImage
+  gen-headers: scripts/tui.scripts.GenHeaders
+  gen-jni-library: scripts/tui.scripts.GenJniLibrary
 templates:
   template-common:
     scala:
@@ -22,18 +48,10 @@ templates:
     source-layout: cross-full
   template-cross-all:
     cross:
-      js213:
-        extends: template-scala-2.13-js
-      js3:
-        extends: template-scala-3-js
       jvm213:
         extends: template-scala-2.13-jvm
       jvm3:
         extends: template-scala-3-jvm
-      native213:
-        extends: template-scala-2.13-native
-      native3:
-        extends: template-scala-3-native
     extends: template-common
   template-js:
     platform:
@@ -66,7 +84,7 @@ templates:
     - template-scala-2
   template-scala-3:
     scala:
-      version: 3.2.0
+      version: 3.2.1
   template-scala-3-js:
     extends:
     - template-js
