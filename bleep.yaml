@@ -34,7 +34,7 @@ projects:
     dependsOn: tui-scala
     extends: template-cross-all
     platform:
-      mainClass: tui.examples.barchart.Main
+      mainClass: tui.demo
     sources: ../submodules/tui-rs/examples
 scripts:
   gen-graalvm-native-binary: scripts/tui.scripts.GenNativeImage
