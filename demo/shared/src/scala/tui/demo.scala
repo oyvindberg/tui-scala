@@ -3,7 +3,8 @@ package tui
 object demo {
   val Demos = Map[String, Array[String] => Unit](
     "sparkline" -> tui.examples.sparkline.Main.main,
-    "barchart" -> tui.examples.barchart.Main.main
+    "barchart" -> tui.examples.barchart.Main.main,
+    "tabs" -> tui.examples.tabs.Main.main
   )
 
   def main(args: Array[String]): Unit =
