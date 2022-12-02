@@ -84,7 +84,7 @@ templates:
     - template-scala-2
   template-scala-3:
     scala:
-      version: 3.2.1
+      version: 3.3.0-RC1-bin-20221130-72c4ffd-NIGHTLY
   template-scala-3-js:
     extends:
     - template-js
