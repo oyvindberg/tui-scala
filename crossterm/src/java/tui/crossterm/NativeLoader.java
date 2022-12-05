@@ -1,16 +1,15 @@
 package tui.crossterm;
 
+import org.graalvm.nativeimage.ImageInfo;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static java.util.Arrays.asList;
 
-enum NativeLoader {
-    instance;
-    ;
-
-    void load(String nativeLibrary) throws Exception {
+class NativeLoader {
+    public static void load(String nativeLibrary) throws Exception {
         try {
             System.loadLibrary(nativeLibrary);
         } catch (UnsatisfiedLinkError e) {
@@ -18,12 +17,19 @@ enum NativeLoader {
         }
     }
 
-    void loadPackaged(String nativeLibrary) throws Exception {
-        String lib = System.mapLibraryName(nativeLibrary);
-        String plat = getPlatform();
-        String resourcePath = "/native/" + plat + "/" + lib;
+    static String withPlatformName(String lib) throws IOException, InterruptedException {
+        if (ImageInfo.inImageRuntimeCode() || ImageInfo.inImageBuildtimeCode())
+            return "/" + lib;
+        else {
+            String plat = getPlatform();
+            return "/native/" + plat + "/" + lib;
+        }
+    }
 
-        var resourceStream = getClass().getResourceAsStream(resourcePath);
+    static void loadPackaged(String nativeLibrary) throws Exception {
+        String lib = System.mapLibraryName(nativeLibrary);
+        var resourcePath = withPlatformName(lib);
+        var resourceStream = NativeLoader.class.getResourceAsStream(resourcePath);
         if (resourceStream == null) {
             throw new UnsatisfiedLinkError(
                     "Native library " + lib + " (" + resourcePath + ") cannot be found on the classpath."

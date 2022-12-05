@@ -14,14 +14,14 @@ projects:
     extends: template-cross-all
     isTestProject: true
     sources: ../submodules/cassowary-rs/tests
-  crossterm-jvm: {}
+  crossterm: {}
   cassowary-scala:
     extends: template-cross-all
     sources:
       - ../submodules/cassowary-rs/src
   tui-scala:
     dependsOn:
-      - crossterm-jvm
+      - crossterm
       - cassowary-scala
     extends: template-cross-all
     platform:

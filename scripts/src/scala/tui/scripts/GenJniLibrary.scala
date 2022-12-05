@@ -15,7 +15,7 @@ object GenJniLibrary extends BleepScript("GenJniLibrary") {
       nativeCompileSourceDirectory = started.projectPaths(crosstermProject).dir / "cargo",
       nativeTargetDirectory = started.buildPaths.dotBleepDir,
       nativeBuildTool = new Cargo(release = true),
-      libName = "crossterm-jvm",
+      libName = "crossterm",
       env = sys.env.toList
     )
 

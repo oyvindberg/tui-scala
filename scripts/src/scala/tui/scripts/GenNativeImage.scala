@@ -18,7 +18,7 @@ object GenNativeImage extends BleepScript("GenNativeImage") {
     val newJniLibraryPath = started.projectPaths(demoProject).resourcesDirs.generated / jniLibraryPath.getFileName.toString
     Files.createDirectories(newJniLibraryPath.getParent)
     Files.copy(jniLibraryPath, newJniLibraryPath, StandardCopyOption.REPLACE_EXISTING)
-    started.logger.info(s"workaround for https://github.com/oracle/graal/issues/5219 : copy jni library to ${newJniLibraryPath}")
+    started.logger.info(s"workaround for https://github.com/oracle/graal/issues/5219 : copy $jniLibraryPath to $newJniLibraryPath")
 
     val plugin = new NativeImagePlugin(
       project = started.bloopProjects(demoProject),
@@ -31,9 +31,8 @@ object GenNativeImage extends BleepScript("GenNativeImage") {
         "--initialize-at-build-time=scala.Symbol",
         "--initialize-at-build-time=scala.Symbol$",
         "--native-image-info",
-        """-H:IncludeResources=".*/*"""",
-        "-H:-UseServiceLoaderFeature",
-        "-H:Log=registerResource:5"
+        """-H:IncludeResources=libcrossterm.dylib""",
+        "-H:-UseServiceLoaderFeature"
       ),
       nativeImageJvm = nativeImageJvm,
       env = sys.env.toList ++ List(("USE_NATIVE_IMAGE_JAVA_PLATFORM_MODULE_SYSTEM", "false"))

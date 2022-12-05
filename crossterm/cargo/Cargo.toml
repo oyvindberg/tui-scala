@@ -1,5 +1,5 @@
 [package]
-name = "crossterm-jvm"
+name = "crossterm"
 version = "0.1.0"
 authors = ["Øyvind Raddum Berg <elacin@gmail.com>"]
 edition = "2018"
