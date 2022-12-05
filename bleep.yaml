@@ -15,14 +15,12 @@ projects:
     isTestProject: true
     sources: ../submodules/cassowary-rs/tests
   crossterm: {}
-  cassowary-scala:
+  cassowary:
     extends: template-cross-all
-    sources:
-      - ../submodules/cassowary-rs/src
   tui-scala:
     dependsOn:
       - crossterm
-      - cassowary-scala
+      - cassowary
     extends: template-cross-all
     platform:
       mainClass: tui.Crossterm
