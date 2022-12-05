@@ -1,12 +1,12 @@
 $schema: https://raw.githubusercontent.com/oyvindberg/bleep/master/schema.json
-$version: 0.0.1-M21
+$version: 0.0.1-M22
 jvm:
   name: graalvm-java17:22.3.0
 projects:
   scripts:
     dependencies:
-    - build.bleep::bleep-plugin-jni:0.0.1-M21+14-44fcb2d4+20221130-0048-SNAPSHOT
-    - build.bleep::bleep-plugin-native-image:0.0.1-M21+14-44fcb2d4+20221130-0048-SNAPSHOT
+    - build.bleep::bleep-plugin-jni:0.0.1-M22
+    - build.bleep::bleep-plugin-native-image:0.0.1-M22
     extends: template-scala-3-jvm
   tests:
     dependencies: org.scalatest::scalatest:3.2.13
