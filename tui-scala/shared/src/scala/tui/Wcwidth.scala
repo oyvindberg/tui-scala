@@ -23,69 +23,183 @@ package tui
  * limitations under the License.
  */
 
-
-/**
- * <p>See <a href="http://www.cl.cam.ac.uk/~mgk25/ucs/wcwidth.c">wcwidth.c</a></p>
- *
- * <p>This is an implementation of wcwidth() and wcswidth() (defined in
- * IEEE Std 1002.1-2001) for Unicode.</p>
- *
- * http://www.opengroup.org/onlinepubs/007904975/functions/wcwidth.html
- * http://www.opengroup.org/onlinepubs/007904975/functions/wcswidth.html
- *
- * <p>In fixed-width output devices, Latin characters all occupy a single
- * "cell" position of equal width, whereas ideographic CJK characters
- * occupy two such cells. Interoperability between terminal-line
- * applications and (teletype-style) character terminals using the
- * UTF-8 encoding requires agreement on which character should advance
- * the cursor by how many cell positions. No established formal
- * standards exist at present on which Unicode character shall occupy
- * how many cell positions on character terminals. These routines are
- * a first attempt of defining such behavior based on simple rules
- * applied to data provided by the Unicode Consortium.</p>
- *
- * <p>For some graphical characters, the Unicode standard explicitly
- * defines a character-cell width via the definition of the East Asian
- * FullWidth (F), Wide (W), Half-width (H), and Narrow (Na) classes.
- * In all these cases, there is no ambiguity about which width a
- * terminal shall use. For characters in the East Asian Ambiguous (A)
- * class, the width choice depends purely on a preference of backward
- * compatibility with either historic CJK or Western practice.
- * Choosing single-width for these characters is easy to justify as
- * the appropriate long-term solution, as the CJK practice of
- * displaying these characters as double-width comes from historic
- * implementation simplicity (8-bit encoded characters were displayed
- * single-width and 16-bit ones double-width, even for Greek,
- * Cyrillic, etc.) and not any typographic considerations.</p>
- *
- * <p>Much less clear is the choice of width for the Not East Asian
- * (Neutral) class. Existing practice does not dictate a width for any
- * of these characters. It would nevertheless make sense
- * typographically to allocate two character cells to characters such
- * as for instance EM SPACE or VOLUME INTEGRAL, which cannot be
- * represented adequately with a single-width glyph. The following
- * routines at present merely assign a single-cell width to all
- * neutral characters, in the interest of simplicity. This is not
- * entirely satisfactory and should be reconsidered before
- * establishing a formal standard in this area. At the moment, the
- * decision which Not East Asian (Neutral) characters should be
- * represented by double-width glyphs cannot yet be answered by
- * applying a simple rule from the Unicode database content. Setting
- * up a proper standard for the behavior of UTF-8 character terminals
- * will require a careful analysis not only of each Unicode character,
- * but also of each presentation form, something the author of these
- * routines has avoided to do so far.</p>
- *
- * <p>http://www.unicode.org/unicode/reports/tr11/</p>
- */
+/** <p>See <a href="http://www.cl.cam.ac.uk/~mgk25/ucs/wcwidth.c">wcwidth.c</a></p>
+  *
+  * <p>This is an implementation of wcwidth() and wcswidth() (defined in IEEE Std 1002.1-2001) for Unicode.</p>
+  *
+  * http://www.opengroup.org/onlinepubs/007904975/functions/wcwidth.html http://www.opengroup.org/onlinepubs/007904975/functions/wcswidth.html
+  *
+  * <p>In fixed-width output devices, Latin characters all occupy a single "cell" position of equal width, whereas ideographic CJK characters occupy two such
+  * cells. Interoperability between terminal-line applications and (teletype-style) character terminals using the UTF-8 encoding requires agreement on which
+  * character should advance the cursor by how many cell positions. No established formal standards exist at present on which Unicode character shall occupy how
+  * many cell positions on character terminals. These routines are a first attempt of defining such behavior based on simple rules applied to data provided by
+  * the Unicode Consortium.</p>
+  *
+  * <p>For some graphical characters, the Unicode standard explicitly defines a character-cell width via the definition of the East Asian FullWidth (F), Wide
+  * (W), Half-width (H), and Narrow (Na) classes. In all these cases, there is no ambiguity about which width a terminal shall use. For characters in the East
+  * Asian Ambiguous (A) class, the width choice depends purely on a preference of backward compatibility with either historic CJK or Western practice. Choosing
+  * single-width for these characters is easy to justify as the appropriate long-term solution, as the CJK practice of displaying these characters as
+  * double-width comes from historic implementation simplicity (8-bit encoded characters were displayed single-width and 16-bit ones double-width, even for
+  * Greek, Cyrillic, etc.) and not any typographic considerations.</p>
+  *
+  * <p>Much less clear is the choice of width for the Not East Asian (Neutral) class. Existing practice does not dictate a width for any of these characters. It
+  * would nevertheless make sense typographically to allocate two character cells to characters such as for instance EM SPACE or VOLUME INTEGRAL, which cannot
+  * be represented adequately with a single-width glyph. The following routines at present merely assign a single-cell width to all neutral characters, in the
+  * interest of simplicity. This is not entirely satisfactory and should be reconsidered before establishing a formal standard in this area. At the moment, the
+  * decision which Not East Asian (Neutral) characters should be represented by double-width glyphs cannot yet be answered by applying a simple rule from the
+  * Unicode database content. Setting up a proper standard for the behavior of UTF-8 character terminals will require a careful analysis not only of each
+  * Unicode character, but also of each presentation form, something the author of these routines has avoided to do so far.</p>
+  *
+  * <p>http://www.unicode.org/unicode/reports/tr11/</p>
+  */
 object Wcwidth {
-  /**
-   * sorted list of non-overlapping intervals of non-spacing characters
-   * generated by "uniset +cat=Me +cat=Mn +cat=Cf -00AD +1160-11FF +200B c"
-   */
-  // format: off
-  private val COMBINING = Array(Array(0x0300, 0x036F), Array(0x0483, 0x0486), Array(0x0488, 0x0489), Array(0x0591, 0x05BD), Array(0x05BF, 0x05BF), Array(0x05C1, 0x05C2), Array(0x05C4, 0x05C5), Array(0x05C7, 0x05C7), Array(0x0600, 0x0603), Array(0x0610, 0x0615), Array(0x064B, 0x065E), Array(0x0670, 0x0670), Array(0x06D6, 0x06E4), Array(0x06E7, 0x06E8), Array(0x06EA, 0x06ED), Array(0x070F, 0x070F), Array(0x0711, 0x0711), Array(0x0730, 0x074A), Array(0x07A6, 0x07B0), Array(0x07EB, 0x07F3), Array(0x0901, 0x0902), Array(0x093C, 0x093C), Array(0x0941, 0x0948), Array(0x094D, 0x094D), Array(0x0951, 0x0954), Array(0x0962, 0x0963), Array(0x0981, 0x0981), Array(0x09BC, 0x09BC), Array(0x09C1, 0x09C4), Array(0x09CD, 0x09CD), Array(0x09E2, 0x09E3), Array(0x0A01, 0x0A02), Array(0x0A3C, 0x0A3C), Array(0x0A41, 0x0A42), Array(0x0A47, 0x0A48), Array(0x0A4B, 0x0A4D), Array(0x0A70, 0x0A71), Array(0x0A81, 0x0A82), Array(0x0ABC, 0x0ABC), Array(0x0AC1, 0x0AC5), Array(0x0AC7, 0x0AC8), Array(0x0ACD, 0x0ACD), Array(0x0AE2, 0x0AE3), Array(0x0B01, 0x0B01), Array(0x0B3C, 0x0B3C), Array(0x0B3F, 0x0B3F), Array(0x0B41, 0x0B43), Array(0x0B4D, 0x0B4D), Array(0x0B56, 0x0B56), Array(0x0B82, 0x0B82), Array(0x0BC0, 0x0BC0), Array(0x0BCD, 0x0BCD), Array(0x0C3E, 0x0C40), Array(0x0C46, 0x0C48), Array(0x0C4A, 0x0C4D), Array(0x0C55, 0x0C56), Array(0x0CBC, 0x0CBC), Array(0x0CBF, 0x0CBF), Array(0x0CC6, 0x0CC6), Array(0x0CCC, 0x0CCD), Array(0x0CE2, 0x0CE3), Array(0x0D41, 0x0D43), Array(0x0D4D, 0x0D4D), Array(0x0DCA, 0x0DCA), Array(0x0DD2, 0x0DD4), Array(0x0DD6, 0x0DD6), Array(0x0E31, 0x0E31), Array(0x0E34, 0x0E3A), Array(0x0E47, 0x0E4E), Array(0x0EB1, 0x0EB1), Array(0x0EB4, 0x0EB9), Array(0x0EBB, 0x0EBC), Array(0x0EC8, 0x0ECD), Array(0x0F18, 0x0F19), Array(0x0F35, 0x0F35), Array(0x0F37, 0x0F37), Array(0x0F39, 0x0F39), Array(0x0F71, 0x0F7E), Array(0x0F80, 0x0F84), Array(0x0F86, 0x0F87), Array(0x0F90, 0x0F97), Array(0x0F99, 0x0FBC), Array(0x0FC6, 0x0FC6), Array(0x102D, 0x1030), Array(0x1032, 0x1032), Array(0x1036, 0x1037), Array(0x1039, 0x1039), Array(0x1058, 0x1059), Array(0x1160, 0x11FF), Array(0x135F, 0x135F), Array(0x1712, 0x1714), Array(0x1732, 0x1734), Array(0x1752, 0x1753), Array(0x1772, 0x1773), Array(0x17B4, 0x17B5), Array(0x17B7, 0x17BD), Array(0x17C6, 0x17C6), Array(0x17C9, 0x17D3), Array(0x17DD, 0x17DD), Array(0x180B, 0x180D), Array(0x18A9, 0x18A9), Array(0x1920, 0x1922), Array(0x1927, 0x1928), Array(0x1932, 0x1932), Array(0x1939, 0x193B), Array(0x1A17, 0x1A18), Array(0x1B00, 0x1B03), Array(0x1B34, 0x1B34), Array(0x1B36, 0x1B3A), Array(0x1B3C, 0x1B3C), Array(0x1B42, 0x1B42), Array(0x1B6B, 0x1B73), Array(0x1DC0, 0x1DCA), Array(0x1DFE, 0x1DFF), Array(0x200B, 0x200F), Array(0x202A, 0x202E), Array(0x2060, 0x2063), Array(0x206A, 0x206F), Array(0x20D0, 0x20EF), Array(0x302A, 0x302F), Array(0x3099, 0x309A), Array(0xA806, 0xA806), Array(0xA80B, 0xA80B), Array(0xA825, 0xA826), Array(0xFB1E, 0xFB1E), Array(0xFE00, 0xFE0F), Array(0xFE20, 0xFE23), Array(0xFEFF, 0xFEFF), Array(0xFFF9, 0xFFFB), Array(0x10A01, 0x10A03), Array(0x10A05, 0x10A06), Array(0x10A0C, 0x10A0F), Array(0x10A38, 0x10A3A), Array(0x10A3F, 0x10A3F), Array(0x1D167, 0x1D169), Array(0x1D173, 0x1D182), Array(0x1D185, 0x1D18B), Array(0x1D1AA, 0x1D1AD), Array(0x1D242, 0x1D244), Array(0xE0001, 0xE0001), Array(0xE0020, 0xE007F), Array(0xE0100, 0xE01EF))
-  // format: on
+
+  /** sorted list of non-overlapping intervals of non-spacing characters generated by "uniset +cat=Me +cat=Mn +cat=Cf -00AD +1160-11FF +200B c"
+    */
+  private val COMBINING = Array(
+    Array(0x0300, 0x036f),
+    Array(0x0483, 0x0486),
+    Array(0x0488, 0x0489),
+    Array(0x0591, 0x05bd),
+    Array(0x05bf, 0x05bf),
+    Array(0x05c1, 0x05c2),
+    Array(0x05c4, 0x05c5),
+    Array(0x05c7, 0x05c7),
+    Array(0x0600, 0x0603),
+    Array(0x0610, 0x0615),
+    Array(0x064b, 0x065e),
+    Array(0x0670, 0x0670),
+    Array(0x06d6, 0x06e4),
+    Array(0x06e7, 0x06e8),
+    Array(0x06ea, 0x06ed),
+    Array(0x070f, 0x070f),
+    Array(0x0711, 0x0711),
+    Array(0x0730, 0x074a),
+    Array(0x07a6, 0x07b0),
+    Array(0x07eb, 0x07f3),
+    Array(0x0901, 0x0902),
+    Array(0x093c, 0x093c),
+    Array(0x0941, 0x0948),
+    Array(0x094d, 0x094d),
+    Array(0x0951, 0x0954),
+    Array(0x0962, 0x0963),
+    Array(0x0981, 0x0981),
+    Array(0x09bc, 0x09bc),
+    Array(0x09c1, 0x09c4),
+    Array(0x09cd, 0x09cd),
+    Array(0x09e2, 0x09e3),
+    Array(0x0a01, 0x0a02),
+    Array(0x0a3c, 0x0a3c),
+    Array(0x0a41, 0x0a42),
+    Array(0x0a47, 0x0a48),
+    Array(0x0a4b, 0x0a4d),
+    Array(0x0a70, 0x0a71),
+    Array(0x0a81, 0x0a82),
+    Array(0x0abc, 0x0abc),
+    Array(0x0ac1, 0x0ac5),
+    Array(0x0ac7, 0x0ac8),
+    Array(0x0acd, 0x0acd),
+    Array(0x0ae2, 0x0ae3),
+    Array(0x0b01, 0x0b01),
+    Array(0x0b3c, 0x0b3c),
+    Array(0x0b3f, 0x0b3f),
+    Array(0x0b41, 0x0b43),
+    Array(0x0b4d, 0x0b4d),
+    Array(0x0b56, 0x0b56),
+    Array(0x0b82, 0x0b82),
+    Array(0x0bc0, 0x0bc0),
+    Array(0x0bcd, 0x0bcd),
+    Array(0x0c3e, 0x0c40),
+    Array(0x0c46, 0x0c48),
+    Array(0x0c4a, 0x0c4d),
+    Array(0x0c55, 0x0c56),
+    Array(0x0cbc, 0x0cbc),
+    Array(0x0cbf, 0x0cbf),
+    Array(0x0cc6, 0x0cc6),
+    Array(0x0ccc, 0x0ccd),
+    Array(0x0ce2, 0x0ce3),
+    Array(0x0d41, 0x0d43),
+    Array(0x0d4d, 0x0d4d),
+    Array(0x0dca, 0x0dca),
+    Array(0x0dd2, 0x0dd4),
+    Array(0x0dd6, 0x0dd6),
+    Array(0x0e31, 0x0e31),
+    Array(0x0e34, 0x0e3a),
+    Array(0x0e47, 0x0e4e),
+    Array(0x0eb1, 0x0eb1),
+    Array(0x0eb4, 0x0eb9),
+    Array(0x0ebb, 0x0ebc),
+    Array(0x0ec8, 0x0ecd),
+    Array(0x0f18, 0x0f19),
+    Array(0x0f35, 0x0f35),
+    Array(0x0f37, 0x0f37),
+    Array(0x0f39, 0x0f39),
+    Array(0x0f71, 0x0f7e),
+    Array(0x0f80, 0x0f84),
+    Array(0x0f86, 0x0f87),
+    Array(0x0f90, 0x0f97),
+    Array(0x0f99, 0x0fbc),
+    Array(0x0fc6, 0x0fc6),
+    Array(0x102d, 0x1030),
+    Array(0x1032, 0x1032),
+    Array(0x1036, 0x1037),
+    Array(0x1039, 0x1039),
+    Array(0x1058, 0x1059),
+    Array(0x1160, 0x11ff),
+    Array(0x135f, 0x135f),
+    Array(0x1712, 0x1714),
+    Array(0x1732, 0x1734),
+    Array(0x1752, 0x1753),
+    Array(0x1772, 0x1773),
+    Array(0x17b4, 0x17b5),
+    Array(0x17b7, 0x17bd),
+    Array(0x17c6, 0x17c6),
+    Array(0x17c9, 0x17d3),
+    Array(0x17dd, 0x17dd),
+    Array(0x180b, 0x180d),
+    Array(0x18a9, 0x18a9),
+    Array(0x1920, 0x1922),
+    Array(0x1927, 0x1928),
+    Array(0x1932, 0x1932),
+    Array(0x1939, 0x193b),
+    Array(0x1a17, 0x1a18),
+    Array(0x1b00, 0x1b03),
+    Array(0x1b34, 0x1b34),
+    Array(0x1b36, 0x1b3a),
+    Array(0x1b3c, 0x1b3c),
+    Array(0x1b42, 0x1b42),
+    Array(0x1b6b, 0x1b73),
+    Array(0x1dc0, 0x1dca),
+    Array(0x1dfe, 0x1dff),
+    Array(0x200b, 0x200f),
+    Array(0x202a, 0x202e),
+    Array(0x2060, 0x2063),
+    Array(0x206a, 0x206f),
+    Array(0x20d0, 0x20ef),
+    Array(0x302a, 0x302f),
+    Array(0x3099, 0x309a),
+    Array(0xa806, 0xa806),
+    Array(0xa80b, 0xa80b),
+    Array(0xa825, 0xa826),
+    Array(0xfb1e, 0xfb1e),
+    Array(0xfe00, 0xfe0f),
+    Array(0xfe20, 0xfe23),
+    Array(0xfeff, 0xfeff),
+    Array(0xfff9, 0xfffb),
+    Array(0x10a01, 0x10a03),
+    Array(0x10a05, 0x10a06),
+    Array(0x10a0c, 0x10a0f),
+    Array(0x10a38, 0x10a3a),
+    Array(0x10a3f, 0x10a3f),
+    Array(0x1d167, 0x1d169),
+    Array(0x1d173, 0x1d182),
+    Array(0x1d185, 0x1d18b),
+    Array(0x1d1aa, 0x1d1ad),
+    Array(0x1d242, 0x1d244),
+    Array(0xe0001, 0xe0001),
+    Array(0xe0020, 0xe007f),
+    Array(0xe0100, 0xe01ef)
+  )
 
   private def bisearch(ucs: Int): Boolean = {
     var min = 0
@@ -101,40 +215,29 @@ object Wcwidth {
     false
   }
 
-  /**
-   * See : http://www.cl.cam.ac.uk/%7Emgk25/ucs/wcwidth.c
-   *
-   * The following two functions define the column width of an ISO 10646
-   * character as follows:
-   *
-   *    - The null character (U+0000) has a column width of 0.
-   *
-   *    - Other C0/C1 control characters and DEL will lead to a return
-   *      value of -1.
-   *
-   *    - Non-spacing and enclosing combining characters (general
-   *      category code Mn or Me in the Unicode database) have a
-   *      column width of 0.
-   *
-   *    - SOFT HYPHEN (U+00AD) has a column width of 1.
-   *
-   *    - Other format characters (general category code Cf in the Unicode
-   *      database) and ZERO WIDTH SPACE (U+200B) have a column width of 0.
-   *
-   *    - Hangul Jamo medial vowels and final consonants (U+1160-U+11FF)
-   *      have a column width of 0.
-   *
-   *    - Spacing characters in the East Asian Wide (W) or East Asian
-   *      Full-width (F) category as defined in Unicode Technical
-   *      Report #11 have a column width of 2.
-   *
-   *    - All remaining characters (including all printable
-   *      ISO 8859-1 and WGL4 characters, Unicode control characters,
-   *      etc.) have a column width of 1.
-   *
-   * This implementation assumes that wchar_t characters are encoded
-   * in ISO 10646.
-   */
+  /** See : http://www.cl.cam.ac.uk/%7Emgk25/ucs/wcwidth.c
+    *
+    * The following two functions define the column width of an ISO 10646 character as follows:
+    *
+    *   - The null character (U+0000) has a column width of 0.
+    *
+    *   - Other C0/C1 control characters and DEL will lead to a return value of -1.
+    *
+    *   - Non-spacing and enclosing combining characters (general category code Mn or Me in the Unicode database) have a column width of 0.
+    *
+    *   - SOFT HYPHEN (U+00AD) has a column width of 1.
+    *
+    *   - Other format characters (general category code Cf in the Unicode database) and ZERO WIDTH SPACE (U+200B) have a column width of 0.
+    *
+    *   - Hangul Jamo medial vowels and final consonants (U+1160-U+11FF) have a column width of 0.
+    *
+    *   - Spacing characters in the East Asian Wide (W) or East Asian Full-width (F) category as defined in Unicode Technical Report #11 have a column width of
+    *     2.
+    *
+    *   - All remaining characters (including all printable ISO 8859-1 and WGL4 characters, Unicode control characters, etc.) have a column width of 1.
+    *
+    * This implementation assumes that wchar_t characters are encoded in ISO 10646.
+    */
   def of(codePoint: Int): Int = {
     // test for 8-bit control characters
     if (codePoint == 0) return 0
@@ -142,14 +245,16 @@ object Wcwidth {
     // binary search in table of non-spacing characters
     if (bisearch(codePoint)) return 0
     // if we arrive here, ucs is not a combining or C0/C1 control character
-    1 + (if (codePoint >= 0x1100 && (codePoint <= 0x115f || // Hangul Jamo init. consonants
-      codePoint == 0x2329 || codePoint == 0x232a || (codePoint >= 0x2e80 && codePoint <= 0xa4cf && codePoint != 0x303f) || // CJK ... Yi
-      (codePoint >= 0xac00 && codePoint <= 0xd7a3) || // Hangul Syllables
-      (codePoint >= 0xf900 && codePoint <= 0xfaff) || // CJK Compatibility Ideographs
-      (codePoint >= 0xfe10 && codePoint <= 0xfe19) || // Vertical forms
-      (codePoint >= 0xfe30 && codePoint <= 0xfe6f) || // CJK Compatibility Forms
-      (codePoint >= 0xff00 && codePoint <= 0xff60) || // Fullwidth Forms
-      (codePoint >= 0xffe0 && codePoint <= 0xffe6) || (codePoint >= 0x20000 && codePoint <= 0x2fffd) || (codePoint >= 0x30000 && codePoint <= 0x3fffd))) 1
-    else 0)
+    1 + (if (
+           codePoint >= 0x1100 && (codePoint <= 0x115f || // Hangul Jamo init. consonants
+             codePoint == 0x2329 || codePoint == 0x232a || (codePoint >= 0x2e80 && codePoint <= 0xa4cf && codePoint != 0x303f) || // CJK ... Yi
+             (codePoint >= 0xac00 && codePoint <= 0xd7a3) || // Hangul Syllables
+             (codePoint >= 0xf900 && codePoint <= 0xfaff) || // CJK Compatibility Ideographs
+             (codePoint >= 0xfe10 && codePoint <= 0xfe19) || // Vertical forms
+             (codePoint >= 0xfe30 && codePoint <= 0xfe6f) || // CJK Compatibility Forms
+             (codePoint >= 0xff00 && codePoint <= 0xff60) || // Fullwidth Forms
+             (codePoint >= 0xffe0 && codePoint <= 0xffe6) || (codePoint >= 0x20000 && codePoint <= 0x2fffd) || (codePoint >= 0x30000 && codePoint <= 0x3fffd))
+         ) 1
+         else 0)
   }
 }
