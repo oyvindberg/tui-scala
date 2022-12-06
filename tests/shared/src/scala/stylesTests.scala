@@ -28,4 +28,15 @@ class stylesTests extends TuiTest {
       assert_eq(Style().patch(a).patch(b).patch(c).patch(d), Style().patch(combined))
     }
   }
+  test("flaff") {
+    val both = Modifier.ITALIC | Modifier.BOLD
+    assert(both.contains(Modifier.ITALIC))
+    assert(both.contains(Modifier.BOLD))
+    assert(!both.contains(Modifier.DIM))
+
+    val onlyBold = both.remove(Modifier.ITALIC)
+    assert(!onlyBold.contains(Modifier.ITALIC))
+    assert(onlyBold.contains(Modifier.BOLD))
+    assert(!onlyBold.contains(Modifier.DIM))
+  }
 }
