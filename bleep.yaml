@@ -5,8 +5,8 @@ jvm:
 projects:
   scripts:
     dependencies:
-    - build.bleep::bleep-plugin-jni:0.0.1-M22
-    - build.bleep::bleep-plugin-native-image:0.0.1-M22
+    - build.bleep::bleep-plugin-jni:${BLEEP_VERSION}
+    - build.bleep::bleep-plugin-native-image:${BLEEP_VERSION}
     extends: template-scala-3-jvm
   tests:
     dependencies: org.scalatest::scalatest:3.2.13
