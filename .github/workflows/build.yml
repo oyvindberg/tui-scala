@@ -74,6 +74,10 @@ jobs:
         run: bleep gen-jni-library
         if: runner.os != 'Windows'
 
+      - name: Test jni library
+        run: bleep run demos@jvm3 --once
+        if: runner.os != 'Windows'
+
         # as is normal, everything involving windows is terrible.
         # - powershell doesn't work, for one: https://github.com/dirs-dev/directories-jvm/issues/49
         # - with `shell: cmd` only one command can be run at a time, so this is split up
@@ -87,10 +91,15 @@ jobs:
         shell: cmd
         if: runner.os == 'Windows'
 
+      - name: Test jni library (windows)
+        run: bleep run demos@jvm3 --once
+        shell: cmd
+        if: runner.os == 'Windows'
+
       - name: Temporarily save package
         uses: actions/upload-artifact@v3
         with:
-          name: jni
+          name: native
           path: ${{ matrix.jni-folder }}
           retention-days: 1
 
