@@ -75,7 +75,7 @@ jobs:
         if: runner.os != 'Windows'
 
       - name: Test jni library
-        run: bleep run demos@jvm3 --once
+        run: bleep run demos@jvm3 -- --once
         if: runner.os != 'Windows'
 
         # as is normal, everything involving windows is terrible.
@@ -92,7 +92,7 @@ jobs:
         if: runner.os == 'Windows'
 
       - name: Test jni library (windows)
-        run: bleep run demos@jvm3 --once
+        run: bleep run demos@jvm3 -- --once
         shell: cmd
         if: runner.os == 'Windows'
 
