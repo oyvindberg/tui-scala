@@ -20,11 +20,11 @@ object breakableForeach {
   }
   implicit class BreakableForeachArray[T](private val ts: Array[T]) extends AnyVal {
     @inline
-    def breakableForeach(f: T => Res): Unit = {
+    def breakableForeach(f: (T, Int) => Res): Unit = {
       var continue = true
       var i = 0
       while (i < ts.length && continue) {
-        f(ts(i)) match {
+        f(ts(i), i) match {
           case Continue =>
             ()
           case Break =>

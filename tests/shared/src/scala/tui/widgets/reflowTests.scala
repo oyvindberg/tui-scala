@@ -51,6 +51,7 @@ class reflowTests extends TuiTest {
       val expected = Array(text);
       assert_eq(word_wrapper, expected);
       assert_eq(line_truncator, expected);
+      ()
     }
     succeed
   }

@@ -1,8 +1,6 @@
 package tui
 package buffer
 
-import org.scalactic.{source, CanEqual, Prettifier, TypeCheckedTripleEquals}
-import org.scalatest.funsuite.AnyFunSuite
 import tui.layout.Rect
 
 import scala.util.control.NonFatal
@@ -36,7 +34,6 @@ class bufferTests extends TuiTest {
     try buf.pos_of(100)
     catch {
       case NonFatal(th) if th.getMessage.contains("assertion failed: Trying to get the coords of a cell outside the buffer") => true
-      case other                                                                                                             => throw other
     }
   }
 
@@ -48,7 +45,6 @@ class bufferTests extends TuiTest {
     try buf.index_of(10, 0)
     catch {
       case NonFatal(th) if th.getMessage.contains("Trying to access position outside the buffer:") => true
-      case other                                                                                   => throw other
     }
   }
 

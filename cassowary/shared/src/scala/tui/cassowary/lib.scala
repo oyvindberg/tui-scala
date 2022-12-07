@@ -440,6 +440,7 @@ case class Row(
         val newCoefficient = coefficient + oldCoefficient
         if (near_zero(newCoefficient)) {
           cells.remove(s)
+          ()
         } else {
           cells(s) = newCoefficient
         }

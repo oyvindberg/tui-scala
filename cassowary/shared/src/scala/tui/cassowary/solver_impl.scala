@@ -29,7 +29,7 @@ case class Solver(
     var artificial: Option[Row] = None,
     var id_tick: Int = 1
 ) {
-  def add_constraints(constraints: Seq[Constraint]): Either[AddConstraintError, Unit] = {
+  def add_constraints(constraints: Array[Constraint]): Either[AddConstraintError, Unit] = {
     var i = 0
     while (i < constraints.length) {
       val constraint = constraints(i)

@@ -1,7 +1,5 @@
 package tui
 
-import org.scalatest.funsuite.AnyFunSuite
-
 class stylesTests extends TuiTest {
   def styles(): Array[Style] =
     Array(
