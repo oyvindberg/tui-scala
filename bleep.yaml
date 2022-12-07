@@ -3,6 +3,16 @@ $version: 0.0.1-M22
 jvm:
   name: graalvm-java17:22.3.0
 projects:
+  cassowary:
+    extends: template-cross-all
+  crossterm: {}
+  demo:
+    dependencies: org.graalvm.nativeimage:svm:22.3.0
+    dependsOn: tui
+    extends: template-cross-all
+    platform:
+      mainClass: tui.demo
+    sources: ../submodules/tui-rs/examples
   scripts:
     dependencies:
     - build.bleep::bleep-plugin-jni:${BLEEP_VERSION}
@@ -13,27 +23,14 @@ projects:
     dependsOn: tui
     extends: template-cross-all
     isTestProject: true
-    sources: ../submodules/cassowary-rs/tests
-  crossterm: {}
-  cassowary:
-    extends: template-cross-all
   tui:
     dependsOn:
-      - crossterm
-      - cassowary
+    - cassowary
+    - crossterm
     extends: template-cross-all
     platform:
       mainClass: tui.Crossterm
-    sources:
-      - ../submodules/tui-rs/src
-  demo:
-    dependencies:
-    - org.graalvm.nativeimage:svm:22.3.0
-    dependsOn: tui
-    extends: template-cross-all
-    platform:
-      mainClass: tui.demo
-    sources: ../submodules/tui-rs/examples
+    sources: ../submodules/tui-rs/src
 scripts:
   gen-graalvm-native-binary: scripts/tui.scripts.GenNativeImage
   gen-headers: scripts/tui.scripts.GenHeaders

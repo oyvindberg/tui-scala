@@ -1,6 +1,6 @@
-package tui.widgets
+package tui
+package widgets
 
-import tui.TuiTest
 import tui.backend.test.TestBackend
 import tui.buffer.Buffer
 import tui.terminal.Terminal

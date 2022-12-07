@@ -1,6 +1,6 @@
-package tui.widgets
+package tui
+package widgets
 
-import tui.TuiTest
 import tui.buffer.Buffer
 import tui.layout.Rect
 
