@@ -1,11 +1,7 @@
 package tui.scripts
 
-import bleep.*
-import bleep.model.{CrossProjectName, Project}
-import bleep.plugin.jni.{Cargo, JniJavah, JniNative, JniPackage}
-
-import java.nio.file.Files
-import scala.collection.immutable
+import bleep._
+import bleep.plugin.jni.{JniNative, JniPackage}
 
 object GenJniLibrary extends BleepScript("GenJniLibrary") {
 
