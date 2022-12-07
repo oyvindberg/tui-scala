@@ -88,10 +88,10 @@ jobs:
         if: runner.os == 'Windows'
 
       - name: Temporarily save package
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.jni-folder }}
-          path: jni
+          name: jni
+          path: ${{ matrix.jni-folder }}
           retention-days: 1
 
   release:
