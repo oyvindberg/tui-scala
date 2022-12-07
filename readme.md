@@ -10,11 +10,8 @@ which is heavily inspired by the `Javascript`
 library [blessed-contrib](https://github.com/yaronn/blessed-contrib) and the
 `Go` library [termui](https://github.com/gizak/termui).
 
-The port is not yet complete, see [roadmap](https://github.com/oyvindberg/tui-scala/issues/15) for immediate plans.
-There are bite-sized tasks to complete if you want to contribute!
-
-
-
+**The port is not yet complete, see [roadmap](https://github.com/oyvindberg/tui-scala/issues/15) for immediate plans.
+There are bite-sized tasks to complete if you want to contribute!**
 
 The library supports the [crossterm](https://github.com/crossterm-rs/crossterm) backend, the integration with which
 is published separately as a Java artifact which calls native rust code through JNI.
