@@ -4,12 +4,12 @@ jvm:
   name: graalvm-java17:22.3.0
 projects:
   cassowary:
-    extends: template-cross-all
+    extends: template-cross-scala
   crossterm: {}
   demo:
     dependencies: org.graalvm.nativeimage:svm:22.3.0
     dependsOn: tui
-    extends: template-cross-all
+    extends: template-cross-scala
     platform:
       mainClass: tui.demo
     sources: ../submodules/tui-rs/examples
@@ -17,78 +17,39 @@ projects:
     dependencies:
     - build.bleep::bleep-plugin-jni:${BLEEP_VERSION}
     - build.bleep::bleep-plugin-native-image:${BLEEP_VERSION}
-    extends: template-scala-3-jvm
+    extends:
+      - template-scala-common
+      - template-scala-3
   tests:
     dependencies: org.scalatest::scalatest:3.2.13
     dependsOn: tui
-    extends: template-cross-all
+    extends: template-cross-scala
     isTestProject: true
   tui:
     dependsOn:
     - cassowary
     - crossterm
-    extends: template-cross-all
-    platform:
-      mainClass: tui.Crossterm
+    extends: template-cross-scala
     sources: ../submodules/tui-rs/src
 scripts:
   gen-native-image: scripts/tui.scripts.GenNativeImage
   gen-headers: scripts/tui.scripts.GenHeaders
   gen-jni-library: scripts/tui.scripts.GenJniLibrary
 templates:
-  template-common:
+  template-scala-common:
     scala:
       options: -encoding utf8 -feature -unchecked
       strict: true
-    source-layout: cross-full
-  template-cross-all:
-    cross:
-      jvm213:
-        extends: template-scala-2.13-jvm
-      jvm3:
-        extends: template-scala-3-jvm
-    extends: template-common
-  template-js:
-    platform:
-      jsNodeVersion: 18.4.0
-      jsVersion: 1.9.0
-      name: js
-  template-jvm:
     platform:
       name: jvm
-  template-native:
-    platform:
-      name: native
-      nativeGc: immix
-      nativeMode: debug
-      nativeVersion: 0.4.7
-  template-scala-2:
-    scala:
-      version: 2.13.6
-  template-scala-2.13-js:
-    extends:
-    - template-js
-    - template-scala-2
-  template-scala-2.13-jvm:
-    extends:
-    - template-jvm
-    - template-scala-2
-  template-scala-2.13-native:
-    extends:
-    - template-native
-    - template-scala-2
+  template-cross-scala:
+    cross:
+      jvm213:
+        scala:
+          version: 2.13.6
+      jvm3:
+        extends: template-scala-3
+    extends: template-scala-common
   template-scala-3:
     scala:
       version: 3.3.0-RC1-bin-20221130-72c4ffd-NIGHTLY
-  template-scala-3-js:
-    extends:
-    - template-js
-    - template-scala-3
-  template-scala-3-jvm:
-    extends:
-    - template-jvm
-    - template-scala-3
-  template-scala-3-native:
-    extends:
-    - template-native
-    - template-scala-3
