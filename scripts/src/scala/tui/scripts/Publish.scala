@@ -1,7 +1,7 @@
 package tui.scripts
 
 import bleep._
-import bleep.packaging.{CoordinatesFor, PackagedLibrary, PublishLayout, packageLibraries}
+import bleep.packaging.{packageLibraries, CoordinatesFor, PackagedLibrary, PublishLayout}
 import bleep.plugin.cirelease.CiReleasePlugin
 import bleep.plugin.dynver.DynVerPlugin
 import bleep.plugin.nosbt.InteractionService
