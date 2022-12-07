@@ -1,4 +1,5 @@
 package tui
+package internal
 
 import scala.reflect.ClassTag
 

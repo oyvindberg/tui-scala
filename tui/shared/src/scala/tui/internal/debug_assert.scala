@@ -1,7 +1,8 @@
 package tui
+package internal
 
 object debug_assert {
-  def apply(pred: Boolean, msg: String, details: Any*) =
+  def apply(pred: Boolean, msg: String, details: Any*): Unit =
     if (pred) ()
     else {
       // todo: template in at correct place

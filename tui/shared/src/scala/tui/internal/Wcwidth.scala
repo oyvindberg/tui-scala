@@ -1,4 +1,5 @@
 package tui
+package internal
 
 // copied from https://raw.githubusercontent.com/termd/termd/master/src/main/java/io/termd/core/util/Wcwidth.java
 

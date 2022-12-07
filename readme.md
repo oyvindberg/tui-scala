@@ -52,5 +52,5 @@ bleep (e.g. to run the barchart example `bleep run demo@jvm213 barchart`), and q
 - `bleep setup-ide jvm213` to enable IDE import (metals or intellij)
 -  open in your IDE
 - `bleep gen-jni-library` to generate JNI bindings for `crossterm`
-- `bleep gen-native-binary` if you want to see how fast things get with native image compilation
+- `bleep gen-native-image` if you want to see how fast things get with native image compilation
 - `bleep run demo@jvm213 barchart` to run demo

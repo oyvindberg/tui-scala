@@ -3,6 +3,7 @@ package cassowary
 
 import tui.cassowary.WeightedRelation._
 import tui.cassowary.operators._
+import tui.internal.ranges
 
 class quadrilateral extends TuiTest {
   test("test_quadrilateral") {

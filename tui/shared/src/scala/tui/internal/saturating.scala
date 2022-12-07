@@ -1,4 +1,5 @@
 package tui
+package internal
 
 object saturating {
   implicit class IntOps(private val i1: Int) extends AnyVal {

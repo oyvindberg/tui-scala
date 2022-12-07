@@ -1,4 +1,5 @@
 package tui
+package internal
 
 object breakableForeach {
   sealed trait Res

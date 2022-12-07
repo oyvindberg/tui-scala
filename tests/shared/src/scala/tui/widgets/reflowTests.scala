@@ -1,6 +1,7 @@
 package tui
 package widgets
 
+import tui.internal.{ranges, UnicodeSegmentation}
 import tui.text.StyledGrapheme
 import tui.widgets.reflow.{LineComposer, LineTruncator, WordWrapper}
 import tui.widgets.reflowTests.Composer

@@ -1,4 +1,5 @@
 package tui
+package internal
 
 object ranges {
   @inline def revRange(fromInclusive: Int, toExclusive: Int)(f: Int => Unit): Unit = {

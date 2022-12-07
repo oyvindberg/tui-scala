@@ -3,6 +3,7 @@ package widgets
 
 import tui.backend.test.TestBackend
 import tui.buffer.Buffer
+import tui.internal.ranges
 import tui.layout.Constraint
 import tui.terminal.Terminal
 import tui.text.{Span, Spans, Text}
@@ -624,27 +625,27 @@ class tableTests extends TuiTest {
       )
     )
     // First row = row color + highlight style
-    tui.ranges.range(1, 29) { col =>
+    ranges.range(1, 29) { col =>
       expected.get(col, 2).set_style(Style.DEFAULT.fg(Color.Green).add_modifier(Modifier.BOLD))
       ()
     }
     // Second row:
     // 1. row color
-    tui.ranges.range(1, 29) { col =>
+    internal.ranges.range(1, 29) { col =>
       expected.get(col, 3).set_style(Style.DEFAULT.fg(Color.LightGreen))
       ()
     }
     // 2. cell color
-    tui.ranges.range(11, 17) { col =>
+    internal.ranges.range(11, 17) { col =>
       expected.get(col, 3).set_style(Style.DEFAULT.fg(Color.Yellow))
       ()
     }
-    tui.ranges.range(18, 24) { col =>
+    internal.ranges.range(18, 24) { col =>
       expected.get(col, 3).set_style(Style.DEFAULT.fg(Color.Red))
       ()
     }
     // 3. text color
-    tui.ranges.range(21, 23) { col =>
+    internal.ranges.range(21, 23) { col =>
       expected.get(col, 3).set_style(Style.DEFAULT.fg(Color.Blue))
       ()
     }

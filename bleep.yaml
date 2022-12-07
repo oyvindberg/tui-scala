@@ -32,7 +32,7 @@ projects:
       mainClass: tui.Crossterm
     sources: ../submodules/tui-rs/src
 scripts:
-  gen-native-binary: scripts/tui.scripts.GenNativeImage
+  gen-native-image: scripts/tui.scripts.GenNativeImage
   gen-headers: scripts/tui.scripts.GenHeaders
   gen-jni-library: scripts/tui.scripts.GenJniLibrary
 templates:
