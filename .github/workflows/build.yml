@@ -54,6 +54,18 @@ jobs:
       - uses: coursier/cache-action@v6
         with:
           extraFiles: bleep.yaml
+      - name: Set up cargo cache
+        uses: actions/cache@v3
+        continue-on-error: false
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-
 
       - name: Install bleep stable
         run: cs install --channel https://raw.githubusercontent.com/oyvindberg/bleep/master/coursier-channel.json bleep --verbose
@@ -64,8 +76,12 @@ jobs:
 
         # as is normal, everything involving windows is terrible.
         # - powershell doesn't work, for one: https://github.com/dirs-dev/directories-jvm/issues/49
-        # - with `shell: cmd` only one command can be run at a time, so this is split into three
-        # - some windows development stuff needs to be available, that's what setup-graalvm accomplishes below. todo: figure out how bleep can download it itself
+        # - with `shell: cmd` only one command can be run at a time, so this is split up
+      - name: bleep compile-server auto-shutdown-enable (windows)
+        run: bleep compile-server auto-shutdown-enable
+        shell: cmd
+        if: runner.os == 'Windows'
+
       - name: Build jni library (windows)
         run: bleep gen-jni-library
         shell: cmd
@@ -74,8 +90,8 @@ jobs:
       - name: Temporarily save package
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.artifact_name }}
-          path: ${{ matrix.file_name }}
+          name: ${{ matrix.jni-folder }}
+          path: jni
           retention-days: 1
 
   release:
