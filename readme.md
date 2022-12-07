@@ -35,15 +35,15 @@ you may rely on `crossterm` achieve such features.
 
 The library comes with the following list of widgets:
 
-* [Block](https://github.com/oyvindberg/tui-rs/blob/master/examples/block.scala)
-* [Gauge](https://github.com/oyvindberg/tui-rs/blob/master/examples/gauge.scala)
+* ~~[Block](https://github.com/oyvindberg/tui-rs/blob/master/examples/block.scala)~~ (not ported yet)
+* ~~[Gauge](https://github.com/oyvindberg/tui-rs/blob/master/examples/gauge.scala)~~ (not ported yet)
 * [Sparkline](https://github.com/oyvindberg/tui-rs/blob/master/examples/sparkline.scala)
-* [Chart](https://github.com/oyvindberg/tui-rs/blob/master/examples/chart.scala)
+* ~~[Chart](https://github.com/oyvindberg/tui-rs/blob/master/examples/chart.scala)~~ (not ported yet)
 * [BarChart](https://github.com/oyvindberg/tui-rs/blob/master/examples/barchart.scala)
 * [List](https://github.com/oyvindberg/tui-rs/blob/master/examples/list.scala)
 * [Table](https://github.com/oyvindberg/tui-rs/blob/master/examples/table.scala)
 * [Paragraph](https://github.com/oyvindberg/tui-rs/blob/master/examples/paragraph.scala)
-* [Canvas (with line, point cloud, map)](https://github.com/oyvindberg/tui-rs/blob/master/examples/canvas.scala)
+* ~~[Canvas (with line, point cloud, map)](https://github.com/oyvindberg/tui-rs/blob/master/examples/canvas.scala)~~ (not ported yet)
 * [Tabs](https://github.com/oyvindberg/tui-rs/blob/master/examples/tabs.scala)
 
 Click on each item to see the source of the example. Run the examples with
