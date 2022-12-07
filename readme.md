@@ -10,6 +10,9 @@ which is heavily inspired by the `Javascript`
 library [blessed-contrib](https://github.com/yaronn/blessed-contrib) and the
 `Go` library [termui](https://github.com/gizak/termui).
 
+The port is not yet complete, see [roadmap](https://github.com/oyvindberg/tui-scala/issues/15) for immediate plans.
+There are bite-sized tasks to complete if you want to contribute!
+
 The library supports the [crossterm](https://github.com/crossterm-rs/crossterm) backend, which
 is published separately as a Java artifact which calls native rust code through JNI.
 This backend works both when running on the JVM and when running as GraalVM native image.
@@ -45,12 +48,14 @@ bleep (e.g. to run the barchart example `bleep run demo@jvm213 barchart`), and q
 
 ## Building
 
+(tui-scala helps dog-food the experimental [bleep](https://bleep.build/docs/) Scala build tool. keep an open mind!)
+
 - `git clone https://github.com/oyvindberg/tui-scala`
 - [install bleep](https://bleep.build/docs/installing/)
 - (if you use bash, run `bleep install-tab-completions-bash` and start a new shell to get tab completions)
 - `git submodule init && git submodule update`
+- `bleep gen-jni-library` to generate JNI bindings for `crossterm` (needed to run)
 - `bleep setup-ide jvm213` to enable IDE import (metals or intellij)
 -  open in your IDE
-- `bleep gen-jni-library` to generate JNI bindings for `crossterm`
+- `bleep run demo@jvm213 <demoname>` to run demos
 - `bleep gen-native-image` if you want to see how fast things get with native image compilation
-- `bleep run demo@jvm213 barchart` to run demo
