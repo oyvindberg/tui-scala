@@ -32,7 +32,7 @@ class paragraphTests extends TuiTest {
           alignment = alignment,
           wrap = Some(Wrap(trim = true))
         )
-        f.render_widget(paragraph, f.size());
+        f.render_widget(paragraph, f.size);
       }
       assert_buffer(backend, expected)
     }
@@ -98,7 +98,7 @@ class paragraphTests extends TuiTest {
     terminal.draw { f =>
       val text = Array(Spans.from(s))
       val paragraph = Paragraph(text = Text(text), block = Some(Block(borders = Borders.ALL)), wrap = Some(Wrap(trim = true)))
-      f.render_widget(paragraph, f.size());
+      f.render_widget(paragraph, f.size);
     }
 
     val expected = Buffer.with_lines(
@@ -125,7 +125,7 @@ class paragraphTests extends TuiTest {
     terminal.draw { f =>
       val text = Array(Spans.from("aコンピュータ上で文字を扱う場合、"))
       val paragraph = Paragraph(text = Text(text), block = Some(Block(borders = Borders.ALL)), wrap = Some(Wrap(trim = true)))
-      f.render_widget(paragraph, f.size());
+      f.render_widget(paragraph, f.size);
     }
 
     val expected = Buffer.with_lines(
@@ -157,7 +157,7 @@ class paragraphTests extends TuiTest {
     )
     terminal.draw { f =>
       val paragraph = Paragraph(text = Text(Array(line)), block = Some(Block(borders = Borders.ALL)))
-      f.render_widget(paragraph, f.size());
+      f.render_widget(paragraph, f.size);
     }
     assert_buffer(backend, expected)
   }
@@ -170,7 +170,7 @@ class paragraphTests extends TuiTest {
       terminal.draw { f =>
         val text = Text.raw("段落现在可以水平滚动了！\nParagraph can scroll horizontally!\nShort line")
         val paragraph = Paragraph(text = text, block = Some(Block(borders = Borders.ALL)), alignment = alignment, scroll = scroll)
-        f.render_widget(paragraph, f.size());
+        f.render_widget(paragraph, f.size);
       }
       assert_buffer(backend, expected)
     }

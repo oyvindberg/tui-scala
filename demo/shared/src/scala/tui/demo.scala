@@ -6,7 +6,8 @@ object demo {
     "barchart" -> tui.examples.barchart.Main.main,
     "tabs" -> tui.examples.tabs.Main.main,
     "list" -> tui.examples.list.App.main,
-    "paragraph" -> tui.examples.paragraph.App.main
+    "paragraph" -> tui.examples.paragraph.App.main,
+    "table" -> tui.examples.table.Main.main
   )
 
   def main(args: Array[String]): Unit =

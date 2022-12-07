@@ -19,7 +19,7 @@ class barchartTests extends TuiTest {
           bar_width = 7,
           bar_gap = 0
         )
-        f.render_widget(barchart, f.size());
+        f.render_widget(barchart, f.size);
       }
       assert_buffer(backend, expected)
     };
