@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/oyvindberg/tui-scala/workflows/CI/badge.svg)](https://github.com/oyvindberg/tui-scala/actions?query=workflow%3ACI+)
 
-<img src="./assets/demo.gif" alt="Demo cast under Linux Termite with Inconsolata font 12pt">
+https://user-images.githubusercontent.com/247937/206300852-9afab78b-5705-4241-bef1-f841bf5d42cc.mp4
 
 `tui-scala` is a [Scala](https://www.scala-lang.org) library to build rich terminal
 user interfaces and dashboards. It is a port of [tui-rs](https://github.com/fdehau/tui-rs), 
@@ -13,9 +13,12 @@ library [blessed-contrib](https://github.com/yaronn/blessed-contrib) and the
 The port is not yet complete, see [roadmap](https://github.com/oyvindberg/tui-scala/issues/15) for immediate plans.
 There are bite-sized tasks to complete if you want to contribute!
 
-The library supports the [crossterm](https://github.com/crossterm-rs/crossterm) backend, which
+
+
+
+The library supports the [crossterm](https://github.com/crossterm-rs/crossterm) backend, the integration with which
 is published separately as a Java artifact which calls native rust code through JNI.
-This backend works both when running on the JVM and when running as GraalVM native image.
+This integration works both when running on the JVM and when running as GraalVM native image.
 
 The library is based on the principle of immediate rendering with intermediate
 buffers. This means that at each new frame you should build all widgets that are
@@ -48,7 +51,7 @@ bleep (e.g. to run the barchart example `bleep run demo@jvm213 barchart`), and q
 
 ## Building
 
-(tui-scala helps dog-food the experimental [bleep](https://bleep.build/docs/) Scala build tool. keep an open mind!)
+(tui-scala helps dog-food the experimental [bleep](https://bleep.build/docs/) Scala build tool as it's gearing up for first public release. keep an open mind!)
 
 - `git clone https://github.com/oyvindberg/tui-scala`
 - [install bleep](https://bleep.build/docs/installing/)
