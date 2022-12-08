@@ -9,6 +9,7 @@ import bleep.{cli, PathOps, RelPath}
 import java.nio.file.{Files, Path}
 import scala.jdk.CollectionConverters._
 
+// replace after bleep M23
 class CargoFixed(protected val release: Boolean = true) extends BuildTool {
 
   def name: String = "Cargo"

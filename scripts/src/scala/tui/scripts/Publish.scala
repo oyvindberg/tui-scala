@@ -12,10 +12,9 @@ import coursier.Info
 import scala.collection.immutable.SortedMap
 
 object Publish extends BleepScript("Publish") {
-  val groupId = "com.olvind.tui"
 
   def run(started: Started, commands: Commands, args: List[String]): Unit = {
-    commands.compile(started.build.explodedProjects.keys.filter(projectsToPublish.include).toList)
+    commands.compile(started.build.explodedProjects.keys.filter(projectsToPublish).toList)
 
     val dynVer = new DynVerPlugin(baseDirectory = started.buildPaths.buildDir.toFile, dynverSonatypeSnapshots = true)
     val pgp = new PgpPlugin(
@@ -61,7 +60,7 @@ object Publish extends BleepScript("Publish") {
       packageLibraries(
         started,
         coordinatesFor = CoordinatesFor.Default(groupId = groupId, version = dynVer.version),
-        shouldInclude = projectsToPublish.include,
+        shouldInclude = projectsToPublish,
         publishLayout = PublishLayout.Maven(info)
       )
 
