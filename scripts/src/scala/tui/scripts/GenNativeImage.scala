@@ -1,6 +1,6 @@
 package tui.scripts
 
-import bleep.*
+import bleep._
 import bleep.internal.jvmOrSystem
 import bleep.logging.Logger
 import bleep.plugin.nativeimage.NativeImagePlugin

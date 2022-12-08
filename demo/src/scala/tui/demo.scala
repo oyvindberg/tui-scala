@@ -1,5 +1,7 @@
 package tui
 
+import tui.crossterm.CrosstermJni
+
 object demo {
   val Demos = Map[String, Array[String] => Unit](
     "sparkline" -> tui.examples.sparkline.Main.main,
@@ -12,6 +14,9 @@ object demo {
 
   def main(args: Array[String]): Unit =
     args.headOption match {
+      case Some("check") =>
+        new CrosstermJni() // run for the side effect of testing jni library
+        println("ok")
       case Some(name) =>
         Demos.get(name) match {
           case Some(demo) => demo(args.drop(1))
