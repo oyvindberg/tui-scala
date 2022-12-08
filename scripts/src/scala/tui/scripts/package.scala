@@ -12,7 +12,7 @@ package object scripts {
   def projectsToPublish(crossName: model.CrossProjectName): Boolean =
     crossName.name.value match {
       case "tui" => true
-      case _ => false
+      case _     => false
     }
 
   val groupId = "com.olvind.tui"

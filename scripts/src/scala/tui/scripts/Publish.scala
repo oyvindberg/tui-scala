@@ -35,9 +35,9 @@ object Publish extends BleepScript("Publish") {
     started.logger.info(dynVer.version)
 
     val info = Info(
-      "A bleeping fast scala build tool!",
-      "https://github.com/oyvindberg/bleep/",
-      List(
+      description = "TUI for scala",
+      homePage = "https://github.com/oyvindberg/tui-scala/",
+      developers = List(
         Info.Developer(
           "oyvindberg",
           "Øyvind Raddum Berg",
