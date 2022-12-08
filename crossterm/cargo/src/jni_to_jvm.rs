@@ -6,14 +6,13 @@ use jni::{
 
 use crossterm::event;
 
-pub fn record<'a>(env: JNIEnv<'a>, class: &str, params_sig: &str, args: &[JValue]) -> JObject<'a> {
+pub fn record<'a>(env: JNIEnv<'a>, class: &str, params_sig: &str, args: &[JValue]) -> JniResult<JObject<'a>> {
     return env
         .new_object(
-            env.find_class(class).unwrap(),
+            env.find_class(class)?,
             format!("({})V", params_sig),
             args,
         )
-        .unwrap();
 }
 
 pub fn enum_value<'a>(env: JNIEnv<'a>, cls_name: &str, name: &str) -> JniResult<JObject<'a>> {
@@ -22,7 +21,7 @@ pub fn enum_value<'a>(env: JNIEnv<'a>, cls_name: &str, name: &str) -> JniResult<
     return env.get_static_field(cls, name, sig)?.l();
 }
 
-pub fn xy(env: JNIEnv, x: u16, y: u16) -> JObject {
+pub fn xy(env: JNIEnv, x: u16, y: u16) -> JniResult<JObject> {
     return record(
         env,
         "tui/crossterm/Xy",
@@ -31,28 +30,28 @@ pub fn xy(env: JNIEnv, x: u16, y: u16) -> JObject {
     );
 }
 
-pub fn media_key_code(env: JNIEnv, e: event::MediaKeyCode) -> JObject {
+pub fn media_key_code(env: JNIEnv, e: event::MediaKeyCode) -> JniResult<JObject> {
     const CLASS_NAME: &'static str = "tui/crossterm/MediaKeyCode";
 
     return match e {
-        event::MediaKeyCode::Play => enum_value(env, CLASS_NAME, "Play").unwrap(),
-        event::MediaKeyCode::Pause => enum_value(env, CLASS_NAME, "Pause").unwrap(),
-        event::MediaKeyCode::PlayPause => enum_value(env, CLASS_NAME, "PlayPause").unwrap(),
-        event::MediaKeyCode::Reverse => enum_value(env, CLASS_NAME, "Reverse").unwrap(),
-        event::MediaKeyCode::Stop => enum_value(env, CLASS_NAME, "Stop").unwrap(),
-        event::MediaKeyCode::FastForward => enum_value(env, CLASS_NAME, "FastForward").unwrap(),
-        event::MediaKeyCode::Rewind => enum_value(env, CLASS_NAME, "Rewind").unwrap(),
-        event::MediaKeyCode::TrackNext => enum_value(env, CLASS_NAME, "TrackNext").unwrap(),
-        event::MediaKeyCode::TrackPrevious => enum_value(env, CLASS_NAME, "TrackPrevious").unwrap(),
-        event::MediaKeyCode::Record => enum_value(env, CLASS_NAME, "Record").unwrap(),
-        event::MediaKeyCode::LowerVolume => enum_value(env, CLASS_NAME, "LowerVolume").unwrap(),
-        event::MediaKeyCode::RaiseVolume => enum_value(env, CLASS_NAME, "RaiseVolume").unwrap(),
-        event::MediaKeyCode::MuteVolume => enum_value(env, CLASS_NAME, "MuteVolume").unwrap(),
+        event::MediaKeyCode::Play => enum_value(env, CLASS_NAME, "Play"),
+        event::MediaKeyCode::Pause => enum_value(env, CLASS_NAME, "Pause"),
+        event::MediaKeyCode::PlayPause => enum_value(env, CLASS_NAME, "PlayPause"),
+        event::MediaKeyCode::Reverse => enum_value(env, CLASS_NAME, "Reverse"),
+        event::MediaKeyCode::Stop => enum_value(env, CLASS_NAME, "Stop"),
+        event::MediaKeyCode::FastForward => enum_value(env, CLASS_NAME, "FastForward"),
+        event::MediaKeyCode::Rewind => enum_value(env, CLASS_NAME, "Rewind"),
+        event::MediaKeyCode::TrackNext => enum_value(env, CLASS_NAME, "TrackNext"),
+        event::MediaKeyCode::TrackPrevious => enum_value(env, CLASS_NAME, "TrackPrevious"),
+        event::MediaKeyCode::Record => enum_value(env, CLASS_NAME, "Record"),
+        event::MediaKeyCode::LowerVolume => enum_value(env, CLASS_NAME, "LowerVolume"),
+        event::MediaKeyCode::RaiseVolume => enum_value(env, CLASS_NAME, "RaiseVolume"),
+        event::MediaKeyCode::MuteVolume => enum_value(env, CLASS_NAME, "MuteVolume"),
     };
 }
 
-pub fn key_code(env: JNIEnv, e: event::KeyCode) -> JObject {
-    fn nullary<'a>(env: JNIEnv<'a>, name: &str) -> JObject<'a> {
+pub fn key_code(env: JNIEnv, e: event::KeyCode) -> JniResult<JObject> {
+    fn nullary<'a>(env: JNIEnv<'a>, name: &str) -> JniResult<JObject<'a>> {
         return record(env, &format!("tui/crossterm/KeyCode${}", name), "", &[]);
     }
 
@@ -103,13 +102,13 @@ pub fn key_code(env: JNIEnv, e: event::KeyCode) -> JObject {
                 env,
                 "tui/crossterm/KeyCode$Media",
                 "Ltui/crossterm/MediaKeyCode;",
-                &[JValue::Object(media_key_code(env, m))],
+                &[JValue::Object(media_key_code(env, m)?)],
             );
         }
     }
 }
 
-pub fn key_modifiers(env: JNIEnv, e: event::KeyModifiers) -> JObject {
+pub fn key_modifiers(env: JNIEnv, e: event::KeyModifiers) -> JniResult<JObject> {
     return record(
         env,
         "tui/crossterm/KeyModifiers",
@@ -118,16 +117,16 @@ pub fn key_modifiers(env: JNIEnv, e: event::KeyModifiers) -> JObject {
     );
 }
 
-pub fn key_event_kind(env: JNIEnv, e: event::KeyEventKind) -> JObject {
+pub fn key_event_kind(env: JNIEnv, e: event::KeyEventKind) -> JniResult<JObject> {
     const CLASS_NAME: &'static str = "tui/crossterm/KeyEventKind";
     return match e {
-        event::KeyEventKind::Press => enum_value(env, CLASS_NAME, "Press").unwrap(),
-        event::KeyEventKind::Repeat => enum_value(env, CLASS_NAME, "Repeat").unwrap(),
-        event::KeyEventKind::Release => enum_value(env, CLASS_NAME, "Release").unwrap(),
+        event::KeyEventKind::Press => enum_value(env, CLASS_NAME, "Press"),
+        event::KeyEventKind::Repeat => enum_value(env, CLASS_NAME, "Repeat"),
+        event::KeyEventKind::Release => enum_value(env, CLASS_NAME, "Release"),
     };
 }
 
-pub fn key_event_state(env: JNIEnv, e: event::KeyEventState) -> JObject {
+pub fn key_event_state(env: JNIEnv, e: event::KeyEventState) -> JniResult<JObject> {
     return record(
         env,
         "tui/crossterm/KeyEventState",
@@ -136,12 +135,12 @@ pub fn key_event_state(env: JNIEnv, e: event::KeyEventState) -> JObject {
     );
 }
 
-pub fn key_event(env: JNIEnv, e: event::KeyEvent) -> JObject {
+pub fn key_event(env: JNIEnv, e: event::KeyEvent) -> JniResult<JObject> {
     let args = &[
-        JValue::Object(key_code(env, e.code)),
-        JValue::Object(key_modifiers(env, e.modifiers)),
-        JValue::Object(key_event_kind(env, e.kind)),
-        JValue::Object(key_event_state(env, e.state)),
+        JValue::Object(key_code(env, e.code)?),
+        JValue::Object(key_modifiers(env, e.modifiers)?),
+        JValue::Object(key_event_kind(env, e.kind)?),
+        JValue::Object(key_event_state(env, e.state)?),
     ];
 
     return record(
@@ -152,34 +151,34 @@ pub fn key_event(env: JNIEnv, e: event::KeyEvent) -> JObject {
     );
 }
 
-pub fn mouse_button(env: JNIEnv, e: event::MouseButton) -> JObject {
+pub fn mouse_button(env: JNIEnv, e: event::MouseButton) -> JniResult<JObject> {
     const CLASS_NAME: &'static str = "tui/crossterm/MouseButton";
     return match e {
-        event::MouseButton::Left => enum_value(env, CLASS_NAME, "Left").unwrap(),
-        event::MouseButton::Right => enum_value(env, CLASS_NAME, "Right").unwrap(),
-        event::MouseButton::Middle => enum_value(env, CLASS_NAME, "Middle").unwrap(),
+        event::MouseButton::Left => enum_value(env, CLASS_NAME, "Left"),
+        event::MouseButton::Right => enum_value(env, CLASS_NAME, "Right"),
+        event::MouseButton::Middle => enum_value(env, CLASS_NAME, "Middle"),
     };
 }
 
-pub fn mouse_event_kind(env: JNIEnv, e: event::MouseEventKind) -> JObject {
+pub fn mouse_event_kind(env: JNIEnv, e: event::MouseEventKind) -> JniResult<JObject> {
     return match e {
         event::MouseEventKind::Down(mb) => record(
             env,
             "tui/crossterm/MouseEventKind$Down",
             "Ltui/crossterm/MouseButton;",
-            &[JValue::Object(mouse_button(env, mb))],
+            &[JValue::Object(mouse_button(env, mb)?)],
         ),
         event::MouseEventKind::Up(mb) => record(
             env,
             "tui/crossterm/MouseEventKind$Up",
             "Ltui/crossterm/MouseButton;",
-            &[JValue::Object(mouse_button(env, mb))],
+            &[JValue::Object(mouse_button(env, mb)?)],
         ),
         event::MouseEventKind::Drag(mb) => record(
             env,
             "tui/crossterm/MouseEventKind$Drag",
             "Ltui/crossterm/MouseButton;",
-            &[JValue::Object(mouse_button(env, mb))],
+            &[JValue::Object(mouse_button(env, mb)?)],
         ),
         event::MouseEventKind::Moved => record(env, "tui/crossterm/MouseEventKind$Moved", "", &[]),
         event::MouseEventKind::ScrollDown => {
@@ -191,12 +190,12 @@ pub fn mouse_event_kind(env: JNIEnv, e: event::MouseEventKind) -> JObject {
     };
 }
 
-pub fn mouse_event(env: JNIEnv, e: event::MouseEvent) -> JObject {
+pub fn mouse_event(env: JNIEnv, e: event::MouseEvent) -> JniResult<JObject> {
     let args = &[
-        JValue::Object(mouse_event_kind(env, e.kind)),
+        JValue::Object(mouse_event_kind(env, e.kind)?),
         JValue::Int(e.column.into()),
         JValue::Int(e.row.into()),
-        JValue::Object(key_modifiers(env, e.modifiers)),
+        JValue::Object(key_modifiers(env, e.modifiers)?),
     ];
     return record(
         env,
@@ -206,8 +205,7 @@ pub fn mouse_event(env: JNIEnv, e: event::MouseEvent) -> JObject {
     );
 }
 
-pub fn event(env: JNIEnv, e: event::Event) -> JObject {
-    // eprintln!("{e:?}");
+pub fn event(env: JNIEnv, e: event::Event) -> JniResult<JObject> {
     return match e {
         event::Event::FocusGained => record(env, "tui/crossterm/Event$FocusGained", "", &[]),
         event::Event::FocusLost => record(env, "tui/crossterm/Event$FocusLost", "", &[]),
@@ -215,19 +213,19 @@ pub fn event(env: JNIEnv, e: event::Event) -> JObject {
             env,
             "tui/crossterm/Event$Key",
             "Ltui/crossterm/KeyEvent;",
-            &[JValue::Object(key_event(env, ke))],
+            &[JValue::Object(key_event(env, ke)?)],
         ),
         event::Event::Mouse(me) => record(
             env,
             "tui/crossterm/Event$Mouse",
             "Ltui/crossterm/MouseEvent;",
-            &[JValue::Object(mouse_event(env, me))],
+            &[JValue::Object(mouse_event(env, me)?)],
         ),
         event::Event::Paste(str) => record(
             env,
             "tui/crossterm/Event$Paste",
             "Ljava/lang/String;",
-            &[JValue::Object(env.new_string(str).unwrap().into())],
+            &[JValue::Object(env.new_string(str)?.into())],
         ),
 
         event::Event::Resize(x, y) => record(
