@@ -1,10 +1,14 @@
 use std::io;
 use jni::errors::{Error as JniError};
+use jni::sys::jint;
 
 pub enum UnifiedError {
     Jni(JniError),
     Io(io::Error),
+    NotU16(jint),
 }
+
+pub type UnifiedResult<T> = Result<T, UnifiedError>;
 
 pub trait UnifyErrors<T> {
     fn unify_errors(self) -> Result<T, UnifiedError>;

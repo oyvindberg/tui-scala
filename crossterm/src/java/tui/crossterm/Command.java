@@ -43,7 +43,8 @@ public sealed interface Command
         Command.ScrollUp,
         Command.ScrollDown,
         Command.Clear,
-        Command.SetSize {
+        Command.SetSize,
+        Command.Print {
     /// A command that moves the terminal cursor to the given position (column, row).
     /// * Top left cell is represented as `0,0`.
     record MoveTo(int x, int y) implements Command {
@@ -263,5 +264,8 @@ public sealed interface Command
 
     /// A command that sets the terminal buffer size `(columns, rows)`.
     record SetSize(int columns, int rows) implements Command {
+    }
+
+    record Print(String value) implements Command {
     }
 }

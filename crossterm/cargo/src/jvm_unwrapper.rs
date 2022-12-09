@@ -4,6 +4,7 @@ use jni::{
     errors::{Error as JniError, Result as JniResult},
     JNIEnv,
 };
+use jni::sys::jint;
 
 use crate::unify_errors::UnifiedError;
 
@@ -36,6 +37,7 @@ impl<T> JvmUnwrapper<T> for Result<T, UnifiedError> where T: Default {
             Ok(t) => t,
             Err(UnifiedError::Jni(jni_error)) => handle_jni_error(env, jni_error),
             Err(UnifiedError::Io(err)) => handle_error(env, err),
+            Err(UnifiedError::NotU16(jint)) => handle_not_u16(env, jint),
         }
     }
 }
@@ -57,5 +59,11 @@ fn handle_jni_error<T>(env: JNIEnv, jni_error: JniError) -> T where T: Default {
 fn handle_error<T>(env: JNIEnv, err: io::Error) -> T where T: Default {
     let runtime_exception = env.find_class("java/lang/RuntimeException").unwrap();
     env.throw_new(runtime_exception, format!("IO error: {err:?}")).unwrap();
+    T::default()
+}
+
+fn handle_not_u16<T>(env: JNIEnv, jint: jint) -> T where T: Default {
+    let runtime_exception = env.find_class("java/lang/RuntimeException").unwrap();
+    env.throw_new(runtime_exception, format!("{jint:?} is not an u16")).unwrap();
     T::default()
 }
