@@ -57,4 +57,4 @@ templates:
       version: 2.13.6
   template-scala-3:
     scala:
-      version: 3.3.0-RC1-bin-20221130-72c4ffd-NIGHTLY
+      version: 3.2.1
