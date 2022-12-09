@@ -132,6 +132,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           name: "${{ steps.get_version.outputs.version-without-v }}"
-          prerelease: true
+          prerelease: false
           generate_release_notes: true
           files: |
