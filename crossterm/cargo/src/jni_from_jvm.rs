@@ -163,14 +163,6 @@ pub fn attribute(env: JNIEnv, attribute_enum_value: JObject) -> JniResult<style:
     return Ok(from_str(&java_str.to_string_lossy()));
 }
 
-pub fn attributes(env: JNIEnv, attributes_obj: JObject) -> JniResult<style::Attributes> {
-    let attributes_list_obj = env
-        .call_method(attributes_obj, "attributes", "()Ljava/util/List;", &[])?
-        .l()?;
-
-    return attributes_list(env, attributes_list_obj);
-}
-
 pub fn attributes_list(env: JNIEnv, attributes_list_obj: JObject) -> JniResult<style::Attributes> {
     let list = env.get_list(attributes_list_obj)?;
 
