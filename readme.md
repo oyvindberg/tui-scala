@@ -54,7 +54,9 @@ For sbt:
   libraryDependencies += "com.olvind.tui" %% "tui" % "0.0.1"
 ```
 
-And then copy/paste one of the demos above to get started
+And then copy/paste one of the demos above to get started.
+
+It's cross published for scala 2.13 and 3. Note that scala 3 won't work with graalvm native image until 3.3. 
 
 ### Contributing/building
 
