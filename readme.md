@@ -11,7 +11,8 @@ library [blessed-contrib](https://github.com/yaronn/blessed-contrib) and the
 `Go` library [termui](https://github.com/gizak/termui).
 
 **The port is not yet complete, see [roadmap](https://github.com/oyvindberg/tui-scala/issues/15) for immediate plans.
-There are bite-sized tasks to complete if you want to contribute!**
+There are [bite-sized](https://github.com/oyvindberg/tui-scala/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) 
+tasks to complete if you want to contribute!**
 
 The library supports the [crossterm](https://github.com/crossterm-rs/crossterm) backend, the integration with which
 is published separately as a Java artifact which calls native rust code through JNI.
