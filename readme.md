@@ -54,12 +54,12 @@ bleep (e.g. to run the barchart example `bleep run demo@jvm213 barchart`), and q
 For sbt:
 
 ```scala
-  libraryDependencies += "com.olvind.tui" %% "tui" % "0.0.1"
+  libraryDependencies += "com.olvind.tui" %% "tui" % "<version>"
 ```
 
 If you only want `crossterm` to do low-level things, or if you want to experiment with making a TUI, these are the coordinates:
 ```scala
-  libraryDependencies += "com.olvind.tui" % "crossterm" % "0.0.1"
+  libraryDependencies += "com.olvind.tui" % "crossterm" % "<version>"
 ```
 
 
