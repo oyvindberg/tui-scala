@@ -1,8 +1,6 @@
 package tui.scripts
 
 import bleep._
-import bleep.internal.jvmOrSystem
-import bleep.logging.Logger
 import bleep.plugin.nativeimage.NativeImagePlugin
 
 import java.nio.file.{Files, StandardCopyOption}
@@ -12,7 +10,7 @@ object GenNativeImage extends BleepScript("GenNativeImage") {
 
     commands.compile(List(demoProject))
 
-    val nativeImageJvm = jvmOrSystem(started.build, logger = Logger.DevNull)
+    val nativeImageJvm = model.Jvm("graalvm-java17:22.3.0", None)
     val jniLibraryPath = GenJniLibrary.crosstermJniNativeLib(started).nativeCompile()
 
     val newJniLibraryPath = started.projectPaths(demoProject).resourcesDirs.generated / jniLibraryPath.getFileName.toString

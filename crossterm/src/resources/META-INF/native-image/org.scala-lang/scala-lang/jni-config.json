@@ -455,6 +455,13 @@
     "allDeclaredFields": true
   },
   {
+    "name": "tui.crossterm.Command$Print",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
     "name": "tui.crossterm.Command",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,

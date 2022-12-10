@@ -67,6 +67,8 @@ And then copy/paste one of the demos above to get started.
 
 It's cross published for scala 2.13 and 3. Note that scala 3 won't work with graalvm native image until 3.3. 
 
+You'll need a recent JVM with support for sealed interfaces and records. likely 18. 
+
 ### Contributing/building
 
 See [contributing](./contributing.md)

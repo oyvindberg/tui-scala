@@ -1,7 +1,5 @@
 package tui.crossterm;
 
-import org.graalvm.nativeimage.ImageInfo;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,7 +16,7 @@ class NativeLoader {
     }
 
     static String withPlatformName(String lib) throws IOException, InterruptedException {
-        if (ImageInfo.inImageRuntimeCode() || ImageInfo.inImageBuildtimeCode())
+        if (System.getProperty("org.graalvm.nativeimage.imagecode") != null)
             return "/" + lib;
         else {
             String plat = getPlatform();
