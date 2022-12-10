@@ -14,8 +14,10 @@ library [blessed-contrib](https://github.com/yaronn/blessed-contrib) and the
 There are [bite-sized](https://github.com/oyvindberg/tui-scala/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) 
 tasks to complete if you want to contribute!**
 
-The library supports the [crossterm](https://github.com/crossterm-rs/crossterm) backend, the integration with which
-is published separately as a Java artifact which calls native rust code through JNI.
+The library uses [crossterm](https://github.com/crossterm-rs/crossterm) as a backend. 
+`crossterm` handles differences between platforms, so everything should work on major operating systems, including windows.
+
+The integration with `crossterm` is published separately as a Java artifact, which calls native rust code through JNI.
 This integration works both when running on the JVM and when running as GraalVM native image.
 
 The library is based on the principle of immediate rendering with intermediate
@@ -54,6 +56,12 @@ For sbt:
 ```scala
   libraryDependencies += "com.olvind.tui" %% "tui" % "0.0.1"
 ```
+
+If you only want `crossterm` to do low-level things, or if you want to experiment with making a TUI, these are the coordinates:
+```scala
+  libraryDependencies += "com.olvind.tui" % "crossterm" % "0.0.1"
+```
+
 
 And then copy/paste one of the demos above to get started.
 
