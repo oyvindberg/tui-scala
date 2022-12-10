@@ -1,7 +1,7 @@
 
 ## Building
 
-(tui-scala helps dog-food the experimental [bleep](https://bleep.build/docs/) Scala build tool as it's gearing up for first public release. keep an open mind!)
+`tui-scala` helps dog-food the experimental [bleep](https://bleep.build/docs/) Scala build tool while it is approaching first public release. Keep an open mind!
 
 - `git clone https://github.com/oyvindberg/tui-scala`
 - [install bleep](https://bleep.build/docs/installing/)
