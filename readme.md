@@ -36,7 +36,7 @@ you may rely on `crossterm` achieve such features.
 The library comes with the following list of widgets:
 
 * ~~[Block](https://github.com/oyvindberg/tui-rs/blob/master/examples/block.scala)~~ (not ported yet)
-* ~~[Gauge](https://github.com/oyvindberg/tui-rs/blob/master/examples/gauge.scala)~~ (not ported yet)
+* [Gauge](https://github.com/oyvindberg/tui-rs/blob/master/examples/gauge.scala)
 * [Sparkline](https://github.com/oyvindberg/tui-rs/blob/master/examples/sparkline.scala)
 * ~~[Chart](https://github.com/oyvindberg/tui-rs/blob/master/examples/chart.scala)~~ (not ported yet)
 * [BarChart](https://github.com/oyvindberg/tui-rs/blob/master/examples/barchart.scala)
