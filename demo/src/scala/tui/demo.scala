@@ -10,7 +10,8 @@ object demo {
     "list" -> tui.examples.list.App.main,
     "paragraph" -> tui.examples.paragraph.App.main,
     "table" -> tui.examples.table.Main.main,
-    "popup" -> tui.examples.popup.Main.main
+    "popup" -> tui.examples.popup.Main.main,
+    "gauge" -> tui.examples.gauge.Main.main
   )
 
   def main(args: Array[String]): Unit =
