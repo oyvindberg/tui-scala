@@ -8,6 +8,7 @@ object demo {
     "block" -> tui.examples.block.Main.main,
     "canvas" -> tui.examples.canvas.Main.main,
     "chart" -> tui.examples.chart.Main.main,
+    "custom_widget" -> tui.examples.custom_widget.Main.main,
     "gauge" -> tui.examples.gauge.Main.main,
     "layout" -> tui.examples.layout.Main.main,
     "list" -> tui.examples.list.App.main,

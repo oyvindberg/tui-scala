@@ -36,9 +36,10 @@ you may rely on `crossterm` achieve such features.
 The library comes with a bunch of widgets: here is some example code:
 
 * [BarChart](https://github.com/oyvindberg/tui-rs/blob/master/examples/barchart.scala)
-* [Block](https://github.com/oyvindberg/tui-rs/blob/master/examples/block.scala) (not ported yet)
+* [Block](https://github.com/oyvindberg/tui-rs/blob/master/examples/block.scala)
 * [Canvas (with line, point cloud, world map)](https://github.com/oyvindberg/tui-rs/blob/master/examples/canvas.scala)
 * [Chart](https://github.com/oyvindberg/tui-rs/blob/master/examples/chart.scala)
+* [Custom widget](https://github.com/oyvindberg/tui-rs/blob/master/examples/custom_widget.scala)
 * [Gauge](https://github.com/oyvindberg/tui-rs/blob/master/examples/gauge.scala)
 * [Layout](https://github.com/oyvindberg/tui-rs/blob/master/examples/layout.scala)
 * [List](https://github.com/oyvindberg/tui-rs/blob/master/examples/list.scala)
