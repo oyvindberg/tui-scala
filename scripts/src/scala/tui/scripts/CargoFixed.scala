@@ -21,6 +21,7 @@ class CargoFixed(protected val release: Boolean = true) extends BuildTool {
       logger.withContext(buildScript).info(s"Initialized empty build script for $name")
       Files.createDirectories(buildScript.getParent)
       Files.writeString(buildScript, template(libName))
+      ()
     }
   }
 
@@ -44,8 +45,10 @@ class CargoFixed(protected val release: Boolean = true) extends BuildTool {
   class Instance(protected val baseDirectory: Path, protected val logger: Logger, env: List[(String, String)]) extends BuildTool.Instance {
     val cliOut = cli.Out.ViaLogger(logger)
 
-    def clean(): Unit =
+    def clean(): Unit = {
       cli("cargo clean", baseDirectory, List("cargo", "clean"), logger = logger, out = cliOut, env = env)
+      ()
+    }
 
     def library(targetDirectory: Path): Path = {
       cli(
