@@ -33,18 +33,21 @@ you may rely on `crossterm` achieve such features.
 
 ### Widgets
 
-The library comes with the following list of widgets:
+The library comes with a bunch of widgets: here is some example code:
 
-* ~~[Block](https://github.com/oyvindberg/tui-rs/blob/master/examples/block.scala)~~ (not ported yet)
-* [Gauge](https://github.com/oyvindberg/tui-rs/blob/master/examples/gauge.scala)
-* [Sparkline](https://github.com/oyvindberg/tui-rs/blob/master/examples/sparkline.scala)
-* [Chart](https://github.com/oyvindberg/tui-rs/blob/master/examples/chart.scala)
 * [BarChart](https://github.com/oyvindberg/tui-rs/blob/master/examples/barchart.scala)
+* [Block](https://github.com/oyvindberg/tui-rs/blob/master/examples/block.scala) (not ported yet)
+* [Canvas (with line, point cloud, world map)](https://github.com/oyvindberg/tui-rs/blob/master/examples/canvas.scala)
+* [Chart](https://github.com/oyvindberg/tui-rs/blob/master/examples/chart.scala)
+* [Gauge](https://github.com/oyvindberg/tui-rs/blob/master/examples/gauge.scala)
+* [Layout](https://github.com/oyvindberg/tui-rs/blob/master/examples/layout.scala)
 * [List](https://github.com/oyvindberg/tui-rs/blob/master/examples/list.scala)
-* [Table](https://github.com/oyvindberg/tui-rs/blob/master/examples/table.scala)
 * [Paragraph](https://github.com/oyvindberg/tui-rs/blob/master/examples/paragraph.scala)
-* [Canvas (with line, point cloud, map)](https://github.com/oyvindberg/tui-rs/blob/master/examples/canvas.scala)
+* [Popup](https://github.com/oyvindberg/tui-rs/blob/master/examples/popup.scala)
+* [Sparkline](https://github.com/oyvindberg/tui-rs/blob/master/examples/sparkline.scala)
+* [Table](https://github.com/oyvindberg/tui-rs/blob/master/examples/table.scala)
 * [Tabs](https://github.com/oyvindberg/tui-rs/blob/master/examples/tabs.scala)
+* [User input](https://github.com/oyvindberg/tui-rs/blob/master/examples/user_input.scala)
 
 Click on each item to see the source of the example. Run the examples with
 bleep (e.g. to run the barchart example `bleep run demo@jvm213 barchart`), and quit by pressing `q`.
