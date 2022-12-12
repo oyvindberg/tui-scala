@@ -13,7 +13,8 @@ object demo {
     "popup" -> tui.examples.popup.Main.main,
     "gauge" -> tui.examples.gauge.Main.main,
     "chart" -> tui.examples.chart.Main.main,
-    "canvas" -> tui.examples.canvas.Main.main
+    "canvas" -> tui.examples.canvas.Main.main,
+    "block" -> tui.examples.block.Main.main
   )
 
   def main(args: Array[String]): Unit =
