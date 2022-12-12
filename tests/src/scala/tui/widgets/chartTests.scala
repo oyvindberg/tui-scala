@@ -16,7 +16,7 @@ class chartTests extends TuiTest {
   )
 
   test("it_should_hide_the_legend") {
-    val data = Array((0.0, 5.0), (1.0, 6.0), (3.0, 7.0))
+    val data = Array(Point(0.0, 5.0), Point(1.0, 6.0), Point(3.0, 7.0))
     val cases = Array(
       LegendTestCase(
         chart_area = Rect(0, 0, 100, 100),
@@ -66,13 +66,13 @@ class chartTests extends TuiTest {
       val backend = TestBackend(width, height);
       val terminal = Terminal.init(backend)
       terminal.draw { f =>
-        val datasets = Array(Dataset(marker = symbols.Marker.Braille, style = Style.DEFAULT.fg(Color.Magenta), data = Array((0.0, 0.0))));
+        val datasets = Array(Dataset(marker = symbols.Marker.Braille, style = Style.DEFAULT.fg(Color.Magenta), data = Array(Point.Zero)));
 
         val chart = Chart(
           datasets = datasets,
           block = Some(Block(title = Some(Spans.from("Plot")), borders = Borders.ALL)),
-          x_axis = Axis(bounds = (0.0, 0.0), labels = Some(create_labels(Array("0.0", "1.0")))),
-          y_axis = Axis(bounds = (0.0, 0.0), labels = Some(create_labels(Array("1.0", "0.0"))))
+          x_axis = Axis(bounds = Point.Zero, labels = Some(create_labels(Array("0.0", "1.0")))),
+          y_axis = Axis(bounds = Point.Zero, labels = Some(create_labels(Array("1.0", "0.0"))))
         )
         f.render_widget(chart, f.size);
       }
@@ -87,7 +87,7 @@ class chartTests extends TuiTest {
   test("widgets_chart_handles_long_labels") {
     def test_case(x_labels: Option[(String, String)], y_labels: Option[(String, String)], x_alignment: Alignment, lines: Array[String]) = {
       val x_axis =
-        x_labels.foldLeft(Axis(bounds = (0.0, 1.0))) { case (acc, (left_label, right_label)) =>
+        x_labels.foldLeft(Axis(bounds = Point(0.0, 1.0))) { case (acc, (left_label, right_label)) =>
           acc.copy(
             labels = Some(Array(Span.from(left_label), Span.from(right_label))),
             labels_alignment = x_alignment
@@ -95,7 +95,7 @@ class chartTests extends TuiTest {
         };
 
       val y_axis =
-        y_labels.foldLeft(Axis(bounds = (0.0, 1.0))) { case (acc, (left_label, right_label)) =>
+        y_labels.foldLeft(Axis(bounds = Point(0.0, 1.0))) { case (acc, (left_label, right_label)) =>
           acc.copy(labels = Some(Array(Span.from(left_label), Span.from(right_label))))
         };
 
@@ -278,13 +278,13 @@ class chartTests extends TuiTest {
 
     terminal.draw { f =>
       val datasets = Array(
-        Dataset(marker = symbols.Marker.Braille, style = Style.DEFAULT.fg(Color.Magenta), data = Array((0.0, 0.0)))
+        Dataset(marker = symbols.Marker.Braille, style = Style.DEFAULT.fg(Color.Magenta), data = Array(Point.Zero))
       )
       val chart = Chart(
         datasets = datasets,
         block = Some(Block(title = Some(Spans.from("Plot")), borders = Borders.ALL)),
-        x_axis = Axis(bounds = (0.0, 0.0), labels = Option(create_labels(Array("0.0", "1.0")))),
-        y_axis = Axis(bounds = (0.0, 0.0), labels = Option(create_labels(Array("0.0", "1.0"))))
+        x_axis = Axis(bounds = Point.Zero, labels = Option(create_labels(Array("0.0", "1.0")))),
+        y_axis = Axis(bounds = Point.Zero, labels = Option(create_labels(Array("0.0", "1.0"))))
       )
       f.render_widget(
         chart,
@@ -302,15 +302,15 @@ class chartTests extends TuiTest {
         Dataset(
           marker = symbols.Marker.Braille,
           style = Style.DEFAULT.fg(Color.Magenta),
-          data = Array((1_588_298_471.0, 1.0), (1_588_298_473.0, 0.0), (1_588_298_496.0, 1.0))
+          data = Array(Point(1_588_298_471.0, 1.0), Point(1_588_298_473.0, 0.0), Point(1_588_298_496.0, 1.0))
         )
       );
 
       val chart = Chart(
         datasets = datasets,
         block = Some(Block(title = Some(Spans.from("Plot")), borders = Borders.ALL)),
-        x_axis = Axis(bounds = (1_588_298_471.0, 1_588_992_600.0), labels = Some(create_labels(Array("1588298471.0", "1588992600.0")))),
-        y_axis = Axis(bounds = (0.0, 1.0), labels = Some(create_labels(Array("0.0", "1.0"))))
+        x_axis = Axis(bounds = Point(1_588_298_471.0, 1_588_992_600.0), labels = Some(create_labels(Array("1588298471.0", "1588992600.0")))),
+        y_axis = Axis(bounds = Point(0.0, 1.0), labels = Some(create_labels(Array("0.0", "1.0"))))
       )
       f.render_widget(chart, Rect(x = 0, y = 0, width = 80, height = 30))
     }
@@ -325,8 +325,8 @@ class chartTests extends TuiTest {
       val chart = Chart(
         datasets = datasets,
         block = Some(Block(title = Some(Spans.from("Empty Dataset With Line")), borders = Borders.ALL)),
-        x_axis = Axis(bounds = (0.0, 0.0), labels = Some(create_labels(Array("0.0", "1.0")))),
-        y_axis = Axis(bounds = (0.0, 1.0), labels = Some(create_labels(Array("0.0", "1.0"))))
+        x_axis = Axis(bounds = Point.Zero, labels = Some(create_labels(Array("0.0", "1.0")))),
+        y_axis = Axis(bounds = Point(0.0, 1.0), labels = Some(create_labels(Array("0.0", "1.0"))))
       )
       f.render_widget(chart, Rect(x = 0, y = 0, width = 100, height = 100));
     }
@@ -341,17 +341,17 @@ class chartTests extends TuiTest {
           name = "Dataset 1",
           style = Style.DEFAULT.fg(Color.Blue),
           data = Array(
-            (0.0, 0.0),
-            (10.0, 1.0),
-            (20.0, 2.0),
-            (30.0, 3.0),
-            (40.0, 4.0),
-            (50.0, 5.0),
-            (60.0, 6.0),
-            (70.0, 7.0),
-            (80.0, 8.0),
-            (90.0, 9.0),
-            (100.0, 10.0)
+            Point.Zero,
+            Point(10.0, 1.0),
+            Point(20.0, 2.0),
+            Point(30.0, 3.0),
+            Point(40.0, 4.0),
+            Point(50.0, 5.0),
+            Point(60.0, 6.0),
+            Point(70.0, 7.0),
+            Point(80.0, 8.0),
+            Point(90.0, 9.0),
+            Point(100.0, 10.0)
           ),
           graph_type = GraphType.Line
         ),
@@ -359,17 +359,17 @@ class chartTests extends TuiTest {
           name = "Dataset 2",
           style = Style.DEFAULT.fg(Color.Green),
           data = Array(
-            (0.0, 10.0),
-            (10.0, 9.0),
-            (20.0, 8.0),
-            (30.0, 7.0),
-            (40.0, 6.0),
-            (50.0, 5.0),
-            (60.0, 4.0),
-            (70.0, 3.0),
-            (80.0, 2.0),
-            (90.0, 1.0),
-            (100.0, 0.0)
+            Point(0.0, 10.0),
+            Point(10.0, 9.0),
+            Point(20.0, 8.0),
+            Point(30.0, 7.0),
+            Point(40.0, 6.0),
+            Point(50.0, 5.0),
+            Point(60.0, 4.0),
+            Point(70.0, 3.0),
+            Point(80.0, 2.0),
+            Point(90.0, 1.0),
+            Point(100.0, 0.0)
           ),
           graph_type = GraphType.Line
         )
@@ -379,11 +379,11 @@ class chartTests extends TuiTest {
         style = Style.DEFAULT.bg(Color.White),
         block = Some(Block(title = Some(Spans.from("Chart Test")), borders = Borders.ALL)),
         x_axis = Axis(
-          bounds = (0.0, 100.0),
+          bounds = Point(0.0, 100.0),
           title = Some(Spans.from(Span.styled("X Axis", Style.DEFAULT.fg(Color.Yellow)))),
           labels = Some(create_labels(Array("0.0", "50.0", "100.0")))
         ),
-        y_axis = Axis(bounds = (0.0, 10.0), title = Some(Spans.from("Y Axis")), labels = Some(create_labels(Array("0.0", "5.0", "10.0"))))
+        y_axis = Axis(bounds = Point(0.0, 10.0), title = Some(Spans.from("Y Axis")), labels = Some(create_labels(Array("0.0", "5.0", "10.0"))))
       )
       f.render_widget(chart, Rect(x = 0, y = 0, width = 60, height = 30));
     }
