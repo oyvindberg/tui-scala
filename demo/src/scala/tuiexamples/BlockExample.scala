@@ -29,7 +29,7 @@ object BlockExample {
     // Surrounding block
     val block0 = BlockWidget(
       borders = Borders.ALL,
-      title = Some(Spans.from("Main block with round corners")),
+      title = Some(Spans.nostyle("Main block with round corners")),
       title_alignment = Alignment.Center,
       border_type = BlockWidget.BorderType.Rounded
     )
@@ -53,10 +53,8 @@ object BlockExample {
     val block_top0 = BlockWidget(
       title = Some(
         Spans.from(
-          Array(
-            Span.styled("With", Style.DEFAULT.fg(Color.Yellow)),
-            Span.from(" background")
-          )
+          Span.styled("With", Style.DEFAULT.fg(Color.Yellow)),
+          Span.nostyle(" background")
         )
       ),
       style = Style.DEFAULT.bg(Color.Green)
@@ -78,12 +76,12 @@ object BlockExample {
       .split(chunks(1))
 
     // Bottom left block with all default borders
-    val block_bottom_0 = BlockWidget(title = Some(Spans.from("With borders")), borders = Borders.ALL)
+    val block_bottom_0 = BlockWidget(title = Some(Spans.nostyle("With borders")), borders = Borders.ALL)
     f.render_widget(block_bottom_0, bottom_chunks(0))
 
     // Bottom right block with styled left and right border
     val block_bottom_1 = BlockWidget(
-      title = Some(Spans.from("With styled borders and doubled borders")),
+      title = Some(Spans.nostyle("With styled borders and doubled borders")),
       border_style = Style.DEFAULT.fg(Color.Cyan),
       borders = Borders.LEFT | Borders.RIGHT,
       border_type = BlockWidget.BorderType.Double

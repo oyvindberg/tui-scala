@@ -72,13 +72,13 @@ object ParagraphExample {
       constraints = Array(Constraint.Percentage(25), Constraint.Percentage(25), Constraint.Percentage(25), Constraint.Percentage(25))
     ).split(f.size)
 
-    val text = Array(
-      Spans.from("This is a line "),
-      Spans.from(Span.styled("This is a line   ", Style.DEFAULT.fg(Color.Red))),
-      Spans.from(Span.styled("This is a line", Style.DEFAULT.bg(Color.Blue))),
-      Spans.from(Span.styled("This is a longer line", Style.DEFAULT.add_modifier(Modifier.CROSSED_OUT))),
-      Spans.from(Span.styled(long_line, Style.DEFAULT.bg(Color.Green))),
-      Spans.from(Span.styled("This is a line", Style.DEFAULT.fg(Color.Green).add_modifier(Modifier.ITALIC)))
+    val text = Text.from(
+      Span.nostyle("This is a line "),
+      Span.styled("This is a line   ", Style.DEFAULT.fg(Color.Red)),
+      Span.styled("This is a line", Style.DEFAULT.bg(Color.Blue)),
+      Span.styled("This is a longer line", Style.DEFAULT.add_modifier(Modifier.CROSSED_OUT)),
+      Span.styled(long_line, Style.DEFAULT.bg(Color.Green)),
+      Span.styled("This is a line", Style.DEFAULT.fg(Color.Green).add_modifier(Modifier.ITALIC))
     )
 
     def create_block(title: String): BlockWidget =
@@ -89,14 +89,14 @@ object ParagraphExample {
       )
 
     val paragraph0 = ParagraphWidget(
-      text = Text(text),
+      text = text,
       style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
       block = Some(create_block("Left, no wrap")),
       alignment = Alignment.Left
     )
     f.render_widget(paragraph0, chunks(0))
     val paragraph1 = ParagraphWidget(
-      text = Text(text),
+      text = text,
       style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
       block = Some(create_block("Left, wrap")),
       alignment = Alignment.Left,
@@ -105,7 +105,7 @@ object ParagraphExample {
     f.render_widget(paragraph1, chunks(1))
 
     val paragraph2 = ParagraphWidget(
-      text = Text(text),
+      text = text,
       style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
       block = Some(create_block("Center, wrap")),
       alignment = Alignment.Center,
@@ -115,7 +115,7 @@ object ParagraphExample {
     f.render_widget(paragraph2, chunks(2))
 
     val paragraph3 = ParagraphWidget(
-      text = Text(text),
+      text = text,
       style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
       block = Some(create_block("Right, wrap")),
       alignment = Alignment.Right,

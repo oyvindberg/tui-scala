@@ -192,12 +192,6 @@ object TableWidget {
       style: Style = Style.DEFAULT
   )
 
-  object Cell {
-    def from(str: String): Cell = from(Span.from(str))
-
-    def from(span: Span): Cell = Cell(Text.from(span))
-  }
-
   /// Holds data to be displayed in a [`Table`] widget.
   ///
   /// A [`Row`] is a collection of cells. It can be created from simple strings:

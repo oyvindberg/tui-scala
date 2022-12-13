@@ -10,7 +10,6 @@ case class Spans(spans: Array[Span]) {
 }
 
 object Spans {
-  def from(s: String): Spans = from(Span.from(s))
-  def from(span: Span): Spans = from(Array(span))
-  def from(spans: Array[Span]): Spans = Spans(spans)
+  def nostyle(s: String): Spans = from(Span.nostyle(s))
+  def from(spans: Span*): Spans = Spans(spans.toArray)
 }

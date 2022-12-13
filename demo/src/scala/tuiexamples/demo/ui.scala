@@ -15,7 +15,7 @@ object ui {
 
     val tabs = TabsWidget(
       titles = titles,
-      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.from(app.title)))),
+      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle(app.title)))),
       highlight_style = Style.DEFAULT.fg(Color.Yellow),
       selected = app.tabs.index
     )
@@ -37,20 +37,20 @@ object ui {
 
   def draw_gauges(f: Frame, app: App, area: Rect): Unit = {
     val chunks = Layout(constraints = Array(Constraint.Length(2), Constraint.Length(3), Constraint.Length(1)), margin = Margin(1)).split(area);
-    val block = BlockWidget(borders = Borders.ALL, title = Some(Spans.from("Graphs")))
+    val block = BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Graphs")))
     f.render_widget(block, area);
 
     val label = "%.2f".format(app.progress * 100.0)
     val gauge = GaugeWidget(
-      block = Some(BlockWidget(title = Some(Spans.from("Gauge:")))),
+      block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge:")))),
       gauge_style = Style.DEFAULT.fg(Color.Magenta).bg(Color.Black).add_modifier(Modifier.ITALIC | Modifier.BOLD),
-      label = Some(Span.from(label)),
+      label = Some(Span.nostyle(label)),
       ratio = GaugeWidget.Ratio(app.progress)
     )
     f.render_widget(gauge, chunks(0));
 
     val sparkline = SparklineWidget(
-      block = Some(BlockWidget(title = Some(Spans.from("Sparkline:")))),
+      block = Some(BlockWidget(title = Some(Spans.nostyle("Sparkline:")))),
       style = Style.DEFAULT.fg(Color.Green),
       data = app.sparkline.points,
       bar_set = if (app.enhanced_graphics) symbols.bar.NINE_LEVELS else symbols.bar.THREE_LEVELS
@@ -58,7 +58,7 @@ object ui {
     f.render_widget(sparkline, chunks(1));
 
     val line_gauge = LineGaugeWidget(
-      block = Some(BlockWidget(title = Some(Spans.from("LineGauge:")))),
+      block = Some(BlockWidget(title = Some(Spans.nostyle("LineGauge:")))),
       gauge_style = Style.DEFAULT.fg(Color.Magenta),
       line_set = if (app.enhanced_graphics) symbols.line.THICK else symbols.line.NORMAL,
       ratio = GaugeWidget.Ratio(app.progress)
@@ -79,11 +79,11 @@ object ui {
 
         // Draw tasks
         val items: Array[ListWidget.Item] = app.tasks.items
-          .map(i => ListWidget.Item(content = Text.from(i)))
+          .map(i => ListWidget.Item(content = Text.nostyle(i)))
           .toArray
         val tasks = ListWidget(
           items = items,
-          block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.from("List")))),
+          block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("List")))),
           highlight_style = Style.DEFAULT.add_modifier(Modifier.BOLD),
           highlight_symbol = Some("> ")
         )
@@ -96,19 +96,19 @@ object ui {
             case "WARNING"  => Style.DEFAULT.fg(Color.Yellow)
             case _          => Style.DEFAULT.fg(Color.Blue)
           }
-          val content = Array(Span.styled(level.padTo(9, ' '), s), Span.raw(evt))
-          ListWidget.Item(content = Text.from(content))
+          val content = Text.from(Span.styled(level.padTo(9, ' '), s), Span.nostyle(evt))
+          ListWidget.Item(content = content)
         }
 
         val logs = ListWidget(
           items = logMessages.toArray,
-          block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.from("List"))))
+          block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("List"))))
         )
         f.render_stateful_widget(logs, chunks2(1))(app.logs.state);
       }
 
       val barchart = BarChartWidget(
-        block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.from("Bar chart")))),
+        block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Bar chart")))),
         data = app.barchart.toArray,
         bar_width = 3,
         bar_gap = 2,
@@ -122,7 +122,7 @@ object ui {
     if (app.show_chart) {
       val x_labels = Array(
         Span.styled(app.signals.window.x.toString, Style.DEFAULT.add_modifier(Modifier.BOLD)),
-        Span.raw(((app.signals.window.x + app.signals.window.y) / 2.0).toString),
+        Span.nostyle(((app.signals.window.x + app.signals.window.y) / 2.0).toString),
         Span.styled(app.signals.window.y.toString, Style.DEFAULT.add_modifier(Modifier.BOLD))
       )
       val datasets = Array(
@@ -141,19 +141,19 @@ object ui {
           Some(BlockWidget(title = Some(Spans.from(title)), borders = Borders.ALL))
         },
         x_axis = ChartWidget.Axis(
-          title = Some(Spans.from("X Axis")),
+          title = Some(Spans.nostyle("X Axis")),
           style = Style.DEFAULT.fg(Color.Gray),
           bounds = app.signals.window,
           labels = Some(x_labels)
         ),
         y_axis = ChartWidget.Axis(
-          title = Some(Spans.from("Y Axis")),
+          title = Some(Spans.nostyle("Y Axis")),
           style = Style.DEFAULT.fg(Color.Gray),
           bounds = Point(-20.0, 20.0),
           labels = Some(
             Array(
               Span.styled("-20", Style.DEFAULT.add_modifier(Modifier.BOLD)),
-              Span.raw("0"),
+              Span.nostyle("0"),
               Span.styled("20", Style.DEFAULT.add_modifier(Modifier.BOLD))
             )
           )
@@ -164,34 +164,30 @@ object ui {
   }
 
   def draw_text(f: Frame, area: Rect): Unit = {
-    val text = Array(
-      Spans.from("This is a paragraph with several lines. You can change style your text the way you want"),
-      Spans.from(""),
+    val text = Text.fromSpans(
+      Spans.nostyle("This is a paragraph with several lines. You can change style your text the way you want"),
+      Spans.nostyle(""),
       Spans.from(
-        Array(
-          Span.from("For example: "),
-          Span.styled("under", Style.DEFAULT.fg(Color.Red)),
-          Span.raw(" "),
-          Span.styled("the", Style.DEFAULT.fg(Color.Green)),
-          Span.raw(" "),
-          Span.styled("rainbow", Style.DEFAULT.fg(Color.Blue)),
-          Span.raw(".")
-        )
+        Span.nostyle("For example: "),
+        Span.styled("under", Style.DEFAULT.fg(Color.Red)),
+        Span.nostyle(" "),
+        Span.styled("the", Style.DEFAULT.fg(Color.Green)),
+        Span.nostyle(" "),
+        Span.styled("rainbow", Style.DEFAULT.fg(Color.Blue)),
+        Span.nostyle(".")
       ),
       Spans.from(
-        Array(
-          Span.raw("Oh and if you didn't "),
-          Span.styled("notice", Style.DEFAULT.add_modifier(Modifier.ITALIC)),
-          Span.raw(" you can "),
-          Span.styled("automatically", Style.DEFAULT.add_modifier(Modifier.BOLD)),
-          Span.raw(" "),
-          Span.styled("wrap", Style.DEFAULT.add_modifier(Modifier.REVERSED)),
-          Span.raw(" your "),
-          Span.styled("text", Style.DEFAULT.add_modifier(Modifier.UNDERLINED)),
-          Span.raw(".")
-        )
+        Span.nostyle("Oh and if you didn't "),
+        Span.styled("notice", Style.DEFAULT.add_modifier(Modifier.ITALIC)),
+        Span.nostyle(" you can "),
+        Span.styled("automatically", Style.DEFAULT.add_modifier(Modifier.BOLD)),
+        Span.nostyle(" "),
+        Span.styled("wrap", Style.DEFAULT.add_modifier(Modifier.REVERSED)),
+        Span.nostyle(" your "),
+        Span.styled("text", Style.DEFAULT.add_modifier(Modifier.UNDERLINED)),
+        Span.nostyle(".")
       ),
-      Spans.from(
+      Spans.nostyle(
         "One more thing is that it should display unicode characters: 10€"
       )
     );
@@ -201,30 +197,31 @@ object ui {
         .add_modifier(Modifier.BOLD)
       BlockWidget(borders = Borders.ALL, title = Some(Spans.from(Span.styled("Footer", titleStyle))))
     }
-    val paragraph = ParagraphWidget(text = Text(text), block = Some(block), wrap = Some(ParagraphWidget.Wrap(trim = true)))
+    val paragraph = ParagraphWidget(text = text, block = Some(block), wrap = Some(ParagraphWidget.Wrap(trim = true)))
     f.render_widget(paragraph, area);
   }
 
   def draw_second_tab(f: Frame, app: App, area: Rect): Unit = {
+    def cell(str: String) = TableWidget.Cell(Text.nostyle(str))
     val chunks = Layout(constraints = Array(Constraint.Percentage(30), Constraint.Percentage(70)), direction = Direction.Horizontal).split(area);
     val up_style = Style.DEFAULT.fg(Color.Green);
     val failure_style = Style.DEFAULT.fg(Color.Red).add_modifier(Modifier.RAPID_BLINK | Modifier.CROSSED_OUT);
     val rows = app.servers.map { s =>
       val style = if (s.status == "Up") up_style else failure_style;
-      TableWidget.Row(cells = Array(s.name, s.location, s.status).map(TableWidget.Cell.from), style = style)
+      TableWidget.Row(cells = Array(s.name, s.location, s.status).map(cell), style = style)
     };
     val table = TableWidget(
       rows = rows,
       header = Some(
-        TableWidget.Row(cells = Array("Server", "Location", "Status").map(TableWidget.Cell.from), style = Style.DEFAULT.fg(Color.Yellow), bottom_margin = 1)
+        TableWidget.Row(cells = Array("Server", "Location", "Status").map(cell), style = Style.DEFAULT.fg(Color.Yellow), bottom_margin = 1)
       ),
-      block = Some(BlockWidget(title = Some(Spans.from("Servers")), borders = Borders.ALL)),
+      block = Some(BlockWidget(title = Some(Spans.nostyle("Servers")), borders = Borders.ALL)),
       widths = Array(Constraint.Length(15), Constraint.Length(15), Constraint.Length(10))
     )
     f.render_widget(table, chunks(0));
 
     val map = CanvasWidget(
-      block = Some(BlockWidget(title = Some(Spans.from("World")), borders = Borders.ALL)),
+      block = Some(BlockWidget(title = Some(Spans.nostyle("World")), borders = Borders.ALL)),
       painter = Some { ctx =>
         ctx.draw(
           WorldMap(
@@ -294,16 +291,16 @@ object ui {
     );
     val items: Array[TableWidget.Row] = colors.map { c =>
       val cells = Array(
-        TableWidget.Cell.from(Span.raw(c.toString)), // todo: replicate whatever debug was if necessary
-        TableWidget.Cell.from(Span.styled("Foreground", Style.DEFAULT.fg(c))),
-        TableWidget.Cell.from(Span.styled("Background", Style.DEFAULT.bg(c)))
+        TableWidget.Cell(Text.nostyle(c.toString)), // todo: replicate whatever debug was if necessary
+        TableWidget.Cell(Text.from(Span.styled("Foreground", Style.DEFAULT.fg(c)))),
+        TableWidget.Cell(Text.from(Span.styled("Background", Style.DEFAULT.bg(c))))
       );
       TableWidget.Row(cells)
     }
 
     val table = TableWidget(
       rows = items,
-      block = Some(BlockWidget(title = Some(Spans.from("Colors")), borders = Borders.ALL)),
+      block = Some(BlockWidget(title = Some(Spans.nostyle("Colors")), borders = Borders.ALL)),
       widths = Array(
         Constraint.Ratio(1, 3),
         Constraint.Ratio(1, 3),

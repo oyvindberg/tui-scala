@@ -18,7 +18,7 @@ case class TabsWidget(
     /// Style to apply to the selected item
     highlight_style: Style = Style.DEFAULT,
     /// Tab divider
-    divider: Span = Span.raw(symbols.line.VERTICAL)
+    divider: Span = Span.nostyle(symbols.line.VERTICAL)
 ) extends Widget {
 
   def render(area: Rect, buf: Buffer): Unit = {

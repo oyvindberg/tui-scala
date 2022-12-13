@@ -51,21 +51,21 @@ class BufferTests extends TuiTest {
 
     // Zero-width
     buffer.set_stringn(0, 0, "aaa", 0, Style())
-    assert_eq(buffer, Buffer.with_lines(Array("     ")))
+    assert_eq(buffer, Buffer.with_lines("     "))
 
     buffer.set_string(0, 0, "aaa", Style())
-    assert_eq(buffer, Buffer.with_lines(Array("aaa  ")))
+    assert_eq(buffer, Buffer.with_lines("aaa  "))
 
     // Width limit:
     buffer.set_stringn(0, 0, "bbbbbbbbbbbbbb", 4, Style())
-    assert_eq(buffer, Buffer.with_lines(Array("bbbb ")))
+    assert_eq(buffer, Buffer.with_lines("bbbb "))
 
     buffer.set_string(0, 0, "12345", Style())
-    assert_eq(buffer, Buffer.with_lines(Array("12345")))
+    assert_eq(buffer, Buffer.with_lines("12345"))
 
     // Width truncation:
     buffer.set_string(0, 0, "123456", Style())
-    assert_eq(buffer, Buffer.with_lines(Array("12345")))
+    assert_eq(buffer, Buffer.with_lines("12345"))
   }
 
   test("buffer_set_string_zero_width") {
@@ -76,13 +76,13 @@ class BufferTests extends TuiTest {
     {
       val s = "\u0001a"
       buffer.set_stringn(0, 0, s, 1, Style())
-      assert_eq(buffer, Buffer.with_lines(Array("a")))
+      assert_eq(buffer, Buffer.with_lines("a"))
     }
     {
       // Trailing grapheme with zero with
       val s = "a\u0001"
       buffer.set_stringn(0, 0, s, 1, Style())
-      assert_eq(buffer, Buffer.with_lines(Array("a")))
+      assert_eq(buffer, Buffer.with_lines("a"))
     }
   }
 
@@ -90,15 +90,15 @@ class BufferTests extends TuiTest {
     val area = Rect(x = 0, y = 0, width = 5, height = 1)
     val buffer = Buffer.empty(area)
     buffer.set_string(0, 0, "コン", Style())
-    assert_eq(buffer, Buffer.with_lines(Array("コン ")))
+    assert_eq(buffer, Buffer.with_lines("コン "))
 
     // Only 1 space left.
     buffer.set_string(0, 0, "コンピ", Style())
-    assert_eq(buffer, Buffer.with_lines(Array("コン ")))
+    assert_eq(buffer, Buffer.with_lines("コン "))
   }
 
   test("buffer_with_lines") {
-    val buffer = Buffer.with_lines(Array("┌────────┐", "│コンピュ│", "│ーa 上で│", "└────────┘"))
+    val buffer = Buffer.with_lines("┌────────┐", "│コンピュ│", "│ーa 上で│", "└────────┘")
     assert_eq(buffer.area.x, 0)
     assert_eq(buffer.area.y, 0)
     assert_eq(buffer.area.width, 10)
@@ -131,22 +131,18 @@ class BufferTests extends TuiTest {
 
   test("buffer_diffing_single_width") {
     val prev = Buffer.with_lines(
-      Array(
-        "          ",
-        "┌Title─┐  ",
-        "│      │  ",
-        "│      │  ",
-        "└──────┘  "
-      )
+      "          ",
+      "┌Title─┐  ",
+      "│      │  ",
+      "│      │  ",
+      "└──────┘  "
     )
     val next = Buffer.with_lines(
-      Array(
-        "          ",
-        "┌TITLE─┐  ",
-        "│      │  ",
-        "│      │  ",
-        "└──────┘  "
-      )
+      "          ",
+      "┌TITLE─┐  ",
+      "│      │  ",
+      "│      │  ",
+      "└──────┘  "
     )
     val diff = prev.diff(next)
     assert_eq(
@@ -162,24 +158,20 @@ class BufferTests extends TuiTest {
 
   test("buffer_diffing_multi_width") {
     val prev = Buffer.with_lines(
-      Array(
-        "┌Title─┐  ",
-        "└──────┘  "
-      )
+      "┌Title─┐  ",
+      "└──────┘  "
     )
     val next = Buffer.with_lines(
-      Array(
-        "┌称号──┐  ",
-        "└──────┘  "
-      )
+      "┌称号──┐  ",
+      "└──────┘  "
     )
     val diff = prev.diff(next)
     assert_eq(diff, Array((1, 0, cell("称")), /* Skipped "i" */ (3, 0, cell("号")), /* Skipped "l" */ (5, 0, cell("─"))))
   }
 
   test("buffer_diffing_multi_width_offset") {
-    val prev = Buffer.with_lines(Array("┌称号──┐"))
-    val next = Buffer.with_lines(Array("┌─称号─┐"))
+    val prev = Buffer.with_lines("┌称号──┐")
+    val next = Buffer.with_lines("┌─称号─┐")
 
     val diff = prev.diff(next)
     assert_eq(diff, Array((1, 0, cell("─")), (2, 0, cell("称")), (4, 0, cell("号"))))
@@ -189,14 +181,14 @@ class BufferTests extends TuiTest {
     val one = Buffer.filled(Rect(x = 0, y = 0, width = 2, height = 2), Cell.default.set_symbol("1"))
     val two = Buffer.filled(Rect(x = 0, y = 2, width = 2, height = 2), Cell.default.set_symbol("2"))
     one.merge(two)
-    assert_eq(one, Buffer.with_lines(Array("11", "11", "22", "22")))
+    assert_eq(one, Buffer.with_lines("11", "11", "22", "22"))
   }
 
   test("buffer_merge2") {
     val one = Buffer.filled(Rect(x = 2, y = 2, width = 2, height = 2), Cell.default.set_symbol("1"))
     val two = Buffer.filled(Rect(x = 0, y = 0, width = 2, height = 2), Cell.default.set_symbol("2"))
     one.merge(two)
-    val expected = Buffer.with_lines(Array("22  ", "22  ", "  11", "  11"))
+    val expected = Buffer.with_lines("22  ", "22  ", "  11", "  11")
     assert_eq(one, expected)
   }
 
@@ -204,7 +196,7 @@ class BufferTests extends TuiTest {
     val one = Buffer.filled(Rect(x = 3, y = 3, width = 2, height = 2), Cell.default.set_symbol("1"))
     val two = Buffer.filled(Rect(x = 1, y = 1, width = 3, height = 4), Cell.default.set_symbol("2"))
     one.merge(two)
-    val merged = Buffer.with_lines(Array("222 ", "222 ", "2221", "2221"))
+    val merged = Buffer.with_lines("222 ", "222 ", "2221", "2221")
     merged.area = Rect(x = 1, y = 1, width = 4, height = 4)
     assert_eq(one, merged)
   }

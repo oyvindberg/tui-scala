@@ -108,15 +108,15 @@ class BlockTests extends TuiTest {
 
   test("inner_takes_into_account_the_title") {
     assert_eq(
-      BlockWidget(title = Some(Spans.from("Test"))).inner(Rect(x = 0, y = 0, width = 0, height = 1)),
+      BlockWidget(title = Some(Spans.nostyle("Test"))).inner(Rect(x = 0, y = 0, width = 0, height = 1)),
       Rect(x = 0, y = 1, width = 0, height = 0)
     );
     assert_eq(
-      BlockWidget(title = Some(Spans.from("Test")), title_alignment = Alignment.Center).inner(Rect(x = 0, y = 0, width = 0, height = 1)),
+      BlockWidget(title = Some(Spans.nostyle("Test")), title_alignment = Alignment.Center).inner(Rect(x = 0, y = 0, width = 0, height = 1)),
       Rect(x = 0, y = 1, width = 0, height = 0)
     );
     assert_eq(
-      BlockWidget(title = Some(Spans.from("Test")), title_alignment = Alignment.Right).inner(Rect(x = 0, y = 0, width = 0, height = 1)),
+      BlockWidget(title = Some(Spans.nostyle("Test")), title_alignment = Alignment.Right).inner(Rect(x = 0, y = 0, width = 0, height = 1)),
       Rect(x = 0, y = 1, width = 0, height = 0)
     )
   }

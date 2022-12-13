@@ -103,7 +103,7 @@ object SparklineExample {
     val sparkline0 = SparklineWidget(
       block = Some(
         BlockWidget(
-          title = Some(Spans.from("Data1")),
+          title = Some(Spans.nostyle("Data1")),
           borders = Borders.LEFT | Borders.RIGHT
         )
       ),
@@ -113,14 +113,14 @@ object SparklineExample {
     f.render_widget(sparkline0, chunks(0));
 
     val sparkline1 = SparklineWidget(
-      block = Some(BlockWidget(title = Some(Spans.from("Data2")), borders = Borders.LEFT | Borders.RIGHT)),
+      block = Some(BlockWidget(title = Some(Spans.nostyle("Data2")), borders = Borders.LEFT | Borders.RIGHT)),
       data = app.data2,
       style = Style(bg = Some(Color.Green))
     )
     f.render_widget(sparkline1, chunks(1));
     // Multiline
     val sparkline2 = SparklineWidget(
-      block = Some(BlockWidget(title = Some(Spans.from("Data3")), borders = Borders.LEFT | Borders.RIGHT)),
+      block = Some(BlockWidget(title = Some(Spans.nostyle("Data3")), borders = Borders.LEFT | Borders.RIGHT)),
       data = app.data3,
       style = Style(fg = Some(Color.Red))
     )

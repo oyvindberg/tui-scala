@@ -242,7 +242,7 @@ object Buffer {
   }
 
   /// Returns a Buffer containing the given lines
-  def with_lines(lines: Array[String]): Buffer = {
+  def with_lines(lines: String*): Buffer = {
     val width = lines
       .map(i => Grapheme(i).width)
       .maxOption

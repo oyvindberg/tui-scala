@@ -98,7 +98,7 @@ object ChartExample {
 
     val x_labels = Array(
       Span.styled(app.window.x.toString, Bold),
-      Span.raw(((app.window.x + app.window.y) / 2.0).toString),
+      Span.nostyle(((app.window.x + app.window.y) / 2.0).toString),
       Span.styled(app.window.y.toString, Bold)
     )
 
@@ -113,14 +113,14 @@ object ChartExample {
         block = Some(
           BlockWidget(title = Some(Spans.from(Span.styled("Chart 1", Style(fg = Some(Color.Cyan), add_modifier = Modifier.BOLD)))), borders = Borders.ALL)
         ),
-        x_axis = ChartWidget.Axis(title = Some(Spans.from("X Axis")), style = Style(fg = Some(Color.Gray)), labels = Some(x_labels), bounds = app.window),
+        x_axis = ChartWidget.Axis(title = Some(Spans.nostyle("X Axis")), style = Style(fg = Some(Color.Gray)), labels = Some(x_labels), bounds = app.window),
         y_axis = ChartWidget.Axis(
-          title = Some(Spans.from("Y Axis")),
+          title = Some(Spans.nostyle("Y Axis")),
           style = Style(fg = Some(Color.Gray)),
           labels = Some(
             Array(
               Span.styled("-20", Bold),
-              Span.raw("0"),
+              Span.nostyle("0"),
               Span.styled("20", Bold)
             )
           ),
@@ -149,16 +149,16 @@ object ChartExample {
           )
         ),
         x_axis = ChartWidget.Axis(
-          title = Some(Spans.from("X Axis")),
+          title = Some(Spans.nostyle("X Axis")),
           style = Style(fg = Some(Color.Gray)),
           bounds = Point(0.0, 5.0),
-          labels = Some(Array(Span.styled("0", Bold), Span.raw("2.5"), Span.styled("5.0", Bold)))
+          labels = Some(Array(Span.styled("0", Bold), Span.nostyle("2.5"), Span.styled("5.0", Bold)))
         ),
         y_axis = ChartWidget.Axis(
-          title = Some(Spans.from("Y Axis")),
+          title = Some(Spans.nostyle("Y Axis")),
           style = Style(fg = Some(Color.Gray)),
           bounds = Point(0.0, 5.0),
-          labels = Some(Array(Span.styled("0", Bold), Span.raw("2.5"), Span.styled("5.0", Bold)))
+          labels = Some(Array(Span.styled("0", Bold), Span.nostyle("2.5"), Span.styled("5.0", Bold)))
         )
       )
       f.render_widget(chart, chunks(1))
@@ -180,16 +180,16 @@ object ChartExample {
           BlockWidget(title = Some(Spans.from(Span.styled("Chart 3", Style(fg = Some(Color.Cyan), add_modifier = Modifier.BOLD)))), borders = Borders.ALL)
         ),
         x_axis = ChartWidget.Axis(
-          title = Some(Spans.from("X Axis")),
+          title = Some(Spans.nostyle("X Axis")),
           style = Style(fg = Some(Color.Gray)),
           bounds = Point(0.0, 50.0),
-          labels = Some(Array(Span.styled("0", Bold), Span.raw("25"), Span.styled("50", Bold)))
+          labels = Some(Array(Span.styled("0", Bold), Span.nostyle("25"), Span.styled("50", Bold)))
         ),
         y_axis = ChartWidget.Axis(
-          title = Some(Spans.from("Y Axis")),
+          title = Some(Spans.nostyle("Y Axis")),
           style = Style(fg = Some(Color.Gray)),
           bounds = Point(0.0, 5.0),
-          labels = Some(Array(Span.styled("0", Bold), Span.raw("2.5"), Span.styled("5", Bold)))
+          labels = Some(Array(Span.styled("0", Bold), Span.nostyle("2.5"), Span.styled("5", Bold)))
         )
       )
       f.render_widget(chart, chunks(2))

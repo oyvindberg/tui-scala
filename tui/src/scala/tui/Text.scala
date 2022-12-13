@@ -44,32 +44,22 @@ case class Text(lines: Array[Spans]) {
     lines.length
 
   /// Apply a new style to existing text.
-  def patch_style(style: Style): Text = {
-    val newLines = lines.map { case Spans(spans) => Spans(spans.map(span => span.copy(style = span.style.patch(style)))) }
-    Text(newLines)
-  }
+  def overwrittenStyle(style: Style): Text =
+    Text(lines.map { case Spans(spans) =>
+      Spans(spans.map { span =>
+        span.copy(style = span.style.patch(style))
+      })
+    })
 }
 
 object Text {
   /// Create some text (potentially multiple lines) with no style.
-  def raw[T](content: T)(implicit ev: T => String): Text = {
-    val spans = ev(content).lines().map(Spans.from).toScala(Factory.arrayFactory[Spans])
-    Text(spans)
-  }
-
-  /// Create some text (potentially multiple lines) with a style.
-  def styled[T](content: T, style: Style)(implicit ev: T => String): Text = {
-    val text = Text.raw(content)
-    text.patch_style(style);
-    text
-  }
-
-  def from(str: String): Text =
-    from(Span.from(str))
-  def from(span: Span): Text =
-    from(Spans.from(span))
-  def from(spans: Array[Span]): Text =
-    from(Spans.from(spans))
+  def nostyle(content: String): Text =
+    Text(content.lines().map(Spans.nostyle).toScala(Factory.arrayFactory[Spans]))
+  def from(spans: Span*): Text =
+    from(Spans(spans.toArray))
   def from(spans: Spans): Text =
     Text(lines = Array(spans))
+  def fromSpans(spans: Spans*): Text =
+    Text(lines = spans.toArray)
 }

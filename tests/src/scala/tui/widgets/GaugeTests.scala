@@ -17,14 +17,14 @@ class GaugeTests extends TuiTest {
         .split(f.size)
 
       val gauge0 = GaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.from("Percentage")), borders = Borders.ALL)),
+        block = Some(BlockWidget(title = Some(Spans.nostyle("Percentage")), borders = Borders.ALL)),
         gauge_style = Style(bg = Some(Color.Blue), fg = Some(Color.Red)),
         use_unicode = true,
         ratio = GaugeWidget.Ratio.percent(43)
       )
       f.render_widget(gauge0, chunks(0))
       val gauge = GaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.from("Ratio")), borders = Borders.ALL)),
+        block = Some(BlockWidget(title = Some(Spans.nostyle("Ratio")), borders = Borders.ALL)),
         gauge_style = Style(bg = Some(Color.Blue), fg = Some(Color.Red)),
         use_unicode = true,
         ratio = GaugeWidget.Ratio(0.511_313_934_313_1)
@@ -32,18 +32,16 @@ class GaugeTests extends TuiTest {
       f.render_widget(gauge, chunks(1));
     }
     val expected = Buffer.with_lines(
-      Array(
-        "                                        ",
-        "                                        ",
-        "  ┌Percentage────────────────────────┐  ",
-        "  │              ▋43%                │  ",
-        "  └──────────────────────────────────┘  ",
-        "  ┌Ratio─────────────────────────────┐  ",
-        "  │               51%                │  ",
-        "  └──────────────────────────────────┘  ",
-        "                                        ",
-        "                                        "
-      )
+      "                                        ",
+      "                                        ",
+      "  ┌Percentage────────────────────────┐  ",
+      "  │              ▋43%                │  ",
+      "  └──────────────────────────────────┘  ",
+      "  ┌Ratio─────────────────────────────┐  ",
+      "  │               51%                │  ",
+      "  └──────────────────────────────────┘  ",
+      "                                        ",
+      "                                        "
     )
 
     ranges.range(3, 17) { i =>
@@ -88,30 +86,28 @@ class GaugeTests extends TuiTest {
         .split(f.size)
 
       val gauge0 = GaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.from("Percentage")), borders = Borders.ALL)),
+        block = Some(BlockWidget(title = Some(Spans.nostyle("Percentage")), borders = Borders.ALL)),
         ratio = GaugeWidget.Ratio.percent(43)
       )
       f.render_widget(gauge0, chunks(0))
       val gauge = GaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.from("Ratio")), borders = Borders.ALL)),
+        block = Some(BlockWidget(title = Some(Spans.nostyle("Ratio")), borders = Borders.ALL)),
         ratio = GaugeWidget.Ratio(0.211_313_934_313_1)
       )
       f.render_widget(gauge, chunks(1));
     }
 
     val expected = Buffer.with_lines(
-      Array(
-        "                                        ",
-        "                                        ",
-        "  ┌Percentage────────────────────────┐  ",
-        "  │               43%                │  ",
-        "  └──────────────────────────────────┘  ",
-        "  ┌Ratio─────────────────────────────┐  ",
-        "  │               21%                │  ",
-        "  └──────────────────────────────────┘  ",
-        "                                        ",
-        "                                        "
-      )
+      "                                        ",
+      "                                        ",
+      "  ┌Percentage────────────────────────┐  ",
+      "  │               43%                │  ",
+      "  └──────────────────────────────────┘  ",
+      "  ┌Ratio─────────────────────────────┐  ",
+      "  │               21%                │  ",
+      "  └──────────────────────────────────┘  ",
+      "                                        ",
+      "                                        "
     )
     assert_buffer(backend, expected)
   }
@@ -131,13 +127,11 @@ class GaugeTests extends TuiTest {
     }
 
     val expected = Buffer.with_lines(
-      Array(
-        "┌Test──────┐",
-        "│          │",
-        "│   43%    │",
-        "│          │",
-        "└──────────┘"
-      )
+      "┌Test──────┐",
+      "│          │",
+      "│   43%    │",
+      "│          │",
+      "└──────────┘"
     )
     // title
     expected.set_style(new Rect(1, 0, 4, 1), Style(fg = Some(Color.Red)))
@@ -183,12 +177,12 @@ class GaugeTests extends TuiTest {
     terminal.draw { f =>
       val gauge = GaugeWidget(
         ratio = GaugeWidget.Ratio.percent(43),
-        label = Some(Span.from("43333333333333333333333333333%"))
+        label = Some(Span.nostyle("43333333333333333333333333333%"))
       )
       f.render_widget(gauge, f.size);
     }
 
-    val expected = Buffer.with_lines(Array("4333333333"))
+    val expected = Buffer.with_lines("4333333333")
     assert_buffer(backend, expected)
   }
 
@@ -199,7 +193,7 @@ class GaugeTests extends TuiTest {
       val gauge0 = LineGaugeWidget(gauge_style = Style.DEFAULT.fg(Color.Green).bg(Color.White), ratio = GaugeWidget.Ratio(0.43))
       f.render_widget(gauge0, Rect(x = 0, y = 0, width = 20, height = 1))
       val gauge = LineGaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.from("Gauge 2")), borders = Borders.ALL)),
+        block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge 2")), borders = Borders.ALL)),
         gauge_style = Style(fg = Some(Color.Green)),
         line_set = symbols.line.THICK,
         ratio = GaugeWidget.Ratio(0.211_313_934_313_1)
@@ -207,12 +201,10 @@ class GaugeTests extends TuiTest {
       f.render_widget(gauge, Rect(x = 0, y = 1, width = 20, height = 3));
     }
     val expected = Buffer.with_lines(
-      Array(
-        "43% ────────────────",
-        "┌Gauge 2───────────┐",
-        "│21% ━━━━━━━━━━━━━━│",
-        "└──────────────────┘"
-      )
+      "43% ────────────────",
+      "┌Gauge 2───────────┐",
+      "│21% ━━━━━━━━━━━━━━│",
+      "└──────────────────┘"
     )
     ranges.range(4, 10) { col =>
       expected.get(col, 0).set_fg(Color.Green)

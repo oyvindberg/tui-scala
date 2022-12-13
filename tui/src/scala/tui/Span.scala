@@ -3,10 +3,7 @@ package tui
 import tui.internal.UnicodeSegmentation
 
 /// A string where all graphemes have the same style.
-case class Span(
-    content: String,
-    style: Style
-) {
+case class Span(content: String, style: Style) {
   /// Returns the width of the content held by this span.
   def width: Int = content.length
 
@@ -30,18 +27,10 @@ case class Span(
 object Span {
   /// Create a span with no style.
   ///
-  def raw[T](content: T)(implicit ev: T => String): Span =
-    Span(
-      content = ev(content),
-      style = Style()
-    )
+  def nostyle(content: String): Span =
+    Span(content = content, style = Style())
 
   /// Create a span with a style.
-  def styled[T](content: T, style: Style)(implicit ev: T => String): Span =
-    Span(
-      content = ev(content),
-      style
-    )
-
-  def from(str: String): Span = raw(str)
+  def styled(content: String, style: Style): Span =
+    Span(content = content, style)
 }

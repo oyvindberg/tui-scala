@@ -33,7 +33,7 @@ case class GaugeWidget(
     // label is put at the center of the gauge_area
     val label = {
       val pct = math.round(ratio.value * 100.0)
-      this.label.getOrElse(Span.from(pct.toString + "%"))
+      this.label.getOrElse(Span.nostyle(pct.toString + "%"))
     }
     val clamped_label_width = gauge_area.width.min(label.width)
     val label_col = gauge_area.left + (gauge_area.width - clamped_label_width) / 2
