@@ -17,7 +17,7 @@ object Launcher {
     "popup" -> PopupExample.main,
     "sparkline" -> SparklineExample.main,
     "table" -> TableExample.main,
-    "tabs" -> TableExample.main,
+    "tabs" -> TabsExample.main,
     "user_input" -> UserInputExample.main
   )
 
