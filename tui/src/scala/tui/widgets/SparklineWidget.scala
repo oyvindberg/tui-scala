@@ -36,7 +36,7 @@ case class SparklineWidget(
       case None    => this.data.maxOption.getOrElse(1)
     }
     val max_index = math.min(spark_area.width, this.data.length)
-    val data = this.data.take(max_index).map { e =>
+    val data = this.data.take(max_index).toArray.map { e =>
       if (max != 0) {
         e * spark_area.height * 8 / max
       } else {
@@ -46,7 +46,7 @@ case class SparklineWidget(
 
     ranges.revRange(0, spark_area.height) { j =>
       ranges.range(0, data.length) { i =>
-        var d = data(i)
+        val d = data(i)
         val symbol = d match {
           case 0 => bar_set.empty
           case 1 => bar_set.one_eighth
@@ -64,9 +64,9 @@ case class SparklineWidget(
           .set_style(style)
 
         if (d > 8) {
-          d -= 8
+          data(i) -= 8
         } else {
-          d = 0
+          data(i) = 0
         }
       }
     }
