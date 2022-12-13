@@ -55,6 +55,7 @@ case class Line(
     }
   }
 }
+
 object Line {
   def draw_line_low(painter: Painter, x1: Int, y1: Int, x2: Int, y2: Int, color: Color): Unit = {
     val dx = x2 - x1;
