@@ -2,11 +2,8 @@ package tui
 package widgets
 
 import tui.Style
-import tui.buffer.Buffer
 import tui.internal.ranges
 import tui.internal.saturating._
-import tui.layout.Rect
-import tui.text.{Span, Spans}
 
 case class Ratio(value: Double) {
   require(value >= 0 && value <= 1, s"$value is not between 0 and 1")

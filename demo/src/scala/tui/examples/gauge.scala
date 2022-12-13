@@ -3,9 +3,6 @@ package examples
 package gauge
 
 import tui.crossterm.CrosstermJni
-import tui.layout.{Constraint, Direction, Layout, Margin}
-import tui.terminal.{Frame, Terminal}
-import tui.text.{Span, Spans}
 import tui.widgets.{Block, Borders, Gauge, Ratio}
 
 import java.time.{Duration, Instant}

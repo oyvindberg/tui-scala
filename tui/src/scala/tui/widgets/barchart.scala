@@ -1,10 +1,8 @@
 package tui
 package widgets
 
-import tui.{Grapheme, Style}
-import tui.buffer.Buffer
 import tui.internal.ranges._
-import tui.layout.Rect
+import tui.{Grapheme, Style}
 
 /// Display multiple bars in a single widgets
 ///
@@ -32,7 +30,7 @@ case class BarChart(
     /// The gap between each bar
     bar_gap: Int = 1,
     /// Set of symbols used to display the data
-    bar_set: tui.symbols.bar.Set = tui.symbols.bar.NINE_LEVELS,
+    bar_set: symbols.bar.Set = symbols.bar.NINE_LEVELS,
     /// Style of the bars
     bar_style: Style = Style.DEFAULT,
     /// Style of the values printed at the bottom of each bar

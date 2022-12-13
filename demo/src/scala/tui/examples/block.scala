@@ -2,18 +2,13 @@ package tui
 package examples
 package block
 
-import tui.layout._
-import tui.terminal.Frame
-import tui.text.{Span, Spans}
+import tui.crossterm.CrosstermJni
 import tui.widgets.{Block, BorderType, Borders}
 
 object Main {
   def main(args: Array[String]): Unit = withTerminal((jni, terminal) => run_app(terminal, jni))
 
-  def run_app(
-      terminal: tui.terminal.Terminal,
-      jni: tui.crossterm.CrosstermJni
-  ): Unit =
+  def run_app(terminal: Terminal, jni: CrosstermJni): Unit =
     while (true) {
       terminal.draw(f => ui(f))
       jni.read() match {

@@ -3,10 +3,7 @@ package widgets
 package canvas
 
 import tui.Style
-import tui.buffer.Buffer
 import tui.internal.ranges
-import tui.layout.Rect
-import tui.text.Spans
 
 import scala.collection.mutable
 

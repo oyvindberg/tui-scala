@@ -15,9 +15,6 @@ package examples
 package user_input
 
 import tui.crossterm.{CrosstermJni, KeyCode}
-import tui.layout.{Constraint, Direction, Layout, Margin}
-import tui.terminal.{Frame, Terminal}
-import tui.text.{Span, Spans, Text}
 import tui.widgets.list.ListItem
 import tui.widgets.paragraph.Paragraph
 import tui.widgets.{Block, Borders}

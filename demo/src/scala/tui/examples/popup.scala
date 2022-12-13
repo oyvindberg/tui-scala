@@ -2,9 +2,6 @@ package tui
 package examples
 package popup
 
-import tui.layout._
-import tui.terminal.{Frame, Terminal}
-import tui.text.{Span, Spans, Text}
 import tui.widgets._
 import tui.widgets.clear.Clear
 import tui.widgets.paragraph.{Paragraph, Wrap}

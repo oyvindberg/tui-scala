@@ -2,9 +2,6 @@ package tui
 package examples
 package sparkline
 
-import tui.layout.{Constraint, Direction, Layout, Margin}
-import tui.terminal.{Frame, Terminal}
-import tui.text.Spans
 import tui.widgets.{Block, Borders, Sparkline}
 
 import java.time.{Duration, Instant}

@@ -1,8 +1,4 @@
 package tui
-package backend
-
-import tui.buffer.Cell
-import tui.layout.Rect
 
 trait Backend {
   def draw(content: Array[(Int, Int, Cell)]): Unit

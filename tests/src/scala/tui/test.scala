@@ -1,9 +1,6 @@
 package tui
-package backend
 
-import tui.buffer.{Buffer, Cell}
 import tui.internal.saturating._
-import tui.layout.Rect
 
 import scala.collection.mutable
 

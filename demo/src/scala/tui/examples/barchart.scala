@@ -2,9 +2,6 @@ package tui
 package examples
 package barchart
 
-import tui.layout.{Constraint, Direction, Layout, Margin}
-import tui.terminal.Frame
-import tui.text.Spans
 import tui.widgets.{BarChart, Block, Borders}
 
 import java.time.{Duration, Instant}
@@ -30,7 +27,7 @@ object Main {
   }
 
   def run_app(
-      terminal: tui.terminal.Terminal,
+      terminal: Terminal,
       app: App,
       tick_rate: java.time.Duration,
       jni: tui.crossterm.CrosstermJni

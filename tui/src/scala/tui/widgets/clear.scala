@@ -2,9 +2,7 @@ package tui
 package widgets
 package clear
 
-import tui.buffer.Buffer
 import tui.internal.ranges
-import tui.layout.Rect
 
 /// A widget to clear/reset a certain area to allow overdrawing (e.g. for popups).
 ///

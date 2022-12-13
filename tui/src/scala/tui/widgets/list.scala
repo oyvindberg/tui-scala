@@ -2,10 +2,7 @@ package tui
 package widgets
 package list
 
-import tui.buffer.Buffer
 import tui.internal.saturating._
-import tui.layout.{Corner, Rect}
-import tui.text.Text
 
 case class ListState(
     var offset: Int = 0,

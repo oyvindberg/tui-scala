@@ -3,9 +3,6 @@ package examples
 package table
 
 import tui.crossterm.CrosstermJni
-import tui.layout.{Constraint, Layout, Margin}
-import tui.terminal.{Frame, Terminal}
-import tui.text.{Spans, Text}
 import tui.widgets._
 
 object App {

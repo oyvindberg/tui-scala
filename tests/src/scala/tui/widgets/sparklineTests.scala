@@ -1,9 +1,6 @@
 package tui
 package widgets
 
-import tui.buffer.Buffer
-import tui.layout.Rect
-
 class sparklineTests extends TuiTest {
   test("it_does_not_panic_if_max_is_zero") {
     val widget = Sparkline(data = Array(0, 0, 0))

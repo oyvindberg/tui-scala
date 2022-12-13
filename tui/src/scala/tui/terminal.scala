@@ -1,9 +1,5 @@
 package tui
-package terminal
 
-import tui.backend.Backend
-import tui.buffer.Buffer
-import tui.layout.Rect
 import tui.widgets.{StatefulWidget, Widget}
 
 import scala.util.control.NonFatal

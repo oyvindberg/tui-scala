@@ -1,12 +1,10 @@
 package tui
-package layout
 
 import tui.cassowary.Strength.{REQUIRED, WEAK}
 import tui.cassowary.WeightedRelation._
 import tui.cassowary.operators._
 import tui.cassowary.{Constraint => CassowaryConstraint, Expression, Solver, Variable}
 import tui.internal.ranges
-import tui.layout.Layout.LAYOUT_CACHE
 
 import scala.collection.mutable
 
@@ -76,7 +74,7 @@ case class Layout(
     expand_to_fill: Boolean = true
 ) {
   def split(area: Rect): Array[Rect] =
-    LAYOUT_CACHE.getOrElseUpdate((area, this), Layout.split(area, this))
+    Layout.LAYOUT_CACHE.getOrElseUpdate((area, this), Layout.split(area, this))
 }
 
 object Layout {

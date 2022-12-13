@@ -2,14 +2,11 @@ package tui
 package examples
 package demo
 
-import tui.layout._
-import tui.terminal.Frame
-import tui.text.{Span, Spans, Text}
+import tui.widgets._
 import tui.widgets.canvas._
 import tui.widgets.list.ListItem
 import tui.widgets.paragraph.{Paragraph, Wrap}
 import tui.widgets.tabs.Tabs
-import tui.widgets._
 
 object ui {
   def draw(f: Frame, app: App): Unit = {
@@ -26,7 +23,7 @@ object ui {
     app.tabs.index match {
       case 0 => draw_first_tab(f, app, chunks(1))
       case 1 => draw_second_tab(f, app, chunks(1))
-      case 2 => draw_third_tab(f, app, chunks(1))
+      case 2 => draw_third_tab(f, chunks(1))
       case _ =>
     };
   }
@@ -272,7 +269,7 @@ object ui {
     f.render_widget(map, chunks(1));
   }
 
-  def draw_third_tab(f: Frame, _app: App, area: Rect): Unit = {
+  def draw_third_tab(f: Frame, area: Rect): Unit = {
     val chunks = Layout(direction = Direction.Horizontal, constraints = Array(Constraint.Ratio(1, 2), Constraint.Ratio(1, 2))).split(area);
     val colors = Array(
       Color.Reset,

@@ -2,11 +2,8 @@ package tui
 package widgets
 package tabs
 
-import tui.buffer.Buffer
 import tui.internal.ranges
 import tui.internal.saturating._
-import tui.layout.Rect
-import tui.text.{Span, Spans}
 
 /// A widget to display available tabs in a multiple panels context.
 ///

@@ -3,9 +3,6 @@ package examples
 package paragraph
 
 import tui.crossterm.CrosstermJni
-import tui.layout._
-import tui.terminal.{Frame, Terminal}
-import tui.text.{Span, Spans, Text}
 import tui.widgets.paragraph._
 import tui.widgets.{Block, Borders}
 

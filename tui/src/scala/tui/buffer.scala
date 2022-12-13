@@ -1,10 +1,7 @@
 package tui
-package buffer
 
-import tui.internal.breakableForeach._
 import tui.internal._
-import tui.layout.Rect
-import tui.text.{Span, Spans}
+import tui.internal.breakableForeach._
 
 import scala.collection.mutable
 

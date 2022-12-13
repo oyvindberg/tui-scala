@@ -2,9 +2,7 @@ package tui
 package examples
 package chart
 
-import tui.layout.{Constraint, Direction, Layout}
-import tui.terminal.Frame
-import tui.text.{Span, Spans}
+import tui.crossterm.CrosstermJni
 import tui.widgets._
 
 import java.time.{Duration, Instant}
@@ -63,12 +61,7 @@ object Main {
     run_app(terminal, app, tick_rate, jni)
   }
 
-  def run_app(
-      terminal: tui.terminal.Terminal,
-      app: App,
-      tick_rate: java.time.Duration,
-      jni: tui.crossterm.CrosstermJni
-  ): Unit = {
+  def run_app(terminal: Terminal, app: App, tick_rate: java.time.Duration, jni: CrosstermJni): Unit = {
     var last_tick = Instant.now()
 
     def elapsed = java.time.Duration.between(last_tick, java.time.Instant.now())

@@ -1,5 +1,4 @@
 package tui
-package text
 
 import tui.internal.UnicodeSegmentation
 

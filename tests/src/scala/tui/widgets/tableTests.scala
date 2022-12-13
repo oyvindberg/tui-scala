@@ -1,12 +1,8 @@
 package tui
 package widgets
 
-import tui.backend.test.TestBackend
-import tui.buffer.Buffer
+import test.TestBackend
 import tui.internal.ranges
-import tui.layout.Constraint
-import tui.terminal.Terminal
-import tui.text.{Span, Spans, Text}
 
 class tableTests extends TuiTest {
   def cell(str: String): Cell = Cell(Text.raw(str))

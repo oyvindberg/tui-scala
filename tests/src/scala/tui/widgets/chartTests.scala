@@ -1,12 +1,8 @@
 package tui
 package widgets
 
-import tui.backend.test.TestBackend
-import tui.buffer.Buffer
+import test.TestBackend
 import tui.internal.ranges
-import tui.layout.{Alignment, Constraint, Rect}
-import tui.terminal.{CompletedFrame, Terminal}
-import tui.text.{Span, Spans}
 
 class chartTests extends TuiTest {
   case class LegendTestCase(

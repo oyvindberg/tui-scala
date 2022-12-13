@@ -3,7 +3,6 @@ package examples
 package demo
 
 import tui.crossterm.CrosstermJni
-import tui.terminal.Terminal
 import tui.withTerminal
 
 import java.time.{Duration, Instant}

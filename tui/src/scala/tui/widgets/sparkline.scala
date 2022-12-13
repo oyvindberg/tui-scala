@@ -1,9 +1,7 @@
 package tui
 package widgets
 
-import tui.buffer.Buffer
 import tui.internal.ranges
-import tui.layout.Rect
 
 /// Widget to render a sparkline over one or more lines.
 ///

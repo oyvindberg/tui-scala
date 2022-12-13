@@ -1,9 +1,6 @@
 package tui
-package backend
 
-import tui.buffer.Cell
 import tui.crossterm.{Attribute, Command, CrosstermJni}
-import tui.layout.Rect
 
 import java.util
 

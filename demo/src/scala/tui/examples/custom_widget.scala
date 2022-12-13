@@ -2,15 +2,14 @@ package tui
 package examples
 package custom_widget
 
-import tui.buffer.Buffer
 import tui.crossterm.CrosstermJni
-import tui.layout.Rect
-import tui.terminal.{Frame, Terminal}
 import tui.widgets._
 
 case class Label(text: String) extends Widget {
-  override def render(area: Rect, buf: Buffer): Unit =
-    buf.set_string(area.left, area.top, text, Style.DEFAULT);
+  override def render(area: Rect, buf: Buffer): Unit = {
+    buf.set_string(area.left, area.top, text, Style.DEFAULT)
+    ()
+  }
 }
 
 object Main {

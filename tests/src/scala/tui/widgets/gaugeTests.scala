@@ -1,12 +1,8 @@
 package tui
 package widgets
 
-import tui.backend.test.TestBackend
-import tui.buffer.Buffer
+import test.TestBackend
 import tui.internal.ranges
-import tui.layout._
-import tui.terminal.Terminal
-import tui.text.{Span, Spans}
 
 class gaugeTests extends TuiTest {
 
@@ -56,12 +52,14 @@ class gaugeTests extends TuiTest {
         .get(i, 3)
         .set_bg(Color.Red)
         .set_fg(Color.Blue);
+      ()
     }
     ranges.range(17, 37) { i =>
       expected
         .get(i, 3)
         .set_bg(Color.Blue)
         .set_fg(Color.Red);
+      ()
     }
 
     ranges.range(3, 20) { i =>
@@ -69,12 +67,14 @@ class gaugeTests extends TuiTest {
         .get(i, 6)
         .set_bg(Color.Red)
         .set_fg(Color.Blue);
+      ()
     }
     ranges.range(20, 37) { i =>
       expected
         .get(i, 6)
         .set_bg(Color.Blue)
         .set_fg(Color.Red);
+      ()
     }
 
     assert_buffer(backend, expected)
@@ -215,9 +215,18 @@ class gaugeTests extends TuiTest {
         "└──────────────────┘"
       )
     )
-    ranges.range(4, 10)(col => expected.get(col, 0).set_fg(Color.Green))
-    ranges.range(10, 20)(col => expected.get(col, 0).set_fg(Color.White))
-    ranges.range(5, 7)(col => expected.get(col, 2).set_fg(Color.Green))
+    ranges.range(4, 10) { col =>
+      expected.get(col, 0).set_fg(Color.Green)
+      ()
+    }
+    ranges.range(10, 20) { col =>
+      expected.get(col, 0).set_fg(Color.White)
+      ()
+    }
+    ranges.range(5, 7) { col =>
+      expected.get(col, 2).set_fg(Color.Green)
+      ()
+    }
     assert_buffer(backend, expected)
   }
 }

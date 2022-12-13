@@ -1,9 +1,6 @@
 package tui
 package widgets
 
-import tui.layout.{Alignment, Rect}
-import tui.text.Spans
-
 class blockTests extends TuiTest {
   test("inner_takes_into_account_the_borders") {
     // No borders

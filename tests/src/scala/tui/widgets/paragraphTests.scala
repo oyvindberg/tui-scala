@@ -1,11 +1,7 @@
 package tui
 package widgets
 
-import tui.backend.test.TestBackend
-import tui.buffer.Buffer
-import tui.layout.{Alignment, Rect}
-import tui.terminal.Terminal
-import tui.text.{Span, Spans, Text}
+import test.TestBackend
 import tui.widgets.paragraph.{Paragraph, Wrap}
 
 class paragraphTests extends TuiTest {

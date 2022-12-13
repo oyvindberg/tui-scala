@@ -3,7 +3,6 @@ package widgets
 
 import tui.internal.breakableForeach._
 import tui.internal.{breakableForeach, UnicodeSegmentation}
-import tui.text.StyledGrapheme
 
 import scala.collection.mutable
 

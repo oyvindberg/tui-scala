@@ -2,12 +2,8 @@ package tui
 package widgets
 
 import tui.Style
-import tui.buffer.Buffer
 import tui.internal.ranges._
 import tui.internal.saturating._
-import tui.layout.{Alignment, Rect}
-import tui.symbols.line
-import tui.text.Spans
 
 //#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 sealed trait BorderType
@@ -17,12 +13,12 @@ object BorderType {
   case object Double extends BorderType
   case object Thick extends BorderType
 
-  def line_symbols(border_type: BorderType): line.Set =
+  def line_symbols(border_type: BorderType): symbols.line.Set =
     border_type match {
-      case BorderType.Plain   => line.NORMAL
-      case BorderType.Rounded => line.ROUNDED
-      case BorderType.Double  => line.DOUBLE
-      case BorderType.Thick   => line.THICK
+      case BorderType.Plain   => symbols.line.NORMAL
+      case BorderType.Rounded => symbols.line.ROUNDED
+      case BorderType.Double  => symbols.line.DOUBLE
+      case BorderType.Thick   => symbols.line.THICK
     }
 }
 

@@ -2,11 +2,8 @@ package tui
 package widgets
 
 import tui.Style
-import tui.buffer.Buffer
 import tui.internal.ranges
 import tui.internal.saturating._
-import tui.layout.{Alignment, Constraint, Rect}
-import tui.text.{Span, Spans}
 import tui.widgets.canvas.{Canvas, Line, Points}
 
 /// An X or Y axis for the chart widget

@@ -1,8 +1,6 @@
 package tui
 package buffer
 
-import tui.layout.Rect
-
 import scala.util.control.NonFatal
 
 class bufferTests extends TuiTest {

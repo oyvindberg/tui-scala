@@ -2,11 +2,7 @@ package tui
 package examples
 package tabs
 
-import tui.backend.CrosstermBackend
-import tui.crossterm.{Command, CrosstermJni}
-import tui.layout.{Constraint, Direction, Layout, Margin}
-import tui.terminal.{Frame, Terminal}
-import tui.text.{Span, Spans}
+import tui.crossterm.CrosstermJni
 import tui.widgets.tabs.Tabs
 import tui.widgets.{Block, Borders}
 

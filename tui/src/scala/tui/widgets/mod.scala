@@ -1,9 +1,6 @@
 package tui
 package widgets
 
-import tui.buffer.Buffer
-import tui.layout.Rect
-
 //! `widgets` is a collection of types that implement [`Widget`] or [`StatefulWidget`] or both.
 //!
 //! All widgets are implemented using the builder pattern and are consumable objects. They are not
