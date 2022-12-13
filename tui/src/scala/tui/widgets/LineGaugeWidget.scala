@@ -14,7 +14,7 @@ case class LineGaugeWidget(
     gauge_style: Style = Style.DEFAULT
 ) extends Widget {
   override def render(area: Rect, buf: Buffer): Unit = {
-    buf.set_style(area, style)
+    buf.update_style(area, style)
     val gauge_area = block match {
       case Some(b) =>
         val inner_area = b.inner(area)
@@ -28,45 +28,27 @@ case class LineGaugeWidget(
     }
 
     val label = this.label.getOrElse(Spans.nostyle(s"${(ratio.value * 100.0).toInt}%"))
-    val (col, row) = buf.set_spans(
-      gauge_area.left,
-      gauge_area.top,
-      label,
-      gauge_area.width
-    )
+    val (col, row) = buf.set_spans(gauge_area.left, gauge_area.top, label, gauge_area.width)
     val start = col + 1
     if (start >= gauge_area.right) {
       return
     }
 
     val end = start + (gauge_area.right.saturating_sub_unsigned(start).toDouble * ratio.value).floor.toInt
-    ranges.range(start, end) { col =>
-      buf
-        .get(col, row)
-        .set_symbol(line_set.horizontal)
-        .set_style(
-          Style(
-            fg = gauge_style.fg,
-            bg = None,
-            add_modifier = gauge_style.add_modifier,
-            sub_modifier = gauge_style.sub_modifier
-          )
-        )
-      ()
-    }
-    ranges.range(end, gauge_area.right) { col =>
-      buf
-        .get(col, row)
-        .set_symbol(line_set.horizontal)
-        .set_style(
-          Style(
-            fg = gauge_style.bg,
-            bg = None,
-            add_modifier = gauge_style.add_modifier,
-            sub_modifier = gauge_style.sub_modifier
-          )
-        )
-      ()
-    }
+    val before_end_style = Style(
+      fg = gauge_style.fg,
+      bg = None,
+      add_modifier = gauge_style.add_modifier,
+      sub_modifier = gauge_style.sub_modifier
+    )
+    ranges.range(start, end)(col => buf.update(col, row, line_set.horizontal, before_end_style))
+
+    val past_end_style = Style(
+      fg = gauge_style.bg,
+      bg = None,
+      add_modifier = gauge_style.add_modifier,
+      sub_modifier = gauge_style.sub_modifier
+    )
+    ranges.range(end, gauge_area.right)(col => buf.update(col, row, line_set.horizontal, past_end_style))
   }
 }

@@ -22,7 +22,7 @@ case class TabsWidget(
 ) extends Widget {
 
   def render(area: Rect, buf: Buffer): Unit = {
-    buf.set_style(area, style)
+    buf.update_style(area, style)
     val tabs_area = block match {
       case Some(b) =>
         val inner_area = b.inner(area)
@@ -47,7 +47,7 @@ case class TabsWidget(
       } else {
         val pos = buf.set_spans(x, tabs_area.top, title, remaining_width)
         if (i == selected) {
-          buf.set_style(
+          buf.update_style(
             Rect(
               x,
               y = tabs_area.top,

@@ -51,74 +51,40 @@ case class BlockWidget(
     if (area.area == 0) {
       return
     }
-    buf.set_style(area, style)
+    buf.update_style(area, style)
     val symbols = BlockWidget.BorderType.line_symbols(border_type)
 
     // Sides
     if (borders.intersects(Borders.LEFT)) {
       range(area.top, area.bottom) { y =>
-        buf
-          .get(area.left, y)
-          .set_symbol(symbols.vertical)
-          .set_style(border_style)
-        ()
+        buf.update(area.left, y, symbols.vertical, border_style)
       }
     }
 
     if (borders.intersects(Borders.TOP)) {
-      range(area.left, area.right) { x =>
-        buf
-          .get(x, area.top)
-          .set_symbol(symbols.horizontal)
-          .set_style(border_style)
-        ()
-      }
+      range(area.left, area.right)(x => buf.update(x, area.top, symbols.horizontal, border_style))
     }
     if (borders.intersects(Borders.RIGHT)) {
       val x = area.right - 1
-      range(area.top, area.bottom) { y =>
-        buf
-          .get(x, y)
-          .set_symbol(symbols.vertical)
-          .set_style(border_style)
-        ()
-      }
+      range(area.top, area.bottom)(y => buf.update(x, y, symbols.vertical, border_style))
     }
     if (borders.intersects(Borders.BOTTOM)) {
       val y = area.bottom - 1
-      range(area.left, area.right) { x =>
-        buf
-          .get(x, y)
-          .set_symbol(symbols.horizontal)
-          .set_style(border_style)
-        ()
-      }
+      range(area.left, area.right)(x => buf.update(x, y, symbols.horizontal, border_style))
     }
 
     // Corners
     if (borders.contains(Borders.RIGHT | Borders.BOTTOM)) {
-      buf
-        .get(area.right - 1, area.bottom - 1)
-        .set_symbol(symbols.bottom_right)
-        .set_style(border_style)
+      buf.update(area.right - 1, area.bottom - 1, symbols.bottom_right, border_style)
     }
     if (borders.contains(Borders.RIGHT | Borders.TOP)) {
-      buf
-        .get(area.right - 1, area.top)
-        .set_symbol(symbols.top_right)
-        .set_style(border_style)
+      buf.update(area.right - 1, area.top, symbols.top_right, border_style)
     }
     if (borders.contains(Borders.LEFT | Borders.BOTTOM)) {
-      buf
-        .get(area.left, area.bottom - 1)
-        .set_symbol(symbols.bottom_left)
-        .set_style(border_style)
+      buf.update(area.left, area.bottom - 1, symbols.bottom_left, border_style)
     }
     if (borders.contains(Borders.LEFT | Borders.TOP)) {
-      buf
-        .get(area.left, area.top)
-        .set_symbol(symbols.top_left)
-        .set_style(border_style)
+      buf.update(area.left, area.top, symbols.top_left, border_style)
     }
 
     // Title

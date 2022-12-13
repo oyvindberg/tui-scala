@@ -98,7 +98,7 @@ case class TableWidget(
     if (area.area == 0) {
       return
     }
-    buf.set_style(area, style)
+    buf.update_style(area, style)
     val table_area = block match {
       case Some(b) =>
         val inner_area = b.inner(area)
@@ -119,7 +119,7 @@ case class TableWidget(
     this.header.foreach { header =>
       val max_header_height = table_area.height.min(header.total_height)
       val header_rect = Rect(x = table_area.left, y = table_area.top, width = table_area.width, height = table_area.height.min(header.height))
-      buf.set_style(header_rect, header.style)
+      buf.update_style(header_rect, header.style)
       var col = table_area.left
       if (has_selection) {
         col += highlight_symbol.width.min(table_area.width)
@@ -143,7 +143,7 @@ case class TableWidget(
       val (row, col0) = (table_area.top + current_height, table_area.left)
       current_height += table_row.total_height
       val table_row_area = Rect(x = col0, y = row, width = table_area.width, height = table_row.height)
-      buf.set_style(table_row_area, table_row.style)
+      buf.update_style(table_row_area, table_row.style)
       val is_selected = state.selected.contains(i)
       val table_row_start_col =
         if (has_selection) {
@@ -159,13 +159,13 @@ case class TableWidget(
         col1 += width + column_spacing;
       }
       if (is_selected) {
-        buf.set_style(table_row_area, highlight_style)
+        buf.update_style(table_row_area, highlight_style)
       }
     }
   }
 
   def render_cell(buf: Buffer, cell: TableWidget.Cell, area: Rect): Unit = {
-    buf.set_style(area, cell.style)
+    buf.update_style(area, cell.style)
     cell.content.lines.breakableForeach { case (spans, i) =>
       if (i >= area.height) {
         breakableForeach.Break

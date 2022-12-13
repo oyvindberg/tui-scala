@@ -63,7 +63,7 @@ case class ListWidget(
   type State = ListWidget.State
 
   def render(area: Rect, buf: Buffer, state: State): Unit = {
-    buf.set_style(area, style)
+    buf.update_style(area, style)
     val list_area = block match {
       case Some(b) =>
         val inner_area = b.inner(area)
@@ -102,7 +102,7 @@ case class ListWidget(
       val area = Rect(x, y, width = list_area.width, height = item.height)
 
       val item_style = style.patch(item.style)
-      buf.set_style(area, item_style)
+      buf.update_style(area, item_style)
 
       val is_selected = state.selected.contains(i)
       item.content.lines.zipWithIndex.foreach { case (line, j) =>
@@ -129,7 +129,7 @@ case class ListWidget(
         buf.set_spans(elem_x, y + j, line, max_element_width);
       }
       if (is_selected) {
-        buf.set_style(area, highlight_style)
+        buf.update_style(area, highlight_style)
       }
     }
   }

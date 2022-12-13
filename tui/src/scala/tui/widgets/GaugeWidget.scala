@@ -15,7 +15,7 @@ case class GaugeWidget(
 ) extends Widget {
 
   override def render(area: Rect, buf: Buffer): Unit = {
-    buf.set_style(area, style)
+    buf.update_style(area, style)
     val gauge_area = block match {
       case Some(b) =>
         val inner_area = b.inner(area)
@@ -24,7 +24,7 @@ case class GaugeWidget(
 
       case None => area
     }
-    buf.set_style(gauge_area, gauge_style)
+    buf.update_style(gauge_area, gauge_style)
     if (gauge_area.height < 1) {
       return
     }
@@ -50,18 +50,14 @@ case class GaugeWidget(
       // render the filled area (left to end)
       ranges.range(gauge_area.left, end) { x =>
         // spaces are needed to apply the background styling
-        buf
-          .get(x, y)
-          .set_symbol(" ")
-          .set_fg(gauge_style.bg.getOrElse(Color.Reset))
-          .set_bg(gauge_style.fg.getOrElse(Color.Reset))
-        ()
+        buf.update(x, y)(
+          _.set_symbol(" ")
+            .set_fg(gauge_style.bg.getOrElse(Color.Reset))
+            .set_bg(gauge_style.fg.getOrElse(Color.Reset))
+        )
       }
       if (use_unicode && ratio.value < 1.0) {
-        buf
-          .get(end, y)
-          .set_symbol(get_unicode_block(filled_width % 1.0))
-        ()
+        buf.update(end, y, get_unicode_block(filled_width % 1.0))
       }
     }
     // set the span

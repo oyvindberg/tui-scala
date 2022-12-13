@@ -32,7 +32,7 @@ case class BarChartWidget(
   private lazy val values: Array[Grapheme] = data.collect { case (_, v) => Grapheme(v.toString) }
 
   override def render(area: Rect, buf: Buffer): Unit = {
-    buf.set_style(area, style)
+    buf.update_style(area, style)
 
     val chart_area: Rect = block match {
       case Some(b) =>
@@ -70,14 +70,12 @@ case class BarChartWidget(
           case _ => bar_set.full
         }
         range(0, bar_width) { x =>
-          buf
-            .get(
-              chart_area.left + i * (bar_width + bar_gap) + x,
-              chart_area.top + j
-            )
-            .set_symbol(symbol)
-            .set_style(bar_style)
-          ()
+          buf.update(
+            chart_area.left + i * (bar_width + bar_gap) + x,
+            chart_area.top + j,
+            symbol,
+            bar_style
+          )
         }
 
         if (d.value > 8) {
@@ -93,23 +91,20 @@ case class BarChartWidget(
         val width = value_label.width
         if (width < bar_width) {
           buf.set_string(
-            chart_area.left
-              + i * (bar_width + bar_gap)
-              + (bar_width - width) / 2,
-            chart_area.bottom - 2,
-            value_label.str,
-            value_style
+            x = chart_area.left + i * (bar_width + bar_gap) + (bar_width - width) / 2,
+            y = chart_area.bottom - 2,
+            string = value_label.str,
+            style = value_style
           )
         }
       }
       buf.set_stringn(
-        chart_area.left + i * (bar_width + bar_gap),
-        chart_area.bottom - 1,
-        label,
-        bar_width,
-        label_style
+        x = chart_area.left + i * (bar_width + bar_gap),
+        y = chart_area.bottom - 1,
+        string = label,
+        width = bar_width,
+        style = label_style
       );
-
     }
   }
 }

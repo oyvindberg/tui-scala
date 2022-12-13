@@ -44,12 +44,8 @@ case class Text(lines: Array[Spans]) {
     lines.length
 
   /// Apply a new style to existing text.
-  def overwrittenStyle(style: Style): Text =
-    Text(lines.map { case Spans(spans) =>
-      Spans(spans.map { span =>
-        span.copy(style = span.style.patch(style))
-      })
-    })
+  def patchedStyle(style: Style, overwrite: Boolean): Text =
+    copy(lines = lines.map(_.patchedStyle(style, overwrite)))
 }
 
 object Text {

@@ -1,6 +1,7 @@
 package tui
 package widgets
 
+import tui.internal.UnicodeSegmentation
 import tui.internal.saturating._
 import tui.internal.reflow.{LineComposer, LineTruncator, WordWrapper}
 
@@ -21,7 +22,7 @@ case class ParagraphWidget(
 ) extends Widget {
 
   def render(area: Rect, buf: Buffer): Unit = {
-    buf.set_style(area, this.style)
+    buf.update_style(area, this.style)
     val text_area = block match {
       case Some(b) =>
         val inner_area = b.inner(area)
@@ -34,10 +35,13 @@ case class ParagraphWidget(
       return
     }
 
-    val styled: Array[StyledGrapheme] =
+    val styled: Array[StyledGrapheme] = {
+      val NewLine = StyledGrapheme(Grapheme("\n"), this.style)
+
       text.lines.flatMap { case Spans(spans: Array[Span]) =>
-        spans.flatMap(span => span.styled_graphemes(this.style)) :+ StyledGrapheme(Grapheme("\n"), this.style)
+        spans.flatMap(span => ParagraphWidget.styled_graphemes(span, this.style)) :+ NewLine
       }
+    }
 
     val line_composer: LineComposer =
       wrap match {
@@ -63,10 +67,7 @@ case class ParagraphWidget(
               // leave on the line. It's a quick fix.
               val newSymbol = if (symbol.str.isEmpty) " " else symbol.str
 
-              buf
-                .get(text_area.left + x, text_area.top + y - this.scroll._1)
-                .set_symbol(newSymbol)
-                .set_style(style)
+              buf.update(text_area.left + x, text_area.top + y - this.scroll._1, newSymbol, style)
 
               x += symbol.width
             }
@@ -79,6 +80,22 @@ case class ParagraphWidget(
   }
 }
 object ParagraphWidget {
+  /// Returns an iterator over the graphemes held by this span.
+  ///
+  /// `base_style` is the [`Style`] that will be patched with each grapheme [`Style`] to get
+  /// the resulting [`Style`].
+  ///
+  def styled_graphemes(span: Span, base_style: Style): Array[StyledGrapheme] =
+    UnicodeSegmentation
+      .graphemes(span.content, is_extended = true)
+      .map(g =>
+        StyledGrapheme(
+          symbol = g,
+          style = base_style.patch(span.style)
+        )
+      )
+      .filter(s => s.symbol.str != "\n")
+
   def get_line_offset(line_width: Int, text_area_width: Int, alignment: Alignment): Int =
     alignment match {
       case Alignment.Center => (text_area_width / 2).saturating_sub_unsigned(line_width / 2)

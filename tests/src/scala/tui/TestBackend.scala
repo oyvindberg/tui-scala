@@ -7,13 +7,7 @@ case class TestBackend(
     var cursor: Boolean = false,
     var pos: (Int, Int) = (0, 0)
 ) extends Backend {
-  val buffer: Buffer = Buffer.empty(Rect(0, 0, width, height))
-
-  def resize(width: Int, height: Int): Unit = {
-    buffer.resize(Rect(0, 0, width, height))
-    this.width = width
-    this.height = height
-  }
+  var buffer: Buffer = Buffer.empty(Rect(0, 0, width, height))
 
   def draw(content: Array[(Int, Int, Cell)]): Unit =
     content.foreach { case (x, y, c) => buffer.set(x, y, c) }
@@ -31,7 +25,7 @@ case class TestBackend(
     pos = (x, y)
 
   def clear(): Unit =
-    buffer.reset()
+    buffer = Buffer.empty(Rect(0, 0, width, height))
 
   def size(): Rect =
     Rect(0, 0, width, height)

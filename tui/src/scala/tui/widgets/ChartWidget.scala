@@ -210,7 +210,7 @@ case class ChartWidget(
     if (area.area == 0) {
       return
     }
-    buf.set_style(area, this.style)
+    buf.update_style(area, this.style)
     // Sample the style of the entire widget. This sample will be used to reset the style of
     // the cells that are part of the components put on top of the grah area (i.e legend and
     // axis names).
@@ -236,19 +236,13 @@ case class ChartWidget(
     layout.axis_x match {
       case None => ()
       case Some(y) =>
-        ranges.range(graph_area.left, graph_area.right) { x =>
-          buf.get(x, y).set_symbol(symbols.line.HORIZONTAL).set_style(this.x_axis.style)
-          ()
-        }
+        ranges.range(graph_area.left, graph_area.right)(x => buf.update(x, y, symbols.line.HORIZONTAL, this.x_axis.style))
     }
 
     layout.axis_y match {
       case None => ()
       case Some(x) =>
-        ranges.range(graph_area.top, graph_area.bottom) { y =>
-          buf.get(x, y).set_symbol(symbols.line.VERTICAL).set_style(this.y_axis.style)
-          ()
-        }
+        ranges.range(graph_area.top, graph_area.bottom) { y => buf.update(x, y, symbols.line.VERTICAL, this.y_axis.style) }
     }
 
     layout.axis_x match {
@@ -256,7 +250,7 @@ case class ChartWidget(
       case Some(y) =>
         layout.axis_y match {
           case None    => ()
-          case Some(x) => buf.get(x, y).set_symbol(symbols.line.BOTTOM_LEFT).set_style(this.x_axis.style)
+          case Some(x) => buf.update(x, y, symbols.line.BOTTOM_LEFT, this.x_axis.style)
         }
     }
 
@@ -286,7 +280,7 @@ case class ChartWidget(
     layout.legend_area match {
       case None => ()
       case Some(legend_area) =>
-        buf.set_style(legend_area, original_style)
+        buf.update_style(legend_area, original_style)
         BlockWidget(borders = Borders.ALL).render(legend_area, buf)
         ranges.range(0, this.datasets.length) { i =>
           val dataset = this.datasets(i)
@@ -305,7 +299,7 @@ case class ChartWidget(
       case Some((x, y)) =>
         val title = this.x_axis.title.get
         val width = graph_area.right.saturating_sub_unsigned(x)
-        buf.set_style(Rect(x, y, width, height = 1), original_style)
+        buf.update_style(Rect(x, y, width, height = 1), original_style)
         buf.set_spans(x, y, title, width)
     }
 
@@ -314,7 +308,7 @@ case class ChartWidget(
       case Some((x, y)) =>
         val title = this.y_axis.title.get
         val width = graph_area.right.saturating_sub_unsigned(x)
-        buf.set_style(Rect(x, y, width, height = 1), original_style)
+        buf.update_style(Rect(x, y, width, height = 1), original_style)
         buf.set_spans(x, y, title, width)
         ()
     }

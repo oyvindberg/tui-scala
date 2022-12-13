@@ -27,7 +27,7 @@ case class CanvasWidget(
       case None => area
     }
 
-    buf.set_style(canvas_area, Style.DEFAULT.bg(this.background_color))
+    buf.update_style(canvas_area, Style.DEFAULT.bg(this.background_color))
 
     // Create a blank context that match the size of the canvas
     val ctx = Context(
@@ -48,11 +48,7 @@ case class CanvasWidget(
         val color = layer.colors(i)
         if (ch != ' ' && ch != '\u2800') {
           val (x, y) = (i % canvas_area.width, i / canvas_area.width)
-          buf
-            .get(x + canvas_area.left, y + canvas_area.top)
-            .set_char(ch)
-            .set_fg(color)
-          ()
+          buf.update(x + canvas_area.left, y + canvas_area.top)(_.set_char(ch).set_fg(color))
         }
       }
     }
@@ -69,8 +65,7 @@ case class CanvasWidget(
       val height = (canvas_area.height - 1).toDouble
       (width, height)
     }
-    ranges.range(0, ctx.labels.length) { i =>
-      val l = ctx.labels(i)
+    ctx.labels.foreach { l =>
       if (l.x >= left && l.x <= right && l.y <= top && l.y >= bottom) {
         val label = l
         val x = ((label.x - left) * resolution._1 / width).toInt + canvas_area.left
