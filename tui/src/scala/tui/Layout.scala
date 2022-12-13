@@ -8,7 +8,6 @@ import tui.internal.ranges
 
 import scala.collection.mutable
 
-//#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 case class Layout(
     direction: Direction = Direction.Vertical,
     margin: Margin = Margin(horizontal = 0, vertical = 0),

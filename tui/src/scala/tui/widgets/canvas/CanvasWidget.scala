@@ -7,39 +7,6 @@ import tui.internal.ranges
 
 /// The Canvas widget may be used to draw more detailed figures using braille patterns (each
 /// cell can have a braille character in 8 different positions).
-/// # Examples
-///
-/// ```
-/// # use tui.widgets.{Block, Borders};
-/// # use tui.layout.Rect;
-/// # use tui.widgets.canvas.{Canvas, Shape, Line, Rectangle, Map, MapResolution};
-/// # use tui.style.Color;
-/// Canvas.default()
-///     .block(Block.default().title("Canvas").borders(Borders.ALL))
-///     .x_bounds([-180.0, 180.0])
-///     .y_bounds([-90.0, 90.0])
-///     .paint(|ctx| {
-///         ctx.draw(&Map {
-///             resolution: MapResolution.High,
-///             color: Color.White
-///         });
-///         ctx.layer();
-///         ctx.draw(&Line {
-///             x1: 0.0,
-///             y1: 10.0,
-///             x2: 10.0,
-///             y2: 10.0,
-///             color: Color.White,
-///         });
-///         ctx.draw(&Rectangle {
-///             x: 10.0,
-///             y: 20.0,
-///             width: 10.0,
-///             height: 10.0,
-///             color: Color.Red
-///         });
-///     });
-/// ```
 case class CanvasWidget(
     block: Option[BlockWidget] = None,
     x_bounds: Point = Point.Zero,
@@ -49,18 +16,6 @@ case class CanvasWidget(
     /// Change the type of points used to draw the shapes. By default the braille patterns are used
     /// as they provide a more fine grained result but you might want to use the simple dot or
     /// block instead if the targeted terminal does not support those symbols.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// # use tui.widgets.canvas.Canvas;
-    /// # use tui.symbols;
-    /// Canvas.default().marker(symbols.Marker.Braille).paint(|ctx| {});
-    ///
-    /// Canvas.default().marker(symbols.Marker.Dot).paint(|ctx| {});
-    ///
-    /// Canvas.default().marker(symbols.Marker.Block).paint(|ctx| {});
-    /// ```
     marker: symbols.Marker = symbols.Marker.Braille
 ) extends Widget {
   override def render(area: Rect, buf: Buffer): Unit = {

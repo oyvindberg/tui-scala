@@ -7,20 +7,6 @@ import tui.internal.saturating._
 
 /// Base widget to be used with all upper level ones. It may be used to display a box border around
 /// the widget and/or add a title.
-///
-/// # Examples
-///
-/// ```
-/// # use tui::widgets::{Block, BorderType, Borders};
-/// # use tui::style::{Style, Color};
-/// Block::default()
-///     .title("Block")
-///     .borders(Borders::LEFT | Borders::RIGHT)
-///     .border_style(Style::DEFAULT.fg(Color::White))
-///     .border_type(BorderType::Rounded)
-///     .style(Style::DEFAULT.bg(Color::Black));
-/// ```
-//#[derive(Debug, Clone, PartialEq, Eq)]
 case class BlockWidget(
     /// Optional title place on the upper left of the block
     title: Option[Spans] = None,
@@ -164,7 +150,6 @@ case class BlockWidget(
 }
 
 object BlockWidget {
-  // #[derive(Debug, Clone, Copy, PartialEq, Eq)]
   sealed trait BorderType
 
   object BorderType {

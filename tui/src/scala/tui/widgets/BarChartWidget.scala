@@ -5,23 +5,6 @@ import tui.internal.ranges._
 import tui.{Grapheme, Style}
 
 /// Display multiple bars in a single widgets
-///
-/// # Examples
-///
-/// ```
-/// # use tui::widgets::{Block, Borders, BarChart};
-/// # use tui::style::{Style, Color, Modifier};
-/// BarChart::default()
-///     .block(Block::default().title("BarChart").borders(Borders::ALL))
-///     .bar_width(3)
-///     .bar_gap(1)
-///     .bar_style(Style::DEFAULT.fg(Color::Yellow).bg(Color::Red))
-///     .value_style(Style::DEFAULT.fg(Color::Red).add_modifier(Modifier::BOLD))
-///     .label_style(Style::DEFAULT.fg(Color::White))
-///     .data(&[("B0", 0), ("B1", 2), ("B2", 4), ("B3", 3)])
-///     .max(4);
-/// ```
-//#[derive(Debug, Clone)]
 case class BarChartWidget(
     /// Block to wrap the widget in
     block: Option[BlockWidget] = None,

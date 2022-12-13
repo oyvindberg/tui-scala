@@ -5,17 +5,6 @@ import tui.Style
 import tui.internal.ranges
 
 /// A widget to display a task progress.
-///
-/// # Examples:
-///
-/// ```
-/// # use tui.widgets.{Widget, Gauge, Block, Borders};
-/// # use tui.style.{Style, Color, Modifier};
-/// Gauge.default()
-///     .block(Block.default().borders(Borders.ALL).title("Progress"))
-///     .gauge_style(Style.DEFAULT.fg(Color.White).bg(Color.Black).add_modifier(Modifier.ITALIC))
-///     .percent(20);
-/// ```
 case class GaugeWidget(
     block: Option[BlockWidget] = None,
     ratio: GaugeWidget.Ratio = GaugeWidget.Ratio.Zero,

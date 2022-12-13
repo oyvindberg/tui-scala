@@ -1,7 +1,5 @@
 package tui
 
-//#[derive(Debug, Clone, PartialEq)]
-/// UNSTABLE
 case class Viewport(
     var area: Rect,
     resize_behavior: ResizeBehavior

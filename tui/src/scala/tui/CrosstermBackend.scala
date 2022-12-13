@@ -97,7 +97,6 @@ object CrosstermBackend {
       case Color.Rgb(r, g, b) => new crossterm.Color.Rgb(r, g, b)
     }
 
-  // #[derive(Debug)]
   case class ModifierDiff(from: Modifier, to: Modifier) {
     def queue(commands: util.ArrayList[Command]): Unit = {
       val removed = from - to;

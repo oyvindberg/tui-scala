@@ -3,7 +3,6 @@ package tui
 import scala.util.control.NonFatal
 
 /// Interface to the terminal backed by Termion
-//#[derive(Debug)]
 case class Terminal private (
     backend: Backend,
     /// Holds the results of the current and previous draw calls. The two are compared at the end
