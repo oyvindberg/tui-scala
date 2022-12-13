@@ -16,8 +16,7 @@ case class Context(
   /// Draw any object that may implement the Shape trait
   def draw(shape: Shape): Unit = {
     this.dirty = true
-    val painter = Painter.from(this)
-    shape.draw(painter)
+    shape.draw(Painter(this))
   }
 
   /// Go one layer above in the canvas.

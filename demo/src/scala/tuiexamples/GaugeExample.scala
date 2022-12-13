@@ -88,14 +88,14 @@ object GaugeExample {
     val gauge0 = GaugeWidget(
       block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge1")), borders = Borders.ALL)),
       gauge_style = Style(fg = Some(Color.Yellow)),
-      ratio = GaugeWidget.Ratio.percent(app.progress1)
+      ratio = GaugeWidget.Ratio.percent(app.progress1.toDouble)
     )
     f.render_widget(gauge0, chunks(0))
 
     val gauge1 = GaugeWidget(
       block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge2")), borders = Borders.ALL)),
       gauge_style = Style(fg = Some(Color.Magenta), bg = Some(Color.Green)),
-      ratio = GaugeWidget.Ratio.percent(app.progress2),
+      ratio = GaugeWidget.Ratio.percent(app.progress2.toDouble),
       label = Some(Span.nostyle(s"${app.progress2}/100"))
     )
     f.render_widget(gauge1, chunks(1))
@@ -117,7 +117,7 @@ object GaugeExample {
     val gauge3 = GaugeWidget(
       block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge4")))),
       gauge_style = Style(fg = Some(Color.Cyan), add_modifier = Modifier.ITALIC),
-      ratio = GaugeWidget.Ratio.percent(app.progress4),
+      ratio = GaugeWidget.Ratio.percent(app.progress4.toDouble),
       label = Some(Span.nostyle(s"${app.progress4}/100"))
     )
     f.render_widget(gauge3, chunks(3))

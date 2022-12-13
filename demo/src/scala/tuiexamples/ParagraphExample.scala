@@ -63,8 +63,9 @@ object ParagraphExample {
     val s = "Veeeeeeeeeeeeeeeery    loooooooooooooooooong   striiiiiiiiiiiiiiiiiiiiiiiiiing.   "
     val long_line = s.repeat(f.size.width / s.length + 4) + "\n"
 
-    val block = BlockWidget(style = Style(bg = Some(Color.White), fg = Some(Color.Black)))
-    f.render_widget(block, f.size)
+    val style = Style(bg = Some(Color.White), fg = Some(Color.Black))
+
+    f.buffer.fill(f.size, Cell.Empty.withStyle(style))
 
     val chunks = Layout(
       direction = Direction.Vertical,
@@ -84,20 +85,20 @@ object ParagraphExample {
     def create_block(title: String): BlockWidget =
       BlockWidget(
         borders = Borders.ALL,
-        style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
+        style = style,
         title = Some(Spans.from(Span.styled(title, Style.DEFAULT.add_modifier(Modifier.BOLD))))
       )
 
     val paragraph0 = ParagraphWidget(
       text = text,
-      style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
+      style = style,
       block = Some(create_block("Left, no wrap")),
       alignment = Alignment.Left
     )
     f.render_widget(paragraph0, chunks(0))
     val paragraph1 = ParagraphWidget(
       text = text,
-      style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
+      style = style,
       block = Some(create_block("Left, wrap")),
       alignment = Alignment.Left,
       wrap = Some(ParagraphWidget.Wrap(trim = true))
@@ -106,7 +107,7 @@ object ParagraphExample {
 
     val paragraph2 = ParagraphWidget(
       text = text,
-      style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
+      style = style,
       block = Some(create_block("Center, wrap")),
       alignment = Alignment.Center,
       wrap = Some(ParagraphWidget.Wrap(trim = true)),
@@ -116,7 +117,7 @@ object ParagraphExample {
 
     val paragraph3 = ParagraphWidget(
       text = text,
-      style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
+      style = style,
       block = Some(create_block("Right, wrap")),
       alignment = Alignment.Right,
       wrap = Some(ParagraphWidget.Wrap(trim = true))

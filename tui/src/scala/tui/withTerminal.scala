@@ -11,14 +11,14 @@ object withTerminal {
 
     val backend = new CrosstermBackend(jni)
 
-    val terminal = Terminal.init(backend)
+    val terminal = Terminal(backend)
 
     try f(jni, terminal)
     finally {
       // restore terminal
       jni.disableRawMode()
       jni.execute(new Command.LeaveAlternateScreen(), new Command.DisableMouseCapture())
-      backend.show_cursor()
+      terminal.show_cursor()
     }
   }
 }

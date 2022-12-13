@@ -31,7 +31,6 @@ import scala.jdk.StreamConverters.StreamHasToScala
 /// or via the [`Text::raw`] and [`Text::styled`] methods. Helpfully, [`Text`] also implements
 /// [`core::iter::Extend`] which enables the concatenation of several [`Text`] blocks.
 case class Text(lines: Array[Spans]) {
-
   /// Returns the max width of all the lines.
   def width: Int =
     lines
@@ -44,12 +43,17 @@ case class Text(lines: Array[Spans]) {
     lines.length
 
   /// Apply a new style to existing text.
-  def overwrittenStyle(style: Style): Text =
-    Text(lines.map { case Spans(spans) =>
-      Spans(spans.map { span =>
-        span.copy(style = span.style.patch(style))
-      })
-    })
+  def patchedStyle(style: Style, overwrite: Boolean): Text =
+    copy(lines = lines.map(_.patchedStyle(style, overwrite)))
+
+  def /(style: Style): Text =
+    patchedStyle(style, overwrite = true)
+
+  def /(optionalStyle: Option[Style]): Text =
+    optionalStyle match {
+      case Some(style) => this / style
+      case None        => this
+    }
 }
 
 object Text {

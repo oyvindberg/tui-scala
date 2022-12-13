@@ -98,11 +98,11 @@ case class TableWidget(
     if (area.area == 0) {
       return
     }
-    buf.set_style(area, style)
+
     val table_area = block match {
       case Some(b) =>
         val inner_area = b.inner(area)
-        b.render(area, buf)
+        b.patchedStyle(style).render(area, buf)
         inner_area
 
       case None => area
@@ -118,15 +118,20 @@ case class TableWidget(
     // Draw header
     this.header.foreach { header =>
       val max_header_height = table_area.height.min(header.total_height)
-      val header_rect = Rect(x = table_area.left, y = table_area.top, width = table_area.width, height = table_area.height.min(header.height))
-      buf.set_style(header_rect, header.style)
+
       var col = table_area.left
       if (has_selection) {
         col += highlight_symbol.width.min(table_area.width)
       }
+      val header_style = style / header.style
+      buf.fill(
+        Rect(x = table_area.left, y = table_area.top, width = table_area.width, height = table_area.height.min(header.total_height)),
+        Cell.Empty.withStyle(header_style)
+      )
+
       columns_widths.zip(header.cells).foreach { case (width, cell) =>
         val cell_rect = Rect(x = col, y = table_area.top, width = width, height = max_header_height)
-        render_cell(buf, cell, cell_rect)
+        render_cell(buf, cell, cell_rect, header_style / cell.style)
         col += width + column_spacing;
       }
       current_height += max_header_height
@@ -142,35 +147,37 @@ case class TableWidget(
     rows.zipWithIndex.slice(state.offset, state.offset + end - start).foreach { case (table_row, i) =>
       val (row, col0) = (table_area.top + current_height, table_area.left)
       current_height += table_row.total_height
-      val table_row_area = Rect(x = col0, y = row, width = table_area.width, height = table_row.height)
-      buf.set_style(table_row_area, table_row.style)
       val is_selected = state.selected.contains(i)
+      val table_row_area = Rect(x = col0, y = row, width = table_area.width, height = table_row.total_height)
+      val table_row_style = {
+        val base = style / table_row.style
+        if (is_selected) base / highlight_style else base
+      }
+      buf.fill(table_row_area, Cell.Empty.withStyle(table_row_style))
+
       val table_row_start_col =
         if (has_selection) {
           val symbol = if (is_selected) highlight_symbol.str else blank_symbol
-          val (col, _) = buf.set_stringn(col0, row, symbol, table_area.width, table_row.style)
+          val (col, _) = buf.set_stringn(col0, row, symbol, table_area.width, table_row_style)
           col
         } else col0
 
       var col1 = table_row_start_col
       columns_widths.zip(table_row.cells).foreach { case (width, cell) =>
         val rect = Rect(x = col1, y = row, width = width, height = table_row.height)
-        render_cell(buf, cell, rect)
+        render_cell(buf, cell, rect, table_row_style / cell.style)
         col1 += width + column_spacing;
-      }
-      if (is_selected) {
-        buf.set_style(table_row_area, highlight_style)
       }
     }
   }
 
-  def render_cell(buf: Buffer, cell: TableWidget.Cell, area: Rect): Unit = {
-    buf.set_style(area, cell.style)
+  def render_cell(buf: Buffer, cell: TableWidget.Cell, area: Rect, style: Style): Unit = {
+    buf.update_style(area, cell.style)
     cell.content.lines.breakableForeach { case (spans, i) =>
       if (i >= area.height) {
         breakableForeach.Break
       } else {
-        buf.set_spans(area.x, area.y + i, spans, area.width)
+        buf.set_spans(area.x, area.y + i, style / cell.style / spans, area.width)
         breakableForeach.Continue
       }
     }

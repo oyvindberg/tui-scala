@@ -7,7 +7,7 @@ class GaugeTests extends TuiTest {
 
   test("widgets_gauge_renders") {
     val backend = TestBackend(40, 10)
-    val terminal = Terminal.init(backend)
+    val terminal = Terminal(backend)
     terminal.draw { f =>
       val chunks = Layout(
         direction = Direction.Vertical,
@@ -45,33 +45,17 @@ class GaugeTests extends TuiTest {
     )
 
     ranges.range(3, 17) { i =>
-      expected
-        .get(i, 3)
-        .set_bg(Color.Red)
-        .set_fg(Color.Blue)
-      ()
+      expected.update(i, 3)(_.withBg(Color.Red).withFg(Color.Blue))
     }
     ranges.range(17, 37) { i =>
-      expected
-        .get(i, 3)
-        .set_bg(Color.Blue)
-        .set_fg(Color.Red)
-      ()
+      expected.update(i, 3)(_.withBg(Color.Blue).withFg(Color.Red))
     }
 
     ranges.range(3, 20) { i =>
-      expected
-        .get(i, 6)
-        .set_bg(Color.Red)
-        .set_fg(Color.Blue)
-      ()
+      expected.update(i, 6)(_.withBg(Color.Red).withFg(Color.Blue))
     }
     ranges.range(20, 37) { i =>
-      expected
-        .get(i, 6)
-        .set_bg(Color.Blue)
-        .set_fg(Color.Red)
-      ()
+      expected.update(i, 6)(_.withBg(Color.Blue).withFg(Color.Red))
     }
 
     assert_buffer(backend, expected)
@@ -79,7 +63,7 @@ class GaugeTests extends TuiTest {
 
   test("widgets_gauge_renders_no_unicode") {
     val backend = TestBackend(40, 10)
-    val terminal = Terminal.init(backend)
+    val terminal = Terminal(backend)
 
     terminal.draw { f =>
       val chunks = Layout(direction = Direction.Vertical, margin = Margin(2), constraints = Array(Constraint.Percentage(50), Constraint.Percentage(50)))
@@ -114,14 +98,14 @@ class GaugeTests extends TuiTest {
 
   test("widgets_gauge_applies_styles") {
     val backend = TestBackend(12, 5)
-    val terminal = Terminal.init(backend)
+    val terminal = Terminal(backend)
 
     terminal.draw { f =>
       val gauge = GaugeWidget(
         block = Some(BlockWidget(title = Some(Spans.from(Span.styled("Test", Style.DEFAULT.fg(Color.Red)))), borders = Borders.ALL)),
-        gauge_style = Style.DEFAULT.fg(Color.Blue).bg(Color.Red),
         ratio = GaugeWidget.Ratio.percent(43),
-        label = Some(Span.styled("43%", Style(fg = Some(Color.Green), add_modifier = Modifier.BOLD)))
+        label = Some(Span.styled("43%", Style(fg = Some(Color.Green), add_modifier = Modifier.BOLD))),
+        gauge_style = Style.DEFAULT.fg(Color.Blue).bg(Color.Red)
       )
       f.render_widget(gauge, f.size);
     }
@@ -134,22 +118,22 @@ class GaugeTests extends TuiTest {
       "└──────────┘"
     )
     // title
-    expected.set_style(new Rect(1, 0, 4, 1), Style(fg = Some(Color.Red)))
+    expected.update_style(new Rect(1, 0, 4, 1), Style(fg = Some(Color.Red)))
     // gauge area
-    expected.set_style(
+    expected.update_style(
       new Rect(1, 1, 10, 3),
       Style(fg = Some(Color.Blue), bg = Some(Color.Red))
     )
     // filled area
     ranges.range(1, 4) { y =>
-      expected.set_style(
+      expected.update_style(
         new Rect(1, y, 4, 1),
         // filled style is invert of gauge_style
         Style(fg = Some(Color.Red), bg = Some(Color.Blue))
       );
     }
     // label (foreground and modifier from label style)
-    expected.set_style(
+    expected.update_style(
       new Rect(4, 2, 1, 1),
       Style(
         fg = Some(Color.Green),
@@ -158,7 +142,7 @@ class GaugeTests extends TuiTest {
         add_modifier = Modifier.BOLD
       )
     )
-    expected.set_style(
+    expected.update_style(
       new Rect(5, 2, 2, 1),
       Style(
         fg = Some(Color.Green),
@@ -172,7 +156,7 @@ class GaugeTests extends TuiTest {
 
   test("widgets_gauge_supports_large_labels") {
     val backend = TestBackend(10, 1)
-    val terminal = Terminal.init(backend)
+    val terminal = Terminal(backend)
 
     terminal.draw { f =>
       val gauge = GaugeWidget(
@@ -188,7 +172,7 @@ class GaugeTests extends TuiTest {
 
   test("widgets_line_gauge_renders") {
     val backend = TestBackend(20, 4)
-    val terminal = Terminal.init(backend)
+    val terminal = Terminal(backend)
     terminal.draw { f =>
       val gauge0 = LineGaugeWidget(gauge_style = Style.DEFAULT.fg(Color.Green).bg(Color.White), ratio = GaugeWidget.Ratio(0.43))
       f.render_widget(gauge0, Rect(x = 0, y = 0, width = 20, height = 1))
@@ -207,15 +191,14 @@ class GaugeTests extends TuiTest {
       "└──────────────────┘"
     )
     ranges.range(4, 10) { col =>
-      expected.get(col, 0).set_fg(Color.Green)
-      ()
+      expected.update(col, 0)(_.withFg(Color.Green))
     }
     ranges.range(10, 20) { col =>
-      expected.get(col, 0).set_fg(Color.White)
+      expected.update(col, 0)(_.withFg(Color.White))
       ()
     }
     ranges.range(5, 7) { col =>
-      expected.get(col, 2).set_fg(Color.Green)
+      expected.update(col, 2)(_.withFg(Color.Green))
       ()
     }
     assert_buffer(backend, expected)

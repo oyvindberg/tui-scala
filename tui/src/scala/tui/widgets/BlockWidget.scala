@@ -23,6 +23,9 @@ case class BlockWidget(
     /// Widget style
     style: Style = Style.DEFAULT
 ) extends Widget {
+  def patchedStyle(newStyle: Style): BlockWidget =
+    copy(style = style.patched_with(newStyle, false))
+
   /// Compute the inner area of a block based on its border visibility rules.
   def inner(area: Rect): Rect = {
     var inner = area
@@ -51,74 +54,37 @@ case class BlockWidget(
     if (area.area == 0) {
       return
     }
-    buf.set_style(area, style)
-    val symbols = BlockWidget.BorderType.line_symbols(border_type)
+//    buf.update_style(area, style)
 
+    val symbols = BlockWidget.BorderType.line_symbols(border_type)
     // Sides
     if (borders.intersects(Borders.LEFT)) {
-      range(area.top, area.bottom) { y =>
-        buf
-          .get(area.left, y)
-          .set_symbol(symbols.vertical)
-          .set_style(border_style)
-        ()
-      }
+      range(area.top, area.bottom)(y => buf.set(area.left, y, Cell(symbols.vertical, style / border_style)))
     }
-
     if (borders.intersects(Borders.TOP)) {
-      range(area.left, area.right) { x =>
-        buf
-          .get(x, area.top)
-          .set_symbol(symbols.horizontal)
-          .set_style(border_style)
-        ()
-      }
+      range(area.left, area.right)(x => buf.set(x, area.top, Cell(symbols.horizontal, style / border_style)))
     }
     if (borders.intersects(Borders.RIGHT)) {
       val x = area.right - 1
-      range(area.top, area.bottom) { y =>
-        buf
-          .get(x, y)
-          .set_symbol(symbols.vertical)
-          .set_style(border_style)
-        ()
-      }
+      range(area.top, area.bottom)(y => buf.set(x, y, Cell(symbols.vertical, style / border_style)))
     }
     if (borders.intersects(Borders.BOTTOM)) {
       val y = area.bottom - 1
-      range(area.left, area.right) { x =>
-        buf
-          .get(x, y)
-          .set_symbol(symbols.horizontal)
-          .set_style(border_style)
-        ()
-      }
+      range(area.left, area.right)(x => buf.set(x, y, Cell(symbols.horizontal, style / border_style)))
     }
 
     // Corners
     if (borders.contains(Borders.RIGHT | Borders.BOTTOM)) {
-      buf
-        .get(area.right - 1, area.bottom - 1)
-        .set_symbol(symbols.bottom_right)
-        .set_style(border_style)
+      buf.set(area.right - 1, area.bottom - 1, Cell(symbols.bottom_right, style / border_style))
     }
     if (borders.contains(Borders.RIGHT | Borders.TOP)) {
-      buf
-        .get(area.right - 1, area.top)
-        .set_symbol(symbols.top_right)
-        .set_style(border_style)
+      buf.set(area.right - 1, area.top, Cell(symbols.top_right, style / border_style))
     }
     if (borders.contains(Borders.LEFT | Borders.BOTTOM)) {
-      buf
-        .get(area.left, area.bottom - 1)
-        .set_symbol(symbols.bottom_left)
-        .set_style(border_style)
+      buf.set(area.left, area.bottom - 1, Cell(symbols.bottom_left, style / border_style))
     }
     if (borders.contains(Borders.LEFT | Borders.TOP)) {
-      buf
-        .get(area.left, area.top)
-        .set_symbol(symbols.top_left)
-        .set_style(border_style)
+      buf.set(area.left, area.top, Cell(symbols.top_left, style / border_style))
     }
 
     // Title
@@ -144,7 +110,7 @@ case class BlockWidget(
       val title_x = area.left + title_dx
       val title_y = area.top
 
-      buf.set_spans(title_x, title_y, title, title_area_width);
+      buf.set_spans(title_x, title_y, style / title, title_area_width);
     }
   }
 }

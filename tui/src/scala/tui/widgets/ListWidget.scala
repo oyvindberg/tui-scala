@@ -64,11 +64,10 @@ case class ListWidget(
   type State = ListWidget.State
 
   def render(area: Rect, buf: Buffer, state: State): Unit = {
-    buf.set_style(area, style)
     val list_area = block match {
       case Some(b) =>
         val inner_area = b.inner(area)
-        b.render(area, buf)
+        b.patchedStyle(style).render(area, buf)
         inner_area
       case None => area
     }
@@ -85,11 +84,12 @@ case class ListWidget(
     val (start, end) = get_items_bounds(state.selected, state.offset, list_height)
     state.offset = start
 
-    val highlight_symbol1 = highlight_symbol.getOrElse("")
-    val blank_symbol = " ".repeat(Grapheme(highlight_symbol1).width)
+    val highlight_symbol = this.highlight_symbol.getOrElse("")
+    val blank_symbol = " ".repeat(Grapheme(highlight_symbol).width)
 
     var current_height = 0
     val has_selection = state.selected.isDefined
+
     ranges.range(state.offset, state.offset + end - start) { i =>
       val item = items(i)
       val (x, y) = start_corner match {
@@ -101,37 +101,22 @@ case class ListWidget(
           current_height += item.height
           pos
       }
-      val area = Rect(x, y, width = list_area.width, height = item.height)
-
-      val item_style = style.patch(item.style)
-      buf.set_style(area, item_style)
-
       val is_selected = state.selected.contains(i)
+      val s = if (is_selected) Some(highlight_style) else None
+      val item_style = style / item.style
+
       item.content.lines.zipWithIndex.foreach { case (line, j) =>
-        // if the item is selected, we need to display the hightlight symbol:
-        // - either for the first line of the item only,
-        // - or for each line of the item if the appropriate option is set
-        val symbol = if (is_selected && (j == 0 || repeat_highlight_symbol)) {
-          highlight_symbol1
-        } else {
-          blank_symbol
-        }
-        val (elem_x, max_element_width) = if (has_selection) {
-          val (elem_x, _) = buf.set_stringn(
-            x,
-            y + j,
-            symbol,
-            list_area.width,
-            item_style
-          )
-          (elem_x, list_area.width - (elem_x - x))
-        } else {
-          (x, list_area.width)
-        }
-        buf.set_spans(elem_x, y + j, line, max_element_width);
-      }
-      if (is_selected) {
-        buf.set_style(area, highlight_style)
+        val newLine = if (has_selection) {
+          if (is_selected && (j == 0 || repeat_highlight_symbol)) {
+            Spans(Span.nostyle(highlight_symbol) +: line.spans)
+          } else {
+            Spans(Span.nostyle(blank_symbol) +: line.spans)
+          }
+        } else line
+
+        val paddedLine = Spans(newLine.spans.padTo(list_area.width - newLine.width, Span.nostyle(" ")))
+
+        buf.set_spans(x, y + j, item_style / paddedLine / s, list_area.right - x);
       }
     }
   }

@@ -7,6 +7,19 @@ case class Spans(spans: Array[Span]) {
     spans.map(_.width).sum
 
   override def toString: String = spans.mkString("")
+
+  /// Apply a new style to existing text.
+  def patchedStyle(style: Style, overwrite: Boolean): Spans =
+    Spans(spans.map(_.patchedStyle(style, overwrite)))
+
+  def /(style: Style): Spans =
+    patchedStyle(style, overwrite = true)
+
+  def /(optionalStyle: Option[Style]): Spans =
+    optionalStyle match {
+      case Some(style) => this / style
+      case None        => this
+    }
 }
 
 object Spans {

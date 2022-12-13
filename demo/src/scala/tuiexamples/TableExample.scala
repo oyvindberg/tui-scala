@@ -85,8 +85,11 @@ object TableExample {
 
     val selected_style = Style(add_modifier = Modifier.REVERSED)
     val normal_style = Style(bg = Some(Color.Blue))
-    val header_cells = Array("Header1", "Header2", "Header3").map(h => TableWidget.Cell(Text.nostyle(h), style = Style(fg = Some(Color.Red))))
-    val header = TableWidget.Row(cells = header_cells, style = normal_style, bottom_margin = 1)
+    val header = TableWidget.Row(
+      cells = Array("Header1", "Header2", "Header3").map(h => TableWidget.Cell(Text.nostyle(h), style = Style(fg = Some(Color.Red)))),
+      style = normal_style,
+      bottom_margin = 1
+    )
 
     val rows = app.items.map { item =>
       val height = item.map(_.count(_ == '\n')).maxOption.getOrElse(0) + 1

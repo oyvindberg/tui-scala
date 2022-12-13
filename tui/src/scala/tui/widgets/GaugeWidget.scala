@@ -15,16 +15,14 @@ case class GaugeWidget(
 ) extends Widget {
 
   override def render(area: Rect, buf: Buffer): Unit = {
-    buf.set_style(area, style)
     val gauge_area = block match {
       case Some(b) =>
         val inner_area = b.inner(area)
-        b.render(area, buf)
+        b.patchedStyle(style).render(area, buf)
         inner_area
 
       case None => area
     }
-    buf.set_style(gauge_area, gauge_style)
     if (gauge_area.height < 1) {
       return
     }
@@ -41,32 +39,26 @@ case class GaugeWidget(
 
     // the gauge will be filled proportionally to the ratio
     val filled_width = gauge_area.width.toDouble * this.ratio.value
-    val end: Int = if (use_unicode) {
-      gauge_area.left + math.floor(filled_width).toInt
-    } else {
-      gauge_area.left + math.round(filled_width).toInt
+    val filled_width_int = math.floor(filled_width).toInt
+
+    val row = {
+      val filled_style = style / gauge_style.copy(fg = gauge_style.bg, bg = gauge_style.fg)
+      val filled_span = Span(" ", filled_style)
+      val filled = Array.fill(filled_width_int)(filled_span)
+      val maybePartial = if (use_unicode && ratio.value < 1.0) Some(Span(get_unicode_block(filled_width % 1.0), style / gauge_style)) else None
+      val unfilled_span = Span(" ", style / gauge_style)
+      Spans((filled ++ maybePartial).padTo(gauge_area.width, unfilled_span))
     }
+
     ranges.range(gauge_area.top, gauge_area.bottom) { y =>
-      // render the filled area (left to end)
-      ranges.range(gauge_area.left, end) { x =>
-        // spaces are needed to apply the background styling
-        buf
-          .get(x, y)
-          .set_symbol(" ")
-          .set_fg(gauge_style.bg.getOrElse(Color.Reset))
-          .set_bg(gauge_style.fg.getOrElse(Color.Reset))
-        ()
-      }
-      if (use_unicode && ratio.value < 1.0) {
-        buf
-          .get(end, y)
-          .set_symbol(get_unicode_block(filled_width % 1.0))
-        ()
-      }
+      buf.set_spans(gauge_area.left, y, row, gauge_area.width)
+      ()
     }
-    // set the span
-    buf.set_span(label_col, label_row, label, clamped_label_width)
-    ()
+
+    // render label
+    label.content.take(clamped_label_width).zipWithIndex.foreach { case (c, i) =>
+      buf.update(label_col + i, label_row)(cell => cell.withSymbol(c).withStyle(label.style))
+    }
   }
 
   def get_unicode_block(frac: Double): String =

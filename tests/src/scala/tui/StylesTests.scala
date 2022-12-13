@@ -22,8 +22,8 @@ class StylesTests extends TuiTest {
       c <- styles2
       d <- styles2
     } {
-      val combined = a.patch(b.patch(c.patch(d)))
-      assert_eq(Style().patch(a).patch(b).patch(c).patch(d), Style().patch(combined))
+      val combined = a / (b / (c / d))
+      assert_eq(Style() / a / b / c / d, Style() / combined)
     }
   }
   test("flaff") {

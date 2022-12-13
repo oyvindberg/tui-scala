@@ -2,10 +2,9 @@ package tui.widgets.canvas
 
 import tui.{Color, Point}
 
-case class Painter(
-    context: Context,
-    resolution: Point
-) {
+case class Painter(context: Context) {
+  val resolution: Point = context.grid.resolution
+
   /// Convert the (x, y) coordinates to location of a point on the grid
   def get_point(x: Double, y: Double): Option[(Int, Int)] = {
     val left = this.context.x_bounds.x
@@ -28,11 +27,4 @@ case class Painter(
   /// Paint a point of the grid
   def paint(x: Int, y: Int, color: Color): Unit =
     this.context.grid.paint(x, y, color)
-}
-
-object Painter {
-  def from(context: Context): Painter = {
-    val resolution = context.grid.resolution
-    Painter(context, resolution)
-  }
 }

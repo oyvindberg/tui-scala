@@ -3,11 +3,8 @@ package tui
 import scala.util.control.NonFatal
 
 class BufferTests extends TuiTest {
-  def cell(s: String): Cell = {
-    val cell = Cell.default
-    cell.set_symbol(s)
-    cell
-  }
+  def cell(s: String): Cell =
+    Cell(s, Style.DEFAULT)
 
   test("it_translates_to_and_from_coordinates") {
 
@@ -116,15 +113,15 @@ class BufferTests extends TuiTest {
   test("buffer_diffing_empty_filled") {
     val area = Rect(x = 0, y = 0, width = 40, height = 40)
     val prev = Buffer.empty(area)
-    val next = Buffer.filled(area, Cell.default.set_symbol("a"))
+    val next = Buffer.filled(area, Cell.Empty.withSymbol("a"))
     val diff = prev.diff(next)
     assert_eq(diff.length, 40 * 40)
   }
 
   test("buffer_diffing_filled_filled") {
     val area = Rect(x = 0, y = 0, width = 40, height = 40)
-    val prev = Buffer.filled(area, Cell.default.set_symbol("a"))
-    val next = Buffer.filled(area, Cell.default.set_symbol("a"))
+    val prev = Buffer.filled(area, Cell.Empty.withSymbol("a"))
+    val next = Buffer.filled(area, Cell.Empty.withSymbol("a"))
     val diff = prev.diff(next)
     assert_eq(diff, Array.empty[(Int, Int, Cell)])
   }
@@ -175,29 +172,5 @@ class BufferTests extends TuiTest {
 
     val diff = prev.diff(next)
     assert_eq(diff, Array((1, 0, cell("─")), (2, 0, cell("称")), (4, 0, cell("号"))))
-  }
-
-  test("buffer_merge") {
-    val one = Buffer.filled(Rect(x = 0, y = 0, width = 2, height = 2), Cell.default.set_symbol("1"))
-    val two = Buffer.filled(Rect(x = 0, y = 2, width = 2, height = 2), Cell.default.set_symbol("2"))
-    one.merge(two)
-    assert_eq(one, Buffer.with_lines("11", "11", "22", "22"))
-  }
-
-  test("buffer_merge2") {
-    val one = Buffer.filled(Rect(x = 2, y = 2, width = 2, height = 2), Cell.default.set_symbol("1"))
-    val two = Buffer.filled(Rect(x = 0, y = 0, width = 2, height = 2), Cell.default.set_symbol("2"))
-    one.merge(two)
-    val expected = Buffer.with_lines("22  ", "22  ", "  11", "  11")
-    assert_eq(one, expected)
-  }
-
-  test("buffer_merge3") {
-    val one = Buffer.filled(Rect(x = 3, y = 3, width = 2, height = 2), Cell.default.set_symbol("1"))
-    val two = Buffer.filled(Rect(x = 1, y = 1, width = 3, height = 4), Cell.default.set_symbol("2"))
-    one.merge(two)
-    val merged = Buffer.with_lines("222 ", "222 ", "2221", "2221")
-    merged.area = Rect(x = 1, y = 1, width = 4, height = 4)
-    assert_eq(one, merged)
   }
 }
