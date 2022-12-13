@@ -22,8 +22,8 @@ class ParagraphTests extends TuiTest {
         val paragraph = ParagraphWidget(
           text = text,
           block = Some(BlockWidget(borders = Borders.ALL)),
-          alignment = alignment,
-          wrap = Some(ParagraphWidget.Wrap(trim = true))
+          wrap = Some(ParagraphWidget.Wrap(trim = true)),
+          alignment = alignment
         )
         f.render_widget(paragraph, f.size);
       }

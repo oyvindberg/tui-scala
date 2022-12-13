@@ -8,14 +8,14 @@ import tui.widgets.canvas.{CanvasWidget, Line, Points}
 
 /// A widget to plot one or more dataset in a cartesian coordinate system
 case class ChartWidget(
+    /// A reference to the datasets
+    datasets: Array[ChartWidget.Dataset],
     /// A block to display around the widget eventually
     block: Option[BlockWidget] = None,
     /// The horizontal axis
     x_axis: ChartWidget.Axis = ChartWidget.Axis.default,
     /// The vertical axis
     y_axis: ChartWidget.Axis = ChartWidget.Axis.default,
-    /// A reference to the datasets
-    datasets: Array[ChartWidget.Dataset],
     /// The widget base style
     style: Style = Style.DEFAULT,
     /// Set the constraints used to determine whether the legend should be shown or not.
@@ -265,22 +265,21 @@ case class ChartWidget(
         background_color = this.style.bg.getOrElse(Color.Reset),
         x_bounds = this.x_axis.bounds,
         y_bounds = this.y_axis.bounds,
-        marker = dataset.marker,
-        painter = Some { ctx =>
-          val points = Points(coords = dataset.data, color = dataset.style.fg.getOrElse(Color.Reset))
-          ctx.draw(points)
-          dataset.graph_type match {
-            case ChartWidget.GraphType.Scatter => ()
-            case ChartWidget.GraphType.Line =>
-              dataset.data.sliding(2).foreach {
-                case Array(one, two) =>
-                  val line = Line(x1 = one.x, y1 = one.y, x2 = two.x, y2 = two.y, color = dataset.style.fg.getOrElse(Color.Reset))
-                  ctx.draw(line)
-                case _ => ()
-              }
-          }
+        marker = dataset.marker
+      ) { ctx =>
+        val points = Points(coords = dataset.data, color = dataset.style.fg.getOrElse(Color.Reset))
+        ctx.draw(points)
+        dataset.graph_type match {
+          case ChartWidget.GraphType.Scatter => ()
+          case ChartWidget.GraphType.Line =>
+            dataset.data.sliding(2).foreach {
+              case Array(one, two) =>
+                val line = Line(x1 = one.x, y1 = one.y, x2 = two.x, y2 = two.y, color = dataset.style.fg.getOrElse(Color.Reset))
+                ctx.draw(line)
+              case _ => ()
+            }
         }
-      )
+      }
         .render(graph_area, buf)
     }
 

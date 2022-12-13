@@ -222,49 +222,48 @@ object ui {
 
     val map = CanvasWidget(
       block = Some(BlockWidget(title = Some(Spans.nostyle("World")), borders = Borders.ALL)),
-      painter = Some { ctx =>
-        ctx.draw(
-          WorldMap(
-            resolution = MapResolution.High,
-            color = Color.White
-          )
-        )
-        ctx.layer()
-        ctx.draw(
-          Rectangle(
-            x = 0.0,
-            y = 30.0,
-            width = 10.0,
-            height = 10.0,
-            color = Color.Yellow
-          )
-        )
-        app.servers.zipWithIndex.foreach { case (s1, i) =>
-          app.servers.drop(i).foreach { s2 =>
-            ctx.draw(
-              Line(
-                x1 = s1.coords.y,
-                y1 = s1.coords.x,
-                y2 = s2.coords.x,
-                x2 = s2.coords.y,
-                color = Color.Yellow
-              )
-            );
-          }
-        }
-        app.servers.foreach { server =>
-          val color = if (server.status == "Up") Color.Green else Color.Red
-          ctx.print(
-            server.coords.y,
-            server.coords.x,
-            Spans.from(Span.styled("X", Style.DEFAULT.fg(color)))
-          );
-        }
-      },
       marker = if (app.enhanced_graphics) symbols.Marker.Braille else symbols.Marker.Dot,
       x_bounds = Point(-180.0, 180.0),
       y_bounds = Point(-90.0, 90.0)
-    )
+    ) { ctx =>
+      ctx.draw(
+        WorldMap(
+          resolution = MapResolution.High,
+          color = Color.White
+        )
+      )
+      ctx.layer()
+      ctx.draw(
+        Rectangle(
+          x = 0.0,
+          y = 30.0,
+          width = 10.0,
+          height = 10.0,
+          color = Color.Yellow
+        )
+      )
+      app.servers.zipWithIndex.foreach { case (s1, i) =>
+        app.servers.drop(i).foreach { s2 =>
+          ctx.draw(
+            Line(
+              x1 = s1.coords.y,
+              y1 = s1.coords.x,
+              y2 = s2.coords.x,
+              x2 = s2.coords.y,
+              color = Color.Yellow
+            )
+          );
+        }
+      }
+      app.servers.foreach { server =>
+        val color = if (server.status == "Up") Color.Green else Color.Red
+        ctx.print(
+          server.coords.y,
+          server.coords.x,
+          Spans.from(Span.styled("X", Style.DEFAULT.fg(color)))
+        );
+      }
+    }
     f.render_widget(map, chunks(1))
   }
 

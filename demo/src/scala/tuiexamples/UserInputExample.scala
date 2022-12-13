@@ -106,11 +106,11 @@ object UserInputExample {
 
     val input = ParagraphWidget(
       text = Text.nostyle(app.input),
+      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Input")))),
       style = app.input_mode match {
         case InputMode.Normal  => Style.DEFAULT
         case InputMode.Editing => Style.DEFAULT.fg(Color.Yellow)
-      },
-      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Input"))))
+      }
     )
     f.render_widget(input, chunks(1))
 

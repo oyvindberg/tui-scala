@@ -10,12 +10,9 @@ class CanvasTests extends TuiTest {
     val terminal = Terminal.init(backend)
     terminal.draw { f =>
       val label = "test"
-      val canvas = CanvasWidget(
-        background_color = Color.Yellow,
-        x_bounds = Point(0.0, 5.0),
-        y_bounds = Point(0.0, 5.0),
-        painter = Some(_.print(0.0, 0.0, Spans.from(Span.styled(label, Style(fg = Some(Color.Blue))))))
-      )
+      val canvas = CanvasWidget(background_color = Color.Yellow, x_bounds = Point(0.0, 5.0), y_bounds = Point(0.0, 5.0)) { ctx =>
+        ctx.print(0.0, 0.0, Spans.from(Span.styled(label, Style(fg = Some(Color.Blue)))))
+      }
       f.render_widget(canvas, f.size);
     }
 
