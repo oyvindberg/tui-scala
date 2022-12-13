@@ -98,7 +98,7 @@ object CanvasExample {
       .split(f.size)
 
     val canvas0 = CanvasWidget(
-      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.from("World")))),
+      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("World")))),
       y_bounds = Point(-90.0, 90.0),
       x_bounds = Point(-180.0, 180.0),
       painter = Some { ctx =>
@@ -109,7 +109,7 @@ object CanvasExample {
     f.render_widget(canvas0, chunks(0))
 
     val canvas1 = CanvasWidget(
-      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.from("Pong")))),
+      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Pong")))),
       y_bounds = Point(10.0, 110.0),
       x_bounds = Point(10.0, 110.0),
       painter = Some(ctx => ctx.draw(app.ball))

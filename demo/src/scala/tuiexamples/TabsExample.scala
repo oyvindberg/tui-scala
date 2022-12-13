@@ -56,26 +56,24 @@ object TabsExample {
       .map { t =>
         val (first, rest) = t.splitAt(1);
         Spans.from(
-          Array(
-            Span.styled(first, Style(fg = Some(Color.Yellow))),
-            Span.styled(rest, Style(fg = Some(Color.Green)))
-          )
+          Span.styled(first, Style(fg = Some(Color.Yellow))),
+          Span.styled(rest, Style(fg = Some(Color.Green)))
         )
       }
 
     val tabs = TabsWidget(
       titles = titles,
-      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.from("Tabs")))),
+      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Tabs")))),
       selected = app.index,
       style = Style(fg = Some(Color.Cyan)),
       highlight_style = Style(add_modifier = Modifier.BOLD, bg = Some(Color.Black))
     )
     f.render_widget(tabs, chunks(0));
     val inner = app.index match {
-      case 0 => BlockWidget(title = Some(Spans.from("Inner 0")), borders = Borders.ALL)
-      case 1 => BlockWidget(title = Some(Spans.from("Inner 1")), borders = Borders.ALL)
-      case 2 => BlockWidget(title = Some(Spans.from("Inner 2")), borders = Borders.ALL)
-      case 3 => BlockWidget(title = Some(Spans.from("Inner 3")), borders = Borders.ALL)
+      case 0 => BlockWidget(title = Some(Spans.nostyle("Inner 0")), borders = Borders.ALL)
+      case 1 => BlockWidget(title = Some(Spans.nostyle("Inner 1")), borders = Borders.ALL)
+      case 2 => BlockWidget(title = Some(Spans.nostyle("Inner 2")), borders = Borders.ALL)
+      case 3 => BlockWidget(title = Some(Spans.nostyle("Inner 3")), borders = Borders.ALL)
       case _ => sys.error("unreachable")
     };
     f.render_widget(inner, chunks(1));

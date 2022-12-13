@@ -68,7 +68,7 @@ object BarChartExample {
       ).split(f.size)
 
       val barchart1 = BarChartWidget(
-        block = Some(BlockWidget(title = Some(Spans.from("Data1")), borders = Borders.ALL)),
+        block = Some(BlockWidget(title = Some(Spans.nostyle("Data1")), borders = Borders.ALL)),
         data = app.data,
         bar_width = 9,
         bar_style = Style(fg = Some(Color.Yellow)),
@@ -82,7 +82,7 @@ object BarChartExample {
       ).split(verticalChunks(1));
 
       val barchart2 = BarChartWidget(
-        block = Some(BlockWidget(title = Some(Spans.from("Data2")), borders = Borders.ALL)),
+        block = Some(BlockWidget(title = Some(Spans.nostyle("Data2")), borders = Borders.ALL)),
         data = app.data,
         bar_width = 5,
         bar_gap = 3,
@@ -92,7 +92,7 @@ object BarChartExample {
       f.render_widget(barchart2, horizontalChunks(0));
 
       val barchart3 = BarChartWidget(
-        block = Some(BlockWidget(title = Some(Spans.from("Data3")), borders = Borders.ALL)),
+        block = Some(BlockWidget(title = Some(Spans.nostyle("Data3")), borders = Borders.ALL)),
         data = app.data,
         bar_style = Style(fg = Some(Color.Red)),
         bar_width = 7,

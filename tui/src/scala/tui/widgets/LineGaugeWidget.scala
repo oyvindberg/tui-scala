@@ -27,7 +27,7 @@ case class LineGaugeWidget(
       return
     }
 
-    val label = this.label.getOrElse(Spans.from(s"${(ratio.value * 100.0).toInt}%"))
+    val label = this.label.getOrElse(Spans.nostyle(s"${(ratio.value * 100.0).toInt}%"))
     val (col, row) = buf.set_spans(
       gauge_area.left,
       gauge_area.top,

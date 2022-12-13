@@ -78,39 +78,39 @@ object UserInputExample {
     val (msg, style) = app.input_mode match {
       case InputMode.Normal =>
         (
-          Array(
-            Span.raw("Press "),
+          Text.from(
+            Span.nostyle("Press "),
             Span.styled("q", Style.DEFAULT.add_modifier(Modifier.BOLD)),
-            Span.raw(" to exit, "),
+            Span.nostyle(" to exit, "),
             Span.styled("e", Style.DEFAULT.add_modifier(Modifier.BOLD)),
-            Span.raw(" to start editing.")
+            Span.nostyle(" to start editing.")
           ),
           Style.DEFAULT.add_modifier(Modifier.RAPID_BLINK)
         )
       case InputMode.Editing =>
         (
-          Array(
-            Span.raw("Press "),
+          Text.from(
+            Span.nostyle("Press "),
             Span.styled("Esc", Style.DEFAULT.add_modifier(Modifier.BOLD)),
-            Span.raw(" to stop editing, "),
+            Span.nostyle(" to stop editing, "),
             Span.styled("Enter", Style.DEFAULT.add_modifier(Modifier.BOLD)),
-            Span.raw(" to record the message")
+            Span.nostyle(" to record the message")
           ),
           Style.DEFAULT
         )
     }
-    val text = Text.from(Spans.from(msg)).patch_style(style)
+    val text = msg.overwrittenStyle(style)
 
     val help_message = ParagraphWidget(text = text)
     f.render_widget(help_message, chunks(0))
 
     val input = ParagraphWidget(
-      text = Text.from(app.input),
+      text = Text.nostyle(app.input),
       style = app.input_mode match {
         case InputMode.Normal  => Style.DEFAULT
         case InputMode.Editing => Style.DEFAULT.fg(Color.Yellow)
       },
-      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.from("Input"))))
+      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Input"))))
     )
     f.render_widget(input, chunks(1))
 
@@ -130,12 +130,12 @@ object UserInputExample {
     }
 
     val items: Array[ListWidget.Item] =
-      app.messages.zipWithIndex.map { case (m, i) => ListWidget.Item(content = Text.from(s"$i: $m")) }
+      app.messages.zipWithIndex.map { case (m, i) => ListWidget.Item(content = Text.nostyle(s"$i: $m")) }
 
     val messages =
       ListWidget(
         items = items,
-        block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.from("Messages"))))
+        block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Messages"))))
       )
     f.render_widget(messages, chunks(2))
   }

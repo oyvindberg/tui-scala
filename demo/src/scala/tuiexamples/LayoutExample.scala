@@ -27,9 +27,9 @@ object LayoutExample {
     )
       .split(f.size)
 
-    val block0 = BlockWidget(title = Some(Spans.from("Block")), borders = Borders.ALL)
+    val block0 = BlockWidget(title = Some(Spans.nostyle("Block")), borders = Borders.ALL)
     f.render_widget(block0, chunks(0))
-    val block1 = BlockWidget(title = Some(Spans.from("Block 2")), borders = Borders.ALL)
+    val block1 = BlockWidget(title = Some(Spans.nostyle("Block 2")), borders = Borders.ALL)
     f.render_widget(block1, chunks(2))
   }
 }

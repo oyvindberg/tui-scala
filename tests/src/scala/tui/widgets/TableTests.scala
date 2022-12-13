@@ -5,7 +5,7 @@ import tui.internal.ranges
 import tui.widgets.TableWidget.Row
 
 class TableTests extends TuiTest {
-  def cell(str: String): TableWidget.Cell = TableWidget.Cell(Text.raw(str))
+  def cell(str: String): TableWidget.Cell = TableWidget.Cell(Text.nostyle(str))
 
   test("widgets_table_column_spacing_can_be_changed") {
     def test_case(column_spacing: Int, expected: Buffer): Unit = {
@@ -598,10 +598,10 @@ class TableTests extends TuiTest {
           Row(cells = Array("Row11", "Row12", "Row13").map(cell), style = Style(fg = Some(Color.Green))),
           Row(
             cells = Array(
-              TableWidget.Cell(content = Text.raw("Row21")),
-              TableWidget.Cell(content = Text.raw("Row22"), style = Style(fg = Some(Color.Yellow))),
+              TableWidget.Cell(content = Text.nostyle("Row21")),
+              TableWidget.Cell(content = Text.nostyle("Row22"), style = Style(fg = Some(Color.Yellow))),
               TableWidget.Cell(
-                content = Text.from(Spans.from(Array(Span.raw("Row"), Span.styled("23", Style.DEFAULT.fg(Color.Blue))))),
+                content = Text.from(Span.nostyle("Row"), Span.styled("23", Style.DEFAULT.fg(Color.Blue))),
                 style = Style(fg = Some(Color.Red))
               )
             ),

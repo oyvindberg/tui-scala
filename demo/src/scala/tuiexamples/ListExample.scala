@@ -171,7 +171,7 @@ object ListExample {
     val items0 = app.items.items
       .map { case (str, int) =>
         val lines = Array.newBuilder[Spans]
-        lines += Spans.from(str)
+        lines += Spans.nostyle(str)
         ranges.range(0, int) { _ =>
           lines += (Spans.from(
             Span.styled(
@@ -186,7 +186,7 @@ object ListExample {
     // Create a List from all list items and highlight the currently selected one
     val items = ListWidget(
       items = items0,
-      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.from("List")))),
+      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("List")))),
       highlight_style = Style(bg = Some(Color.LightGreen), add_modifier = Modifier.BOLD),
       highlight_symbol = Some(">> ")
     )
@@ -208,17 +208,15 @@ object ListExample {
         };
         // Add a example datetime and apply proper spacing between them
         val header = Spans.from(
-          Array(
-            Span.styled(level.padTo(9, ' '), s),
-            Span.raw(" "),
-            Span.styled(
-              "2020-01-01 10:00:00",
-              Style(add_modifier = Modifier.ITALIC)
-            )
+          Span.styled(level.padTo(9, ' '), s),
+          Span.nostyle(" "),
+          Span.styled(
+            "2020-01-01 10:00:00",
+            Style(add_modifier = Modifier.ITALIC)
           )
         );
         // The event gets its own line
-        val log = Spans.from(Array(Span.raw(event)));
+        val log = Spans.nostyle(event);
 
         // Here several things happen:
         // 1. Add a `---` spacing line above the final list entry
@@ -226,20 +224,18 @@ object ListExample {
         // 3. Add a spacer line
         // 4. Add the actual event
         ListWidget.Item(
-          Text(
-            Array(
-              Spans.from("-".repeat(chunks(1).width)),
-              header,
-              Spans.from(""),
-              log
-            )
+          Text.fromSpans(
+            Spans.nostyle("-".repeat(chunks(1).width)),
+            header,
+            Spans.nostyle(""),
+            log
           )
         )
       }
 
     val events_list = ListWidget(
       items = events,
-      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.from("List")))),
+      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("List")))),
       start_corner = Corner.BottomLeft
     )
 

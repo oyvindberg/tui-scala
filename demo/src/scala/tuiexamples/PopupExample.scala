@@ -50,7 +50,7 @@ object PopupExample {
     f.render_widget(paragraph, chunks(0));
 
     val block = BlockWidget(
-      title = Some(Spans.from("Content")),
+      title = Some(Spans.nostyle("Content")),
       borders = Borders.ALL,
       style = Style.DEFAULT.bg(Color.Blue)
     )
@@ -58,7 +58,7 @@ object PopupExample {
     f.render_widget(block, chunks(1));
 
     if (app.show_popup) {
-      val block = BlockWidget(title = Some(Spans.from("Popup")), borders = Borders.ALL)
+      val block = BlockWidget(title = Some(Spans.nostyle("Popup")), borders = Borders.ALL)
       val area = centered_rect(60, 20, size);
       f.render_widget(ClearWidget, area); // this clears out the background
       f.render_widget(block, area);

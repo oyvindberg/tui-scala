@@ -86,22 +86,22 @@ object GaugeExample {
       .split(f.size)
 
     val gauge0 = GaugeWidget(
-      block = Some(BlockWidget(title = Some(Spans.from("Gauge1")), borders = Borders.ALL)),
+      block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge1")), borders = Borders.ALL)),
       gauge_style = Style(fg = Some(Color.Yellow)),
       ratio = GaugeWidget.Ratio.percent(app.progress1)
     )
     f.render_widget(gauge0, chunks(0))
 
     val gauge1 = GaugeWidget(
-      block = Some(BlockWidget(title = Some(Spans.from("Gauge2")), borders = Borders.ALL)),
+      block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge2")), borders = Borders.ALL)),
       gauge_style = Style(fg = Some(Color.Magenta), bg = Some(Color.Green)),
       ratio = GaugeWidget.Ratio.percent(app.progress2),
-      label = Some(Span.from(s"${app.progress2}/100"))
+      label = Some(Span.nostyle(s"${app.progress2}/100"))
     )
     f.render_widget(gauge1, chunks(1))
 
     val gauge2 = GaugeWidget(
-      block = Some(BlockWidget(title = Some(Spans.from("Gauge3")), borders = Borders.ALL)),
+      block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge3")), borders = Borders.ALL)),
       gauge_style = Style(fg = Some(Color.Yellow)),
       ratio = GaugeWidget.Ratio(app.progress3),
       label = Some(
@@ -115,10 +115,10 @@ object GaugeExample {
     f.render_widget(gauge2, chunks(2))
 
     val gauge3 = GaugeWidget(
-      block = Some(BlockWidget(title = Some(Spans.from("Gauge4")))),
+      block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge4")))),
       gauge_style = Style(fg = Some(Color.Cyan), add_modifier = Modifier.ITALIC),
       ratio = GaugeWidget.Ratio.percent(app.progress4),
-      label = Some(Span.from(s"${app.progress4}/100"))
+      label = Some(Span.nostyle(s"${app.progress4}/100"))
     )
     f.render_widget(gauge3, chunks(3))
   }

@@ -33,8 +33,8 @@ class ChartTests extends TuiTest {
 
       val chart = ChartWidget(
         datasets = datasets,
-        x_axis = ChartWidget.Axis(title = Some(Spans.from("X axis"))),
-        y_axis = ChartWidget.Axis(title = Some(Spans.from("Y axis"))),
+        x_axis = ChartWidget.Axis(title = Some(Spans.nostyle("X axis"))),
+        y_axis = ChartWidget.Axis(title = Some(Spans.nostyle("Y axis"))),
         hidden_legend_constraints = c.hidden_legend_constraints
       )
       val layout = chart.layout(c.chart_area);
@@ -43,7 +43,7 @@ class ChartTests extends TuiTest {
   }
 
   def create_labels(labels: Array[String]): Array[Span] =
-    labels.map(Span.from)
+    labels.map(Span.nostyle)
 
   def axis_test_case(width: Int, height: Int, x_axis: ChartWidget.Axis, y_axis: ChartWidget.Axis, lines: Array[String]): Unit = {
     val backend = TestBackend(width, height);
@@ -65,7 +65,7 @@ class ChartTests extends TuiTest {
 
         val chart = ChartWidget(
           datasets = datasets,
-          block = Some(BlockWidget(title = Some(Spans.from("Plot")), borders = Borders.ALL)),
+          block = Some(BlockWidget(title = Some(Spans.nostyle("Plot")), borders = Borders.ALL)),
           x_axis = ChartWidget.Axis(bounds = Point.Zero, labels = Some(create_labels(Array("0.0", "1.0")))),
           y_axis = ChartWidget.Axis(bounds = Point.Zero, labels = Some(create_labels(Array("1.0", "0.0"))))
         )
@@ -84,14 +84,14 @@ class ChartTests extends TuiTest {
       val x_axis =
         x_labels.foldLeft(ChartWidget.Axis(bounds = Point(0.0, 1.0))) { case (acc, (left_label, right_label)) =>
           acc.copy(
-            labels = Some(Array(Span.from(left_label), Span.from(right_label))),
+            labels = Some(Array(Span.nostyle(left_label), Span.nostyle(right_label))),
             labels_alignment = x_alignment
           )
         };
 
       val y_axis =
         y_labels.foldLeft(ChartWidget.Axis(bounds = Point(0.0, 1.0))) { case (acc, (left_label, right_label)) =>
-          acc.copy(labels = Some(Array(Span.from(left_label), Span.from(right_label))))
+          acc.copy(labels = Some(Array(Span.nostyle(left_label), Span.nostyle(right_label))))
         };
 
       axis_test_case(10, 5, x_axis, y_axis, lines);
@@ -186,7 +186,7 @@ class ChartTests extends TuiTest {
   test("widgets_chart_handles_x_axis_labels_alignments") {
     def test_case(y_alignment: Alignment, lines: Array[String]) = {
       val x_axis = ChartWidget.Axis(
-        labels = Some(Array(Span.from("AAAA"), Span.from("B"), Span.from("C"))),
+        labels = Some(Array(Span.nostyle("AAAA"), Span.nostyle("B"), Span.nostyle("C"))),
         labels_alignment = y_alignment
       )
 
@@ -277,7 +277,7 @@ class ChartTests extends TuiTest {
       )
       val chart = ChartWidget(
         datasets = datasets,
-        block = Some(BlockWidget(title = Some(Spans.from("Plot")), borders = Borders.ALL)),
+        block = Some(BlockWidget(title = Some(Spans.nostyle("Plot")), borders = Borders.ALL)),
         x_axis = ChartWidget.Axis(bounds = Point.Zero, labels = Option(create_labels(Array("0.0", "1.0")))),
         y_axis = ChartWidget.Axis(bounds = Point.Zero, labels = Option(create_labels(Array("0.0", "1.0"))))
       )
@@ -303,7 +303,7 @@ class ChartTests extends TuiTest {
 
       val chart = ChartWidget(
         datasets = datasets,
-        block = Some(BlockWidget(title = Some(Spans.from("Plot")), borders = Borders.ALL)),
+        block = Some(BlockWidget(title = Some(Spans.nostyle("Plot")), borders = Borders.ALL)),
         x_axis = ChartWidget.Axis(bounds = Point(1_588_298_471.0, 1_588_992_600.0), labels = Some(create_labels(Array("1588298471.0", "1588992600.0")))),
         y_axis = ChartWidget.Axis(bounds = Point(0.0, 1.0), labels = Some(create_labels(Array("0.0", "1.0"))))
       )
@@ -319,7 +319,7 @@ class ChartTests extends TuiTest {
       val datasets = Array(ChartWidget.Dataset(data = Array.empty, graph_type = ChartWidget.GraphType.Line))
       val chart = ChartWidget(
         datasets = datasets,
-        block = Some(BlockWidget(title = Some(Spans.from("Empty Dataset With Line")), borders = Borders.ALL)),
+        block = Some(BlockWidget(title = Some(Spans.nostyle("Empty Dataset With Line")), borders = Borders.ALL)),
         x_axis = ChartWidget.Axis(bounds = Point.Zero, labels = Some(create_labels(Array("0.0", "1.0")))),
         y_axis = ChartWidget.Axis(bounds = Point(0.0, 1.0), labels = Some(create_labels(Array("0.0", "1.0"))))
       )
@@ -372,13 +372,13 @@ class ChartTests extends TuiTest {
       val chart = ChartWidget(
         datasets = datasets,
         style = Style.DEFAULT.bg(Color.White),
-        block = Some(BlockWidget(title = Some(Spans.from("Chart Test")), borders = Borders.ALL)),
+        block = Some(BlockWidget(title = Some(Spans.nostyle("Chart Test")), borders = Borders.ALL)),
         x_axis = ChartWidget.Axis(
           bounds = Point(0.0, 100.0),
           title = Some(Spans.from(Span.styled("X Axis", Style.DEFAULT.fg(Color.Yellow)))),
           labels = Some(create_labels(Array("0.0", "50.0", "100.0")))
         ),
-        y_axis = ChartWidget.Axis(bounds = Point(0.0, 10.0), title = Some(Spans.from("Y Axis")), labels = Some(create_labels(Array("0.0", "5.0", "10.0"))))
+        y_axis = ChartWidget.Axis(bounds = Point(0.0, 10.0), title = Some(Spans.nostyle("Y Axis")), labels = Some(create_labels(Array("0.0", "5.0", "10.0"))))
       )
       f.render_widget(chart, Rect(x = 0, y = 0, width = 60, height = 30));
     }

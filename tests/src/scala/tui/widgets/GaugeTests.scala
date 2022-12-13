@@ -17,14 +17,14 @@ class GaugeTests extends TuiTest {
         .split(f.size)
 
       val gauge0 = GaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.from("Percentage")), borders = Borders.ALL)),
+        block = Some(BlockWidget(title = Some(Spans.nostyle("Percentage")), borders = Borders.ALL)),
         gauge_style = Style(bg = Some(Color.Blue), fg = Some(Color.Red)),
         use_unicode = true,
         ratio = GaugeWidget.Ratio.percent(43)
       )
       f.render_widget(gauge0, chunks(0))
       val gauge = GaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.from("Ratio")), borders = Borders.ALL)),
+        block = Some(BlockWidget(title = Some(Spans.nostyle("Ratio")), borders = Borders.ALL)),
         gauge_style = Style(bg = Some(Color.Blue), fg = Some(Color.Red)),
         use_unicode = true,
         ratio = GaugeWidget.Ratio(0.511_313_934_313_1)
@@ -88,12 +88,12 @@ class GaugeTests extends TuiTest {
         .split(f.size)
 
       val gauge0 = GaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.from("Percentage")), borders = Borders.ALL)),
+        block = Some(BlockWidget(title = Some(Spans.nostyle("Percentage")), borders = Borders.ALL)),
         ratio = GaugeWidget.Ratio.percent(43)
       )
       f.render_widget(gauge0, chunks(0))
       val gauge = GaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.from("Ratio")), borders = Borders.ALL)),
+        block = Some(BlockWidget(title = Some(Spans.nostyle("Ratio")), borders = Borders.ALL)),
         ratio = GaugeWidget.Ratio(0.211_313_934_313_1)
       )
       f.render_widget(gauge, chunks(1));
@@ -183,7 +183,7 @@ class GaugeTests extends TuiTest {
     terminal.draw { f =>
       val gauge = GaugeWidget(
         ratio = GaugeWidget.Ratio.percent(43),
-        label = Some(Span.from("43333333333333333333333333333%"))
+        label = Some(Span.nostyle("43333333333333333333333333333%"))
       )
       f.render_widget(gauge, f.size);
     }
@@ -199,7 +199,7 @@ class GaugeTests extends TuiTest {
       val gauge0 = LineGaugeWidget(gauge_style = Style.DEFAULT.fg(Color.Green).bg(Color.White), ratio = GaugeWidget.Ratio(0.43))
       f.render_widget(gauge0, Rect(x = 0, y = 0, width = 20, height = 1))
       val gauge = LineGaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.from("Gauge 2")), borders = Borders.ALL)),
+        block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge 2")), borders = Borders.ALL)),
         gauge_style = Style(fg = Some(Color.Green)),
         line_set = symbols.line.THICK,
         ratio = GaugeWidget.Ratio(0.211_313_934_313_1)
