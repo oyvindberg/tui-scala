@@ -19,7 +19,7 @@ class CanvasTests extends TuiTest {
       f.render_widget(canvas, f.size);
     }
 
-    val expected = Buffer.with_lines(Array("    ", "    ", "     ", "     ", "test "));
+    val expected = Buffer.with_lines("    ", "    ", "     ", "     ", "test ");
     ranges.range(0, 5) { row =>
       ranges.range(0, 5) { col =>
         expected.get(col, row).set_bg(Color.Yellow);

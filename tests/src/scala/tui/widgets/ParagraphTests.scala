@@ -33,52 +33,46 @@ class ParagraphTests extends TuiTest {
     test_case(
       Alignment.Left,
       Buffer.with_lines(
-        Array(
-          "┌──────────────────┐",
-          "│The library is    │",
-          "│based on the      │",
-          "│principle of      │",
-          "│immediate         │",
-          "│rendering with    │",
-          "│intermediate      │",
-          "│buffers. This     │",
-          "│means that at each│",
-          "└──────────────────┘"
-        )
+        "┌──────────────────┐",
+        "│The library is    │",
+        "│based on the      │",
+        "│principle of      │",
+        "│immediate         │",
+        "│rendering with    │",
+        "│intermediate      │",
+        "│buffers. This     │",
+        "│means that at each│",
+        "└──────────────────┘"
       )
     )
     test_case(
       Alignment.Right,
       Buffer.with_lines(
-        Array(
-          "┌──────────────────┐",
-          "│    The library is│",
-          "│      based on the│",
-          "│      principle of│",
-          "│         immediate│",
-          "│    rendering with│",
-          "│      intermediate│",
-          "│     buffers. This│",
-          "│means that at each│",
-          "└──────────────────┘"
-        )
+        "┌──────────────────┐",
+        "│    The library is│",
+        "│      based on the│",
+        "│      principle of│",
+        "│         immediate│",
+        "│    rendering with│",
+        "│      intermediate│",
+        "│     buffers. This│",
+        "│means that at each│",
+        "└──────────────────┘"
       )
     )
     test_case(
       Alignment.Center,
       Buffer.with_lines(
-        Array(
-          "┌──────────────────┐",
-          "│  The library is  │",
-          "│   based on the   │",
-          "│   principle of   │",
-          "│     immediate    │",
-          "│  rendering with  │",
-          "│   intermediate   │",
-          "│   buffers. This  │",
-          "│means that at each│",
-          "└──────────────────┘"
-        )
+        "┌──────────────────┐",
+        "│  The library is  │",
+        "│   based on the   │",
+        "│   principle of   │",
+        "│     immediate    │",
+        "│  rendering with  │",
+        "│   intermediate   │",
+        "│   buffers. This  │",
+        "│means that at each│",
+        "└──────────────────┘"
       )
     )
   }
@@ -94,18 +88,16 @@ class ParagraphTests extends TuiTest {
     }
 
     val expected = Buffer.with_lines(
-      Array(
-        "┌────────┐",
-        "│コンピュ│",
-        "│ータ上で│",
-        "│文字を扱│",
-        "│う場合、│",
-        "│典型的に│",
-        "│は文字に│",
-        "│よる通信│",
-        "│を行う場│",
-        "└────────┘"
-      )
+      "┌────────┐",
+      "│コンピュ│",
+      "│ータ上で│",
+      "│文字を扱│",
+      "│う場合、│",
+      "│典型的に│",
+      "│は文字に│",
+      "│よる通信│",
+      "│を行う場│",
+      "└────────┘"
     )
     assert_buffer(backend, expected)
   }
@@ -121,16 +113,14 @@ class ParagraphTests extends TuiTest {
     }
 
     val expected = Buffer.with_lines(
-      Array(
-        // The internal width is 8 so only 4 slots for double-width characters.
-        "┌────────┐",
-        "│aコンピ │", // Here we have 1 latin character so only 3 double-width ones can fit.
-        "│ュータ上│",
-        "│で文字を│",
-        "│扱う場合│",
-        "│、      │",
-        "└────────┘"
-      )
+      // The internal width is 8 so only 4 slots for double-width characters.
+      "┌────────┐",
+      "│aコンピ │", // Here we have 1 latin character so only 3 double-width ones can fit.
+      "│ュータ上│",
+      "│で文字を│",
+      "│扱う場合│",
+      "│、      │",
+      "└────────┘"
     )
     assert_buffer(backend, expected)
   }
@@ -141,11 +131,9 @@ class ParagraphTests extends TuiTest {
     val backend = TestBackend(20, 3)
     val terminal = Terminal.init(backend)
     val expected = Buffer.with_lines(
-      Array(
-        "┌──────────────────┐",
-        "│NBSP\u00a0             │",
-        "└──────────────────┘"
-      )
+      "┌──────────────────┐",
+      "│NBSP\u00a0             │",
+      "└──────────────────┘"
     )
     terminal.draw { f =>
       val paragraph = ParagraphWidget(text = line, block = Some(BlockWidget(borders = Borders.ALL)))
@@ -171,18 +159,16 @@ class ParagraphTests extends TuiTest {
       Alignment.Left,
       (0, 7),
       Buffer.with_lines(
-        Array(
-          "┌──────────────────┐",
-          "│在可以水平滚动了！│",
-          "│ph can scroll hori│",
-          "│ine               │",
-          "│                  │",
-          "│                  │",
-          "│                  │",
-          "│                  │",
-          "│                  │",
-          "└──────────────────┘"
-        )
+        "┌──────────────────┐",
+        "│在可以水平滚动了！│",
+        "│ph can scroll hori│",
+        "│ine               │",
+        "│                  │",
+        "│                  │",
+        "│                  │",
+        "│                  │",
+        "│                  │",
+        "└──────────────────┘"
       )
     )
     // only support Alignment.Left
@@ -190,18 +176,16 @@ class ParagraphTests extends TuiTest {
       Alignment.Right,
       (0, 7),
       Buffer.with_lines(
-        Array(
-          "┌──────────────────┐",
-          "│段落现在可以水平滚│",
-          "│Paragraph can scro│",
-          "│        Short line│",
-          "│                  │",
-          "│                  │",
-          "│                  │",
-          "│                  │",
-          "│                  │",
-          "└──────────────────┘"
-        )
+        "┌──────────────────┐",
+        "│段落现在可以水平滚│",
+        "│Paragraph can scro│",
+        "│        Short line│",
+        "│                  │",
+        "│                  │",
+        "│                  │",
+        "│                  │",
+        "│                  │",
+        "└──────────────────┘"
       )
     )
   }

@@ -45,14 +45,14 @@ class ChartTests extends TuiTest {
   def create_labels(labels: Array[String]): Array[Span] =
     labels.map(Span.nostyle)
 
-  def axis_test_case(width: Int, height: Int, x_axis: ChartWidget.Axis, y_axis: ChartWidget.Axis, lines: Array[String]): Unit = {
+  def axis_test_case(width: Int, height: Int, x_axis: ChartWidget.Axis, y_axis: ChartWidget.Axis, lines: String*): Unit = {
     val backend = TestBackend(width, height);
     val terminal = Terminal.init(backend)
     terminal.draw { f =>
       val chart = ChartWidget(datasets = Array.empty, x_axis = x_axis, y_axis = y_axis)
       f.render_widget(chart, f.size);
     }
-    val expected = Buffer.with_lines(lines);
+    val expected = Buffer.with_lines(lines: _*);
     assert_buffer(backend, expected)
   }
 
@@ -80,7 +80,7 @@ class ChartTests extends TuiTest {
   }
 
   test("widgets_chart_handles_long_labels") {
-    def test_case(x_labels: Option[(String, String)], y_labels: Option[(String, String)], x_alignment: Alignment, lines: Array[String]) = {
+    def test_case(x_labels: Option[(String, String)], y_labels: Option[(String, String)], x_alignment: Alignment, lines: String*) = {
       val x_axis =
         x_labels.foldLeft(ChartWidget.Axis(bounds = Point(0.0, 1.0))) { case (acc, (left_label, right_label)) =>
           acc.copy(
@@ -94,97 +94,83 @@ class ChartTests extends TuiTest {
           acc.copy(labels = Some(Array(Span.nostyle(left_label), Span.nostyle(right_label))))
         };
 
-      axis_test_case(10, 5, x_axis, y_axis, lines);
+      axis_test_case(10, 5, x_axis, y_axis, lines: _*);
     };
 
     test_case(
       Some(("AAAA", "B")),
       None,
       Alignment.Left,
-      Array(
-        "          ",
-        "          ",
-        "          ",
-        "   ───────",
-        "AAA      B"
-      )
+      "          ",
+      "          ",
+      "          ",
+      "   ───────",
+      "AAA      B"
     );
     test_case(
       Some(("A", "BBBB")),
       None,
       Alignment.Left,
-      Array(
-        "          ",
-        "          ",
-        "          ",
-        " ─────────",
-        "A     BBBB"
-      )
+      "          ",
+      "          ",
+      "          ",
+      " ─────────",
+      "A     BBBB"
     );
     test_case(
       Some(("AAAAAAAAAAA", "B")),
       None,
       Alignment.Left,
-      Array(
-        "          ",
-        "          ",
-        "          ",
-        "   ───────",
-        "AAA      B"
-      )
+      "          ",
+      "          ",
+      "          ",
+      "   ───────",
+      "AAA      B"
     );
     test_case(
       Some(("A", "B")),
       Some(("CCCCCCC", "D")),
       Alignment.Left,
-      Array(
-        "D  │      ",
-        "   │      ",
-        "CCC│      ",
-        "   └──────",
-        "   A     B"
-      )
+      "D  │      ",
+      "   │      ",
+      "CCC│      ",
+      "   └──────",
+      "   A     B"
     );
     test_case(
       Some(("AAAAAAAAAA", "B")),
       Some(("C", "D")),
       Alignment.Center,
-      Array(
-        "D  │      ",
-        "   │      ",
-        "C  │      ",
-        "   └──────",
-        "AAAAAAA  B"
-      )
+      "D  │      ",
+      "   │      ",
+      "C  │      ",
+      "   └──────",
+      "AAAAAAA  B"
     );
     test_case(
       Some(("AAAAAAA", "B")),
       Some(("C", "D")),
       Alignment.Right,
-      Array(
-        "D│        ",
-        " │        ",
-        "C│        ",
-        " └────────",
-        " AAAAA   B"
-      )
+      "D│        ",
+      " │        ",
+      "C│        ",
+      " └────────",
+      " AAAAA   B"
     );
     test_case(
       Some(("AAAAAAA", "BBBBBBB")),
       Some(("C", "D")),
       Alignment.Right,
-      Array(
-        "D│        ",
-        " │        ",
-        "C│        ",
-        " └────────",
-        " AAAAABBBB"
-      )
+      "D│        ",
+      " │        ",
+      "C│        ",
+      " └────────",
+      " AAAAABBBB"
     );
   }
 
   test("widgets_chart_handles_x_axis_labels_alignments") {
-    def test_case(y_alignment: Alignment, lines: Array[String]) = {
+    def test_case(y_alignment: Alignment, lines: String*) = {
       val x_axis = ChartWidget.Axis(
         labels = Some(Array(Span.nostyle("AAAA"), Span.nostyle("B"), Span.nostyle("C"))),
         labels_alignment = y_alignment
@@ -192,78 +178,66 @@ class ChartTests extends TuiTest {
 
       val y_axis = ChartWidget.Axis.default;
 
-      axis_test_case(10, 5, x_axis, y_axis, lines);
+      axis_test_case(10, 5, x_axis, y_axis, lines: _*);
     };
 
     test_case(
       Alignment.Left,
-      Array(
-        "          ",
-        "          ",
-        "          ",
-        "   ───────",
-        "AAA   B  C"
-      )
+      "          ",
+      "          ",
+      "          ",
+      "   ───────",
+      "AAA   B  C"
     );
     test_case(
       Alignment.Center,
-      Array(
-        "          ",
-        "          ",
-        "          ",
-        "  ────────",
-        "AAAA B   C"
-      )
+      "          ",
+      "          ",
+      "          ",
+      "  ────────",
+      "AAAA B   C"
     );
     test_case(
       Alignment.Right,
-      Array(
-        "          ",
-        "          ",
-        "          ",
-        "──────────",
-        "AAA  B   C"
-      )
+      "          ",
+      "          ",
+      "          ",
+      "──────────",
+      "AAA  B   C"
     );
   }
 
   test("widgets_chart_handles_y_axis_labels_alignments") {
-    def test_case(y_alignment: Alignment, lines: Array[String]): Unit = {
+    def test_case(y_alignment: Alignment, lines: String*): Unit = {
       val x_axis = ChartWidget.Axis(labels = Some(create_labels(Array("AAAAA", "B"))))
 
       val y_axis = ChartWidget.Axis(labels = Some(create_labels(Array("C", "D"))), labels_alignment = y_alignment)
 
-      axis_test_case(20, 5, x_axis, y_axis, lines);
+      axis_test_case(20, 5, x_axis, y_axis, lines: _*);
     };
     test_case(
       Alignment.Left,
-      Array(
-        "D   │               ",
-        "    │               ",
-        "C   │               ",
-        "    └───────────────",
-        "AAAAA              B"
-      )
+      "D   │               ",
+      "    │               ",
+      "C   │               ",
+      "    └───────────────",
+      "AAAAA              B"
     );
     test_case(
       Alignment.Center,
-      Array(
-        "  D │               ",
-        "    │               ",
-        "  C │               ",
-        "    └───────────────",
-        "AAAAA              B"
-      )
+      "  D │               ",
+      "    │               ",
+      "  C │               ",
+      "    └───────────────",
+      "AAAAA              B"
     );
     test_case(
       Alignment.Right,
-      Array(
-        "   D│               ",
-        "    │               ",
-        "   C│               ",
-        "    └───────────────",
-        "AAAAA              B"
-      )
+      "   D│               ",
+      "    │               ",
+      "   C│               ",
+      "    └───────────────",
+      "AAAAA              B"
     );
   }
 
@@ -384,38 +358,36 @@ class ChartTests extends TuiTest {
     }
 
     val expected = Buffer.with_lines(
-      Array(
-        "┌Chart Test────────────────────────────────────────────────┐",
-        "│10.0│Y Axis                                    ┌─────────┐│",
-        "│    │  ••                                      │Dataset 1││",
-        "│    │    ••                                    │Dataset 2││",
-        "│    │      ••                                  └─────────┘│",
-        "│    │        ••                                ••         │",
-        "│    │          ••                            ••           │",
-        "│    │            ••                        ••             │",
-        "│    │              ••                    ••               │",
-        "│    │                ••                ••                 │",
-        "│    │                  ••            ••                   │",
-        "│    │                    ••        ••                     │",
-        "│    │                      •••   ••                       │",
-        "│    │                         •••                         │",
-        "│5.0 │                        •• ••                        │",
-        "│    │                      ••     ••                      │",
-        "│    │                   •••         ••                    │",
-        "│    │                 ••              ••                  │",
-        "│    │               ••                  ••                │",
-        "│    │             ••                      ••              │",
-        "│    │           ••                          ••            │",
-        "│    │         ••                              ••          │",
-        "│    │       ••                                  ••        │",
-        "│    │     ••                                      •••     │",
-        "│    │   ••                                           ••   │",
-        "│    │ ••                                               •• │",
-        "│0.0 │•                                              X Axis│",
-        "│    └─────────────────────────────────────────────────────│",
-        "│  0.0                        50.0                    100.0│",
-        "└──────────────────────────────────────────────────────────┘"
-      )
+      "┌Chart Test────────────────────────────────────────────────┐",
+      "│10.0│Y Axis                                    ┌─────────┐│",
+      "│    │  ••                                      │Dataset 1││",
+      "│    │    ••                                    │Dataset 2││",
+      "│    │      ••                                  └─────────┘│",
+      "│    │        ••                                ••         │",
+      "│    │          ••                            ••           │",
+      "│    │            ••                        ••             │",
+      "│    │              ••                    ••               │",
+      "│    │                ••                ••                 │",
+      "│    │                  ••            ••                   │",
+      "│    │                    ••        ••                     │",
+      "│    │                      •••   ••                       │",
+      "│    │                         •••                         │",
+      "│5.0 │                        •• ••                        │",
+      "│    │                      ••     ••                      │",
+      "│    │                   •••         ••                    │",
+      "│    │                 ••              ••                  │",
+      "│    │               ••                  ••                │",
+      "│    │             ••                      ••              │",
+      "│    │           ••                          ••            │",
+      "│    │         ••                              ••          │",
+      "│    │       ••                                  ••        │",
+      "│    │     ••                                      •••     │",
+      "│    │   ••                                           ••   │",
+      "│    │ ••                                               •• │",
+      "│0.0 │•                                              X Axis│",
+      "│    └─────────────────────────────────────────────────────│",
+      "│  0.0                        50.0                    100.0│",
+      "└──────────────────────────────────────────────────────────┘"
     );
 
     // Set expected backgound color

@@ -32,18 +32,16 @@ class GaugeTests extends TuiTest {
       f.render_widget(gauge, chunks(1));
     }
     val expected = Buffer.with_lines(
-      Array(
-        "                                        ",
-        "                                        ",
-        "  ┌Percentage────────────────────────┐  ",
-        "  │              ▋43%                │  ",
-        "  └──────────────────────────────────┘  ",
-        "  ┌Ratio─────────────────────────────┐  ",
-        "  │               51%                │  ",
-        "  └──────────────────────────────────┘  ",
-        "                                        ",
-        "                                        "
-      )
+      "                                        ",
+      "                                        ",
+      "  ┌Percentage────────────────────────┐  ",
+      "  │              ▋43%                │  ",
+      "  └──────────────────────────────────┘  ",
+      "  ┌Ratio─────────────────────────────┐  ",
+      "  │               51%                │  ",
+      "  └──────────────────────────────────┘  ",
+      "                                        ",
+      "                                        "
     )
 
     ranges.range(3, 17) { i =>
@@ -100,18 +98,16 @@ class GaugeTests extends TuiTest {
     }
 
     val expected = Buffer.with_lines(
-      Array(
-        "                                        ",
-        "                                        ",
-        "  ┌Percentage────────────────────────┐  ",
-        "  │               43%                │  ",
-        "  └──────────────────────────────────┘  ",
-        "  ┌Ratio─────────────────────────────┐  ",
-        "  │               21%                │  ",
-        "  └──────────────────────────────────┘  ",
-        "                                        ",
-        "                                        "
-      )
+      "                                        ",
+      "                                        ",
+      "  ┌Percentage────────────────────────┐  ",
+      "  │               43%                │  ",
+      "  └──────────────────────────────────┘  ",
+      "  ┌Ratio─────────────────────────────┐  ",
+      "  │               21%                │  ",
+      "  └──────────────────────────────────┘  ",
+      "                                        ",
+      "                                        "
     )
     assert_buffer(backend, expected)
   }
@@ -131,13 +127,11 @@ class GaugeTests extends TuiTest {
     }
 
     val expected = Buffer.with_lines(
-      Array(
-        "┌Test──────┐",
-        "│          │",
-        "│   43%    │",
-        "│          │",
-        "└──────────┘"
-      )
+      "┌Test──────┐",
+      "│          │",
+      "│   43%    │",
+      "│          │",
+      "└──────────┘"
     )
     // title
     expected.set_style(new Rect(1, 0, 4, 1), Style(fg = Some(Color.Red)))
@@ -188,7 +182,7 @@ class GaugeTests extends TuiTest {
       f.render_widget(gauge, f.size);
     }
 
-    val expected = Buffer.with_lines(Array("4333333333"))
+    val expected = Buffer.with_lines("4333333333")
     assert_buffer(backend, expected)
   }
 
@@ -207,12 +201,10 @@ class GaugeTests extends TuiTest {
       f.render_widget(gauge, Rect(x = 0, y = 1, width = 20, height = 3));
     }
     val expected = Buffer.with_lines(
-      Array(
-        "43% ────────────────",
-        "┌Gauge 2───────────┐",
-        "│21% ━━━━━━━━━━━━━━│",
-        "└──────────────────┘"
-      )
+      "43% ────────────────",
+      "┌Gauge 2───────────┐",
+      "│21% ━━━━━━━━━━━━━━│",
+      "└──────────────────┘"
     )
     ranges.range(4, 10) { col =>
       expected.get(col, 0).set_fg(Color.Green)
