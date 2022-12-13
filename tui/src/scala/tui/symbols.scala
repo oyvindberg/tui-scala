@@ -2,14 +2,14 @@ package tui
 
 object symbols {
   object block {
-    val FULL = "█";
-    val SEVEN_EIGHTHS = "▉";
-    val THREE_QUARTERS = "▊";
-    val FIVE_EIGHTHS = "▋";
-    val HALF = "▌";
-    val THREE_EIGHTHS = "▍";
-    val ONE_QUARTER = "▎";
-    val ONE_EIGHTH = "▏";
+    val FULL = "█"
+    val SEVEN_EIGHTHS = "▉"
+    val THREE_QUARTERS = "▊"
+    val FIVE_EIGHTHS = "▋"
+    val HALF = "▌"
+    val THREE_EIGHTHS = "▍"
+    val ONE_QUARTER = "▎"
+    val ONE_EIGHTH = "▏"
 
     case class Set(
         full: String,
@@ -49,14 +49,14 @@ object symbols {
   }
 
   object bar {
-    val FULL = "█";
-    val SEVEN_EIGHTHS = "▇";
-    val THREE_QUARTERS = "▆";
-    val FIVE_EIGHTHS = "▅";
-    val HALF = "▄";
-    val THREE_EIGHTHS = "▃";
-    val ONE_QUARTER = "▂";
-    val ONE_EIGHTH = "▁";
+    val FULL = "█"
+    val SEVEN_EIGHTHS = "▇"
+    val THREE_QUARTERS = "▆"
+    val FIVE_EIGHTHS = "▅"
+    val HALF = "▄"
+    val THREE_EIGHTHS = "▃"
+    val ONE_QUARTER = "▂"
+    val ONE_EIGHTH = "▁"
 
     case class Set(
         full: String,
@@ -96,53 +96,53 @@ object symbols {
   }
 
   object line {
-    val VERTICAL: String = "│";
-    val DOUBLE_VERTICAL: String = "║";
-    val THICK_VERTICAL: String = "┃";
+    val VERTICAL: String = "│"
+    val DOUBLE_VERTICAL: String = "║"
+    val THICK_VERTICAL: String = "┃"
 
-    val HORIZONTAL: String = "─";
-    val DOUBLE_HORIZONTAL: String = "═";
-    val THICK_HORIZONTAL: String = "━";
+    val HORIZONTAL: String = "─"
+    val DOUBLE_HORIZONTAL: String = "═"
+    val THICK_HORIZONTAL: String = "━"
 
-    val TOP_RIGHT: String = "┐";
-    val ROUNDED_TOP_RIGHT: String = "╮";
-    val DOUBLE_TOP_RIGHT: String = "╗";
-    val THICK_TOP_RIGHT: String = "┓";
+    val TOP_RIGHT: String = "┐"
+    val ROUNDED_TOP_RIGHT: String = "╮"
+    val DOUBLE_TOP_RIGHT: String = "╗"
+    val THICK_TOP_RIGHT: String = "┓"
 
-    val TOP_LEFT: String = "┌";
-    val ROUNDED_TOP_LEFT: String = "╭";
-    val DOUBLE_TOP_LEFT: String = "╔";
-    val THICK_TOP_LEFT: String = "┏";
+    val TOP_LEFT: String = "┌"
+    val ROUNDED_TOP_LEFT: String = "╭"
+    val DOUBLE_TOP_LEFT: String = "╔"
+    val THICK_TOP_LEFT: String = "┏"
 
-    val BOTTOM_RIGHT: String = "┘";
-    val ROUNDED_BOTTOM_RIGHT: String = "╯";
-    val DOUBLE_BOTTOM_RIGHT: String = "╝";
-    val THICK_BOTTOM_RIGHT: String = "┛";
+    val BOTTOM_RIGHT: String = "┘"
+    val ROUNDED_BOTTOM_RIGHT: String = "╯"
+    val DOUBLE_BOTTOM_RIGHT: String = "╝"
+    val THICK_BOTTOM_RIGHT: String = "┛"
 
-    val BOTTOM_LEFT: String = "└";
-    val ROUNDED_BOTTOM_LEFT: String = "╰";
-    val DOUBLE_BOTTOM_LEFT: String = "╚";
-    val THICK_BOTTOM_LEFT: String = "┗";
+    val BOTTOM_LEFT: String = "└"
+    val ROUNDED_BOTTOM_LEFT: String = "╰"
+    val DOUBLE_BOTTOM_LEFT: String = "╚"
+    val THICK_BOTTOM_LEFT: String = "┗"
 
-    val VERTICAL_LEFT: String = "┤";
-    val DOUBLE_VERTICAL_LEFT: String = "╣";
-    val THICK_VERTICAL_LEFT: String = "┫";
+    val VERTICAL_LEFT: String = "┤"
+    val DOUBLE_VERTICAL_LEFT: String = "╣"
+    val THICK_VERTICAL_LEFT: String = "┫"
 
-    val VERTICAL_RIGHT: String = "├";
-    val DOUBLE_VERTICAL_RIGHT: String = "╠";
-    val THICK_VERTICAL_RIGHT: String = "┣";
+    val VERTICAL_RIGHT: String = "├"
+    val DOUBLE_VERTICAL_RIGHT: String = "╠"
+    val THICK_VERTICAL_RIGHT: String = "┣"
 
-    val HORIZONTAL_DOWN: String = "┬";
-    val DOUBLE_HORIZONTAL_DOWN: String = "╦";
-    val THICK_HORIZONTAL_DOWN: String = "┳";
+    val HORIZONTAL_DOWN: String = "┬"
+    val DOUBLE_HORIZONTAL_DOWN: String = "╦"
+    val THICK_HORIZONTAL_DOWN: String = "┳"
 
-    val HORIZONTAL_UP: String = "┴";
-    val DOUBLE_HORIZONTAL_UP: String = "╩";
-    val THICK_HORIZONTAL_UP: String = "┻";
+    val HORIZONTAL_UP: String = "┴"
+    val DOUBLE_HORIZONTAL_UP: String = "╩"
+    val THICK_HORIZONTAL_UP: String = "┻"
 
-    val CROSS: String = "┼";
-    val DOUBLE_CROSS: String = "╬";
-    val THICK_CROSS: String = "╋";
+    val CROSS: String = "┼"
+    val DOUBLE_CROSS: String = "╬"
+    val THICK_CROSS: String = "╋"
 
     case class Set(
         vertical: String,
@@ -209,11 +209,11 @@ object symbols {
   }
 
   object DOT {
-    val value: String = "•";
+    val value: String = "•"
   }
 
   object braille {
-    val BLANK: Int = 0x2800;
+    val BLANK: Int = 0x2800
     val DOTS: Array[(Int, Int)] = Array(
       (0x0001, 0x0008),
       (0x0002, 0x0010),

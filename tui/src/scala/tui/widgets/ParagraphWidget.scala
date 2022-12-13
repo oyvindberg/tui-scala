@@ -6,14 +6,14 @@ import tui.internal.reflow.{LineComposer, LineTruncator, WordWrapper}
 
 /// A widget to display some text.
 case class ParagraphWidget(
+    /// The text to display
+    text: Text,
     /// A block to wrap the widget in
     block: Option[BlockWidget] = None,
     /// Widget style
     style: Style = Style.DEFAULT,
     /// How to wrap the text
     wrap: Option[ParagraphWidget.Wrap] = None,
-    /// The text to display
-    text: Text,
     /// Scroll
     scroll: (Int, Int) = (0, 0),
     /// Alignment of the text

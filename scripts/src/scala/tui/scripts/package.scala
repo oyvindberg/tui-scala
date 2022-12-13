@@ -1,11 +1,12 @@
 package tui
 
 import bleep.model
+import bleep.model.CrossProjectName
 
 package object scripts {
   val crosstermProject: model.CrossProjectName =
     model.CrossProjectName(model.ProjectName("crossterm"), None)
-  val demoProject =
+  val demoProject: CrossProjectName =
     model.CrossProjectName(model.ProjectName("demo"), crossId = Some(model.CrossId("jvm213")))
 
   // will publish these with dependencies

@@ -46,12 +46,12 @@ object Layout {
     val results: Array[Rect] = layout.constraints
       .map(_ => Rect.default)
 
-    val dest_area = area.inner(layout.margin);
+    val dest_area = area.inner(layout.margin)
     ranges.range(0, elements.length) { i =>
       val e = elements(i)
-      vars.update(e.x, (i, 0));
-      vars.update(e.y, (i, 1));
-      vars.update(e.width, (i, 2));
+      vars.update(e.x, (i, 0))
+      vars.update(e.y, (i, 1))
+      vars.update(e.width, (i, 2))
       vars.update(e.height, (i, 3));
     }
 
@@ -59,11 +59,11 @@ object Layout {
     ccs.sizeHint(elements.length * 4 + layout.constraints.length * 6)
 
     elements.foreach { elt =>
-      ccs += (elt.width | GE(REQUIRED) | 0.0);
-      ccs += (elt.height | GE(REQUIRED) | 0.0);
-      ccs += (elt.left | GE(REQUIRED) | dest_area.left.toDouble);
-      ccs += (elt.top | GE(REQUIRED) | dest_area.top.toDouble);
-      ccs += (elt.right | LE(REQUIRED) | dest_area.right.toDouble);
+      ccs += (elt.width | GE(REQUIRED) | 0.0)
+      ccs += (elt.height | GE(REQUIRED) | 0.0)
+      ccs += (elt.left | GE(REQUIRED) | dest_area.left.toDouble)
+      ccs += (elt.top | GE(REQUIRED) | dest_area.top.toDouble)
+      ccs += (elt.right | LE(REQUIRED) | dest_area.right.toDouble)
       ccs += (elt.bottom | LE(REQUIRED) | dest_area.bottom.toDouble);
     }
 
@@ -93,8 +93,8 @@ object Layout {
         }
 
         ranges.range(0, layout.constraints.length) { i =>
-          ccs += (elements(i).y | EQ(REQUIRED) | dest_area.y.toDouble);
-          ccs += (elements(i).height | EQ(REQUIRED) | dest_area.height.toDouble);
+          ccs += (elements(i).y | EQ(REQUIRED) | dest_area.y.toDouble)
+          ccs += (elements(i).height | EQ(REQUIRED) | dest_area.height.toDouble)
           val size = layout.constraints(i)
           ccs += (size match {
             case Constraint.Length(v) =>
@@ -115,8 +115,8 @@ object Layout {
           case _               => // ignore if only one
         }
         ranges.range(0, layout.constraints.length) { i =>
-          ccs += (elements(i).x | EQ(REQUIRED) | dest_area.x.toDouble);
-          ccs += (elements(i).width | EQ(REQUIRED) | dest_area.width.toDouble);
+          ccs += (elements(i).x | EQ(REQUIRED) | dest_area.x.toDouble)
+          ccs += (elements(i).width | EQ(REQUIRED) | dest_area.width.toDouble)
           val size = layout.constraints(i)
           ccs += (size match {
             case Constraint.Length(v) =>

@@ -11,13 +11,13 @@ case class CanvasWidget(
     block: Option[BlockWidget] = None,
     x_bounds: Point = Point.Zero,
     y_bounds: Point = Point.Zero,
-    painter: Option[Context => Unit] = None,
     background_color: Color = Color.Reset,
     /// Change the type of points used to draw the shapes. By default the braille patterns are used
     /// as they provide a more fine grained result but you might want to use the simple dot or
     /// block instead if the targeted terminal does not support those symbols.
     marker: symbols.Marker = symbols.Marker.Braille
-) extends Widget {
+)(painter: Context => Unit)
+    extends Widget {
   override def render(area: Rect, buf: Buffer): Unit = {
     val canvas_area = this.block match {
       case Some(b) =>
@@ -28,11 +28,6 @@ case class CanvasWidget(
     }
 
     buf.set_style(canvas_area, Style.DEFAULT.bg(this.background_color))
-
-    val painter = this.painter match {
-      case Some(p) => p
-      case None    => return
-    }
 
     // Create a blank context that match the size of the canvas
     val ctx = Context(

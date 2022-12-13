@@ -100,20 +100,20 @@ object CanvasExample {
     val canvas0 = CanvasWidget(
       block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("World")))),
       y_bounds = Point(-90.0, 90.0),
-      x_bounds = Point(-180.0, 180.0),
-      painter = Some { ctx =>
-        ctx.draw(WorldMap(color = Color.White, resolution = MapResolution.High))
-        ctx.print(app.x, -app.y, Spans.from(Span.styled("You are here", Style(fg = Some(Color.Yellow)))))
-      }
-    )
+      x_bounds = Point(-180.0, 180.0)
+    ) { ctx =>
+      ctx.draw(WorldMap(color = Color.White, resolution = MapResolution.High))
+      ctx.print(app.x, -app.y, Spans.from(Span.styled("You are here", Style(fg = Some(Color.Yellow)))))
+    }
     f.render_widget(canvas0, chunks(0))
 
     val canvas1 = CanvasWidget(
       block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Pong")))),
       y_bounds = Point(10.0, 110.0),
-      x_bounds = Point(10.0, 110.0),
-      painter = Some(ctx => ctx.draw(app.ball))
-    )
+      x_bounds = Point(10.0, 110.0)
+    ) { ctx =>
+      ctx.draw(app.ball)
+    }
     f.render_widget(canvas1, chunks(1))
   }
 }

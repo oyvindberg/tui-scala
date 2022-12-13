@@ -213,7 +213,7 @@ object App {
     )
   }
 
-  val TASKS = Array(
+  val TASKS: Array[String] = Array(
     "Item1",
     "Item2",
     "Item3",
@@ -240,7 +240,7 @@ object App {
     "Item24"
   )
 
-  val LOGS = Array(
+  val LOGS: Array[(String, String)] = Array(
     ("Event1", "INFO"),
     ("Event2", "INFO"),
     ("Event3", "CRITICAL"),
@@ -269,7 +269,7 @@ object App {
     ("Event26", "INFO")
   )
 
-  val EVENTS = Array(
+  val EVENTS: Array[(String, Int)] = Array(
     ("B1", 9),
     ("B2", 12),
     ("B3", 5),

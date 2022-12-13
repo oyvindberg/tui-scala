@@ -15,7 +15,7 @@ case class Frame(
 
   /// Render a [`Widget`] to the current buffer using [`Widget::render`].
   def render_widget(widget: Widget, area: Rect): Unit =
-    widget.render(area, buffer);
+    widget.render(area, buffer)
 
   /// Render a [`StatefulWidget`] to the current buffer using [`StatefulWidget::render`].
   ///
@@ -23,7 +23,7 @@ case class Frame(
   /// given [`StatefulWidget`].
   ///
   def render_stateful_widget[W <: StatefulWidget](widget: W, area: Rect)(state: widget.State): Unit =
-    widget.render(area, buffer, state);
+    widget.render(area, buffer, state)
 
   /// After drawing this frame, make the cursor visible and put it at the specified (x, y)
   /// coordinates. If this method is not called, the cursor will be hidden.
@@ -32,5 +32,5 @@ case class Frame(
   /// `Terminal::show_cursor()`, and `Terminal::set_cursor()`. Pick one of the APIs and stick
   /// with it.
   def set_cursor(x: Int, y: Int): Unit =
-    cursor_position = Some((x, y));
+    cursor_position = Some((x, y))
 }

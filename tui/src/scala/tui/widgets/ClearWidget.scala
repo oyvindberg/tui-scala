@@ -1,6 +1,5 @@
 package tui
 package widgets
-package clear
 
 import tui.internal.ranges
 

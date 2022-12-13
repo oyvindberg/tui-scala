@@ -8,8 +8,8 @@ import java.time.{Duration, Instant}
 import scala.Ordering.Implicits._
 
 object ChartExample {
-  val DATA = Array(Point.Zero, Point(1.0, 1.0), Point(2.0, 2.0), Point(3.0, 3.0), Point(4.0, 4.0))
-  val DATA2 = Array(Point.Zero, Point(10.0, 1.0), Point(20.0, 0.5), Point(30.0, 1.5), Point(40.0, 1.0), Point(50.0, 2.5), Point(60.0, 3.0))
+  val DATA: Array[Point] = Array(Point.Zero, Point(1.0, 1.0), Point(2.0, 2.0), Point(3.0, 3.0), Point(4.0, 4.0))
+  val DATA2: Array[Point] = Array(Point.Zero, Point(10.0, 1.0), Point(20.0, 0.5), Point(30.0, 1.5), Point(40.0, 1.0), Point(50.0, 2.5), Point(60.0, 3.0))
 
   case class SinSignal(interval: Double, period: Double, scale: Double) extends Iterator[Point] {
     var x: Double = 0.0
@@ -181,9 +181,9 @@ object ChartExample {
         ),
         x_axis = ChartWidget.Axis(
           title = Some(Spans.nostyle("X Axis")),
-          style = Style(fg = Some(Color.Gray)),
           bounds = Point(0.0, 50.0),
-          labels = Some(Array(Span.styled("0", Bold), Span.nostyle("25"), Span.styled("50", Bold)))
+          labels = Some(Array(Span.styled("0", Bold), Span.nostyle("25"), Span.styled("50", Bold))),
+          style = Style(fg = Some(Color.Gray))
         ),
         y_axis = ChartWidget.Axis(
           title = Some(Spans.nostyle("Y Axis")),

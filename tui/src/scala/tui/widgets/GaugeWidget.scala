@@ -54,7 +54,7 @@ case class GaugeWidget(
           .get(x, y)
           .set_symbol(" ")
           .set_fg(gauge_style.bg.getOrElse(Color.Reset))
-          .set_bg(gauge_style.fg.getOrElse(Color.Reset));
+          .set_bg(gauge_style.fg.getOrElse(Color.Reset))
         ()
       }
       if (use_unicode && ratio.value < 1.0) {

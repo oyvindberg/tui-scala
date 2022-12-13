@@ -20,7 +20,7 @@ object ListExample {
         case Some(i) => if (i >= items.length - 1) 0 else i + 1
         case None    => 0
       }
-      state.select(Some(i));
+      state.select(Some(i))
     }
 
     def previous(): Unit = {
@@ -32,12 +32,12 @@ object ListExample {
             i - 1
           }
         case None => 0
-      };
-      state.select(Some(i));
+      }
+      state.select(Some(i))
     }
 
     def unselect(): Unit =
-      state.select(None);
+      state.select(None)
   }
 
   /// This struct holds the current state of the app. In particular, it has the `items` field which is a wrapper
@@ -53,12 +53,12 @@ object ListExample {
     /// Rotate through the event list.
     /// This only exists to simulate some kind of "progress"
     def on_tick(): Unit = {
-      val event = events.removeHead();
-      events.append(event);
+      val event = events.removeHead()
+      events.append(event)
     }
   }
 
-  val items = Array(
+  val items: Array[(String, Int)] = Array(
     ("Item0", 1),
     ("Item1", 2),
     ("Item2", 1),
@@ -85,7 +85,7 @@ object ListExample {
     ("Item23", 3),
     ("Item24", 1)
   )
-  val events = Array(
+  val events: Array[(String, String)] = Array(
     ("Event1", "INFO"),
     ("Event2", "INFO"),
     ("Event3", "CRITICAL"),
@@ -117,7 +117,7 @@ object ListExample {
   def main(args: Array[String]): Unit = withTerminal { (jni, terminal) =>
     // create app and run it
     val tick_rate = Duration.ofMillis(250)
-    val app = new App(StatefulList(items = items), events = mutable.ArrayDeque.from(events))
+    val app = App(StatefulList(items = items), events = mutable.ArrayDeque.from(events))
 
     run_app(terminal, app, tick_rate, jni)
   }
@@ -165,7 +165,7 @@ object ListExample {
     val chunks = Layout(
       direction = Direction.Horizontal,
       constraints = Array(Constraint.Percentage(50), Constraint.Percentage(50))
-    ).split(f.size);
+    ).split(f.size)
 
     // Iterate through all elements in the `items` app and append some debug text to it.
     val items0 = app.items.items
@@ -173,12 +173,12 @@ object ListExample {
         val lines = Array.newBuilder[Spans]
         lines += Spans.nostyle(str)
         ranges.range(0, int) { _ =>
-          lines += (Spans.from(
+          lines += Spans.from(
             Span.styled(
               "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
               Style(add_modifier = Modifier.ITALIC)
             )
-          ))
+          )
         }
         ListWidget.Item(Text(lines.result()), Style(fg = Some(Color.Black), bg = Some(Color.White)))
       }
@@ -192,7 +192,7 @@ object ListExample {
     )
 
     // We can now render the item list
-    f.render_stateful_widget(items, chunks(0))(app.items.state);
+    f.render_stateful_widget(items, chunks(0))(app.items.state)
 
     // Let's do the same for the events.
     // The event list doesn't have any state and only displays the current state of the list.
@@ -205,7 +205,7 @@ object ListExample {
           case "WARNING"  => Style(fg = Some(Color.Yellow))
           case "INFO"     => Style(fg = Some(Color.Blue))
           case _          => Style.DEFAULT
-        };
+        }
         // Add a example datetime and apply proper spacing between them
         val header = Spans.from(
           Span.styled(level.padTo(9, ' '), s),
@@ -214,9 +214,9 @@ object ListExample {
             "2020-01-01 10:00:00",
             Style(add_modifier = Modifier.ITALIC)
           )
-        );
+        )
         // The event gets its own line
-        val log = Spans.nostyle(event);
+        val log = Spans.nostyle(event)
 
         // Here several things happen:
         // 1. Add a `---` spacing line above the final list entry
@@ -239,6 +239,6 @@ object ListExample {
       start_corner = Corner.BottomLeft
     )
 
-    f.render_widget(events_list, chunks(1));
+    f.render_widget(events_list, chunks(1))
   }
 }

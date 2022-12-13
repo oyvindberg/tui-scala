@@ -61,7 +61,7 @@ object reflow {
             current_line_width = width_to_last_word_end
             current_line.takeInPlace(symbols_to_last_word_end)
           }
-          return breakableForeach.Break;
+          return breakableForeach.Break
         }
 
         // Mark the previous symbol as word end.
@@ -192,7 +192,7 @@ object reflow {
     var offset = offset0
     var start = 0
     // todo: the only usage of trim_offset unpacks `src` from a Grapheme, so this is likely unnecessary
-    UnicodeSegmentation.graphemes(src, true).breakableForeach { (c, _) =>
+    UnicodeSegmentation.graphemes(src, is_extended = true).breakableForeach { (c, _) =>
       if (c.width <= offset) {
         offset -= c.width
         start += c.str.length

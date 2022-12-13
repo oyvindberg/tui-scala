@@ -45,7 +45,7 @@ case class Solver(
   /// Add a constraint to the solver.
   def add_constraint(constraint: Constraint): Either[AddConstraintError, Unit] = {
     if (cns.contains(constraint)) {
-      return Left(AddConstraintError.DuplicateConstraint);
+      return Left(AddConstraintError.DuplicateConstraint)
     }
 
     // Creating a row causes symbols to reserved for the variables
@@ -54,8 +54,8 @@ case class Solver(
     // Since its likely that those variables will be used in other
     // constraints and since exceptional conditions are uncommon,
     // i'm not too worried about aggressive cleanup of the var map.
-    val (row, tag) = create_row(constraint);
-    var subject = choose_subject(row, tag);
+    val (row, tag) = create_row(constraint)
+    var subject = choose_subject(row, tag)
 
     // If chooseSubject could find a valid entering symbol, one
     // last option is available if the entire row is composed of
@@ -65,9 +65,9 @@ case class Solver(
     // then it represents an unsatisfiable constraint.
     if (subject.tpe == SymbolType.Invalid && all_dummies(row)) {
       if (!near_zero(row.constant)) {
-        return Left(AddConstraintError.UnsatisfiableConstraint);
+        return Left(AddConstraintError.UnsatisfiableConstraint)
       } else {
-        subject = tag.marker;
+        subject = tag.marker
       }
     }
 
@@ -80,21 +80,21 @@ case class Solver(
         case Right(_) => ()
       }
     } else {
-      row.solve_for_symbol(subject);
-      substitute(subject, row);
+      row.solve_for_symbol(subject)
+      substitute(subject, row)
       if (subject.tpe == SymbolType.External && row.constant != 0.0) {
         val v = var_for_symbol(subject)
-        var_changed(v);
+        var_changed(v)
       }
-      rows.update(subject, row);
+      rows.update(subject, row)
     }
 
-    cns.update(constraint, tag);
+    cns.update(constraint, tag)
 
     // Optimizing after each constraint is added performs less
     // aggregate work due to a smaller average system size. It
     // also ensures the solver remains in a consistent state.
-    val objective = this.objective.clone();
+    val objective = this.objective.clone()
     optimise(objective) match {
       case Left(e)   => Left(AddConstraintError.InternalSolverError(e.str))
       case Right(()) => Right(())
@@ -111,7 +111,7 @@ case class Solver(
     // Remove the error effects from the objective function
     // *before* pivoting, or substitutions into the objective
     // will lead to incorrect solver results.
-    remove_constraint_effects(constraint, tag);
+    remove_constraint_effects(constraint, tag)
 
     // If the marker is basic, simply drop the row. Otherwise,
     // pivot the marker into the basis and then drop the row.
@@ -120,7 +120,7 @@ case class Solver(
       case None =>
         get_marker_leaving_row(tag.marker) match {
           case Some((leaving, row)) =>
-            row.solve_for_symbols(leaving, tag.marker);
+            row.solve_for_symbols(leaving, tag.marker)
             substitute(tag.marker, row);
           case None => return Left(RemoveConstraintError.InternalSolverError("Failed to find leaving row."))
         }
@@ -129,7 +129,7 @@ case class Solver(
     // Optimizing after each constraint is removed ensures that the
     // solver remains consistent. It makes the solver api easier to
     // use at a small tradeoff for speed.
-    val objective = this.objective.clone();
+    val objective = this.objective.clone()
     optimise(objective) match {
       case Right(_) => ()
       case Left(e)  => return Left(RemoveConstraintError.InternalSolverError(e.str))
@@ -139,7 +139,7 @@ case class Solver(
     // If the reference count is zero remove the variable from the variable map
     constraint.expression.terms.foreach { term =>
       if (!near_zero(term.coefficient)) {
-        var should_remove = false;
+        var should_remove = false
         var_data.get(term.variable) match {
           case Some(varData) =>
             varData.count -= 1
@@ -147,8 +147,8 @@ case class Solver(
           case None => ()
         }
         if (should_remove) {
-          var_for_symbol.remove(var_data(term.variable).symbol);
-          var_data.remove(term.variable);
+          var_for_symbol.remove(var_data(term.variable).symbol)
+          var_data.remove(term.variable)
         }
       }
     }
@@ -165,15 +165,15 @@ case class Solver(
   /// used to supply a suggested value for the given edit variable.
   def add_edit_variable(v: Variable, strength0: Strength): Either[AddEditVariableError, Unit] = {
     if (edits.contains(v)) {
-      return Left(AddEditVariableError.DuplicateEditVariable);
+      return Left(AddEditVariableError.DuplicateEditVariable)
     }
-    val strength = Strength.clip(strength0);
+    val strength = Strength.clip(strength0)
     if (strength == Strength.REQUIRED) {
-      return Left(AddEditVariableError.BadRequiredStrength);
+      return Left(AddEditVariableError.BadRequiredStrength)
     }
-    val cn = Constraint(Expression.from_term(Term(v, 1.0)), strength, RelationalOperator.Equal);
+    val cn = Constraint(Expression.from_term(Term(v, 1.0)), strength, RelationalOperator.Equal)
     add_constraint(cn).unwrap()
-    edits.update(v, EditInfo(tag = cns(cn), constraint = cn, constant = 0.0));
+    edits.update(v, EditInfo(tag = cns(cn), constraint = cn, constant = 0.0))
     Right(())
   }
 
@@ -206,10 +206,10 @@ case class Solver(
         case Some(value) => value
         case None        => return Left(SuggestValueError.UnknownEditVariable)
       }
-      val delta = value - info.constant;
-      info.constant = value;
+      val delta = value - info.constant
+      info.constant = value
       (info.tag.marker, info.tag.other, delta)
-    };
+    }
     // tag.marker and tag.other are never external symbols
 
     // The nice version of the following code runs into non-lexical borrow issues.
@@ -218,32 +218,32 @@ case class Solver(
     if (rows.contains(info_tag_marker)) {
       val row = rows(info_tag_marker)
       if (row.add(-delta) < 0.0) {
-        infeasible_rows.push(info_tag_marker);
+        infeasible_rows.push(info_tag_marker)
       } else if (rows.contains(info_tag_other)) {
         val row = rows(info_tag_other)
         if (row.add(delta) < 0.0) {
-          infeasible_rows.push(info_tag_other);
+          infeasible_rows.push(info_tag_other)
         }
       }
     } else {
       rows.foreach { case (symbol, row) =>
-        val coeff = row.coefficient_for(info_tag_marker);
-        val diff = delta * coeff;
+        val coeff = row.coefficient_for(info_tag_marker)
+        val diff = delta * coeff
         if (diff != 0.0 && symbol.tpe == SymbolType.External) {
-          val v = var_for_symbol(symbol);
+          val v = var_for_symbol(symbol)
           // inline var_changed - borrow checker workaround
           if (should_clear_changes) {
-            changed.clear();
-            should_clear_changes = false;
+            changed.clear()
+            should_clear_changes = false
           }
-          changed.addOne(v);
+          changed.addOne(v)
         }
         if (
           coeff != 0.0 &&
           row.add(diff) < 0.0 &&
           symbol.tpe != SymbolType.External
         ) {
-          infeasible_rows.push(symbol);
+          infeasible_rows.push(symbol)
         }
       }
     }
@@ -256,10 +256,10 @@ case class Solver(
 
   def var_changed(v: Variable): Unit = {
     if (should_clear_changes) {
-      changed.clear();
-      should_clear_changes = false;
+      changed.clear()
+      should_clear_changes = false
     }
-    changed.addOne(v);
+    changed.addOne(v)
   }
 
   /// Fetches all changes to the values of variables since the last call to this function.
@@ -268,19 +268,19 @@ case class Solver(
   /// the new value of that variable.
   def fetch_changes(): Seq[(Variable, Double)] = {
     if (should_clear_changes) {
-      changed.clear();
-      should_clear_changes = false;
+      changed.clear()
+      should_clear_changes = false
     } else {
-      should_clear_changes = true;
+      should_clear_changes = true
     }
-    public_changes.clear();
+    public_changes.clear()
     changed.foreach { v =>
       this.var_data.get(v).foreach { var_data =>
-        val new_value = rows.get(var_data.symbol).map(_.constant).getOrElse(0.0);
-        val old_value = var_data.double;
+        val new_value = rows.get(var_data.symbol).map(_.constant).getOrElse(0.0)
+        val old_value = var_data.double
         if (old_value != new_value) {
-          public_changes.push((v, new_value));
-          var_data.double = new_value;
+          public_changes.push((v, new_value))
+          var_data.double = new_value
         }
 
       }
@@ -296,17 +296,17 @@ case class Solver(
   /// when the entire system must change, since it can avoid unnecessary
   /// heap (de)allocations.
   def reset(): Unit = {
-    rows.clear();
-    cns.clear();
-    var_data.clear();
-    var_for_symbol.clear();
-    changed.clear();
-    should_clear_changes = false;
-    edits.clear();
-    infeasible_rows.clear();
-    objective = Row(0.0);
-    artificial = None;
-    id_tick = 1;
+    rows.clear()
+    cns.clear()
+    var_data.clear()
+    var_for_symbol.clear()
+    changed.clear()
+    should_clear_changes = false
+    edits.clear()
+    infeasible_rows.clear()
+    objective = Row(0.0)
+    artificial = None
+    id_tick = 1
   }
 
   /// Get the symbol for the given variable.
@@ -315,13 +315,13 @@ case class Solver(
   def get_var_symbol(v: Variable): Symbol = {
     val value = var_data.getOrElseUpdate(
       v, {
-        val s = Symbol(id_tick, SymbolType.External);
-        var_for_symbol.update(s, v);
-        id_tick += 1;
+        val s = Symbol(id_tick, SymbolType.External)
+        var_for_symbol.update(s, v)
+        id_tick += 1
         VarData(Double.NaN, s, 0)
       }
     )
-    value.count += 1;
+    value.count += 1
     value.symbol
   }
 
@@ -341,12 +341,12 @@ case class Solver(
   /// The tag will be updated with the marker and error symbols to use
   /// for tracking the movement of the constraint in the tableau.
   def create_row(constraint: Constraint): (Row, Tag) = {
-    val expr = constraint.expression;
-    val row = Row(expr.constant);
+    val expr = constraint.expression
+    val row = Row(expr.constant)
     // Substitute the current basic variables into the row.
     expr.terms.foreach { term =>
       if (!near_zero(term.coefficient)) {
-        val symbol = get_var_symbol(term.variable);
+        val symbol = get_var_symbol(term.variable)
         rows.get(symbol) match {
           case Some(other_row) =>
             row.insert_row(other_row, term.coefficient);
@@ -359,15 +359,15 @@ case class Solver(
     // Add the necessary slack, error, and dummy variables.
     val tag = constraint.op match {
       case RelationalOperator.GreaterOrEqual | RelationalOperator.LessOrEqual =>
-        val coeff = if (constraint.op == RelationalOperator.LessOrEqual) 1.0 else -1.0;
-        val slack = Symbol(id_tick, SymbolType.Slack);
-        id_tick += 1;
-        row.insert_symbol(slack, coeff);
+        val coeff = if (constraint.op == RelationalOperator.LessOrEqual) 1.0 else -1.0
+        val slack = Symbol(id_tick, SymbolType.Slack)
+        id_tick += 1
+        row.insert_symbol(slack, coeff)
         if (constraint.strength < Strength.REQUIRED) {
-          val error = Symbol(id_tick, SymbolType.Error);
-          id_tick += 1;
-          row.insert_symbol(error, -coeff);
-          objective.insert_symbol(error, constraint.strength.value);
+          val error = Symbol(id_tick, SymbolType.Error)
+          id_tick += 1
+          row.insert_symbol(error, -coeff)
+          objective.insert_symbol(error, constraint.strength.value)
           Tag(marker = slack, other = error)
         } else {
           Tag(marker = slack, other = Symbol.invalid)
@@ -375,26 +375,26 @@ case class Solver(
 
       case RelationalOperator.Equal =>
         if (constraint.strength < Strength.REQUIRED) {
-          val errplus = Symbol(id_tick, SymbolType.Error);
-          id_tick += 1;
-          val errminus = Symbol(id_tick, SymbolType.Error);
-          id_tick += 1;
+          val errplus = Symbol(id_tick, SymbolType.Error)
+          id_tick += 1
+          val errminus = Symbol(id_tick, SymbolType.Error)
+          id_tick += 1
           row.insert_symbol(errplus, -1.0); // v = eplus - eminus
           row.insert_symbol(errminus, 1.0); // v - eplus + eminus = 0
-          objective.insert_symbol(errplus, constraint.strength.value);
-          objective.insert_symbol(errminus, constraint.strength.value);
+          objective.insert_symbol(errplus, constraint.strength.value)
+          objective.insert_symbol(errminus, constraint.strength.value)
           Tag(marker = errplus, other = errminus)
         } else {
-          val dummy = Symbol(id_tick, SymbolType.Dummy);
-          id_tick += 1;
-          row.insert_symbol(dummy, 1.0);
+          val dummy = Symbol(id_tick, SymbolType.Dummy)
+          id_tick += 1
+          row.insert_symbol(dummy, 1.0)
           Tag(marker = dummy, other = Symbol.invalid)
         }
-    };
+    }
 
     // Ensure the row has a positive constant.
     if (row.constant < 0.0) {
-      row.reverse_sign();
+      row.reverse_sign()
     }
     (row, tag)
   }
@@ -418,12 +418,12 @@ case class Solver(
     }
     if (tag.marker.tpe == SymbolType.Slack || tag.marker.tpe == SymbolType.Error) {
       if (row.coefficient_for(tag.marker) < 0.0) {
-        return tag.marker;
+        return tag.marker
       }
     }
     if (tag.other.tpe == SymbolType.Slack || tag.other.tpe == SymbolType.Error) {
       if (row.coefficient_for(tag.other) < 0.0) {
-        return tag.other;
+        return tag.other
       }
     }
     Symbol.invalid
@@ -434,9 +434,9 @@ case class Solver(
   /// This will return false if the constraint cannot be satisfied.
   def add_with_artificial_variable(row: Row): Either[InternalSolverError, Boolean] = {
     // Create and add the artificial variable to the tableau
-    val art = Symbol(id_tick, SymbolType.Slack);
-    id_tick += 1;
-    rows.update(art, row.clone());
+    val art = Symbol(id_tick, SymbolType.Slack)
+    id_tick += 1
+    rows.update(art, row.clone())
     this.artificial = Some(row.clone())
 
     // Optimize the artificial objective. This is successful
@@ -446,8 +446,8 @@ case class Solver(
       case Left(msg) => return Left(msg)
       case Right(()) => ()
     }
-    val success = near_zero(artificial.constant);
-    this.artificial = None;
+    val success = near_zero(artificial.constant)
+    this.artificial = None
 
     // If the artificial variable is basic, pivot the row so that
     // it becomes basic. If the row is constant, exit early.
@@ -455,21 +455,21 @@ case class Solver(
       case None => ()
       case Some(row) =>
         if (row.cells.isEmpty) {
-          return Right(success);
+          return Right(success)
         }
         val entering = any_pivotable_symbol(row); // never External
         if (entering.tpe == SymbolType.Invalid) {
           return Right(false); // unsatisfiable (will this ever happen?)
         }
-        row.solve_for_symbols(art, entering);
-        substitute(entering, row);
+        row.solve_for_symbols(art, entering)
+        substitute(entering, row)
         rows.update(entering, row);
 
     }
 
     // Remove the artificial row from the tableau
     rows.foreach { case (_, row) => row.remove(art) }
-    objective.remove(art);
+    objective.remove(art)
     Right(success)
   }
 
@@ -479,21 +479,21 @@ case class Solver(
   /// in the tableau and the objective function with the given row.
   def substitute(symbol: Symbol, row: Row): Unit = {
     rows.foreach { case (other_symbol, other_row) =>
-      val constant_changed = other_row.substitute(symbol, row);
+      val constant_changed = other_row.substitute(symbol, row)
       if (other_symbol.tpe == SymbolType.External && constant_changed) {
-        val v = var_for_symbol(other_symbol);
+        val v = var_for_symbol(other_symbol)
         // inline var_changed
         if (should_clear_changes) {
-          changed.clear();
-          should_clear_changes = false;
+          changed.clear()
+          should_clear_changes = false
         }
-        changed.addOne(v);
+        changed.addOne(v)
       }
       if (other_symbol.tpe != SymbolType.External && other_row.constant < 0.0) {
-        infeasible_rows.push(other_symbol);
+        infeasible_rows.push(other_symbol)
       }
     }
-    objective.substitute(symbol, row);
+    objective.substitute(symbol, row)
     artificial.foreach(_.substitute(symbol, row))
   }
 
@@ -503,18 +503,18 @@ case class Solver(
   /// until the objective function reaches a minimum.
   def optimise(objective: Row): Either[InternalSolverError, Unit] = {
     while (true) {
-      val entering = get_entering_symbol(objective);
+      val entering = get_entering_symbol(objective)
       if (entering.tpe == SymbolType.Invalid) {
-        return Right(());
+        return Right(())
       }
       get_leaving_row(entering) match {
         case Some((leaving, row)) =>
           // pivot the entering symbol into the basis
-          row.solve_for_symbols(leaving, entering);
-          substitute(entering, row);
+          row.solve_for_symbols(leaving, entering)
+          substitute(entering, row)
           if (entering.tpe == SymbolType.External && row.constant != 0.0) {
-            val v = var_for_symbol(entering);
-            var_changed(v);
+            val v = var_for_symbol(entering)
+            var_changed(v)
           }
           rows.update(entering, row);
 
@@ -532,7 +532,7 @@ case class Solver(
   /// optimal and feasible.
   def dual_optimise(): Either[InternalSolverError, Unit] = {
     while (infeasible_rows.nonEmpty) {
-      val leaving = infeasible_rows.pop();
+      val leaving = infeasible_rows.pop()
       val row: Option[Row] = rows.get(leaving) match {
         case Some(row) if row.constant < 0.0 =>
           rows.remove(leaving)
@@ -541,20 +541,20 @@ case class Solver(
 
       row match {
         case Some(row) =>
-          val entering = get_dual_entering_symbol(row);
+          val entering = get_dual_entering_symbol(row)
           if (entering.tpe == SymbolType.Invalid) {
-            return Left(InternalSolverError("Dual optimise failed."));
+            return Left(InternalSolverError("Dual optimise failed."))
           }
           // pivot the entering symbol into the basis
-          row.solve_for_symbols(leaving, entering);
-          substitute(entering, row);
+          row.solve_for_symbols(leaving, entering)
+          substitute(entering, row)
           if (entering.tpe == SymbolType.External && row.constant != 0.0) {
-            val v = var_for_symbol(entering);
-            var_changed(v);
+            val v = var_for_symbol(entering)
+            var_changed(v)
           }
           rows.update(entering, row);
 
-        case None => None
+        case None => ()
       }
     }
     Right(())
@@ -585,11 +585,11 @@ case class Solver(
     var ratio: Double = Double.PositiveInfinity
     row.cells.foreach { case (symbol, value) =>
       if (value > 0.0 && symbol.tpe != SymbolType.Dummy) {
-        val coeff = objective.coefficient_for(symbol);
-        val r = coeff / value;
+        val coeff = objective.coefficient_for(symbol)
+        val r = coeff / value
         if (r < ratio) {
-          ratio = r;
-          entering = symbol;
+          ratio = r
+          entering = symbol
         }
       }
     }
@@ -614,15 +614,15 @@ case class Solver(
   /// Never returns a row for an External symbol
   def get_leaving_row(entering: Symbol): Option[(Symbol, Row)] = {
     var ratio: Double = Double.PositiveInfinity
-    var found = Option.empty[Symbol];
+    var found = Option.empty[Symbol]
     rows.foreach { case (symbol, row) =>
       if (symbol.tpe != SymbolType.External) {
-        val temp = row.coefficient_for(entering);
+        val temp = row.coefficient_for(entering)
         if (temp < 0.0) {
-          val temp_ratio = -row.constant / temp;
+          val temp_ratio = -row.constant / temp
           if (temp_ratio < ratio) {
-            ratio = temp_ratio;
-            found = Some(symbol);
+            ratio = temp_ratio
+            found = Some(symbol)
           }
         }
       }
@@ -649,28 +649,28 @@ case class Solver(
   /// the marker *should* exist somewhere in the tableau.
   def get_marker_leaving_row(marker: Symbol): Option[(Symbol, Row)] = {
     var r1: Double = Double.PositiveInfinity
-    var r2 = r1;
-    var first = Option.empty[Symbol];
-    var second = Option.empty[Symbol];
-    var third = Option.empty[Symbol];
+    var r2 = r1
+    var first = Option.empty[Symbol]
+    var second = Option.empty[Symbol]
+    var third = Option.empty[Symbol]
 
     rows.foreach { case (symbol, row) =>
-      val c = row.coefficient_for(marker);
+      val c = row.coefficient_for(marker)
       if (c != 0.0) {
         ()
       } else if (symbol.tpe == SymbolType.External) {
-        third = Some(symbol);
+        third = Some(symbol)
       } else if (c < 0.0) {
-        val r = -row.constant / c;
+        val r = -row.constant / c
         if (r < r1) {
-          r1 = r;
-          first = Some(symbol);
+          r1 = r
+          first = Some(symbol)
         }
       } else {
-        val r = row.constant / c;
+        val r = row.constant / c
         if (r < r2) {
-          r2 = r;
-          second = Some(symbol);
+          r2 = r
+          second = Some(symbol)
         }
       }
     }
@@ -678,7 +678,7 @@ case class Solver(
     first.orElse(second).orElse(third).flatMap { s =>
       if (s.tpe == SymbolType.External && this.rows(s).constant != 0.0) {
         val v = this.var_for_symbol(s)
-        var_changed(v);
+        var_changed(v)
       }
       rows.remove(s).map(r => (s, r))
     }
@@ -687,9 +687,9 @@ case class Solver(
   /// Remove the effects of a constraint on the objective function.
   def remove_constraint_effects(cn: Constraint, tag: Tag): Unit =
     if (tag.marker.tpe == SymbolType.Error) {
-      remove_marker_effects(tag.marker, cn.strength);
+      remove_marker_effects(tag.marker, cn.strength)
     } else if (tag.other.tpe == SymbolType.Error) {
-      remove_marker_effects(tag.other, cn.strength);
+      remove_marker_effects(tag.other, cn.strength)
     }
 
   /// Remove the effects of an error marker on the objective function.

@@ -14,7 +14,7 @@ case class Span(content: String, style: Style) {
   ///
   def styled_graphemes(base_style: Style): Array[StyledGrapheme] =
     UnicodeSegmentation
-      .graphemes(content, true)
+      .graphemes(content, is_extended = true)
       .map(g =>
         StyledGrapheme(
           symbol = g,

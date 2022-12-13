@@ -16,6 +16,7 @@ package tui
 /// item is out of the viewport.
 ///
 trait StatefulWidget {
-  type State;
+  type State
+
   def render(area: Rect, buf: Buffer, state: State): Unit
 }

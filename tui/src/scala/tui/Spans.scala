@@ -6,7 +6,7 @@ case class Spans(spans: Array[Span]) {
   def width: Int =
     spans.map(_.width).sum
 
-  override def toString = spans.mkString("")
+  override def toString: String = spans.mkString("")
 }
 
 object Spans {

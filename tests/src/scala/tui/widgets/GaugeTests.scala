@@ -48,14 +48,14 @@ class GaugeTests extends TuiTest {
       expected
         .get(i, 3)
         .set_bg(Color.Red)
-        .set_fg(Color.Blue);
+        .set_fg(Color.Blue)
       ()
     }
     ranges.range(17, 37) { i =>
       expected
         .get(i, 3)
         .set_bg(Color.Blue)
-        .set_fg(Color.Red);
+        .set_fg(Color.Red)
       ()
     }
 
@@ -63,14 +63,14 @@ class GaugeTests extends TuiTest {
       expected
         .get(i, 6)
         .set_bg(Color.Red)
-        .set_fg(Color.Blue);
+        .set_fg(Color.Blue)
       ()
     }
     ranges.range(20, 37) { i =>
       expected
         .get(i, 6)
         .set_bg(Color.Blue)
-        .set_fg(Color.Red);
+        .set_fg(Color.Red)
       ()
     }
 

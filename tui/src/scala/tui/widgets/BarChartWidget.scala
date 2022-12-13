@@ -32,18 +32,18 @@ case class BarChartWidget(
   private lazy val values: Array[Grapheme] = data.collect { case (_, v) => Grapheme(v.toString) }
 
   override def render(area: Rect, buf: Buffer): Unit = {
-    buf.set_style(area, style);
+    buf.set_style(area, style)
 
     val chart_area: Rect = block match {
       case Some(b) =>
-        val inner_area = b.inner(area);
-        b.render(area, buf);
+        val inner_area = b.inner(area)
+        b.render(area, buf)
         inner_area
       case None => area
-    };
+    }
 
     if (chart_area.height < 2) {
-      return;
+      return
     }
 
     val max = this.max.getOrElse(data.maxByOption { case (_, value) => value }.fold(0) { case (_, value) => value })
@@ -51,7 +51,7 @@ case class BarChartWidget(
     val max_index = math.min(
       chart_area.width / (bar_width + bar_gap),
       data.length
-    );
+    )
 
     case class Data(label: String, var value: Int)
     val data2 = this.data.take(max_index).map { case (l, v) => Data(l, v * (chart_area.height - 1) * 8 / math.max(max, 1)) }.zipWithIndex
@@ -76,12 +76,12 @@ case class BarChartWidget(
               chart_area.top + j
             )
             .set_symbol(symbol)
-            .set_style(bar_style);
+            .set_style(bar_style)
           ()
         }
 
         if (d.value > 8) {
-          d.value = d.value - 8;
+          d.value = d.value - 8
         } else {
           d.value = 0
         }
@@ -89,8 +89,8 @@ case class BarChartWidget(
     }
     data.take(max_index).zipWithIndex.foreach { case ((label, value), i) =>
       if (value != 0) {
-        val value_label = values(i);
-        val width = value_label.width;
+        val value_label = values(i)
+        val width = value_label.width
         if (width < bar_width) {
           buf.set_string(
             chart_area.left
@@ -99,7 +99,7 @@ case class BarChartWidget(
             chart_area.bottom - 2,
             value_label.str,
             value_style
-          );
+          )
         }
       }
       buf.set_stringn(

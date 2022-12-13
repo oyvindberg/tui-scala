@@ -7,5 +7,5 @@ case class Grapheme(str: String) {
 }
 
 object Grapheme {
-  val Empty = Grapheme(" ")
+  val Empty: Grapheme = Grapheme(" ")
 }

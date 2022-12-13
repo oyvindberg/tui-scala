@@ -43,7 +43,7 @@ case class Cell(
   def style: Style =
     Style(fg = Some(fg), bg = Some(bg), add_modifier = modifier)
 
-  def reset() = {
+  def reset(): Unit = {
     this.symbol = Grapheme.Empty
     this.fg = Color.Reset
     this.bg = Color.Reset

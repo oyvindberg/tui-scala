@@ -262,7 +262,7 @@ case class Expression(
 
   /// Mutates this expression by multiplying it by minus one.
   def negate(): Unit = {
-    constant = -constant;
+    constant = -constant
     var i = 0
     while (i < terms.length) {
       terms(i) = !terms(i)
@@ -410,7 +410,8 @@ object Symbol {
 }
 
 object near_zero {
-  val EPS: Double = 1e-8;
+  val EPS: Double = 1e-8
+
   def apply(value: Double): Boolean =
     if (value < 0.0) { -value < EPS }
     else { value < EPS }
@@ -424,7 +425,7 @@ case class Row(
   override def clone(): Row = Row(cells, constant)
 
   def add(v: Double): Double = {
-    this.constant += v;
+    this.constant += v
     this.constant
   }
 
@@ -445,8 +446,8 @@ case class Row(
     }
 
   def insert_row(other: Row, coefficient: Double): Boolean = {
-    val constant_diff = other.constant * coefficient;
-    constant += constant_diff;
+    val constant_diff = other.constant * coefficient
+    constant += constant_diff
     other.cells.foreach { case (s, v) =>
       insert_symbol(s, v * coefficient);
     }
@@ -454,23 +455,23 @@ case class Row(
   }
 
   def remove(s: Symbol): Option[Double] =
-    cells.remove(s);
+    cells.remove(s)
 
   def reverse_sign(): Unit = {
-    constant = -constant;
+    constant = -constant
     cells = cells.map { case (s, v) => (s, -v) }
   }
 
   def solve_for_symbol(s: Symbol): Unit = {
-    val coeff = -1.0 / cells(s);
+    val coeff = -1.0 / cells(s)
     cells.remove(s)
-    constant *= coeff;
+    constant *= coeff
     cells = cells.map { case (s, v) => (s, v * coeff) }
   }
 
   def solve_for_symbols(lhs: Symbol, rhs: Symbol): Unit = {
-    insert_symbol(lhs, -1.0);
-    solve_for_symbol(rhs);
+    insert_symbol(lhs, -1.0)
+    solve_for_symbol(rhs)
   }
 
   def coefficient_for(s: Symbol): Double =

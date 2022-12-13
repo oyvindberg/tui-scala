@@ -1,7 +1,7 @@
 package tui.scripts
 
+import bleep.cli.Out
 import bleep.plugin.jni.BuildTool
-
 import bleep.internal.FileUtils
 import bleep.logging.Logger
 import bleep.{cli, PathOps, RelPath}
@@ -25,7 +25,7 @@ class CargoFixed(protected val release: Boolean = true) extends BuildTool {
     }
   }
 
-  def template(libName: String) =
+  def template(libName: String): String =
     s"""[package]
        |name = "${libName}"
        |version = "0.1.0"
@@ -43,7 +43,7 @@ class CargoFixed(protected val release: Boolean = true) extends BuildTool {
     new Instance(baseDirectory, logger, env)
 
   class Instance(protected val baseDirectory: Path, protected val logger: Logger, env: List[(String, String)]) extends BuildTool.Instance {
-    val cliOut = cli.Out.ViaLogger(logger)
+    val cliOut: Out.ViaLogger = cli.Out.ViaLogger(logger)
 
     def clean(): Unit = {
       cli("cargo clean", baseDirectory, List("cargo", "clean"), logger = logger, out = cliOut, env = env)

@@ -3,7 +3,7 @@ package tui.scripts
 import bleep._
 import bleep.plugin.nativeimage.NativeImagePlugin
 
-import java.nio.file.{Files, StandardCopyOption}
+import java.nio.file.{Files, Path, StandardCopyOption}
 
 object GenNativeImage extends BleepScript("GenNativeImage") {
   def run(started: Started, commands: Commands, args: List[String]): Unit = {
@@ -36,7 +36,7 @@ object GenNativeImage extends BleepScript("GenNativeImage") {
       env = sys.env.toList ++ List(("USE_NATIVE_IMAGE_JAVA_PLATFORM_MODULE_SYSTEM", "false"))
     ) {
       // allow user to pass in name of generated binary as parameter
-      override val nativeImageOutput = args.headOption match {
+      override val nativeImageOutput: Path = args.headOption match {
         case Some(relPath) =>
           // smoothen over some irritation from github action scripts
           val relPathNoExe = if (relPath.endsWith(".exe")) relPath.dropRight(".exe".length) else relPath

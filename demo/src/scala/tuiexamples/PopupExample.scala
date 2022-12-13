@@ -2,7 +2,6 @@ package tuiexamples
 
 import tui._
 import tui.widgets._
-import tui.widgets.clear.ClearWidget
 
 object PopupExample {
   case class App(
@@ -11,7 +10,7 @@ object PopupExample {
 
   def main(args: Array[String]): Unit =
     withTerminal { (jni, terminal) =>
-      val app = App();
+      val app = App()
       run_app(terminal, app, jni);
 
     }
@@ -21,7 +20,7 @@ object PopupExample {
       jni: tui.crossterm.CrosstermJni
   ): Unit =
     while (true) {
-      terminal.draw(f => ui(f, app));
+      terminal.draw(f => ui(f, app))
 
       jni.read() match {
         case key: tui.crossterm.Event.Key =>
@@ -41,13 +40,13 @@ object PopupExample {
       .split(size)
 
     val text = if (app.show_popup) { "Press p to close the popup" }
-    else { "Press p to show the popup" };
+    else { "Press p to show the popup" }
     val paragraph = ParagraphWidget(
       text = Text.from(Span.styled(text, Style(add_modifier = Modifier.SLOW_BLINK))),
       alignment = Alignment.Center,
       wrap = Some(ParagraphWidget.Wrap(trim = true))
     )
-    f.render_widget(paragraph, chunks(0));
+    f.render_widget(paragraph, chunks(0))
 
     val block = BlockWidget(
       title = Some(Spans.nostyle("Content")),
@@ -55,13 +54,13 @@ object PopupExample {
       style = Style.DEFAULT.bg(Color.Blue)
     )
 
-    f.render_widget(block, chunks(1));
+    f.render_widget(block, chunks(1))
 
     if (app.show_popup) {
       val block = BlockWidget(title = Some(Spans.nostyle("Popup")), borders = Borders.ALL)
-      val area = centered_rect(60, 20, size);
+      val area = centered_rect(60, 20, size)
       f.render_widget(ClearWidget, area); // this clears out the background
-      f.render_widget(block, area);
+      f.render_widget(block, area)
     }
   }
 
@@ -75,7 +74,7 @@ object PopupExample {
         Constraint.Percentage((100 - percent_y) / 2)
       )
     )
-      .split(r);
+      .split(r)
 
     Layout(
       direction = Direction.Horizontal,

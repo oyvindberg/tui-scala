@@ -10,28 +10,28 @@ case class TestBackend(
   val buffer: Buffer = Buffer.empty(Rect(0, 0, width, height))
 
   def resize(width: Int, height: Int): Unit = {
-    buffer.resize(Rect(0, 0, width, height));
-    this.width = width;
-    this.height = height;
+    buffer.resize(Rect(0, 0, width, height))
+    this.width = width
+    this.height = height
   }
 
   def draw(content: Array[(Int, Int, Cell)]): Unit =
     content.foreach { case (x, y, c) => buffer.set(x, y, c) }
 
   def hide_cursor(): Unit =
-    this.cursor = false;
+    this.cursor = false
 
   def show_cursor(): Unit =
-    this.cursor = true;
+    this.cursor = true
 
   def get_cursor(): (Int, Int) =
     pos
 
   def set_cursor(x: Int, y: Int): Unit =
-    pos = (x, y);
+    pos = (x, y)
 
   def clear(): Unit =
-    buffer.reset();
+    buffer.reset()
 
   def size(): Rect =
     Rect(0, 0, width, height)

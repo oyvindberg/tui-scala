@@ -71,7 +71,7 @@ case class Buffer(
   def set_stringn(x: Int, y: Int, string: String, width: Int, style: Style): (Int, Int) = {
     var index = this.index_of(x, y)
     var x_offset = x
-    val graphemes = UnicodeSegmentation.graphemes(string, true)
+    val graphemes = UnicodeSegmentation.graphemes(string, is_extended = true)
     val max_offset = math.min(this.area.right, width + x)
 
     graphemes.breakableForeach { case (s, _) =>

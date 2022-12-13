@@ -118,7 +118,7 @@ object operators {
     def |(rhs: WeightedRelation): PartialConstraint = PartialConstraint(self, rhs)
 
     def +(rhs: Variable): Expression = {
-      self.terms.addOne(Term(rhs, 1.0));
+      self.terms.addOne(Term(rhs, 1.0))
       self
     }
 
