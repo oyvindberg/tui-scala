@@ -2,7 +2,6 @@ package tui
 
 import org.scalactic.{source, CanEqual, Prettifier, TypeCheckedTripleEquals}
 import org.scalatest.funsuite.AnyFunSuite
-import test.{buffer_view, TestBackend}
 
 trait TuiTest extends AnyFunSuite with TypeCheckedTripleEquals {
   def assert_eq[L, R](actual: L, expected: R, msg: String = "")(implicit constraint: L CanEqual R, prettifier: Prettifier, pos: source.Position) =
@@ -19,12 +18,12 @@ trait TuiTest extends AnyFunSuite with TypeCheckedTripleEquals {
     debug_info.append('\n')
     debug_info.append("Expected:")
     debug_info.append('\n')
-    val expected_view = buffer_view(expected)
+    val expected_view = bufferView(expected)
     debug_info.append(expected_view)
     debug_info.append('\n')
     debug_info.append("Got:")
     debug_info.append('\n')
-    val view = buffer_view(actual.buffer)
+    val view = bufferView(actual.buffer)
     debug_info.append(view)
     debug_info.append('\n')
 

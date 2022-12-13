@@ -11,7 +11,7 @@ projects:
     dependsOn: tui
     extends: template-cross-scala
     platform:
-      mainClass: tui.demo
+      mainClass: tuiexamples.Launcher
   scripts:
     dependencies:
     - build.bleep::bleep-plugin-ci-release:${BLEEP_VERSION}
