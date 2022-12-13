@@ -1,8 +1,11 @@
 # tui-scala
 
-[![Build Status](https://github.com/oyvindberg/tui-scala/workflows/CI/badge.svg)](https://github.com/oyvindberg/tui-scala/actions?query=workflow%3ACI+)
+[![Build Status](https://github.com/oyvindberg/tui-scala/actions/workflows/build.yml/badge.svg)](https://github.com/oyvindberg/tui-scala/actions/workflows/build.yml)
 
-https://user-images.githubusercontent.com/247937/206300852-9afab78b-5705-4241-bef1-f841bf5d42cc.mp4
+
+
+https://user-images.githubusercontent.com/247937/207265695-58d2eeac-2f62-4264-95f9-9e25b1f99964.mp4
+
 
 `tui-scala` is a [Scala](https://www.scala-lang.org) library to build rich terminal
 user interfaces and dashboards. It is a port of [tui-rs](https://github.com/fdehau/tui-rs), 
@@ -10,9 +13,8 @@ which is heavily inspired by the `Javascript`
 library [blessed-contrib](https://github.com/yaronn/blessed-contrib) and the
 `Go` library [termui](https://github.com/gizak/termui).
 
-**The port is not yet complete, see [roadmap](https://github.com/oyvindberg/tui-scala/issues/15) for immediate plans.
-There are [bite-sized](https://github.com/oyvindberg/tui-scala/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) 
-tasks to complete if you want to contribute!**
+**The port is now complete, and from here on it will diverge from the original design. See [roadmap](https://github.com/oyvindberg/tui-scala/issues/15) for immediate plans.
+There are some design/ideas tasks where you can help with ideas, POCs and implementation if you want to contribute!**
 
 The library uses [crossterm](https://github.com/crossterm-rs/crossterm) as a backend. 
 `crossterm` handles differences between platforms, so everything should work on major operating systems, including windows.
@@ -37,9 +39,10 @@ The library comes with a bunch of widgets: here is some example code:
 
 * [BarChart](https://github.com/oyvindberg/tui-rs/blob/master/examples/barchart.scala)
 * [Block](https://github.com/oyvindberg/tui-rs/blob/master/examples/block.scala)
-* [Canvas (with line, point cloud, world map)](https://github.com/oyvindberg/tui-rs/blob/master/examples/canvas.scala)
+* [Canvas(with line, point cloud, world map)](https://github.com/oyvindberg/tui-rs/blob/master/examples/canvas.scala)
 * [Chart](https://github.com/oyvindberg/tui-rs/blob/master/examples/chart.scala)
 * [Custom widget](https://github.com/oyvindberg/tui-rs/blob/master/examples/custom_widget.scala)
+* [Demo (from video above)](https://github.com/oyvindberg/tui-rs/blob/master/examples/demo)
 * [Gauge](https://github.com/oyvindberg/tui-rs/blob/master/examples/gauge.scala)
 * [Layout](https://github.com/oyvindberg/tui-rs/blob/master/examples/layout.scala)
 * [List](https://github.com/oyvindberg/tui-rs/blob/master/examples/list.scala)
