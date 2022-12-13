@@ -4,18 +4,6 @@ package widgets
 import tui.internal.ranges
 
 /// Widget to render a sparkline over one or more lines.
-///
-/// # Examples
-///
-/// ```
-/// # use tui::widgets::{Block, Borders, Sparkline};
-/// # use tui::style::{Style, Color};
-/// Sparkline::default()
-///     .block(Block::default().title("Sparkline").borders(Borders::ALL))
-///     .data(&[0, 2, 3, 4, 1, 4, 10])
-///     .max(5)
-///     .style(Style::DEFAULT.fg(Color::Red).bg(Color::White));
-/// ```
 
 case class SparklineWidget(
     /// A block to wrap the widget in

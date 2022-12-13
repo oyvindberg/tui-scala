@@ -246,7 +246,6 @@ object Variable {
 
 /// A variable and a coefficient to multiply that variable by. This is a sub-expression in
 /// a constraint equation.
-//#[derive(Copy, Clone, Debug)]
 case class Term(
     variable: Variable,
     var coefficient: Double
@@ -254,7 +253,6 @@ case class Term(
 
 /// An expression that can be the left hand or right hand side of a constraint equation.
 /// It is a linear combination of variables, i.e. a sum of variables weighted by coefficients, plus an optional constant.
-//#[derive(Clone, Debug)]
 case class Expression(
     terms: mutable.ArrayBuffer[Term],
     var constant: Double

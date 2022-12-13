@@ -5,28 +5,6 @@ import tui.internal.saturating._
 import tui.internal.reflow.{LineComposer, LineTruncator, WordWrapper}
 
 /// A widget to display some text.
-///
-/// # Examples
-///
-/// ```
-/// # use tui::text::{Text, Spans, Span};
-/// # use tui::widgets::{Block, Borders, Paragraph, Wrap};
-/// # use tui::style::{Style, Color, Modifier};
-/// # use tui::layout::{Alignment};
-/// let text = vec![
-///     Spans::from(vec![
-///         Span::raw("First"),
-///         Span::styled("line",Style::DEFAULT.add_modifier(Modifier::ITALIC)),
-///         Span::raw("."),
-///     ]),
-///     Spans::from(Span::styled("Second line", Style::DEFAULT.fg(Color::Red))),
-/// ];
-/// Paragraph::new(text)
-///     .block(Block::default().title("Paragraph").borders(Borders::ALL))
-///     .style(Style::DEFAULT.fg(Color::White).bg(Color::Black))
-///     .alignment(Alignment::Center)
-///     .wrap(Wrap { trim: true });
-/// ```
 case class ParagraphWidget(
     /// A block to wrap the widget in
     block: Option[BlockWidget] = None,
@@ -109,32 +87,6 @@ object ParagraphWidget {
     }
 
   /// Describes how to wrap text across lines.
-  ///
-  /// ## Examples
-  ///
-  /// ```
-  /// # use tui::widgets::{Paragraph, Wrap};
-  /// # use tui::text::Text;
-  /// let bullet_points = Text::from(r#"Some indented points:
-  ///     - First thing goes here and is long so that it wraps
-  ///     - Here is another point that is long enough to wrap"#);
-  ///
-  /// // With leading spaces trimmed (window width of 30 chars):
-  /// Paragraph::new(bullet_points.clone()).wrap(Wrap { trim: true });
-  /// // Some indented points:
-  /// // - First thing goes here and is
-  /// // long so that it wraps
-  /// // - Here is another point that
-  /// // is long enough to wrap
-  ///
-  /// // But without trimming, indentation is preserved:
-  /// Paragraph::new(bullet_points).wrap(Wrap { trim: false });
-  /// // Some indented points:
-  /// //     - First thing goes here
-  /// // and is long so that it wraps
-  /// //     - Here is another point
-  /// // that is long enough to wrap
-  /// ```
   case class Wrap(
       /// Should leading whitespace be trimmed
       trim: Boolean

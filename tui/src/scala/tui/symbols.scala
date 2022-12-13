@@ -11,7 +11,6 @@ object symbols {
     val ONE_QUARTER = "▎";
     val ONE_EIGHTH = "▏";
 
-    //    #[derive(Debug, Clone)]
     case class Set(
         full: String,
         seven_eighths: String,
@@ -224,7 +223,6 @@ object symbols {
   }
 
 /// Marker to use when plotting data points
-//#[derive(Debug, Clone, Copy)]
   sealed trait Marker
 
   object Marker {

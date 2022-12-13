@@ -23,34 +23,6 @@ import scala.jdk.StreamConverters.StreamHasToScala
 //! For example, for the [`crate::widgets::Block`] widget, all the following calls are valid to set
 //! its `title` property (which is a [`Spans`] under the hood):
 //!
-//! ```rust
-//! # use tui::widgets::Block;
-//! # use tui::text::{Span, Spans};
-//! # use tui::style::{Color, Style};
-//! // A simple string with no styling.
-//! // Converted to Spans(vec![
-//! //   Span { content: Cow::Borrowed("My title"), style: Style { .. } }
-//! // ])
-//! let block = Block::default().title("My title");
-//!
-//! // A simple string with a unique style.
-//! // Converted to Spans(vec![
-//! //   Span { content: Cow::Borrowed("My title"), style: Style { fg: Some(Color::Yellow), .. }
-//! // ])
-//! let block = Block::default().title(
-//!     Span::styled("My title", Style::DEFAULT.fg(Color::Yellow))
-//! );
-//!
-//! // A string with multiple styles.
-//! // Converted to Spans(vec![
-//! //   Span { content: Cow::Borrowed("My"), style: Style { fg: Some(Color::Yellow), .. } },
-//! //   Span { content: Cow::Borrowed(" title"), .. }
-//! // ])
-//! let block = Block::default().title(vec![
-//!     Span::styled("My", Style::DEFAULT.fg(Color::Yellow)),
-//!     Span::raw(" title"),
-//! ]);
-//! ```
 
 /// A string split over multiple lines where each line is composed of several clusters, each with
 /// their own style.
@@ -58,36 +30,9 @@ import scala.jdk.StreamConverters.StreamHasToScala
 /// A [`Text`], like a [`Span`], can be constructed using one of the many `From` implementations
 /// or via the [`Text::raw`] and [`Text::styled`] methods. Helpfully, [`Text`] also implements
 /// [`core::iter::Extend`] which enables the concatenation of several [`Text`] blocks.
-///
-/// ```rust
-/// # use tui::text::Text;
-/// # use tui::style::{Color, Modifier, Style};
-/// let style = Style::DEFAULT.fg(Color::Yellow).add_modifier(Modifier::ITALIC);
-///
-/// // An initial two lines of `Text` built from a `&str`
-/// let mut text = Text::from("The first line\nThe second line");
-/// assert_eq!(2, text.height());
-///
-/// // Adding two more unstyled lines
-/// text.extend(Text::raw("These are two\nmore lines!"));
-/// assert_eq!(4, text.height());
-///
-/// // Adding a final two styled lines
-/// text.extend(Text::styled("Some more lines\nnow with more style!", style));
-/// assert_eq!(6, text.height());
-/// ```
-//#[derive(Debug, Clone, PartialEq, Default, Eq)]
 case class Text(lines: Array[Spans]) {
 
   /// Returns the max width of all the lines.
-  ///
-  /// ## Examples
-  ///
-  /// ```rust
-  /// use tui::text::Text;
-  /// let text = Text::from("The first line\nThe second line");
-  /// assert_eq!(15, text.width());
-  /// ```
   def width: Int =
     lines
       .map(_.width)
@@ -95,32 +40,10 @@ case class Text(lines: Array[Spans]) {
       .getOrElse(0)
 
   /// Returns the height.
-  ///
-  /// ## Examples
-  ///
-  /// ```rust
-  /// use tui::text::Text;
-  /// let text = Text::from("The first line\nThe second line");
-  /// assert_eq!(2, text.height());
-  /// ```
   def height: Int =
     lines.length
 
   /// Apply a new style to existing text.
-  ///
-  /// # Examples
-  ///
-  /// ```rust
-  /// # use tui::text::Text;
-  /// # use tui::style::{Color, Modifier, Style};
-  /// let style = Style::DEFAULT.fg(Color::Yellow).add_modifier(Modifier::ITALIC);
-  /// let mut raw_text = Text::raw("The first line\nThe second line");
-  /// let styled_text = Text::styled(String::from("The first line\nThe second line"), style);
-  /// assert_ne!(raw_text, styled_text);
-  ///
-  /// raw_text.patch_style(style);
-  /// assert_eq!(raw_text, styled_text);
-  /// ```
   def patch_style(style: Style): Text = {
     val newLines = lines.map { case Spans(spans) => Spans(spans.map(span => span.copy(style = span.style.patch(style)))) }
     Text(newLines)
@@ -129,30 +52,12 @@ case class Text(lines: Array[Spans]) {
 
 object Text {
   /// Create some text (potentially multiple lines) with no style.
-  ///
-  /// ## Examples
-  ///
-  /// ```rust
-  /// # use tui::text::Text;
-  /// Text::raw("The first line\nThe second line");
-  /// Text::raw(String::from("The first line\nThe second line"));
-  /// ```
   def raw[T](content: T)(implicit ev: T => String): Text = {
     val spans = ev(content).lines().map(Spans.from).toScala(Factory.arrayFactory[Spans])
     Text(spans)
   }
 
   /// Create some text (potentially multiple lines) with a style.
-  ///
-  /// # Examples
-  ///
-  /// ```rust
-  /// # use tui::text::Text;
-  /// # use tui::style::{Color, Modifier, Style};
-  /// let style = Style::DEFAULT.fg(Color::Yellow).add_modifier(Modifier::ITALIC);
-  /// Text::styled("The first line\nThe second line", style);
-  /// Text::styled(String::from("The first line\nThe second line"), style);
-  /// ```
   def styled[T](content: T, style: Style)(implicit ev: T => String): Text = {
     val text = Text.raw(content)
     text.patch_style(style);

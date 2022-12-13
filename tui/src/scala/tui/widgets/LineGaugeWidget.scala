@@ -5,19 +5,6 @@ import tui._
 import tui.internal.saturating.IntOps
 
 /// A compact widget to display a task progress over a single line.
-///
-/// # Examples:
-///
-/// ```
-/// # use tui.widgets.{Widget, LineGauge, Block, Borders};
-/// # use tui.style.{Style, Color, Modifier};
-/// # use tui.symbols;
-/// LineGauge.default()
-///     .block(Block.default().borders(Borders.ALL).title("Progress"))
-///     .gauge_style(Style.DEFAULT.fg(Color.White).bg(Color.Black).add_modifier(Modifier.BOLD))
-///     .line_set(symbols.line.THICK)
-///     .ratio(0.4);
-/// ```
 case class LineGaugeWidget(
     block: Option[BlockWidget] = None,
     ratio: GaugeWidget.Ratio = GaugeWidget.Ratio.Zero,

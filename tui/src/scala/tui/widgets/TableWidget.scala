@@ -11,54 +11,6 @@ import scala.collection.mutable
 /// A widget to display data in formatted columns.
 ///
 /// It is a collection of [`Row`]s, themselves composed of [`Cell`]s:
-/// ```rust
-/// # use tui.widgets.{Block, Borders, Table, Row, Cell};
-/// # use tui.layout.Constraint;
-/// # use tui.style.{Style, Color, Modifier};
-/// # use tui.text.{Text, Spans, Span};
-/// Table.new(vec![
-///     // Row can be created from simple strings.
-///     Row.new(vec!["Row11", "Row12", "Row13"]),
-///     // You can style the entire row.
-///     Row.new(vec!["Row21", "Row22", "Row23"]).style(Style.DEFAULT.fg(Color.Blue)),
-///     // If you need more control over the styling you may need to create Cells directly
-///     Row.new(vec![
-///         Cell.from("Row31"),
-///         Cell.from("Row32").style(Style.DEFAULT.fg(Color.Yellow)),
-///         Cell.from(Spans.from(vec![
-///             Span.raw("Row"),
-///             Span.styled("33", Style.DEFAULT.fg(Color.Green))
-///         ])),
-///     ]),
-///     // If a Row need to display some content over multiple lines, you just have to change
-///     // its height.
-///     Row.new(vec![
-///         Cell.from("Row\n41"),
-///         Cell.from("Row\n42"),
-///         Cell.from("Row\n43"),
-///     ]).height(2),
-/// ])
-/// // You can set the style of the entire Table.
-/// .style(Style.DEFAULT.fg(Color.White))
-/// // It has an optional header, which is simply a Row always visible at the top.
-/// .header(
-///     Row.new(vec!["Col1", "Col2", "Col3"])
-///         .style(Style.DEFAULT.fg(Color.Yellow))
-///         // If you want some space between the header and the rest of the rows, you can always
-///         // specify some margin at the bottom.
-///         .bottom_margin(1)
-/// )
-/// // As any other widget, a Table can be wrapped in a Block.
-/// .block(Block.default().title("Table"))
-/// // Columns widths are constrained in the same way as Layout...
-/// .widths(&[Constraint.Length(5), Constraint.Length(5), Constraint.Length(10)])
-/// // ...and they can be separated by a fixed spacing.
-/// .column_spacing(1)
-/// // If you wish to highlight a row in any specific way when it is selected...
-/// .highlight_style(Style.DEFAULT.add_modifier(Modifier.BOLD))
-/// // ...and potentially show a symbol in front of the selection.
-/// .highlight_symbol(">>");
-/// ```
 case class TableWidget(
     /// A block to wrap the widget in
     block: Option[BlockWidget] = None,
@@ -235,27 +187,6 @@ object TableWidget {
   /// A [`Cell`] contains the [`Text`] to be displayed in a [`Row`] of a [`Table`].
   ///
   /// It can be created from anything that can be converted to a [`Text`].
-  /// ```rust
-  /// # use tui.widgets.Cell;
-  /// # use tui.style.{Style, Modifier};
-  /// # use tui.text.{Span, Spans, Text};
-  /// # use std.borrow.Cow;
-  /// Cell.from("simple string");
-  ///
-  /// Cell.from(Span.from("span"));
-  ///
-  /// Cell.from(Spans.from(vec![
-  ///     Span.raw("a vec of "),
-  ///     Span.styled("spans", Style.DEFAULT.add_modifier(Modifier.BOLD))
-  /// ]));
-  ///
-  /// Cell.from(Text.from("a text"));
-  ///
-  /// Cell.from(Text.from(Cow.Borrowed("hello")));
-  /// ```
-  ///
-  /// You can apply a [`Style`] on the entire [`Cell`] using [`Cell.style`] or rely on the styling
-  /// capabilities of [`Text`].
   case class Cell(
       content: Text,
       style: Style = Style.DEFAULT
@@ -270,31 +201,7 @@ object TableWidget {
   /// Holds data to be displayed in a [`Table`] widget.
   ///
   /// A [`Row`] is a collection of cells. It can be created from simple strings:
-  /// ```rust
-  /// # use tui.widgets.Row;
-  /// Row.new(vec!["Cell1", "Cell2", "Cell3"]);
-  /// ```
-  ///
-  /// But if you need a bit more control over individual cells, you can explicity create [`Cell`]s:
-  /// ```rust
-  /// # use tui.widgets.{Row, Cell};
-  /// # use tui.style.{Style, Color};
-  /// Row.new(vec![
-  ///     Cell.from("Cell1"),
-  ///     Cell.from("Cell2").style(Style.DEFAULT.fg(Color.Yellow)),
-  /// ]);
-  /// ```
-  ///
   /// You can also construct a row from any type that can be converted into [`Text`]:
-  /// ```rust
-  /// # use std.borrow.Cow;
-  /// # use tui.widgets.Row;
-  /// Row.new(vec![
-  ///     Cow.Borrowed("hello"),
-  ///     Cow.Owned("world".to_uppercase()),
-  /// ]);
-  /// ```
-  ///
   /// By default, a row has a height of 1 but you can change this using [`Row.height`].
   case class Row(
       cells: Array[TableWidget.Cell],

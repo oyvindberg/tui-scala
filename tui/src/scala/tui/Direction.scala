@@ -1,6 +1,5 @@
 package tui
 
-//#[derive(Debug, Hash, Clone, PartialEq, Eq)]
 sealed trait Direction
 
 object Direction {

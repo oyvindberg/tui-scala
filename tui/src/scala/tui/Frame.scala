@@ -14,21 +14,6 @@ case class Frame(
 ) {
 
   /// Render a [`Widget`] to the current buffer using [`Widget::render`].
-  ///
-  /// # Examples
-  ///
-  /// ```rust
-  /// # use tui::Terminal;
-  /// # use tui::backend::TestBackend;
-  /// # use tui::layout::Rect;
-  /// # use tui::widgets::Block;
-  /// # let backend = TestBackend::new(5, 5);
-  /// # let mut terminal = Terminal::new(backend).unwrap();
-  /// let block = Block::default();
-  /// let area = Rect::new(0, 0, 5, 5);
-  /// let mut frame = terminal.get_frame();
-  /// frame.render_widget(block, area);
-  /// ```
   def render_widget(widget: Widget, area: Rect): Unit =
     widget.render(area, buffer);
 
@@ -37,26 +22,6 @@ case class Frame(
   /// The last argument should be an instance of the [`StatefulWidget::State`] associated to the
   /// given [`StatefulWidget`].
   ///
-  /// # Examples
-  ///
-  /// ```rust
-  /// # use tui::Terminal;
-  /// # use tui::backend::TestBackend;
-  /// # use tui::layout::Rect;
-  /// # use tui::widgets::{List, ListItem, ListState};
-  /// # let backend = TestBackend::new(5, 5);
-  /// # let mut terminal = Terminal::new(backend).unwrap();
-  /// let mut state = ListState::default();
-  /// state.select(Some(1));
-  /// let items = vec![
-  ///     ListItem::new("Item 1"),
-  ///     ListItem::new("Item 2"),
-  /// ];
-  /// let list = List::new(items);
-  /// let area = Rect::new(0, 0, 5, 5);
-  /// let mut frame = terminal.get_frame();
-  /// frame.render_stateful_widget(list, area, &mut state);
-  /// ```
   def render_stateful_widget[W <: StatefulWidget](widget: W, area: Rect)(state: widget.State): Unit =
     widget.render(area, buffer, state);
 

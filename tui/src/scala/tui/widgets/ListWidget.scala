@@ -4,19 +4,6 @@ package widgets
 import tui.internal.saturating._
 
 /// A widget to display several items among which one can be selected (optional)
-///
-/// # Examples
-///
-/// ```
-/// # use tui::widgets::{Block, Borders, List, ListItem};
-/// # use tui::style::{Style, Color, Modifier};
-/// let items = [ListItem::new("Item 1"), ListItem::new("Item 2"), ListItem::new("Item 3")];
-/// List::new(items)
-///     .block(Block::default().title("List").borders(Borders::ALL))
-///     .style(Style::DEFAULT.fg(Color::White))
-///     .highlight_style(Style::DEFAULT.add_modifier(Modifier::ITALIC))
-///     .highlight_symbol(">>");
-/// ```
 case class ListWidget(
     block: Option[BlockWidget] = None,
     items: Array[ListWidget.Item],

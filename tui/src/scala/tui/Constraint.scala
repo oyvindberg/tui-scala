@@ -1,6 +1,5 @@
 package tui
 
-//#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 sealed trait Constraint {
   def apply(length: Int): Int =
     this match {

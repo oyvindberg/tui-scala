@@ -4,16 +4,7 @@ package tui
  *
  *  They are bitflags so they can easily be composed.
  *
- *  ## Examples
- *
- *  ```rust
- *  # use tui::style::Modifier;
- *
- *  let m = Modifier::BOLD | Modifier::ITALIC;
- *  ```
  */
-//#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-//#[derive(Copy, PartialEq, Eq, Clone, PartialOrd, Ord, Hash)]
 case class Modifier(bits: Int) {
   def fmt(sb: StringBuilder): Unit = {
     var first = true;

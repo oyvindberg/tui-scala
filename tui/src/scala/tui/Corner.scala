@@ -1,6 +1,5 @@
 package tui
 
-//#[derive(Debug, Hash, Clone, Copy, PartialEq, Eq)]
 sealed trait Corner
 object Corner {
   case object TopLeft extends Corner

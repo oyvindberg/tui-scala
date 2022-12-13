@@ -1,7 +1,6 @@
 package tui
 
 /// A buffer cell
-//#[derive(Debug, Clone, PartialEq, Eq)]
 case class Cell(
     var symbol: tui.Grapheme,
     var fg: Color,

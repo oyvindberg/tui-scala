@@ -1,7 +1,5 @@
 package tui
 
-//#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-//#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 sealed trait Color
 
 object Color {

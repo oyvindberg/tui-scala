@@ -12,27 +12,6 @@ import scala.collection.mutable
 /// a grapheme, a foreground color and a background color. This grid will then be used to output
 /// the appropriate escape sequences and characters to draw the UI as the user has defined it.
 ///
-/// # Examples:
-///
-/// ```
-/// use tui::buffer::{Buffer, Cell};
-/// use tui::layout::Rect;
-/// use tui::style::{Color, Style, Modifier};
-///
-/// let mut buf = Buffer::empty(Rect{x: 0, y: 0, width: 10, height: 5});
-/// buf.get_mut(0, 2).set_symbol("x");
-/// assert_eq!(buf.get(0, 2).symbol, "x");
-/// buf.set_string(3, 0, "string", Style::DEFAULT.fg(Color::Red).bg(Color::White));
-/// assert_eq!(buf.get(5, 0), &Cell{
-///     symbol: String::from("r"),
-///     fg: Color::Red,
-///     bg: Color::White,
-///     modifier: Modifier::EMPTY
-/// });
-/// buf.get_mut(5, 0).set_char('x');
-/// assert_eq!(buf.get(5, 0).symbol, "x");
-/// ```
-//#[derive(Debug, Clone, PartialEq, Eq, Default)]
 case class Buffer(
     /// The area represented by this buffer
     var area: Rect,
@@ -53,32 +32,6 @@ case class Buffer(
   /// Returns the index in the Vec<Cell> for the given global (x, y) coordinates.
   ///
   /// Global coordinates are offset by the Buffer's area offset (`x`/`y`).
-  ///
-  /// # Examples
-  ///
-  /// ```
-  /// # use tui::buffer::Buffer;
-  /// # use tui::layout::Rect;
-  /// let rect = Rect::new(200, 100, 10, 10);
-  /// let buffer = Buffer::empty(rect);
-  /// // Global coordinates to the top corner of this buffer's area
-  /// assert_eq!(buffer.index_of(200, 100), 0);
-  /// ```
-  ///
-  /// # Panics
-  ///
-  /// Panics when given an coordinate that is outside of this Buffer's area.
-  ///
-  /// ```should_panic
-  /// # use tui::buffer::Buffer;
-  /// # use tui::layout::Rect;
-  /// let rect = Rect::new(200, 100, 10, 10);
-  /// let buffer = Buffer::empty(rect);
-  /// // Top coordinate is outside of the buffer in global coordinate space, as the Buffer's area
-  /// // starts at (200, 100).
-  /// buffer.index_of(0, 0); // Panics
-  /// ```
-
   def index_of(x: Int, y: Int): Int = {
     debug_assert(
       x >= this.area.left
@@ -96,30 +49,6 @@ case class Buffer(
   /// Returns the (global) coordinates of a cell given its index
   ///
   /// Global coordinates are offset by the Buffer's area offset (`x`/`y`).
-  ///
-  /// # Examples
-  ///
-  /// ```
-  /// # use tui::buffer::Buffer;
-  /// # use tui::layout::Rect;
-  /// let rect = Rect::new(200, 100, 10, 10);
-  /// let buffer = Buffer::empty(rect);
-  /// assert_eq!(buffer.pos_of(0), (200, 100));
-  /// assert_eq!(buffer.pos_of(14), (204, 101));
-  /// ```
-  ///
-  /// # Panics
-  ///
-  /// Panics when given an index that is outside the Buffer's content.
-  ///
-  /// ```should_panic
-  /// # use tui::buffer::Buffer;
-  /// # use tui::layout::Rect;
-  /// let rect = Rect::new(0, 0, 10, 10); // 100 cells in total
-  /// let buffer = Buffer::empty(rect);
-  /// // Index 100 is the 101th cell, which lies outside of the area of this Buffer.
-  /// buffer.pos_of(100); // Panics
-  /// ```
   def pos_of(i: Int): (Int, Int) = {
     debug_assert(
       i < this.content.length,

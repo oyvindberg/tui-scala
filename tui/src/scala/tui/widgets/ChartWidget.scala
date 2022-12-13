@@ -7,42 +7,6 @@ import tui.internal.saturating._
 import tui.widgets.canvas.{CanvasWidget, Line, Points}
 
 /// A widget to plot one or more dataset in a cartesian coordinate system
-///
-/// # Examples
-///
-/// ```
-/// # use tui.symbols
-/// # use tui.widgets.{Block, Borders, Chart, Axis, Dataset, GraphType}
-/// # use tui.style.{Style, Color}
-/// # use tui.text.Span
-/// val datasets = vec![
-///     Dataset.default()
-///         .name("data1")
-///         .marker(symbols.Marker.Dot)
-///         .graph_type(GraphType.Scatter)
-///         .style(Style.DEFAULT.fg(Color.Cyan))
-///         .data(&[(0.0, 5.0), (1.0, 6.0), (1.5, 6.434)]),
-///     Dataset.default()
-///         .name("data2")
-///         .marker(symbols.Marker.Braille)
-///         .graph_type(GraphType.Line)
-///         .style(Style.DEFAULT.fg(Color.Magenta))
-///         .data(&[(4.0, 5.0), (5.0, 8.0), (7.66, 13.5)]),
-/// ]
-/// Chart.new(datasets)
-///     .block(Block.default().title("Chart"))
-///     .x_axis(Axis.default()
-///         .title(Span.styled("X Axis", Style.DEFAULT.fg(Color.Red)))
-///         .style(Style.DEFAULT.fg(Color.White))
-///         .bounds([0.0, 10.0])
-///         .labels(["0.0", "5.0", "10.0"].iter().cloned().map(Span.from).collect()))
-///     .y_axis(Axis.default()
-///         .title(Span.styled("Y Axis", Style.DEFAULT.fg(Color.Red)))
-///         .style(Style.DEFAULT.fg(Color.White))
-///         .bounds([0.0, 10.0])
-///         .labels(["0.0", "5.0", "10.0"].iter().cloned().map(Span.from).collect()))
-/// ```
-
 case class ChartWidget(
     /// A block to display around the widget eventually
     block: Option[BlockWidget] = None,
@@ -55,21 +19,6 @@ case class ChartWidget(
     /// The widget base style
     style: Style = Style.DEFAULT,
     /// Set the constraints used to determine whether the legend should be shown or not.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// # use tui.widgets.Chart
-    /// # use tui.layout.Constraint
-    /// val constraints = (
-    ///     Constraint.Ratio(1, 3),
-    ///     Constraint.Ratio(1, 4)
-    /// )
-    /// // Hide the legend when either its width is greater than 33% of the total widget width
-    /// // or if its height is greater than 25% of the total widget height.
-    /// val _chart: Chart = Chart.new(vec![])
-    ///     .hidden_legend_constraints(constraints)
-    /// ```
     hidden_legend_constraints: (Constraint, Constraint) = (Constraint.Ratio(1, 4), Constraint.Ratio(1, 4))
 ) extends Widget {
   /// Compute the internal layout of the chart given the area. If the area is too small some
