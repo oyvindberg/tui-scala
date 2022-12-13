@@ -1,9 +1,7 @@
 package tui
 package widgets
 
-import tui.backend.test.TestBackend
-import tui.buffer.Buffer
-import tui.terminal.Terminal
+import test.TestBackend
 
 class barchartTests extends TuiTest {
   test("widgets_barchart_not_full_below_max_value") {

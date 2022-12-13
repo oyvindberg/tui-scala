@@ -12,15 +12,14 @@ projects:
     extends: template-cross-scala
     platform:
       mainClass: tui.demo
-    sources: ../submodules/tui-rs/examples
   scripts:
     dependencies:
+    - build.bleep::bleep-plugin-ci-release:${BLEEP_VERSION}
     - build.bleep::bleep-plugin-jni:${BLEEP_VERSION}
     - build.bleep::bleep-plugin-native-image:${BLEEP_VERSION}
-    - build.bleep::bleep-plugin-ci-release:${BLEEP_VERSION}
     extends:
-      - template-scala-common
-      - template-scala-2
+    - template-scala-2
+    - template-scala-common
   tests:
     dependencies: org.scalatest::scalatest:3.2.13
     dependsOn: tui
@@ -31,20 +30,13 @@ projects:
     - cassowary
     - crossterm
     extends: template-cross-scala
-    sources: ../submodules/tui-rs/src
 scripts:
-  gen-native-image: scripts/tui.scripts.GenNativeImage
   gen-headers: scripts/tui.scripts.GenHeaders
   gen-jni-library: scripts/tui.scripts.GenJniLibrary
+  gen-native-image: scripts/tui.scripts.GenNativeImage
   my-publish-local: scripts/tui.scripts.PublishLocal
   publish: scripts/tui.scripts.Publish
 templates:
-  template-scala-common:
-    scala:
-      options: -encoding utf8 -feature -unchecked
-      strict: true
-    platform:
-      name: jvm
   template-cross-scala:
     cross:
       jvm213:
@@ -58,3 +50,9 @@ templates:
   template-scala-3:
     scala:
       version: 3.2.1
+  template-scala-common:
+    platform:
+      name: jvm
+    scala:
+      options: -encoding utf8 -feature -unchecked
+      strict: true

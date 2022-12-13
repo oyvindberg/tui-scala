@@ -1,8 +1,6 @@
 package tui
 
-import tui.backend.CrosstermBackend
 import tui.crossterm.{Command, CrosstermJni}
-import tui.terminal.Terminal
 
 object withTerminal {
   def apply[T](f: (CrosstermJni, Terminal) => T): T = {

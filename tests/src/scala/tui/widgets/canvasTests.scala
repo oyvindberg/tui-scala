@@ -1,11 +1,8 @@
 package tui
 package widgets
 
-import tui.backend.test.TestBackend
-import tui.buffer.Buffer
+import test.TestBackend
 import tui.internal.ranges
-import tui.terminal.Terminal
-import tui.text.{Span, Spans}
 import tui.widgets.canvas.Canvas
 
 class canvasTests extends TuiTest {
