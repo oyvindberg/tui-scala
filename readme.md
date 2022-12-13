@@ -35,26 +35,28 @@ you may rely on `crossterm` achieve such features.
 
 ### Widgets
 
-The library comes with a bunch of widgets: here is some example code:
+The library comes with a bunch of widgets: here is example code for all of them:
 
-* [BarChart](https://github.com/oyvindberg/tui-rs/blob/master/examples/barchart.scala)
-* [Block](https://github.com/oyvindberg/tui-rs/blob/master/examples/block.scala)
-* [Canvas(with line, point cloud, world map)](https://github.com/oyvindberg/tui-rs/blob/master/examples/canvas.scala)
-* [Chart](https://github.com/oyvindberg/tui-rs/blob/master/examples/chart.scala)
-* [Custom widget](https://github.com/oyvindberg/tui-rs/blob/master/examples/custom_widget.scala)
-* [Demo (from video above)](https://github.com/oyvindberg/tui-rs/blob/master/examples/demo)
-* [Gauge](https://github.com/oyvindberg/tui-rs/blob/master/examples/gauge.scala)
-* [Layout](https://github.com/oyvindberg/tui-rs/blob/master/examples/layout.scala)
-* [List](https://github.com/oyvindberg/tui-rs/blob/master/examples/list.scala)
-* [Paragraph](https://github.com/oyvindberg/tui-rs/blob/master/examples/paragraph.scala)
-* [Popup](https://github.com/oyvindberg/tui-rs/blob/master/examples/popup.scala)
-* [Sparkline](https://github.com/oyvindberg/tui-rs/blob/master/examples/sparkline.scala)
-* [Table](https://github.com/oyvindberg/tui-rs/blob/master/examples/table.scala)
-* [Tabs](https://github.com/oyvindberg/tui-rs/blob/master/examples/tabs.scala)
-* [User input](https://github.com/oyvindberg/tui-rs/blob/master/examples/user_input.scala)
+* [BarChart](demo/src/scala/tuiexamples/BarChartExample.scala)
+* [Block](demo/src/scala/tuiexamples/BlockExample.scala)
+* [Canvas](demo/src/scala/tuiexamples/CanvasExample.scala)
+* [Chart](demo/src/scala/tuiexamples/ChartExample.scala)
+* [CustomWidget](demo/src/scala/tuiexamples/CustomWidgetExample.scala)
+* [Gauge](demo/src/scala/tuiexamples/GaugeExample.scala)
+* [Layout](demo/src/scala/tuiexamples/LayoutExample.scala)
+* [List](demo/src/scala/tuiexamples/ListExample.scala)
+* [Paragraph](demo/src/scala/tuiexamples/ParagraphExample.scala)
+* [Popup](demo/src/scala/tuiexamples/PopupExample.scala)
+* [Sparkline](demo/src/scala/tuiexamples/SparklineExample.scala)
+* [Table](demo/src/scala/tuiexamples/TableExample.scala)
+* [Tabs](demo/src/scala/tuiexamples/TabsExample.scala)
+* [UserInput](demo/src/scala/tuiexamples/UserInputExample.scala)
 
 Click on each item to see the source of the example. Run the examples with
-bleep (e.g. to run the barchart example `bleep run demo@jvm213 barchart`), and quit by pressing `q`.
+bleep (`bleep run demo@jvm213`), and quit by pressing `q`.
+
+The demo shown in the first video can be found here:
+* [Demo](demo/src/scala/tuiexamples/demo)
 
 ### Installation
 
