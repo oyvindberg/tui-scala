@@ -14,8 +14,6 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'ci skip')"
     steps:
       - uses: actions/checkout@v2
-        with:
-          submodules: recursive
       - uses: coursier/setup-action@v1.2.0-M3
       - uses: coursier/cache-action@v6
         with:
@@ -48,9 +46,6 @@ jobs:
             jni-folder: .bleep\generated-resources\crossterm\native
     steps:
       - uses: actions/checkout@v2
-        with:
-          submodules: recursive
-
       - uses: coursier/setup-action@v1.2.0-M3
       - uses: coursier/cache-action@v6
         with:
@@ -111,8 +106,6 @@ jobs:
     if: "startsWith(github.ref, 'refs/tags/v')"
     steps:
       - uses: actions/checkout@v2
-        with:
-          submodules: recursive
       - uses: coursier/setup-action@v1.2.0-M3
       - name: Install bleep stable
         run: cs install --channel https://raw.githubusercontent.com/oyvindberg/bleep/master/coursier-channel.json bleep --verbose
