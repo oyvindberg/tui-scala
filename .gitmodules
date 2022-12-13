@@ -1,5 +1,0 @@
-[submodule "submodules/tui-rs"]
-	path = submodules/tui-rs
-	url = https://github.com/oyvindberg/tui-rs.git
-    branch = master
-    update = rebase
