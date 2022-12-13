@@ -6,10 +6,10 @@ import tui.widgets.canvas.CanvasWidget
 
 class CanvasTests extends TuiTest {
   test("widgets_canvas_draw_labels") {
-    val backend = TestBackend(5, 5);
+    val backend = TestBackend(5, 5)
     val terminal = Terminal.init(backend)
     terminal.draw { f =>
-      val label = "test";
+      val label = "test"
       val canvas = CanvasWidget(
         background_color = Color.Yellow,
         x_bounds = Point(0.0, 5.0),
@@ -19,10 +19,10 @@ class CanvasTests extends TuiTest {
       f.render_widget(canvas, f.size);
     }
 
-    val expected = Buffer.with_lines("    ", "    ", "     ", "     ", "test ");
+    val expected = Buffer.with_lines("    ", "    ", "     ", "     ", "test ")
     ranges.range(0, 5) { row =>
       ranges.range(0, 5) { col =>
-        expected.get(col, row).set_bg(Color.Yellow);
+        expected.get(col, row).set_bg(Color.Yellow)
         ()
       }
     }

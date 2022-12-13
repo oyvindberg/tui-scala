@@ -9,10 +9,10 @@ class CrosstermBackend(buffer: CrosstermJni) extends Backend {
     buffer.flush()
 
   override def draw(content: Array[(Int, Int, Cell)]): Unit = {
-    var fg: Color = Color.Reset;
-    var bg: Color = Color.Reset;
-    var modifier = Modifier.EMPTY;
-    var last_pos: Option[(Int, Int)] = None;
+    var fg: Color = Color.Reset
+    var bg: Color = Color.Reset
+    var modifier = Modifier.EMPTY
+    var last_pos: Option[(Int, Int)] = None
     val commands = new util.ArrayList[Command]()
 
     content.foreach { case (x, y, cell) =>
@@ -22,22 +22,22 @@ class CrosstermBackend(buffer: CrosstermJni) extends Backend {
         case _                                                    => true
       }
       if (shouldMove) { commands.add(new Command.MoveTo(x, y)) }
-      last_pos = Some((x, y));
+      last_pos = Some((x, y))
 
       if (cell.modifier != modifier) {
         val diff = CrosstermBackend.ModifierDiff(from = modifier, to = cell.modifier)
         diff.queue(commands)
-        modifier = cell.modifier;
+        modifier = cell.modifier
       }
       if (cell.fg != fg) {
-        val color = CrosstermBackend.from(cell.fg);
+        val color = CrosstermBackend.from(cell.fg)
         commands.add(new Command.SetForegroundColor(color))
-        fg = cell.fg;
+        fg = cell.fg
       }
       if (cell.bg != bg) {
-        val color = CrosstermBackend.from(cell.bg);
+        val color = CrosstermBackend.from(cell.bg)
         commands.add(new Command.SetBackgroundColor(color))
-        bg = cell.bg;
+        bg = cell.bg
       }
       commands.add(new Command.Print(cell.symbol.str))
     }
@@ -99,7 +99,7 @@ object CrosstermBackend {
 
   case class ModifierDiff(from: Modifier, to: Modifier) {
     def queue(commands: util.ArrayList[Command]): Unit = {
-      val removed = from - to;
+      val removed = from - to
       if (removed.contains(Modifier.REVERSED)) {
         commands.add(new Command.SetAttribute(Attribute.NoReverse))
       }
@@ -125,7 +125,7 @@ object CrosstermBackend {
         commands.add(new Command.SetAttribute(Attribute.NoBlink))
       }
 
-      val added = to - from;
+      val added = to - from
       if (added.contains(Modifier.REVERSED)) {
         commands.add(new Command.SetAttribute(Attribute.Reverse))
       }

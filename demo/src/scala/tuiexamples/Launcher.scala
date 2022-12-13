@@ -3,7 +3,7 @@ package tuiexamples
 import tui.crossterm.CrosstermJni
 
 object Launcher {
-  val Demos = Map[String, Array[String] => Unit](
+  val Demos: Map[String, Array[String] => Unit] = Map[String, Array[String] => Unit](
     "barchart" -> BarChartExample.main,
     "block" -> BlockExample.main,
     "canvas" -> CanvasExample.main,

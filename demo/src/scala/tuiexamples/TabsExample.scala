@@ -16,20 +16,20 @@ object TabsExample {
 
     def previous(): Unit =
       if (index > 0) {
-        index -= 1;
+        index -= 1
       } else {
-        index = titles.length - 1;
+        index = titles.length - 1
       }
   }
   def main(args: Array[String]): Unit = withTerminal { (jni, terminal) =>
     // create app and run it
-    val app = App(titles = Array("Tab0", "Tab1", "Tab2", "Tab3"));
+    val app = App(titles = Array("Tab0", "Tab1", "Tab2", "Tab3"))
     run_app(terminal, app, jni);
   }
 
   def run_app(terminal: Terminal, app: App, jni: CrosstermJni): Unit =
     while (true) {
-      terminal.draw(f => ui(f, app));
+      terminal.draw(f => ui(f, app))
 
       jni.read() match {
         case key: tui.crossterm.Event.Key =>
@@ -48,13 +48,13 @@ object TabsExample {
       direction = Direction.Vertical,
       margin = Margin(5, 5),
       constraints = Array(Constraint.Length(3), Constraint.Min(0))
-    ).split(f.size);
+    ).split(f.size)
 
     val block = BlockWidget(style = Style(bg = Some(Color.White), fg = Some(Color.Black)))
-    f.render_widget(block, f.size);
+    f.render_widget(block, f.size)
     val titles = app.titles
       .map { t =>
-        val (first, rest) = t.splitAt(1);
+        val (first, rest) = t.splitAt(1)
         Spans.from(
           Span.styled(first, Style(fg = Some(Color.Yellow))),
           Span.styled(rest, Style(fg = Some(Color.Green)))
@@ -68,14 +68,14 @@ object TabsExample {
       style = Style(fg = Some(Color.Cyan)),
       highlight_style = Style(add_modifier = Modifier.BOLD, bg = Some(Color.Black))
     )
-    f.render_widget(tabs, chunks(0));
+    f.render_widget(tabs, chunks(0))
     val inner = app.index match {
       case 0 => BlockWidget(title = Some(Spans.nostyle("Inner 0")), borders = Borders.ALL)
       case 1 => BlockWidget(title = Some(Spans.nostyle("Inner 1")), borders = Borders.ALL)
       case 2 => BlockWidget(title = Some(Spans.nostyle("Inner 2")), borders = Borders.ALL)
       case 3 => BlockWidget(title = Some(Spans.nostyle("Inner 3")), borders = Borders.ALL)
       case _ => sys.error("unreachable")
-    };
-    f.render_widget(inner, chunks(1));
+    }
+    f.render_widget(inner, chunks(1))
   }
 }

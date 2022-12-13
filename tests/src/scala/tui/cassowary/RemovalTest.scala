@@ -12,16 +12,16 @@ class RemovalTest extends TuiTest {
 
     val v = Variable()
 
-    val constraint: Constraint = v | EQ(Strength.REQUIRED) | 100.0;
-    solver.add_constraint(constraint).unwrap();
-    values.update_values(solver.fetch_changes());
+    val constraint: Constraint = v | EQ(Strength.REQUIRED) | 100.0
+    solver.add_constraint(constraint).unwrap()
+    values.update_values(solver.fetch_changes())
 
-    assert_eq(values.value_of(v), 100.0);
+    assert_eq(values.value_of(v), 100.0)
 
-    solver.remove_constraint(constraint).unwrap();
-    solver.add_constraint(v | EQ(Strength.REQUIRED) | 0.0).unwrap();
-    values.update_values(solver.fetch_changes());
+    solver.remove_constraint(constraint).unwrap()
+    solver.add_constraint(v | EQ(Strength.REQUIRED) | 0.0).unwrap()
+    values.update_values(solver.fetch_changes())
 
-    assert_eq(values.value_of(v), 0.0);
+    assert_eq(values.value_of(v), 0.0)
   }
 }

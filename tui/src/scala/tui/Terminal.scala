@@ -17,7 +17,7 @@ case class Terminal private (
 ) {
   require(buffers.length == 2)
 
-  def drop() =
+  def drop(): Unit =
     // Attempt to restore the cursor state
     if (hidden_cursor) {
       try show_cursor()
@@ -39,9 +39,9 @@ case class Terminal private (
   /// Obtains a difference between the previous and the current buffer and passes it to the
   /// current backend for drawing.
   def flush(): Unit = {
-    val previous_buffer = buffers(1 - current);
-    val current_buffer = buffers(current);
-    val updates = previous_buffer.diff(current_buffer);
+    val previous_buffer = buffers(1 - current)
+    val current_buffer = buffers(current)
+    val updates = previous_buffer.diff(current_buffer)
     backend.draw(updates)
   }
 
@@ -49,34 +49,34 @@ case class Terminal private (
   /// be saved so the size can remain consistent when rendering.
   /// This leads to a full clear of the screen.
   def resize(area: Rect): Unit = {
-    buffers(current).resize(area);
-    buffers(1 - current).resize(area);
-    viewport.area = area;
+    buffers(current).resize(area)
+    buffers(1 - current).resize(area)
+    viewport.area = area
     clear()
   }
 
   /// Queries the backend for size and resizes if it doesn't match the previous size.
   def autoresize(): Unit =
     if (viewport.resize_behavior == ResizeBehavior.Auto) {
-      val size_ = size();
+      val size_ = size()
       if (size_ != viewport.area) {
-        resize(size_);
+        resize(size_)
       }
-    };
+    }
 
   /// Synchronizes terminal size, calls the rendering closure, flushes the current internal state
   /// and prepares for the next draw call.
   def draw(f: Frame => Unit): CompletedFrame = {
     // Autoresize - otherwise we get glitches if shrinking or potential desync between widgets
     // and the terminal (if growing), which may OOB.
-    autoresize();
+    autoresize()
 
-    val frame = get_frame();
-    f(frame);
+    val frame = get_frame()
+    f(frame)
     // We can't change the cursor position right away because we have to flush the frame to
     // stdout first. But we also can't keep the frame around, since it holds a &mut to
     // Terminal. Thus, we're taking the important data out of the Frame and dropping it.
-    val cursor_position = frame.cursor_position;
+    val cursor_position = frame.cursor_position
 
     // Draw to stdout
     flush()
@@ -84,16 +84,16 @@ case class Terminal private (
     cursor_position match {
       case None => hide_cursor()
       case Some((x, y)) =>
-        show_cursor();
+        show_cursor()
         set_cursor(x, y)
     }
 
     // Swap buffers
-    buffers(1 - current).reset();
-    current = 1 - current;
+    buffers(1 - current).reset()
+    current = 1 - current
 
     // Flush
-    backend.flush();
+    backend.flush()
     CompletedFrame(
       buffer = buffers(1 - current),
       area = viewport.area
@@ -101,13 +101,13 @@ case class Terminal private (
   }
 
   def hide_cursor(): Unit = {
-    backend.hide_cursor();
-    hidden_cursor = true;
+    backend.hide_cursor()
+    hidden_cursor = true
   }
 
   def show_cursor(): Unit = {
-    backend.show_cursor();
-    hidden_cursor = false;
+    backend.show_cursor()
+    hidden_cursor = false
   }
 
   def get_cursor(): (Int, Int) =
@@ -118,9 +118,9 @@ case class Terminal private (
 
   /// Clear the terminal and force a full redraw on the next draw call.
   def clear(): Unit = {
-    backend.clear();
+    backend.clear()
     // Reset the back buffer to make sure the next update will redraw everything.
-    buffers(1 - current).reset();
+    buffers(1 - current).reset()
   }
 
   /// Queries the real size of the backend.

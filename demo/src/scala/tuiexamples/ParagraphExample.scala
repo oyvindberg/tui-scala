@@ -18,7 +18,7 @@ object ParagraphExample {
   def main(args: Array[String]): Unit = withTerminal { (jni, terminal) =>
     // create app and run it
     val tick_rate = Duration.ofMillis(250)
-    val app = new App()
+    val app = App()
 
     run_app(terminal, app, tick_rate, jni)
   }

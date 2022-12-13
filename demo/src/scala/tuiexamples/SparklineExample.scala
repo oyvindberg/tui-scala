@@ -30,20 +30,20 @@ object SparklineExample {
   ) {
     def on_tick(): Unit = {
       val value1 = signal.next()
-      data1.removeLast();
-      data1.prepend(value1);
+      data1.removeLast()
+      data1.prepend(value1)
       val value2 = signal.next()
-      data2.removeLast();
-      data2.prepend(value2);
+      data2.removeLast()
+      data2.prepend(value2)
       val value3 = signal.next()
-      data3.removeLast();
-      data3.prepend(value3);
+      data3.removeLast()
+      data3.prepend(value3)
     }
   }
 
   object App {
     def apply(): App = {
-      val signal = RandomSignal(lower = 0, upper = 100).iterator;
+      val signal = RandomSignal(lower = 0, upper = 100).iterator
       val data1 = mutable.ArrayDeque.from(signal.take(200))
       val data2 = mutable.ArrayDeque.from(signal.take(200))
       val data3 = mutable.ArrayDeque.from(signal.take(200))
@@ -53,7 +53,7 @@ object SparklineExample {
 
   def main(args: Array[String]): Unit = withTerminal { (jni, terminal) =>
     // create app and run it
-    val tick_rate = Duration.ofMillis(250);
+    val tick_rate = Duration.ofMillis(250)
     val app = App()
     run_app(terminal, app, tick_rate, jni);
   }
@@ -64,7 +64,7 @@ object SparklineExample {
       tick_rate: Duration,
       jni: tui.crossterm.CrosstermJni
   ): Unit = {
-    var last_tick = Instant.now();
+    var last_tick = Instant.now()
 
     def elapsed = java.time.Duration.between(last_tick, java.time.Instant.now())
 
@@ -74,7 +74,7 @@ object SparklineExample {
     }
 
     while (true) {
-      terminal.draw(f => ui(f, app));
+      terminal.draw(f => ui(f, app))
 
       if (jni.poll(timeout)) {
         jni.read() match {
@@ -98,7 +98,7 @@ object SparklineExample {
       direction = Direction.Vertical,
       margin = Margin(2, 2),
       constraints = Array(Constraint.Length(3), Constraint.Length(3), Constraint.Length(7), Constraint.Min(0))
-    ).split(f.size);
+    ).split(f.size)
 
     val sparkline0 = SparklineWidget(
       block = Some(
@@ -110,20 +110,20 @@ object SparklineExample {
       data = app.data1,
       style = Style(fg = Some(Color.Yellow))
     )
-    f.render_widget(sparkline0, chunks(0));
+    f.render_widget(sparkline0, chunks(0))
 
     val sparkline1 = SparklineWidget(
       block = Some(BlockWidget(title = Some(Spans.nostyle("Data2")), borders = Borders.LEFT | Borders.RIGHT)),
       data = app.data2,
       style = Style(bg = Some(Color.Green))
     )
-    f.render_widget(sparkline1, chunks(1));
+    f.render_widget(sparkline1, chunks(1))
     // Multiline
     val sparkline2 = SparklineWidget(
       block = Some(BlockWidget(title = Some(Spans.nostyle("Data3")), borders = Borders.LEFT | Borders.RIGHT)),
-      data = app.data3,
-      style = Style(fg = Some(Color.Red))
+      style = Style(fg = Some(Color.Red)),
+      data = app.data3
     )
-    f.render_widget(sparkline2, chunks(2));
+    f.render_widget(sparkline2, chunks(2))
   }
 }

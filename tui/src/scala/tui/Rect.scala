@@ -36,10 +36,10 @@ case class Rect(
     }
 
   def union(other: Rect): Rect = {
-    val x1 = math.min(x, other.x);
-    val y1 = math.min(y, other.y);
-    val x2 = math.max(x + width, other.x + other.width);
-    val y2 = math.max(y + height, other.y + other.height);
+    val x1 = math.min(x, other.x)
+    val y1 = math.min(y, other.y)
+    val x2 = math.max(x + width, other.x + other.width)
+    val y2 = math.max(y + height, other.y + other.height)
     Rect(
       x = x1,
       y = y1,
@@ -49,10 +49,10 @@ case class Rect(
   }
 
   def intersection(other: Rect): Rect = {
-    val x1 = math.max(x, other.x);
-    val y1 = math.max(y, other.y);
-    val x2 = math.min(x + width, other.x + other.width);
-    val y2 = math.min(y + height, other.y + other.height);
+    val x1 = math.max(x, other.x)
+    val y1 = math.max(y, other.y)
+    val x2 = math.min(x + width, other.x + other.width)
+    val y2 = math.min(y + height, other.y + other.height)
     Rect(
       x = x1,
       y = y1,
@@ -66,5 +66,5 @@ case class Rect(
 }
 
 object Rect {
-  val default = Rect(x = 0, y = 0, width = 0, height = 0)
+  val default: Rect = Rect(x = 0, y = 0, width = 0, height = 0)
 }

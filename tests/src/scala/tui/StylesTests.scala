@@ -15,7 +15,7 @@ class StylesTests extends TuiTest {
     )
 
   test("combined_patch_gives_same_result_as_individual_patch") {
-    val styles2 = styles();
+    val styles2 = styles()
     for {
       a <- styles2
       b <- styles2

@@ -5,7 +5,7 @@ import tui.crossterm.CrosstermJni
 import tui.widgets._
 
 object TableExample {
-  val items = Array(
+  val items: Array[Array[String]] = Array(
     Array("Row11", "Row12", "Row13"),
     Array("Row21", "Row22", "Row23"),
     Array("Row31", "Row32", "Row33"),
@@ -95,12 +95,12 @@ object TableExample {
     }
 
     val t = TableWidget(
-      rows = rows,
-      header = Some(header),
       block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Table")))),
+      widths = Array(Constraint.Percentage(50), Constraint.Length(30), Constraint.Min(10)),
       highlight_style = selected_style,
       highlight_symbol = Some(">> "),
-      widths = Array(Constraint.Percentage(50), Constraint.Length(30), Constraint.Min(10))
+      header = Some(header),
+      rows = rows
     )
     f.render_stateful_widget(t, rects(0))(app.state)
   }

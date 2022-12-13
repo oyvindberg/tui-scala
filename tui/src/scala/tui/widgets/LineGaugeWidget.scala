@@ -51,7 +51,7 @@ case class LineGaugeWidget(
             add_modifier = gauge_style.add_modifier,
             sub_modifier = gauge_style.sub_modifier
           )
-        );
+        )
       ()
     }
     ranges.range(end, gauge_area.right) { col =>
@@ -65,7 +65,7 @@ case class LineGaugeWidget(
             add_modifier = gauge_style.add_modifier,
             sub_modifier = gauge_style.sub_modifier
           )
-        );
+        )
       ()
     }
   }

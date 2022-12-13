@@ -37,7 +37,7 @@ class ChartTests extends TuiTest {
         y_axis = ChartWidget.Axis(title = Some(Spans.nostyle("Y axis"))),
         hidden_legend_constraints = c.hidden_legend_constraints
       )
-      val layout = chart.layout(c.chart_area);
+      val layout = chart.layout(c.chart_area)
       assert_eq(layout.legend_area, c.legend_area);
     }
   }
@@ -46,22 +46,22 @@ class ChartTests extends TuiTest {
     labels.map(Span.nostyle)
 
   def axis_test_case(width: Int, height: Int, x_axis: ChartWidget.Axis, y_axis: ChartWidget.Axis, lines: String*): Unit = {
-    val backend = TestBackend(width, height);
+    val backend = TestBackend(width, height)
     val terminal = Terminal.init(backend)
     terminal.draw { f =>
       val chart = ChartWidget(datasets = Array.empty, x_axis = x_axis, y_axis = y_axis)
       f.render_widget(chart, f.size);
     }
-    val expected = Buffer.with_lines(lines: _*);
+    val expected = Buffer.with_lines(lines: _*)
     assert_buffer(backend, expected)
   }
 
   test("widgets_chart_can_render_on_small_areas") {
     def test_case(width: Int, height: Int): CompletedFrame = {
-      val backend = TestBackend(width, height);
+      val backend = TestBackend(width, height)
       val terminal = Terminal.init(backend)
       terminal.draw { f =>
-        val datasets = Array(ChartWidget.Dataset(marker = symbols.Marker.Braille, style = Style.DEFAULT.fg(Color.Magenta), data = Array(Point.Zero)));
+        val datasets = Array(ChartWidget.Dataset(marker = symbols.Marker.Braille, style = Style.DEFAULT.fg(Color.Magenta), data = Array(Point.Zero)))
 
         val chart = ChartWidget(
           datasets = datasets,
@@ -71,31 +71,32 @@ class ChartTests extends TuiTest {
         )
         f.render_widget(chart, f.size);
       }
-    };
-    test_case(0, 0);
-    test_case(0, 1);
-    test_case(1, 0);
-    test_case(1, 1);
-    test_case(2, 2);
+    }
+
+    test_case(0, 0)
+    test_case(0, 1)
+    test_case(1, 0)
+    test_case(1, 1)
+    test_case(2, 2)
   }
 
   test("widgets_chart_handles_long_labels") {
-    def test_case(x_labels: Option[(String, String)], y_labels: Option[(String, String)], x_alignment: Alignment, lines: String*) = {
+    def test_case(x_labels: Option[(String, String)], y_labels: Option[(String, String)], x_alignment: Alignment, lines: String*): Unit = {
       val x_axis =
         x_labels.foldLeft(ChartWidget.Axis(bounds = Point(0.0, 1.0))) { case (acc, (left_label, right_label)) =>
           acc.copy(
             labels = Some(Array(Span.nostyle(left_label), Span.nostyle(right_label))),
             labels_alignment = x_alignment
           )
-        };
+        }
 
       val y_axis =
         y_labels.foldLeft(ChartWidget.Axis(bounds = Point(0.0, 1.0))) { case (acc, (left_label, right_label)) =>
           acc.copy(labels = Some(Array(Span.nostyle(left_label), Span.nostyle(right_label))))
-        };
+        }
 
-      axis_test_case(10, 5, x_axis, y_axis, lines: _*);
-    };
+      axis_test_case(10, 5, x_axis, y_axis, lines: _*)
+    }
 
     test_case(
       Some(("AAAA", "B")),
@@ -106,7 +107,7 @@ class ChartTests extends TuiTest {
       "          ",
       "   ───────",
       "AAA      B"
-    );
+    )
     test_case(
       Some(("A", "BBBB")),
       None,
@@ -116,7 +117,7 @@ class ChartTests extends TuiTest {
       "          ",
       " ─────────",
       "A     BBBB"
-    );
+    )
     test_case(
       Some(("AAAAAAAAAAA", "B")),
       None,
@@ -126,7 +127,7 @@ class ChartTests extends TuiTest {
       "          ",
       "   ───────",
       "AAA      B"
-    );
+    )
     test_case(
       Some(("A", "B")),
       Some(("CCCCCCC", "D")),
@@ -136,7 +137,7 @@ class ChartTests extends TuiTest {
       "CCC│      ",
       "   └──────",
       "   A     B"
-    );
+    )
     test_case(
       Some(("AAAAAAAAAA", "B")),
       Some(("C", "D")),
@@ -146,7 +147,7 @@ class ChartTests extends TuiTest {
       "C  │      ",
       "   └──────",
       "AAAAAAA  B"
-    );
+    )
     test_case(
       Some(("AAAAAAA", "B")),
       Some(("C", "D")),
@@ -156,7 +157,7 @@ class ChartTests extends TuiTest {
       "C│        ",
       " └────────",
       " AAAAA   B"
-    );
+    )
     test_case(
       Some(("AAAAAAA", "BBBBBBB")),
       Some(("C", "D")),
@@ -166,20 +167,20 @@ class ChartTests extends TuiTest {
       "C│        ",
       " └────────",
       " AAAAABBBB"
-    );
+    )
   }
 
   test("widgets_chart_handles_x_axis_labels_alignments") {
-    def test_case(y_alignment: Alignment, lines: String*) = {
+    def test_case(y_alignment: Alignment, lines: String*): Unit = {
       val x_axis = ChartWidget.Axis(
         labels = Some(Array(Span.nostyle("AAAA"), Span.nostyle("B"), Span.nostyle("C"))),
         labels_alignment = y_alignment
       )
 
-      val y_axis = ChartWidget.Axis.default;
+      val y_axis = ChartWidget.Axis.default
 
-      axis_test_case(10, 5, x_axis, y_axis, lines: _*);
-    };
+      axis_test_case(10, 5, x_axis, y_axis, lines: _*)
+    }
 
     test_case(
       Alignment.Left,
@@ -188,7 +189,7 @@ class ChartTests extends TuiTest {
       "          ",
       "   ───────",
       "AAA   B  C"
-    );
+    )
     test_case(
       Alignment.Center,
       "          ",
@@ -196,7 +197,7 @@ class ChartTests extends TuiTest {
       "          ",
       "  ────────",
       "AAAA B   C"
-    );
+    )
     test_case(
       Alignment.Right,
       "          ",
@@ -204,7 +205,7 @@ class ChartTests extends TuiTest {
       "          ",
       "──────────",
       "AAA  B   C"
-    );
+    )
   }
 
   test("widgets_chart_handles_y_axis_labels_alignments") {
@@ -213,8 +214,9 @@ class ChartTests extends TuiTest {
 
       val y_axis = ChartWidget.Axis(labels = Some(create_labels(Array("C", "D"))), labels_alignment = y_alignment)
 
-      axis_test_case(20, 5, x_axis, y_axis, lines: _*);
-    };
+      axis_test_case(20, 5, x_axis, y_axis, lines: _*)
+    }
+
     test_case(
       Alignment.Left,
       "D   │               ",
@@ -222,7 +224,7 @@ class ChartTests extends TuiTest {
       "C   │               ",
       "    └───────────────",
       "AAAAA              B"
-    );
+    )
     test_case(
       Alignment.Center,
       "  D │               ",
@@ -230,7 +232,7 @@ class ChartTests extends TuiTest {
       "  C │               ",
       "    └───────────────",
       "AAAAA              B"
-    );
+    )
     test_case(
       Alignment.Right,
       "   D│               ",
@@ -238,11 +240,11 @@ class ChartTests extends TuiTest {
       "   C│               ",
       "    └───────────────",
       "AAAAA              B"
-    );
+    )
   }
 
   test("widgets_chart_can_have_axis_with_zero_length_bounds") {
-    val backend = TestBackend(100, 100);
+    val backend = TestBackend(100, 100)
     val terminal = Terminal.init(backend)
 
     terminal.draw { f =>
@@ -263,7 +265,7 @@ class ChartTests extends TuiTest {
   }
 
   test("widgets_chart_handles_overflows") {
-    val backend = TestBackend(80, 30);
+    val backend = TestBackend(80, 30)
     val terminal = Terminal.init(backend)
 
     terminal.draw { f =>
@@ -273,7 +275,7 @@ class ChartTests extends TuiTest {
           style = Style.DEFAULT.fg(Color.Magenta),
           data = Array(Point(1_588_298_471.0, 1.0), Point(1_588_298_473.0, 0.0), Point(1_588_298_496.0, 1.0))
         )
-      );
+      )
 
       val chart = ChartWidget(
         datasets = datasets,
@@ -286,7 +288,7 @@ class ChartTests extends TuiTest {
   }
 
   test("widgets_chart_can_have_empty_datasets") {
-    val backend = TestBackend(100, 100);
+    val backend = TestBackend(100, 100)
     val terminal = Terminal.init(backend)
 
     terminal.draw { f =>
@@ -302,7 +304,7 @@ class ChartTests extends TuiTest {
   }
 
   test("widgets_chart_can_have_a_legend") {
-    val backend = TestBackend(60, 30);
+    val backend = TestBackend(60, 30)
     val terminal = Terminal.init(backend)
     terminal.draw { f =>
       val datasets = Array(
@@ -388,7 +390,7 @@ class ChartTests extends TuiTest {
       "│    └─────────────────────────────────────────────────────│",
       "│  0.0                        50.0                    100.0│",
       "└──────────────────────────────────────────────────────────┘"
-    );
+    )
 
     // Set expected backgound color
     ranges.range(0, 30) { row =>
@@ -530,6 +532,6 @@ class ChartTests extends TuiTest {
     x_axis_title.foreach { case (col, row) =>
       expected.get(col, row).set_fg(Color.Yellow);
     }
-    assert_buffer(backend, expected);
+    assert_buffer(backend, expected)
   }
 }

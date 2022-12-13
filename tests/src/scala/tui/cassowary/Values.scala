@@ -7,7 +7,7 @@ case class Values(values: mutable.Map[Variable, Double] = mutable.Map.empty) {
 
   def update_values(changes: Iterable[(Variable, Double)]): Unit =
     changes.foreach { case (v, value) =>
-      println(s"$v changed to $value");
+      println(s"$v changed to $value")
       values(v) = value
     }
 }

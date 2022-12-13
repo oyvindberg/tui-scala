@@ -29,8 +29,8 @@ object CustomWidgetExample {
     }
 
   def ui(f: Frame): Unit = {
-    val size = f.size;
-    val label = Label(text = "Test");
-    f.render_widget(label, size);
+    val size = f.size
+    val label = Label(text = "Test")
+    f.render_widget(label, size)
   }
 }

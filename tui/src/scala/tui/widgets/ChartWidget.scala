@@ -341,7 +341,7 @@ object ChartWidget {
   )
 
   object Axis {
-    val default = Axis()
+    val default: Axis = Axis()
   }
 
   /// Used to determine which style of graphing to use
@@ -391,6 +391,6 @@ object ChartWidget {
   )
 
   object ChartLayout {
-    val default = ChartLayout()
+    val default: ChartLayout = ChartLayout()
   }
 }

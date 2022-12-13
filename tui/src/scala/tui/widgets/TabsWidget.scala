@@ -22,30 +22,30 @@ case class TabsWidget(
 ) extends Widget {
 
   def render(area: Rect, buf: Buffer): Unit = {
-    buf.set_style(area, style);
+    buf.set_style(area, style)
     val tabs_area = block match {
       case Some(b) =>
-        val inner_area = b.inner(area);
-        b.render(area, buf);
+        val inner_area = b.inner(area)
+        b.render(area, buf)
         inner_area
       case None => area
-    };
-
-    if (tabs_area.height < 1) {
-      return;
     }
 
-    var x = tabs_area.left;
-    val titles_length = titles.length;
+    if (tabs_area.height < 1) {
+      return
+    }
+
+    var x = tabs_area.left
+    val titles_length = titles.length
     ranges.range(0, titles_length) { i =>
       val title = titles(i)
-      val last_title = titles_length - 1 == i;
-      x = x.saturating_add(1);
-      val remaining_width = tabs_area.right.saturating_sub_unsigned(x);
+      val last_title = titles_length - 1 == i
+      x = x.saturating_add(1)
+      val remaining_width = tabs_area.right.saturating_sub_unsigned(x)
       if (remaining_width == 0) {
         ()
       } else {
-        val pos = buf.set_spans(x, tabs_area.top, title, remaining_width);
+        val pos = buf.set_spans(x, tabs_area.top, title, remaining_width)
         if (i == selected) {
           buf.set_style(
             Rect(
@@ -55,15 +55,15 @@ case class TabsWidget(
               height = 1
             ),
             highlight_style
-          );
+          )
         }
-        x = pos._1.saturating_add(1);
-        val remaining_width1 = tabs_area.right.saturating_sub_unsigned(x);
+        x = pos._1.saturating_add(1)
+        val remaining_width1 = tabs_area.right.saturating_sub_unsigned(x)
         if (remaining_width1 == 0 || last_title) {
           ()
         } else {
-          val pos = buf.set_span(x, tabs_area.top, divider, remaining_width1);
-          x = pos._1;
+          val pos = buf.set_span(x, tabs_area.top, divider, remaining_width1)
+          x = pos._1
         }
       }
     }
