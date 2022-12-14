@@ -99,7 +99,7 @@ object UserInputExample {
           Style.DEFAULT
         )
     }
-    val text = msg.overwrittenStyle(style)
+    val text = msg / style
 
     val help_message = ParagraphWidget(text = text)
     f.render_widget(help_message, chunks(0))

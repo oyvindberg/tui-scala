@@ -11,7 +11,7 @@ case object ClearWidget extends Widget {
   override def render(area: Rect, buf: Buffer): Unit =
     ranges.range(area.left, area.right) { x =>
       ranges.range(area.top, area.bottom) { y =>
-        buf.get(x, y).reset()
+        buf.set(x, y, Cell.Empty)
       }
     }
 }

@@ -5,7 +5,7 @@ class BarchartTests extends TuiTest {
   test("widgets_barchart_not_full_below_max_value") {
     val test_case = (expected: Buffer) => {
       val backend = TestBackend(30, 10)
-      val terminal = Terminal.init(backend)
+      val terminal = Terminal(backend)
 
       terminal.draw { f =>
         val barchart = BarChartWidget(

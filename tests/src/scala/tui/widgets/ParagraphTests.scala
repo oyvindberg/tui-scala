@@ -15,7 +15,7 @@ class ParagraphTests extends TuiTest {
   test("widgets_paragraph_can_wrap_its_content") {
     val test_case = (alignment: Alignment, expected: Buffer) => {
       val backend = TestBackend(20, 10)
-      val terminal = Terminal.init(backend)
+      val terminal = Terminal(backend)
 
       terminal.draw { f =>
         val text = Text.from(Spans.nostyle(SAMPLE_STRING))
@@ -79,7 +79,7 @@ class ParagraphTests extends TuiTest {
 
   test("widgets_paragraph_renders_double_width_graphemes") {
     val backend = TestBackend(width = 10, height = 10)
-    val terminal = Terminal.init(backend)
+    val terminal = Terminal(backend)
 
     val s = "コンピュータ上で文字を扱う場合、典型的には文字による通信を行う場合にその両端点では、"
     terminal.draw { f =>
@@ -104,7 +104,7 @@ class ParagraphTests extends TuiTest {
 
   test("widgets_paragraph_renders_mixed_width_graphemes") {
     val backend = TestBackend(10, 7)
-    val terminal = Terminal.init(backend)
+    val terminal = Terminal(backend)
 
     terminal.draw { f =>
       val text = Text.nostyle("aコンピュータ上で文字を扱う場合、")
@@ -129,7 +129,7 @@ class ParagraphTests extends TuiTest {
     val nbsp = "\u00a0"
     val line = Text.from(Span.nostyle("NBSP"), Span.nostyle(nbsp))
     val backend = TestBackend(20, 3)
-    val terminal = Terminal.init(backend)
+    val terminal = Terminal(backend)
     val expected = Buffer.with_lines(
       "┌──────────────────┐",
       "│NBSP\u00a0             │",
@@ -145,7 +145,7 @@ class ParagraphTests extends TuiTest {
   test("widgets_paragraph_can_scroll_horizontally") {
     val test_case = (alignment: Alignment, scroll: (Int, Int), expected: Buffer) => {
       val backend = TestBackend(20, 10)
-      val terminal = Terminal.init(backend)
+      val terminal = Terminal(backend)
 
       terminal.draw { f =>
         val text = Text.nostyle("段落现在可以水平滚动了！\nParagraph can scroll horizontally!\nShort line")

@@ -2,8 +2,8 @@ package tuiexamples
 
 import tui._
 import tui.crossterm.CrosstermJni
-import tui.widgets.tabs.TabsWidget
 import tui.widgets.BlockWidget
+import tui.widgets.tabs.TabsWidget
 
 object TabsExample {
   case class App(
@@ -50,8 +50,10 @@ object TabsExample {
       constraints = Array(Constraint.Length(3), Constraint.Min(0))
     ).split(f.size)
 
-    val block = BlockWidget(style = Style(bg = Some(Color.White), fg = Some(Color.Black)))
-    f.render_widget(block, f.size)
+    val style = Style(bg = Some(Color.White), fg = Some(Color.Black))
+
+    f.buffer.fill(f.size, Cell.Empty.withStyle(style))
+
     val titles = app.titles
       .map { t =>
         val (first, rest) = t.splitAt(1)
@@ -65,15 +67,15 @@ object TabsExample {
       titles = titles,
       block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Tabs")))),
       selected = app.index,
-      style = Style(fg = Some(Color.Cyan)),
+      style = style.fg(Color.Cyan),
       highlight_style = Style(add_modifier = Modifier.BOLD, bg = Some(Color.Black))
     )
     f.render_widget(tabs, chunks(0))
     val inner = app.index match {
-      case 0 => BlockWidget(title = Some(Spans.nostyle("Inner 0")), borders = Borders.ALL)
-      case 1 => BlockWidget(title = Some(Spans.nostyle("Inner 1")), borders = Borders.ALL)
-      case 2 => BlockWidget(title = Some(Spans.nostyle("Inner 2")), borders = Borders.ALL)
-      case 3 => BlockWidget(title = Some(Spans.nostyle("Inner 3")), borders = Borders.ALL)
+      case 0 => BlockWidget(title = Some(Spans.nostyle("Inner 0")), borders = Borders.ALL, style = style)
+      case 1 => BlockWidget(title = Some(Spans.nostyle("Inner 1")), borders = Borders.ALL, style = style)
+      case 2 => BlockWidget(title = Some(Spans.nostyle("Inner 2")), borders = Borders.ALL, style = style)
+      case 3 => BlockWidget(title = Some(Spans.nostyle("Inner 3")), borders = Borders.ALL, style = style)
       case _ => sys.error("unreachable")
     }
     f.render_widget(inner, chunks(1))

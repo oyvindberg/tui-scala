@@ -47,7 +47,7 @@ class ChartTests extends TuiTest {
 
   def axis_test_case(width: Int, height: Int, x_axis: ChartWidget.Axis, y_axis: ChartWidget.Axis, lines: String*): Unit = {
     val backend = TestBackend(width, height)
-    val terminal = Terminal.init(backend)
+    val terminal = Terminal(backend)
     terminal.draw { f =>
       val chart = ChartWidget(datasets = Array.empty, x_axis = x_axis, y_axis = y_axis)
       f.render_widget(chart, f.size);
@@ -59,7 +59,7 @@ class ChartTests extends TuiTest {
   test("widgets_chart_can_render_on_small_areas") {
     def test_case(width: Int, height: Int): CompletedFrame = {
       val backend = TestBackend(width, height)
-      val terminal = Terminal.init(backend)
+      val terminal = Terminal(backend)
       terminal.draw { f =>
         val datasets = Array(ChartWidget.Dataset(marker = symbols.Marker.Braille, style = Style.DEFAULT.fg(Color.Magenta), data = Array(Point.Zero)))
 
@@ -245,7 +245,7 @@ class ChartTests extends TuiTest {
 
   test("widgets_chart_can_have_axis_with_zero_length_bounds") {
     val backend = TestBackend(100, 100)
-    val terminal = Terminal.init(backend)
+    val terminal = Terminal(backend)
 
     terminal.draw { f =>
       val datasets = Array(
@@ -266,7 +266,7 @@ class ChartTests extends TuiTest {
 
   test("widgets_chart_handles_overflows") {
     val backend = TestBackend(80, 30)
-    val terminal = Terminal.init(backend)
+    val terminal = Terminal(backend)
 
     terminal.draw { f =>
       val datasets = Array(
@@ -289,7 +289,7 @@ class ChartTests extends TuiTest {
 
   test("widgets_chart_can_have_empty_datasets") {
     val backend = TestBackend(100, 100)
-    val terminal = Terminal.init(backend)
+    val terminal = Terminal(backend)
 
     terminal.draw { f =>
       val datasets = Array(ChartWidget.Dataset(data = Array.empty, graph_type = ChartWidget.GraphType.Line))
@@ -305,7 +305,7 @@ class ChartTests extends TuiTest {
 
   test("widgets_chart_can_have_a_legend") {
     val backend = TestBackend(60, 30)
-    val terminal = Terminal.init(backend)
+    val terminal = Terminal(backend)
     terminal.draw { f =>
       val datasets = Array(
         ChartWidget.Dataset(
@@ -395,8 +395,7 @@ class ChartTests extends TuiTest {
     // Set expected backgound color
     ranges.range(0, 30) { row =>
       ranges.range(0, 60) { col =>
-        expected.get(col, row).set_bg(Color.White)
-        ()
+        expected.update(col, row)(_.withBg(Color.White))
       }
     }
 
@@ -457,8 +456,8 @@ class ChartTests extends TuiTest {
       (56, 2),
       (57, 2)
     )
-    line1.foreach { case (col, row) => expected.get(col, row).set_fg(Color.Blue); }
-    legend1.foreach { case (col, row) => expected.get(col, row).set_fg(Color.Blue); }
+    line1.foreach { case (col, row) => expected.update(col, row)(_.withFg(Color.Blue)) }
+    legend1.foreach { case (col, row) => expected.update(col, row)(_.withFg(Color.Blue)) }
 
     // Set expected colors of the second dataset
     val line2 = Array(
@@ -524,13 +523,13 @@ class ChartTests extends TuiTest {
       (56, 3),
       (57, 3)
     )
-    line2.foreach { case (col, row) => expected.get(col, row).set_fg(Color.Green) }
-    legend2.foreach { case (col, row) => expected.get(col, row).set_fg(Color.Green) }
+    line2.foreach { case (col, row) => expected.update(col, row)(_.withFg(Color.Green)) }
+    legend2.foreach { case (col, row) => expected.update(col, row)(_.withFg(Color.Green)) }
 
     // Set expected colors of the x axis
     val x_axis_title = Array((53, 26), (54, 26), (55, 26), (56, 26), (57, 26), (58, 26))
     x_axis_title.foreach { case (col, row) =>
-      expected.get(col, row).set_fg(Color.Yellow);
+      expected.update(col, row)(_.withFg(Color.Yellow))
     }
     assert_buffer(backend, expected)
   }

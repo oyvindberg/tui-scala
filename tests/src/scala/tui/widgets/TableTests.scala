@@ -10,7 +10,7 @@ class TableTests extends TuiTest {
   test("widgets_table_column_spacing_can_be_changed") {
     def test_case(column_spacing: Int, expected: Buffer): Unit = {
       val backend = TestBackend(30, 10)
-      val terminal = Terminal.init(backend)
+      val terminal = Terminal(backend)
 
       terminal.draw { f =>
         val table = TableWidget(
@@ -102,7 +102,7 @@ class TableTests extends TuiTest {
   test("widgets_table_columns_widths_can_use_fixed_length_constraints") {
     def test_case(widths: Array[Constraint], expected: Buffer): Unit = {
       val backend = TestBackend(30, 10)
-      val terminal = Terminal.init(backend)
+      val terminal = Terminal(backend)
 
       terminal.draw { f =>
         val table = TableWidget(
@@ -176,7 +176,7 @@ class TableTests extends TuiTest {
   test("widgets_table_columns_widths_can_use_percentage_constraints") {
     def test_case(widths: Array[Constraint], expected: Buffer): Unit = {
       val backend = TestBackend(30, 10)
-      val terminal = Terminal.init(backend)
+      val terminal = Terminal(backend)
 
       terminal.draw { f =>
         val table = TableWidget(
@@ -268,7 +268,7 @@ class TableTests extends TuiTest {
   test("widgets_table_columns_widths_can_use_mixed_constraints") {
     def test_case(widths: Array[Constraint], expected: Buffer): Unit = {
       val backend = TestBackend(30, 10)
-      val terminal = Terminal.init(backend)
+      val terminal = Terminal(backend)
 
       terminal.draw { f =>
         val table = TableWidget(
@@ -360,7 +360,7 @@ class TableTests extends TuiTest {
   test("widgets_table_columns_widths_can_use_ratio_constraints") {
     def test_case(widths: Array[Constraint], expected: Buffer): Unit = {
       val backend = TestBackend(30, 10)
-      val terminal = Terminal.init(backend)
+      val terminal = Terminal(backend)
 
       terminal.draw { f =>
         val table = TableWidget(
@@ -452,7 +452,7 @@ class TableTests extends TuiTest {
   test("widgets_table_can_have_rows_with_multi_lines") {
     def test_case(state: TableWidget.State, expected: Buffer): Unit = {
       val backend = TestBackend(30, 8)
-      val terminal = Terminal.init(backend)
+      val terminal = Terminal(backend)
       terminal.draw { f =>
         val table = TableWidget(
           block = Some(BlockWidget(borders = Borders.ALL)),
@@ -538,7 +538,7 @@ class TableTests extends TuiTest {
 
   test("widgets_table_can_have_elements_styled_individually") {
     val backend = TestBackend(30, 4)
-    val terminal = Terminal.init(backend)
+    val terminal = Terminal(backend)
     val state = TableWidget.State()
     state.select(Some(0))
     terminal.draw { f =>
@@ -574,27 +574,27 @@ class TableTests extends TuiTest {
     )
     // First row = row color + highlight style
     ranges.range(1, 29) { col =>
-      expected.get(col, 2).set_style(Style.DEFAULT.fg(Color.Green).add_modifier(Modifier.BOLD))
+      expected.update(col, 2)(_.withStyle(Style.DEFAULT.fg(Color.Green).add_modifier(Modifier.BOLD)))
       ()
     }
     // Second row:
     // 1. row color
     internal.ranges.range(1, 29) { col =>
-      expected.get(col, 3).set_style(Style.DEFAULT.fg(Color.LightGreen))
+      expected.update(col, 3)(_.withStyle(Style.DEFAULT.fg(Color.LightGreen)))
       ()
     }
     // 2. cell color
     internal.ranges.range(11, 17) { col =>
-      expected.get(col, 3).set_style(Style.DEFAULT.fg(Color.Yellow))
+      expected.update(col, 3)(_.withStyle(Style.DEFAULT.fg(Color.Yellow)))
       ()
     }
     internal.ranges.range(18, 24) { col =>
-      expected.get(col, 3).set_style(Style.DEFAULT.fg(Color.Red))
+      expected.update(col, 3)(_.withStyle(Style.DEFAULT.fg(Color.Red)))
       ()
     }
     // 3. text color
     internal.ranges.range(21, 23) { col =>
-      expected.get(col, 3).set_style(Style.DEFAULT.fg(Color.Blue))
+      expected.update(col, 3)(_.withStyle(Style.DEFAULT.fg(Color.Blue)))
       ()
     }
     assert_buffer(backend, expected)
@@ -602,7 +602,7 @@ class TableTests extends TuiTest {
 
   test("widgets_table_should_render_even_if_empty") {
     val backend = TestBackend(30, 4)
-    val terminal = Terminal.init(backend)
+    val terminal = Terminal(backend)
     terminal.draw { f =>
       val table = TableWidget(
         block = Some(BlockWidget(borders = Borders.LEFT | Borders.RIGHT)),
@@ -626,7 +626,7 @@ class TableTests extends TuiTest {
   test("widgets_table_columns_dont_panic") {
     def test_case(state: TableWidget.State, table: TableWidget, width: Int): Unit = {
       val backend = TestBackend(width, 8)
-      val terminal = Terminal.init(backend)
+      val terminal = Terminal(backend)
       terminal.draw { f =>
         f.render_stateful_widget(table, f.size)(state)
       }
@@ -652,7 +652,7 @@ class TableTests extends TuiTest {
 
   ignore("widgets_table_should_clamp_offset_if_rows_are_removed") {
     val backend = TestBackend(30, 8)
-    val terminal = Terminal.init(backend)
+    val terminal = Terminal(backend)
     val state = TableWidget.State()
 
     // render with 6 items => offset will be at 2

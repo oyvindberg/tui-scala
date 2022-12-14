@@ -1,56 +1,42 @@
 package tui
 
 /// A buffer cell
-case class Cell(
-    var symbol: tui.Grapheme,
-    var fg: Color,
-    var bg: Color,
-    var modifier: Modifier
-) {
-  override def clone(): Cell =
-    new Cell(symbol, fg, bg, modifier)
+case class Cell(symbol: Grapheme, fg: Color, bg: Color, modifier: Modifier) {
+  def withSymbol(symbol: String): Cell =
+    withSymbol(Grapheme(symbol))
 
-  def set_symbol(symbol: String): this.type =
-    set_symbol(Grapheme(symbol))
+  def withSymbol(symbol: Grapheme): Cell =
+    copy(symbol = symbol)
 
-  def set_symbol(symbol: tui.Grapheme): this.type = {
-    this.symbol = symbol
-    this
-  }
+  def withSymbol(ch: Char): Cell =
+    copy(symbol = Grapheme(ch.toString))
 
-  def set_char(ch: Char): this.type = {
-    this.symbol = Grapheme(ch.toString)
-    this
-  }
+  def withFg(color: Color): Cell =
+    copy(fg = color)
 
-  def set_fg(color: Color): this.type = {
-    this.fg = color
-    this
-  }
+  def withBg(color: Color): Cell =
+    copy(bg = color)
 
-  def set_bg(color: Color): this.type = {
-    this.bg = color
-    this
-  }
-
-  def set_style(style: Style): this.type = {
-    style.fg.foreach(fg = _)
-    style.bg.foreach(bg = _)
-    modifier = modifier.insert(style.add_modifier).remove(style.sub_modifier)
-    this
-  }
-
-  def style: Style =
-    Style(fg = Some(fg), bg = Some(bg), add_modifier = modifier)
-
-  def reset(): Unit = {
-    this.symbol = Grapheme.Empty
-    this.fg = Color.Reset
-    this.bg = Color.Reset
-    this.modifier = Modifier.EMPTY
-  }
+  def withStyle(style: Style): Cell =
+    Cell(
+      symbol = symbol,
+      fg = style.fg.getOrElse(fg),
+      bg = style.bg.getOrElse(bg),
+      modifier = modifier.insert(style.add_modifier).remove(style.sub_modifier)
+    )
 }
 
 object Cell {
-  def default: Cell = Cell(Grapheme.Empty, fg = Color.Reset, bg = Color.Reset, modifier = Modifier.EMPTY)
+  val Empty: Cell = Cell(Grapheme.Empty, Color.Reset, Color.Reset, Modifier.EMPTY)
+
+  def apply(str: String, style: Style): Cell =
+    apply(Grapheme(str), style)
+
+  def apply(grapheme: Grapheme, style: Style) =
+    new Cell(
+      grapheme,
+      fg = style.fg.getOrElse(Color.Reset),
+      bg = style.bg.getOrElse(Color.Reset),
+      modifier = style.add_modifier.remove(style.sub_modifier)
+    )
 }
