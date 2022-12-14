@@ -32,7 +32,7 @@ object ChartExample {
   ) {
     def on_tick(): Unit = {
       data1 = data1.drop(5) ++ signal1.take(5)
-      data2 = data2.drop(5) ++ signal2.take(5)
+      data2 = data2.drop(10) ++ signal2.take(10)
       window = window match {
         case Point(x, y) => Point(x + 1.0, y + 1.0)
       }
