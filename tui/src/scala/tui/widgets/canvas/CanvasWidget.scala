@@ -19,15 +19,15 @@ case class CanvasWidget(
 )(painter: Context => Unit)
     extends Widget {
   override def render(area: Rect, buf: Buffer): Unit = {
+    val style = Style.DEFAULT.bg(this.background_color)
+
     val canvas_area = this.block match {
       case Some(b) =>
         val inner_area = b.inner(area)
-        b.render(area, buf)
+        b.patchedStyle(style).render(area, buf)
         inner_area
       case None => area
     }
-
-    buf.update_style(canvas_area, Style.DEFAULT.bg(this.background_color))
 
     // Create a blank context that match the size of the canvas
     val ctx = Context(
@@ -48,7 +48,7 @@ case class CanvasWidget(
         val color = layer.colors(i)
         if (ch != ' ' && ch != '\u2800') {
           val (x, y) = (i % canvas_area.width, i / canvas_area.width)
-          buf.update(x + canvas_area.left, y + canvas_area.top)(_.set_char(ch).set_fg(color))
+          buf.set(x + canvas_area.left, y + canvas_area.top, Cell(ch.toString, style.fg(color)))
         }
       }
     }
@@ -70,7 +70,7 @@ case class CanvasWidget(
         val label = l
         val x = ((label.x - left) * resolution._1 / width).toInt + canvas_area.left
         val y = ((top - label.y) * resolution._2 / height).toInt + canvas_area.top
-        buf.set_spans(x, y, label.spans, canvas_area.right - x)
+        buf.set_spans(x, y, style / label.spans, canvas_area.right - x)
         ()
       }
     }

@@ -19,12 +19,12 @@ class CanvasTests extends TuiTest {
     val expected = Buffer.with_lines("    ", "    ", "     ", "     ", "test ")
     ranges.range(0, 5) { row =>
       ranges.range(0, 5) { col =>
-        expected.update(col, row)(_.set_bg(Color.Yellow))
+        expected.update(col, row)(_.withBg(Color.Yellow))
         ()
       }
     }
     ranges.range(0, 4) { col =>
-      expected.update(col, 4)(_.set_fg(Color.Blue))
+      expected.update(col, 4)(_.withFg(Color.Blue))
       ()
     }
     assert_buffer(backend, expected)

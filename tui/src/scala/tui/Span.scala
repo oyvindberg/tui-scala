@@ -7,7 +7,16 @@ case class Span(content: String, style: Style) {
 
   /// Apply a new style to existing text.
   def patchedStyle(s: Style, overwrite: Boolean): Span =
-    copy(style = if (overwrite) style.patch(s) else s.patch(s))
+    copy(style = style.patched_with(s, overwrite))
+
+  def /(style: Style): Span =
+    patchedStyle(style, overwrite = true)
+
+  def /(optionalStyle: Option[Style]): Span =
+    optionalStyle match {
+      case Some(style) => this / style
+      case None        => this
+    }
 }
 
 object Span {

@@ -40,15 +40,32 @@ case class Style(
       sub_modifier = sub_modifier.insert(modifier)
     )
 
+  def /(other: Style): Style = patched_with(other, overwrite = true)
+  def /(other: Option[Style]): Style = other match {
+    case Some(other) => this / other
+    case None        => this
+  }
+  def /(spans: Spans): Spans = spans.patchedStyle(this, overwrite = false)
+  def /(span: Span): Span = span.patchedStyle(this, overwrite = false)
+  def /(text: Text): Text = text.patchedStyle(this, overwrite = false)
+
   /// Results in a combined style that is equivalent to applying the two individual styles to
   /// a style one after the other.
-  def patch(other: Style): Style =
-    Style(
-      fg = other.fg.orElse(this.fg),
-      bg = other.bg.orElse(this.bg),
-      add_modifier = add_modifier.remove(other.sub_modifier).insert(other.add_modifier),
-      sub_modifier = sub_modifier.remove(other.add_modifier).insert(other.sub_modifier)
-    )
+  private[tui] def patched_with(other: Style, overwrite: Boolean): Style =
+    if (overwrite)
+      Style(
+        fg = other.fg.orElse(this.fg),
+        bg = other.bg.orElse(this.bg),
+        add_modifier = this.add_modifier.remove(other.sub_modifier).insert(other.add_modifier),
+        sub_modifier = this.sub_modifier.remove(other.add_modifier).insert(other.sub_modifier)
+      )
+    else
+      Style(
+        fg = this.fg.orElse(other.fg),
+        bg = this.bg.orElse(other.bg),
+        add_modifier = other.add_modifier.remove(this.sub_modifier).insert(this.add_modifier),
+        sub_modifier = other.sub_modifier.remove(this.add_modifier).insert(this.sub_modifier)
+      )
 }
 
 object Style {

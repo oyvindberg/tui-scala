@@ -395,7 +395,7 @@ class ChartTests extends TuiTest {
     // Set expected backgound color
     ranges.range(0, 30) { row =>
       ranges.range(0, 60) { col =>
-        expected.update(col, row)(_.set_bg(Color.White))
+        expected.update(col, row)(_.withBg(Color.White))
       }
     }
 
@@ -456,8 +456,8 @@ class ChartTests extends TuiTest {
       (56, 2),
       (57, 2)
     )
-    line1.foreach { case (col, row) => expected.update(col, row)(_.set_fg(Color.Blue)) }
-    legend1.foreach { case (col, row) => expected.update(col, row)(_.set_fg(Color.Blue)) }
+    line1.foreach { case (col, row) => expected.update(col, row)(_.withFg(Color.Blue)) }
+    legend1.foreach { case (col, row) => expected.update(col, row)(_.withFg(Color.Blue)) }
 
     // Set expected colors of the second dataset
     val line2 = Array(
@@ -523,13 +523,13 @@ class ChartTests extends TuiTest {
       (56, 3),
       (57, 3)
     )
-    line2.foreach { case (col, row) => expected.update(col, row)(_.set_fg(Color.Green)) }
-    legend2.foreach { case (col, row) => expected.update(col, row)(_.set_fg(Color.Green)) }
+    line2.foreach { case (col, row) => expected.update(col, row)(_.withFg(Color.Green)) }
+    legend2.foreach { case (col, row) => expected.update(col, row)(_.withFg(Color.Green)) }
 
     // Set expected colors of the x axis
     val x_axis_title = Array((53, 26), (54, 26), (55, 26), (56, 26), (57, 26), (58, 26))
     x_axis_title.foreach { case (col, row) =>
-      expected.update(col, row)(_.set_fg(Color.Yellow))
+      expected.update(col, row)(_.withFg(Color.Yellow))
     }
     assert_buffer(backend, expected)
   }

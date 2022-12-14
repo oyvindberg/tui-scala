@@ -574,27 +574,27 @@ class TableTests extends TuiTest {
     )
     // First row = row color + highlight style
     ranges.range(1, 29) { col =>
-      expected.update(col, 2)(_.set_style(Style.DEFAULT.fg(Color.Green).add_modifier(Modifier.BOLD)))
+      expected.update(col, 2)(_.withStyle(Style.DEFAULT.fg(Color.Green).add_modifier(Modifier.BOLD)))
       ()
     }
     // Second row:
     // 1. row color
     internal.ranges.range(1, 29) { col =>
-      expected.update(col, 3)(_.set_style(Style.DEFAULT.fg(Color.LightGreen)))
+      expected.update(col, 3)(_.withStyle(Style.DEFAULT.fg(Color.LightGreen)))
       ()
     }
     // 2. cell color
     internal.ranges.range(11, 17) { col =>
-      expected.update(col, 3)(_.set_style(Style.DEFAULT.fg(Color.Yellow)))
+      expected.update(col, 3)(_.withStyle(Style.DEFAULT.fg(Color.Yellow)))
       ()
     }
     internal.ranges.range(18, 24) { col =>
-      expected.update(col, 3)(_.set_style(Style.DEFAULT.fg(Color.Red)))
+      expected.update(col, 3)(_.withStyle(Style.DEFAULT.fg(Color.Red)))
       ()
     }
     // 3. text color
     internal.ranges.range(21, 23) { col =>
-      expected.update(col, 3)(_.set_style(Style.DEFAULT.fg(Color.Blue)))
+      expected.update(col, 3)(_.withStyle(Style.DEFAULT.fg(Color.Blue)))
       ()
     }
     assert_buffer(backend, expected)

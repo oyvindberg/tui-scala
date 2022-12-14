@@ -22,11 +22,10 @@ case class ParagraphWidget(
 ) extends Widget {
 
   def render(area: Rect, buf: Buffer): Unit = {
-    buf.update_style(area, this.style)
     val text_area = block match {
       case Some(b) =>
         val inner_area = b.inner(area)
-        b.render(area, buf)
+        b.patchedStyle(style).render(area, buf)
         inner_area
       case None => area
     }
@@ -67,7 +66,7 @@ case class ParagraphWidget(
               // leave on the line. It's a quick fix.
               val newSymbol = if (symbol.str.isEmpty) " " else symbol.str
 
-              buf.update(text_area.left + x, text_area.top + y - this.scroll._1, newSymbol, style)
+              buf.set(text_area.left + x, text_area.top + y - this.scroll._1, Cell(newSymbol, this.style / style))
 
               x += symbol.width
             }
@@ -91,7 +90,7 @@ object ParagraphWidget {
       .map(g =>
         StyledGrapheme(
           symbol = g,
-          style = base_style.patch(span.style)
+          style = base_style.patched_with(span.style, overwrite = true)
         )
       )
       .filter(s => s.symbol.str != "\n")

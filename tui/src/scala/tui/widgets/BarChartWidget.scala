@@ -32,12 +32,10 @@ case class BarChartWidget(
   private lazy val values: Array[Grapheme] = data.collect { case (_, v) => Grapheme(v.toString) }
 
   override def render(area: Rect, buf: Buffer): Unit = {
-    buf.update_style(area, style)
-
     val chart_area: Rect = block match {
       case Some(b) =>
         val inner_area = b.inner(area)
-        b.render(area, buf)
+        b.patchedStyle(style).render(area, buf)
         inner_area
       case None => area
     }
@@ -70,11 +68,10 @@ case class BarChartWidget(
           case _ => bar_set.full
         }
         range(0, bar_width) { x =>
-          buf.update(
+          buf.set(
             chart_area.left + i * (bar_width + bar_gap) + x,
             chart_area.top + j,
-            symbol,
-            bar_style
+            Cell(symbol, style / bar_style)
           )
         }
 
@@ -94,7 +91,7 @@ case class BarChartWidget(
             x = chart_area.left + i * (bar_width + bar_gap) + (bar_width - width) / 2,
             y = chart_area.bottom - 2,
             string = value_label.str,
-            style = value_style
+            style = style / value_style
           )
         }
       }
@@ -103,7 +100,7 @@ case class BarChartWidget(
         y = chart_area.bottom - 1,
         string = label,
         width = bar_width,
-        style = label_style
+        style = style / label_style
       );
     }
   }

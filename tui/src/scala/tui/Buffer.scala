@@ -36,24 +36,6 @@ case class Buffer(
     content(i) = f(content(i))
   }
 
-  /// Updates a Cell at the given coordinates
-  def update(x: Int, y: Int, style: Style): Unit = {
-    val i = this.index_of(x, y)
-    content(i) = content(i).set_style(style)
-  }
-
-  /// Merges a Cell at the given coordinates
-  def update(x: Int, y: Int, symbol: String, style: Style): Unit = {
-    val i = this.index_of(x, y)
-    content(i) = content(i).set_symbol(Grapheme(symbol)).set_style(style)
-  }
-
-  /// Merges a Cell at the given coordinates
-  def update(x: Int, y: Int, symbol: String): Unit = {
-    val i = this.index_of(x, y)
-    content(i) = content(i).set_symbol(Grapheme(symbol))
-  }
-
   /// Returns the index in the Vec<Cell> for the given global (x, y) coordinates.
   ///
   /// Global coordinates are offset by the Buffer's area offset (`x`/`y`).
@@ -106,7 +88,7 @@ case class Buffer(
       else if (s.width > max_offset - x_offset) {
         breakableForeach.Break
       } else {
-        content(index) = content(index).set_symbol(s).set_style(style)
+        content(index) = Cell(s, style)
 
         // Reset following cells if multi-width (they would be hidden by the grapheme),
         ranges.range(index + 1, index + s.width)(i => content(i) = Cell.Empty)
@@ -143,7 +125,21 @@ case class Buffer(
     while (y < area.bottom) {
       var x = area.left
       while (x < area.right) {
-        update(x, y, style)
+        val i = this.index_of(x, y)
+        content(i) = content(i).withStyle(style)
+        x += 1
+      }
+      y += 1
+    }
+  }
+
+  def fill(area: Rect, cell: Cell): Unit = {
+    var y = area.top
+    while (y < area.bottom) {
+      var x = area.left
+      while (x < area.right) {
+        val i = this.index_of(x, y)
+        content(i) = cell
         x += 1
       }
       y += 1
@@ -211,10 +207,8 @@ case class Buffer(
 
 object Buffer {
   /// Returns a Buffer with all cells set to the default one
-  def empty(area: Rect): Buffer = {
-    val cell: Cell = Cell.default
-    Buffer.filled(area, cell)
-  }
+  def empty(area: Rect): Buffer =
+    Buffer.filled(area, Cell.Empty)
 
   /// Returns a Buffer with all cells initialized with the attributes of the given Cell
   def filled(area: Rect, cell: Cell): Buffer = {

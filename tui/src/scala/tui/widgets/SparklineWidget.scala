@@ -58,7 +58,7 @@ case class SparklineWidget(
           case 7 => bar_set.seven_eighths
           case _ => bar_set.full
         }
-        buf.update(spark_area.left + i, spark_area.top + j, symbol, style)
+        buf.set(spark_area.left + i, spark_area.top + j, Cell(symbol, style))
 
         if (d > 8) {
           data(i) -= 8

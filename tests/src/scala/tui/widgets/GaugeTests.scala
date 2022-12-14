@@ -45,17 +45,17 @@ class GaugeTests extends TuiTest {
     )
 
     ranges.range(3, 17) { i =>
-      expected.update(i, 3)(_.set_bg(Color.Red).set_fg(Color.Blue))
+      expected.update(i, 3)(_.withBg(Color.Red).withFg(Color.Blue))
     }
     ranges.range(17, 37) { i =>
-      expected.update(i, 3)(_.set_bg(Color.Blue).set_fg(Color.Red))
+      expected.update(i, 3)(_.withBg(Color.Blue).withFg(Color.Red))
     }
 
     ranges.range(3, 20) { i =>
-      expected.update(i, 6)(_.set_bg(Color.Red).set_fg(Color.Blue))
+      expected.update(i, 6)(_.withBg(Color.Red).withFg(Color.Blue))
     }
     ranges.range(20, 37) { i =>
-      expected.update(i, 6)(_.set_bg(Color.Blue).set_fg(Color.Red))
+      expected.update(i, 6)(_.withBg(Color.Blue).withFg(Color.Red))
     }
 
     assert_buffer(backend, expected)
@@ -191,14 +191,14 @@ class GaugeTests extends TuiTest {
       "└──────────────────┘"
     )
     ranges.range(4, 10) { col =>
-      expected.update(col, 0)(_.set_fg(Color.Green))
+      expected.update(col, 0)(_.withFg(Color.Green))
     }
     ranges.range(10, 20) { col =>
-      expected.update(col, 0)(_.set_fg(Color.White))
+      expected.update(col, 0)(_.withFg(Color.White))
       ()
     }
     ranges.range(5, 7) { col =>
-      expected.update(col, 2)(_.set_fg(Color.Green))
+      expected.update(col, 2)(_.withFg(Color.Green))
       ()
     }
     assert_buffer(backend, expected)

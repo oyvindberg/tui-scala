@@ -113,15 +113,15 @@ class BufferTests extends TuiTest {
   test("buffer_diffing_empty_filled") {
     val area = Rect(x = 0, y = 0, width = 40, height = 40)
     val prev = Buffer.empty(area)
-    val next = Buffer.filled(area, Cell.default.set_symbol("a"))
+    val next = Buffer.filled(area, Cell.Empty.withSymbol("a"))
     val diff = prev.diff(next)
     assert_eq(diff.length, 40 * 40)
   }
 
   test("buffer_diffing_filled_filled") {
     val area = Rect(x = 0, y = 0, width = 40, height = 40)
-    val prev = Buffer.filled(area, Cell.default.set_symbol("a"))
-    val next = Buffer.filled(area, Cell.default.set_symbol("a"))
+    val prev = Buffer.filled(area, Cell.Empty.withSymbol("a"))
+    val next = Buffer.filled(area, Cell.Empty.withSymbol("a"))
     val diff = prev.diff(next)
     assert_eq(diff, Array.empty[(Int, Int, Cell)])
   }

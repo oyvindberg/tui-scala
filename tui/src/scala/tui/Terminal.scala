@@ -14,6 +14,7 @@ case class Terminal(backend: Backend) {
     // on resize
     if (area != lastArea) {
       previousBuffer = Buffer.empty(area)
+      backend.clear()
       lastArea = area
     }
 

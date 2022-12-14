@@ -2,31 +2,28 @@ package tui
 
 /// A buffer cell
 case class Cell(symbol: Grapheme, fg: Color, bg: Color, modifier: Modifier) {
-  def set_symbol(symbol: String): Cell =
-    set_symbol(Grapheme(symbol))
+  def withSymbol(symbol: String): Cell =
+    withSymbol(Grapheme(symbol))
 
-  def set_symbol(symbol: tui.Grapheme): Cell =
+  def withSymbol(symbol: Grapheme): Cell =
     copy(symbol = symbol)
 
-  def set_char(ch: Char): Cell =
+  def withSymbol(ch: Char): Cell =
     copy(symbol = Grapheme(ch.toString))
 
-  def set_fg(color: Color): Cell =
+  def withFg(color: Color): Cell =
     copy(fg = color)
 
-  def set_bg(color: Color): Cell =
+  def withBg(color: Color): Cell =
     copy(bg = color)
 
-  def set_style(style: Style): Cell =
+  def withStyle(style: Style): Cell =
     Cell(
       symbol = symbol,
       fg = style.fg.getOrElse(fg),
       bg = style.bg.getOrElse(bg),
       modifier = modifier.insert(style.add_modifier).remove(style.sub_modifier)
     )
-
-  def style: Style =
-    Style(fg = Some(fg), bg = Some(bg), add_modifier = modifier)
 }
 
 object Cell {
@@ -42,5 +39,4 @@ object Cell {
       bg = style.bg.getOrElse(Color.Reset),
       modifier = style.add_modifier.remove(style.sub_modifier)
     )
-  def default: Cell = Cell(Grapheme.Empty, fg = Color.Reset, bg = Color.Reset, modifier = Modifier.EMPTY)
 }
