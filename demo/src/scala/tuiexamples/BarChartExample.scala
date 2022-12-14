@@ -61,25 +61,25 @@ object BarChartExample {
   }
 
   def ui(f: Frame, app: App): Unit = {
-      val verticalChunks = Layout(
-        direction = Direction.Vertical,
-        margin = Margin(2, 2),
-        constraints = Array(Constraint.Percentage(50), Constraint.Percentage(50)),
-      ).split(f.size)
+    val verticalChunks = Layout(
+      direction = Direction.Vertical,
+      margin = Margin(2, 2),
+      constraints = Array(Constraint.Percentage(50), Constraint.Percentage(50)),
+    ).split(f.size)
 
-      val barchart1 = BarChartWidget(
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Data1")), borders = Borders.ALL)),
-        data = app.data,
-        bar_width = 9,
-        bar_style = Style(fg = Some(Color.Yellow)),
-        value_style = Style(fg = Some(Color.Black), bg = Some(Color.Yellow))
-      )
-      f.render_widget(barchart1, verticalChunks(0))
+    val barchart1 = BarChartWidget(
+      block = Some(BlockWidget(title = Some(Spans.nostyle("Data1")), borders = Borders.ALL)),
+      data = app.data,
+      bar_width = 9,
+      bar_style = Style(fg = Some(Color.Yellow)),
+      value_style = Style(fg = Some(Color.Black), bg = Some(Color.Yellow))
+    )
+    f.render_widget(barchart1, verticalChunks(0))
 
     val horizontalChunks = Layout(
-        direction = Direction.Horizontal,
-        constraints = Array(Constraint.Percentage(50), Constraint.Percentage(50))
-      ).split(verticalChunks(1))
+      direction = Direction.Horizontal,
+      constraints = Array(Constraint.Percentage(50), Constraint.Percentage(50))
+    ).split(verticalChunks(1))
 
     val barchart2 = BarChartWidget(
       block = Some(BlockWidget(title = Some(Spans.nostyle("Data2")), borders = Borders.ALL)),
@@ -89,7 +89,7 @@ object BarChartExample {
         value_style = Style(bg = Some(Color.Green), add_modifier = Modifier.BOLD),
         data = app.data
       )
-      f.render_widget(barchart2, horizontalChunks(0))
+    f.render_widget(barchart2, horizontalChunks(0))
 
     val barchart3 = BarChartWidget(
         block = Some(BlockWidget(title = Some(Spans.nostyle("Data3")), borders = Borders.ALL)),
@@ -100,6 +100,6 @@ object BarChartExample {
         value_style = Style(bg = Some(Color.Red)),
         label_style = Style(fg = Some(Color.Cyan), add_modifier = Modifier.ITALIC)
       )
-      f.render_widget(barchart3, horizontalChunks(1))
+    f.render_widget(barchart3, horizontalChunks(1))
   }
 }
