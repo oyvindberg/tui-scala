@@ -72,13 +72,13 @@ object ParagraphExample {
       constraints = Array(Constraint.Percentage(25), Constraint.Percentage(25), Constraint.Percentage(25), Constraint.Percentage(25))
     ).split(f.size)
 
-    val text = Text.from(
-      Span.nostyle("This is a line "),
-      Span.styled("This is a line   ", Style.DEFAULT.fg(Color.Red)),
-      Span.styled("This is a line", Style.DEFAULT.bg(Color.Blue)),
-      Span.styled("This is a longer line", Style.DEFAULT.add_modifier(Modifier.CROSSED_OUT)),
-      Span.styled(long_line, Style.DEFAULT.bg(Color.Green)),
-      Span.styled("This is a line", Style.DEFAULT.fg(Color.Green).add_modifier(Modifier.ITALIC))
+    val text = Text.fromSpans(
+      Spans.nostyle("This is a line "),
+      Spans.styled("This is a line   ", Style.DEFAULT.fg(Color.Red)),
+      Spans.styled("This is a line", Style.DEFAULT.bg(Color.Blue)),
+      Spans.styled("This is a longer line", Style.DEFAULT.add_modifier(Modifier.CROSSED_OUT)),
+      Spans.styled(long_line, Style.DEFAULT.bg(Color.Green)),
+      Spans.styled("This is a line", Style.DEFAULT.fg(Color.Green).add_modifier(Modifier.ITALIC))
     )
 
     def create_block(title: String): BlockWidget =

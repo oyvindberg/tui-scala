@@ -56,6 +56,8 @@ object Text {
   /// Create some text (potentially multiple lines) with no style.
   def nostyle(content: String): Text =
     Text(content.lines().map(Spans.nostyle).toScala(Factory.arrayFactory[Spans]))
+  def from(span: Span): Text =
+    from(Spans(Array(span)))
   def from(spans: Span*): Text =
     from(Spans(spans.toArray))
   def from(spans: Spans): Text =

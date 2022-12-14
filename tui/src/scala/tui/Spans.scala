@@ -11,5 +11,6 @@ case class Spans(spans: Array[Span]) {
 
 object Spans {
   def nostyle(s: String): Spans = from(Span.nostyle(s))
+  def styled(s: String, style: Style): Spans = from(Span.styled(s, style))
   def from(spans: Span*): Spans = Spans(spans.toArray)
 }
