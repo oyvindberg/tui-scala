@@ -42,6 +42,8 @@ jobs:
             jni-folder: .bleep/generated-resources/crossterm/native
           - os: macos-latest
             jni-folder: .bleep/generated-resources/crossterm/native
+          - os: macOS-m1
+            jni-folder: .bleep/generated-resources/crossterm/native
           - os: windows-latest
             jni-folder: .bleep\generated-resources\crossterm\native
     steps:
