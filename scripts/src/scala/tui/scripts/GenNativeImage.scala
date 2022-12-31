@@ -7,10 +7,16 @@ import java.nio.file.{Files, Path, StandardCopyOption}
 
 object GenNativeImage extends BleepScript("GenNativeImage") {
   def run(started: Started, commands: Commands, args: List[String]): Unit = {
-
     commands.compile(List(demoProject))
 
-    val nativeImageJvm = model.Jvm("graalvm-java17:22.3.0", None)
+    val jvmCommand =
+      FetchJvm(
+        maybeCacheDir = Some(started.userPaths.resolveJvmCacheDir),
+        cacheLogger = new BleepCacheLogger(started.logger),
+        jvm = model.Jvm("graalvm-java17:22.3.0", None),
+        ec = started.executionContext
+      )
+
     val jniLibraryPath = GenJniLibrary.crosstermJniNativeLib(started).nativeCompile()
 
     val newJniLibraryPath = started.projectPaths(demoProject).resourcesDirs.generated / jniLibraryPath.getFileName.toString
@@ -32,7 +38,7 @@ object GenNativeImage extends BleepScript("GenNativeImage") {
         """-H:IncludeResources=libcrossterm.dylib""",
         "-H:-UseServiceLoaderFeature"
       ),
-      nativeImageJvm = nativeImageJvm,
+      jvmCommand = jvmCommand,
       env = sys.env.toList ++ List(("USE_NATIVE_IMAGE_JAVA_PLATFORM_MODULE_SYSTEM", "false"))
     ) {
       // allow user to pass in name of generated binary as parameter

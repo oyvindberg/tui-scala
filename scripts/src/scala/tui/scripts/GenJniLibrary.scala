@@ -1,7 +1,7 @@
 package tui.scripts
 
 import bleep._
-import bleep.plugin.jni.{JniNative, JniPackage}
+import bleep.plugin.jni.{Cargo, JniNative, JniPackage}
 
 object GenJniLibrary extends BleepScript("GenJniLibrary") {
 
@@ -10,7 +10,7 @@ object GenJniLibrary extends BleepScript("GenJniLibrary") {
       logger = started.logger,
       nativeCompileSourceDirectory = started.projectPaths(crosstermProject).dir / "cargo",
       nativeTargetDirectory = started.buildPaths.dotBleepDir,
-      nativeBuildTool = new CargoFixed(release = true),
+      nativeBuildTool = new Cargo(release = true),
       libName = "crossterm",
       env = sys.env.toList
     )

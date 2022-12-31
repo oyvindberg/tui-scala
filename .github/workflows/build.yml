@@ -38,9 +38,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-20.04
             jni-folder: .bleep/generated-resources/crossterm/native
           - os: macos-latest
+            jni-folder: .bleep/generated-resources/crossterm/native
+          - os: macOS-m1
             jni-folder: .bleep/generated-resources/crossterm/native
           - os: windows-latest
             jni-folder: .bleep\generated-resources\crossterm\native
@@ -60,8 +62,8 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: ${{ runner.os }}-cargo-
+          key: ${{ runner.arch }}-${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.arch }}-${{ runner.os }}-cargo-
 
       - name: Install bleep stable
         run: cs install --channel https://raw.githubusercontent.com/oyvindberg/bleep/master/coursier-channel.json bleep --verbose
