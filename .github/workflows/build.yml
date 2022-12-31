@@ -62,8 +62,8 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ${{ matrix.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: ${{ matrix.os }}-cargo-
+          key: ${{ runner.arch }}-${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.arch }}-${{ runner.os }}-cargo-
 
       - name: Install bleep stable
         run: cs install --channel https://raw.githubusercontent.com/oyvindberg/bleep/master/coursier-channel.json bleep --verbose
