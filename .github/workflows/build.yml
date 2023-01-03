@@ -79,8 +79,8 @@ jobs:
         # as is normal, everything involving windows is terrible.
         # - powershell doesn't work, for one: https://github.com/dirs-dev/directories-jvm/issues/49
         # - with `shell: cmd` only one command can be run at a time, so this is split up
-      - name: bleep compile-server auto-shutdown-enable (windows)
-        run: bleep compile-server auto-shutdown-enable
+      - name: bleep config compile-server auto-shutdown-enable (windows)
+        run: bleep config compile-server auto-shutdown-enable
         shell: cmd
         if: runner.os == 'Windows'
 
