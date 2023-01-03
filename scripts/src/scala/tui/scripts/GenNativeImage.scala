@@ -46,7 +46,7 @@ object GenNativeImage extends BleepScript("GenNativeImage") {
         case Some(relPath) =>
           // smoothen over some irritation from github action scripts
           val relPathNoExe = if (relPath.endsWith(".exe")) relPath.dropRight(".exe".length) else relPath
-          started.prebootstrapped.buildPaths.cwd / relPathNoExe
+          started.pre.buildPaths.cwd / relPathNoExe
         case None => super.nativeImageOutput
       }
     }
