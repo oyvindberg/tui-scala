@@ -14,13 +14,10 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'ci skip')"
     steps:
       - uses: actions/checkout@v2
-      - uses: coursier/setup-action@v1.2.0-M3
+      - uses: bleep-build/bleep-setup-action@0.0.1
       - uses: coursier/cache-action@v6
         with:
           extraFiles: bleep.yaml
-
-      - name: Install bleep stable
-        run: cs install --channel https://raw.githubusercontent.com/oyvindberg/bleep/master/coursier-channel.json bleep --verbose
 
       - name: Scalafmt Check
         run: bleep fmt --check
@@ -48,22 +45,22 @@ jobs:
             jni-folder: .bleep\generated-resources\crossterm\native
     steps:
       - uses: actions/checkout@v2
-      - uses: coursier/setup-action@v1.2.0-M3
+      - uses: bleep-build/bleep-setup-action@0.0.1
       - uses: coursier/cache-action@v6
         with:
           extraFiles: bleep.yaml
-#      - name: Set up cargo cache
-#        uses: actions/cache@v3
-#        continue-on-error: false
-#        with:
-#          path: |
-#            ~/.cargo/bin/
-#            ~/.cargo/registry/index/
-#            ~/.cargo/registry/cache/
-#            ~/.cargo/git/db/
-#            target/
-#          key: ${{ runner.arch }}-${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-#          restore-keys: ${{ runner.arch }}-${{ runner.os }}-cargo-
+      - name: Set up cargo cache
+        uses: actions/cache@v3
+        continue-on-error: false
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.arch }}-${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.arch }}-${{ runner.os }}-cargo-
 
       - name: Install bleep stable
         run: cs install --channel https://raw.githubusercontent.com/oyvindberg/bleep/master/coursier-channel.json bleep --verbose
@@ -108,9 +105,7 @@ jobs:
     if: "startsWith(github.ref, 'refs/tags/v')"
     steps:
       - uses: actions/checkout@v2
-      - uses: coursier/setup-action@v1.2.0-M3
-      - name: Install bleep stable
-        run: cs install --channel https://raw.githubusercontent.com/oyvindberg/bleep/master/coursier-channel.json bleep --verbose
+      - uses: bleep-build/bleep-setup-action@0.0.1
       - id: get_version
         uses: battila7/get-version-action@v2
       - name: Download artifacts
