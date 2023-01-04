@@ -62,9 +62,6 @@ jobs:
           key: ${{ runner.arch }}-${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.arch }}-${{ runner.os }}-cargo-
 
-      - name: Install bleep stable
-        run: cs install --channel https://raw.githubusercontent.com/oyvindberg/bleep/master/coursier-channel.json bleep --verbose
-
       - name: Build jni library
         run: bleep gen-jni-library
         if: runner.os != 'Windows'
