@@ -13,10 +13,16 @@ object GenJniLibrary extends BleepScript("GenJniLibrary") {
       nativeBuildTool = new Cargo(release = true),
       libName = "crossterm",
       env = sys.env.toList
-    )
+    ) {
+      // fix broken platform detection
+      override lazy val nativePlatform: String =
+        OsArch.current match {
+          case OsArch.MacosArm64(_) => "arm64-darwin"
+          case _                    => super.nativePlatform
+        }
+    }
 
   override def run(started: Started, commands: Commands, args: List[String]): Unit = {
-
     val jniNative = crosstermJniNativeLib(started)
     val jniPackage = new JniPackage(started.buildPaths.buildDir, jniNative)
 
