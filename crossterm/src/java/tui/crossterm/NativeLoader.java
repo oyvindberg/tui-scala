@@ -1,10 +1,7 @@
 package tui.crossterm;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import static java.util.Arrays.asList;
 
 class NativeLoader {
     public static void load(String nativeLibrary) throws Exception {
@@ -15,7 +12,7 @@ class NativeLoader {
         }
     }
 
-    static String withPlatformName(String lib) throws IOException, InterruptedException {
+    static String withPlatformName(String lib) {
         if (System.getProperty("org.graalvm.nativeimage.imagecode") != null)
             return "/" + lib;
         else {
