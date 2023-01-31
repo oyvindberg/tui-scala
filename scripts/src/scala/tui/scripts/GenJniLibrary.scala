@@ -17,7 +17,7 @@ object GenJniLibrary extends BleepScript("GenJniLibrary") {
       override lazy val nativePlatform: String =
         OsArch.current match {
           case OsArch.LinuxAmd64    => "x86_64-linux"
-          case OsArch.WindowsAmd64  => "x86_64-msys_nt-10.0-20348"
+          case OsArch.WindowsAmd64  => "x86_64-windows"
           case OsArch.MacosAmd64    => "x86_64-darwin"
           case OsArch.MacosArm64(_) => "arm64-darwin"
           case other: OsArch.Other  => sys.error(s"not implemented: $other")
