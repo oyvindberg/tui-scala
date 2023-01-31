@@ -7,6 +7,8 @@ public class CrosstermJni {
     static {
         try {
             NativeLoader.load("crossterm");
+        } catch (RuntimeException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

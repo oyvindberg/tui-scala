@@ -1,10 +1,7 @@
 package tui.crossterm;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import static java.util.Arrays.asList;
 
 class NativeLoader {
     public static void load(String nativeLibrary) throws Exception {
@@ -15,7 +12,7 @@ class NativeLoader {
         }
     }
 
-    static String withPlatformName(String lib) throws IOException, InterruptedException {
+    static String withPlatformName(String lib) {
         if (System.getProperty("org.graalvm.nativeimage.imagecode") != null)
             return "/" + lib;
         else {
@@ -46,20 +43,24 @@ class NativeLoader {
         System.load(extractedPath.toAbsolutePath().toString());
     }
 
-    private static String getPlatform() throws IOException, InterruptedException {
-        var process = new ProcessBuilder(asList("uname", "-sm")).start();
-        var ret = process.waitFor();
-        if (ret != 0) {
-            throw new RuntimeException("Error running `uname` command: " + ret);
+    private static String getPlatform() {
+        if (System.getenv().containsKey("TUI_SCALA_PLATFORM")) {
+            return System.getenv().get("TUI_SCALA_PLATFORM");
         }
-        String uname = new String(process.getInputStream().readAllBytes());
-        String line = uname.split("\n")[0];
-        String[] parts = line.split(" ");
-        if (parts.length != 2) {
-            throw new RuntimeException("Could not determine platform: 'uname -sm' returned unexpected string: " + line);
-        }
-        String arch = parts[1].toLowerCase().replaceAll("\\s", "");
-        String kernel = parts[0].toLowerCase().replaceAll("\\s", "");
-        return arch + "-" + kernel;
+        String arch = System.getProperty("os.arch");
+        String name = System.getProperty("os.name");
+        String nameLower = name.toLowerCase();
+        boolean isAmd64 = arch.equals("x86_64") || arch.equals("amd64");
+        boolean isArm64 = arch.equals("aarch64") || arch.equals("arm64");
+
+        if (isAmd64 && nameLower.contains("win")) return "x86_64-windows";
+        if (isAmd64 && nameLower.contains("lin")) return "x86_64-linux";
+        if (isAmd64 && nameLower.contains("mac")) return "x86_64-darwin";
+        if (isArm64 && nameLower.contains("mac")) return "arm64-darwin";
+        throw new RuntimeException(
+                "Platform detection does not understand os.name = " + name + " and os.arch = " + arch + ". " +
+                        "You can set environment variable TUI_SCALA_PLATFORM to x86_64-windows, x86_64-linux, x86_64-darwin, arm64-darwin to override. " +
+                        "Open an issue at https://github.com/oyvindberg/tui-scala/issues ."
+        );
     }
 }
