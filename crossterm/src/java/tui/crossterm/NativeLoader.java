@@ -53,15 +53,17 @@ class NativeLoader {
         String arch = System.getProperty("os.arch");
         String name = System.getProperty("os.name");
         String nameLower = name.toLowerCase();
+        boolean isAmd64 = arch.equals("x86_64") || arch.equals("amd64");
+        boolean isArm64 = arch.equals("aarch64") || arch.equals("arm64");
 
-        if (arch.equals("x86_64") && nameLower.contains("win")) return "x86_64-windows";
-        if (arch.equals("x86_64") && nameLower.contains("lin")) return "x86_64-linux";
-        if (arch.equals("x86_64") && nameLower.contains("mac")) return "x86_64-darwin";
-        if (arch.equals("aarch64") && nameLower.contains("mac")) return "arm64-darwin";
+        if (isAmd64 && nameLower.contains("win")) return "x86_64-windows";
+        if (isAmd64 && nameLower.contains("lin")) return "x86_64-linux";
+        if (isAmd64 && nameLower.contains("mac")) return "x86_64-darwin";
+        if (isArm64 && nameLower.contains("mac")) return "arm64-darwin";
         throw new RuntimeException(
                 "Platform detection does not understand os.name = " + name + " and os.arch = " + arch + ". " +
-                "You can set environment variable TUI_SCALA_PLATFORM to x86_64-windows, x86_64-linux, x86_64-darwin, arm64-darwin to override. " +
-                "Open an issue at https://github.com/oyvindberg/tui-scala/issues ."
+                        "You can set environment variable TUI_SCALA_PLATFORM to x86_64-windows, x86_64-linux, x86_64-darwin, arm64-darwin to override. " +
+                        "Open an issue at https://github.com/oyvindberg/tui-scala/issues ."
         );
     }
 }
