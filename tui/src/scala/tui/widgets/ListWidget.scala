@@ -1,6 +1,7 @@
 package tui
 package widgets
 
+import tui.internal.ranges
 import tui.internal.saturating._
 
 /// A widget to display several items among which one can be selected (optional)
@@ -89,7 +90,8 @@ case class ListWidget(
 
     var current_height = 0
     val has_selection = state.selected.isDefined
-    items.iterator.slice(state.offset, state.offset + end - start).zipWithIndex.foreach { case (item, i) =>
+    ranges.range(state.offset, state.offset + end - start) { i =>
+      val item = items(i)
       val (x, y) = start_corner match {
         case Corner.BottomLeft =>
           current_height += item.height
