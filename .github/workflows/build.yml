@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'ci skip')"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: bleep-build/bleep-setup-action@0.0.1
       - uses: coursier/cache-action@v6
         with:
@@ -44,7 +44,7 @@ jobs:
           - os: windows-latest
             jni-folder: .bleep\generated-resources\crossterm\native
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: bleep-build/bleep-setup-action@0.0.1
       - uses: coursier/cache-action@v6
         with:
@@ -101,7 +101,7 @@ jobs:
     needs: [ build, build-native ]
     if: "startsWith(github.ref, 'refs/tags/v')"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: bleep-build/bleep-setup-action@0.0.1
       - id: get_version
         uses: battila7/get-version-action@v2
