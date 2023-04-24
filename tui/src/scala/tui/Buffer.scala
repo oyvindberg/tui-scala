@@ -5,33 +5,40 @@ import tui.internal.breakableForeach._
 
 import scala.collection.mutable
 
-/// A buffer that maps to the desired content of the terminal after the draw call
-///
-/// No widget in the library interacts directly with the terminal. Instead each of them is required
-/// to draw their state to an intermediate buffer. It is basically a grid where each cell contains
-/// a grapheme, a foreground color and a background color. This grid will then be used to output
-/// the appropriate escape sequences and characters to draw the UI as the user has defined it.
-///
+/** A buffer that maps to the desired content of the terminal after the draw call
+  *
+  * No widget in the library interacts directly with the terminal. Instead each of them is required to draw their state to an intermediate buffer. It is
+  * basically a grid where each cell contains a grapheme, a foreground color and a background color. This grid will then be used to output the appropriate
+  * escape sequences and characters to draw the UI as the user has defined it.
+  *
+  * @param area
+  *   The area represented by this buffer
+  * @param content
+  *   The content of the buffer. The length of this Vec should always be equal to area.width * / area.height
+  */
 case class Buffer(
-    /// The area represented by this buffer
     var area: Rect,
-    /// The content of the buffer. The length of this Vec should always be equal to area.width * / area.height
     var content: mutable.ArraySeq[Cell]
 ) {
-  /// Returns a reference to Cell at the given coordinates
+
+  /** Returns a reference to Cell at the given coordinates
+    */
   def get(x: Int, y: Int): Cell = {
     val i = this.index_of(x, y)
     content(i)
   }
-  /// Returns a reference to Cell at the given coordinates
+
+  /** Returns a reference to Cell at the given coordinates
+    */
   def set(x: Int, y: Int, cell: Cell): Unit = {
     val i = this.index_of(x, y)
     content(i) = cell
   }
 
-  /// Returns the index in the Vec<Cell> for the given global (x, y) coordinates.
-  ///
-  /// Global coordinates are offset by the Buffer's area offset (`x`/`y`).
+  /** Returns the index in the Vec<Cell> for the given global (x, y) coordinates.
+    *
+    * Global coordinates are offset by the Buffer's area offset (`x`/`y`).
+    */
   def index_of(x: Int, y: Int): Int = {
     debug_assert(
       x >= this.area.left
@@ -46,9 +53,10 @@ case class Buffer(
     (y - this.area.y) * this.area.width + (x - this.area.x)
   }
 
-  /// Returns the (global) coordinates of a cell given its index
-  ///
-  /// Global coordinates are offset by the Buffer's area offset (`x`/`y`).
+  /** Returns the (global) coordinates of a cell given its index
+    *
+    * Global coordinates are offset by the Buffer's area offset (`x`/`y`).
+    */
   def pos_of(i: Int): (Int, Int) = {
     debug_assert(
       i < this.content.length,
@@ -62,12 +70,13 @@ case class Buffer(
     )
   }
 
-  /// Print a string, starting at the position (x, y)
+  /** Print a string, starting at the position (x, y)
+    */
   def set_string(x: Int, y: Int, string: String, style: Style): (Int, Int) =
     set_stringn(x, y, string, Int.MaxValue, style)
 
-  /// Print at most the first n characters of a string if enough space is available
-  /// until the end of the line
+  /** Print at most the first n characters of a string if enough space is available until the end of the line
+    */
   def set_stringn(x: Int, y: Int, string: String, width: Int, style: Style): (Int, Int) = {
     var index = this.index_of(x, y)
     var x_offset = x
@@ -125,8 +134,8 @@ case class Buffer(
     }
   }
 
-  /// Resize the buffer so that the mapped area matches the given area and that the buffer
-  /// length is equal to area.width * area.height
+  /** Resize the buffer so that the mapped area matches the given area and that the buffer length is equal to area.width * area.height
+    */
   def resize(area: Rect): Unit = {
     val length = area.area
     val newContent = content.take(length) ++ Array.fill(length - content.length)(Cell.default)
@@ -134,11 +143,13 @@ case class Buffer(
     this.area = area
   }
 
-  /// Reset all cells in the buffer
+  /** Reset all cells in the buffer
+    */
   def reset(): Unit =
     content.foreach(_.reset())
 
-  /// Merge an other buffer into this one
+  /** Merge an other buffer into this one
+    */
   def merge(other: Buffer): Unit = {
     val newArea = area.union(other.area)
     val newContent = Array.fill(newArea.area)(Cell.default)
@@ -168,34 +179,33 @@ case class Buffer(
     this.content = newContent
   }
 
-  /// Builds a minimal sequence of coordinates and Cells necessary to update the UI from
-  /// self to other.
-  ///
-  /// We're assuming that buffers are well-formed, that is no double-width cell is followed by
-  /// a non-blank cell.
-  ///
-  /// # Multi-width characters handling:
-  ///
-  /// ```text
-  /// (Index:) `01`
-  /// Prev:    `コ`
-  /// Next:    `aa`
-  /// Updates: `0: a, 1: a'
-  /// ```
-  ///
-  /// ```text
-  /// (Index:) `01`
-  /// Prev:    `a `
-  /// Next:    `コ`
-  /// Updates: `0: コ` (double width symbol at index 0 - skip index 1)
-  /// ```
-  ///
-  /// ```text
-  /// (Index:) `012`
-  /// Prev:    `aaa`
-  /// Next:    `aコ`
-  /// Updates: `0: a, 1: コ` (double width symbol at index 1 - skip index 2)
-  /// ```
+  /** Builds a minimal sequence of coordinates and Cells necessary to update the UI from self to other.
+    *
+    * We're assuming that buffers are well-formed, that is no double-width cell is followed by a non-blank cell.
+    *
+    * # Multi-width characters handling:
+    *
+    * ```text
+    * (Index:) `01`
+    * Prev:    `コ`
+    * Next:    `aa`
+    * Updates: `0: a, 1: a'
+    * ```
+    *
+    * ```text
+    * (Index:) `01`
+    * Prev:    `a `
+    * Next:    `コ`
+    * Updates: `0: コ` (double width symbol at index 0 - skip index 1)
+    * ```
+    *
+    * ```text
+    * (Index:) `012`
+    * Prev:    `aaa`
+    * Next:    `aコ`
+    * Updates: `0: a, 1: コ` (double width symbol at index 1 - skip index 2)
+    * ```
+    */
   def diff(other: Buffer): Array[(Int, Int, Cell)] = {
     val previous_buffer = content
     val next_buffer = other.content
@@ -228,20 +238,24 @@ case class Buffer(
 }
 
 object Buffer {
-  /// Returns a Buffer with all cells set to the default one
+
+  /** Returns a Buffer with all cells set to the default one
+    */
   def empty(area: Rect): Buffer = {
     val cell: Cell = Cell.default
     Buffer.filled(area, cell)
   }
 
-  /// Returns a Buffer with all cells initialized with the attributes of the given Cell
+  /** Returns a Buffer with all cells initialized with the attributes of the given Cell
+    */
   def filled(area: Rect, cell: Cell): Buffer = {
     val size = area.area
     val content = Array.fill(size)(cell.clone())
     Buffer(area, content)
   }
 
-  /// Returns a Buffer containing the given lines
+  /** Returns a Buffer containing the given lines
+    */
   def with_lines(lines: String*): Buffer = {
     val width = lines
       .map(i => Grapheme(i).width)

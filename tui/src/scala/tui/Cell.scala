@@ -1,6 +1,7 @@
 package tui
 
-/// A buffer cell
+/** A buffer cell
+  */
 case class Cell(
     var symbol: tui.Grapheme,
     var fg: Color,
