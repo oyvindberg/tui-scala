@@ -21,7 +21,7 @@ projects:
     - template-scala-2
     - template-scala-common
   tests:
-    dependencies: org.scalatest::scalatest:3.2.13
+    dependencies: org.scalatest::scalatest:3.2.15
     dependsOn: tui
     extends: template-cross-scala
     isTestProject: true
@@ -46,10 +46,10 @@ templates:
     extends: template-scala-common
   template-scala-2:
     scala:
-      version: 2.13.6
+      version: 2.13.10
   template-scala-3:
     scala:
-      version: 3.2.1
+      version: 3.2.2
   template-scala-common:
     platform:
       name: jvm
