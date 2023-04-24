@@ -1,5 +1,5 @@
 $schema: https://raw.githubusercontent.com/oyvindberg/bleep/master/schema.json
-$version: 0.0.1-M24
+$version: 0.0.1-M25
 jvm:
   name: zulu:17.0.1
 projects:
