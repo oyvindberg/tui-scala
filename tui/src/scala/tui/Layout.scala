@@ -8,12 +8,16 @@ import tui.internal.ranges
 
 import scala.collection.mutable
 
+/** @param direction
+  * @param margin
+  * @param constraints
+  *   Whether the last chunk of the computed layout should be expanded to fill the available space.
+  * @param expand_to_fill
+  */
 case class Layout(
     direction: Direction = Direction.Vertical,
     margin: Margin = Margin(horizontal = 0, vertical = 0),
     constraints: Array[Constraint] = Array.empty,
-    /// Whether the last chunk of the computed layout should be expanded to fill the available
-    /// space.
     expand_to_fill: Boolean = true
 ) {
   def split(area: Rect): Array[Rect] =
@@ -23,7 +27,8 @@ case class Layout(
 object Layout {
   val LAYOUT_CACHE = mutable.HashMap.empty[(Rect, Layout), Array[Rect]]
 
-  /// A container used by the solver inside split
+  /** A container used by the solver inside split
+    */
   case class Element(
       x: Variable = Variable(),
       y: Variable = Variable(),

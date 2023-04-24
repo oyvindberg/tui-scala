@@ -1,10 +1,9 @@
 package tui
 
-/*  Modifier changes the way a piece of text is displayed.
- *
- *  They are bitflags so they can easily be composed.
- *
- */
+/** Modifier changes the way a piece of text is displayed.
+  *
+  * They are bitflags so they can easily be composed.
+  */
 case class Modifier(bits: Int) {
   def fmt(sb: StringBuilder): Unit = {
     var first = true
@@ -83,15 +82,18 @@ case class Modifier(bits: Int) {
     sb.toString()
   }
 
-  /// Returns `true` if all of the flags in `other` are contained within `self`.
+  /** Returns `true` if all of the flags in `other` are contained within `self`.
+    */
   def contains(other: Modifier): Boolean =
     other != Modifier.EMPTY && (bits & other.bits) == other.bits
 
-  /// Inserts the specified flags in-place.
+  /** Inserts the specified flags in-place.
+    */
   def insert(other: Modifier): Modifier =
     copy(bits = bits | other.bits)
 
-  /// Removes the specified flags in-place.
+  /** Removes the specified flags in-place.
+    */
   def remove(other: Modifier): Modifier =
     copy(bits = bits & ~other.bits)
 

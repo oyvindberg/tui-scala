@@ -1,7 +1,7 @@
 package tui
 
-/// A simple rectangle used in the computation of the layout and to give widgets a hint about the
-/// area they are supposed to render to.
+/** A simple rectangle used in the computation of the layout and to give widgets a hint about the area they are supposed to render to.
+  */
 case class Rect(
     x: Int,
     y: Int,

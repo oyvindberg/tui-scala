@@ -222,17 +222,22 @@ object symbols {
     )
   }
 
-/// Marker to use when plotting data points
+  /** Marker to use when plotting data points
+    */
   sealed trait Marker
 
   object Marker {
-    /// One point per cell in shape of dot
+
+    /** One point per cell in shape of dot
+      */
     case object Dot extends Marker
 
-    /// One point per cell in shape of a block
+    /** One point per cell in shape of a block
+      */
     case object Block extends Marker
 
-    /// Up to 8 points per cell
+    /** Up to 8 points per cell
+      */
     case object Braille extends Marker
   }
 }
