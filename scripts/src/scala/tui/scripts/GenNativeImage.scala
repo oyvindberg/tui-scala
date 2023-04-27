@@ -23,6 +23,9 @@ object GenNativeImage extends BleepScript("GenNativeImage") {
         "--initialize-at-build-time=scala.Symbol$",
         "--native-image-info",
         """-H:IncludeResources=libnative-arm64-darwin-crossterm.dylib""",
+        """-H:IncludeResources=libnative-x86_64-darwin-crossterm.dylib""",
+        """-H:IncludeResources=libnative-x86_64-linux-crossterm.so""",
+        """-H:IncludeResources=native-x86_64-windows-crossterm.dll""",
         "-H:-UseServiceLoaderFeature"
       ),
       jvmCommand = started.jvmCommand,
