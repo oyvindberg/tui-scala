@@ -1,11 +1,14 @@
 $schema: https://raw.githubusercontent.com/oyvindberg/bleep/master/schema.json
-$version: 0.0.1-M25
+$version: 0.0.1-M26
 jvm:
   name: graalvm-java17:22.3.1
 projects:
   cassowary:
     extends: template-cross-scala
-  crossterm: {}
+  crossterm:
+    sourcegen:
+      main: tui.scripts.GenJniLibrary
+      project: scripts
   demo:
     dependencies: org.graalvm.nativeimage:svm:22.3.1
     dependsOn: tui
@@ -31,11 +34,18 @@ projects:
     - crossterm
     extends: template-cross-scala
 scripts:
-  gen-headers: scripts/tui.scripts.GenHeaders
-  gen-jni-library: scripts/tui.scripts.GenJniLibrary
-  gen-native-image: scripts/tui.scripts.GenNativeImage
-  my-publish-local: scripts/tui.scripts.PublishLocal
-  publish: scripts/tui.scripts.Publish
+  gen-headers:
+    main: tui.scripts.GenHeaders
+    project: scripts
+  gen-native-image:
+    main: tui.scripts.GenNativeImage
+    project: scripts
+  my-publish-local:
+    main: tui.scripts.PublishLocal
+    project: scripts
+  publish:
+    main: tui.scripts.Publish
+    project: scripts
 templates:
   template-cross-scala:
     cross:

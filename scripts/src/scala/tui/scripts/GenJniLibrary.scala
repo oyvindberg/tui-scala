@@ -5,7 +5,7 @@ import bleep.plugin.jni.{Cargo, JniNative, JniPackage}
 
 import java.nio.file.Path
 
-object GenJniLibrary extends BleepScript("GenJniLibrary") {
+object GenJniLibrary extends bleep.BleepCodegenScript("GenJniLibrary") {
 
   def crosstermJniNativeLib(started: Started): JniNative =
     new JniNative(
@@ -26,7 +26,7 @@ object GenJniLibrary extends BleepScript("GenJniLibrary") {
         }
     }
 
-  override def run(started: Started, commands: Commands, args: List[String]): Unit = {
+  override def run(started: Started, commands: Commands, targets: List[GenJniLibrary.Target], args: List[String]): Unit = {
     val jniNative = crosstermJniNativeLib(started)
     val jniPackage = new JniPackage(started.buildPaths.buildDir, jniNative) {
       // override naming standard to match `NativeLoader.java`
@@ -37,10 +37,10 @@ object GenJniLibrary extends BleepScript("GenJniLibrary") {
       }
     }
 
-    // copy into place in resources directories
-    val writtenPaths = jniPackage.copyTo(started.projectPaths(crosstermProject).resourcesDirs.generated)
-
-    writtenPaths.foreach(path => started.logger.withContext(path).info("wrote"))
-
+    targets.foreach { target =>
+      // copy into place in resources directories
+      val writtenPaths = jniPackage.copyTo(target.resources)
+      writtenPaths.foreach(path => started.logger.withContext(path).info("wrote"))
+    }
   }
 }
