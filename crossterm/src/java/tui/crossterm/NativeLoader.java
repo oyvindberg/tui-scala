@@ -12,18 +12,9 @@ class NativeLoader {
         }
     }
 
-    static String withPlatformName(String lib) {
-        if (System.getProperty("org.graalvm.nativeimage.imagecode") != null)
-            return "/" + lib;
-        else {
-            String plat = getPlatform();
-            return "/native/" + plat + "/" + lib;
-        }
-    }
-
     static void loadPackaged(String nativeLibrary) throws Exception {
-        String lib = System.mapLibraryName(nativeLibrary);
-        var resourcePath = withPlatformName(lib);
+        String lib = System.mapLibraryName("native-" + getPlatform() + "-" + nativeLibrary);
+        var resourcePath = "/" + lib;
         var resourceStream = NativeLoader.class.getResourceAsStream(resourcePath);
         if (resourceStream == null) {
             throw new UnsatisfiedLinkError(

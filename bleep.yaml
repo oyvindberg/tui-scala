@@ -1,13 +1,13 @@
 $schema: https://raw.githubusercontent.com/oyvindberg/bleep/master/schema.json
 $version: 0.0.1-M25
 jvm:
-  name: zulu:17.0.1
+  name: graalvm-java17:22.3.1
 projects:
   cassowary:
     extends: template-cross-scala
   crossterm: {}
   demo:
-    dependencies: org.graalvm.nativeimage:svm:22.3.0
+    dependencies: org.graalvm.nativeimage:svm:22.3.1
     dependsOn: tui
     extends: template-cross-scala
     platform:

@@ -3,6 +3,8 @@ package tui.scripts
 import bleep._
 import bleep.plugin.jni.{Cargo, JniNative, JniPackage}
 
+import java.nio.file.Path
+
 object GenJniLibrary extends BleepScript("GenJniLibrary") {
 
   def crosstermJniNativeLib(started: Started): JniNative =
@@ -26,7 +28,14 @@ object GenJniLibrary extends BleepScript("GenJniLibrary") {
 
   override def run(started: Started, commands: Commands, args: List[String]): Unit = {
     val jniNative = crosstermJniNativeLib(started)
-    val jniPackage = new JniPackage(started.buildPaths.buildDir, jniNative)
+    val jniPackage = new JniPackage(started.buildPaths.buildDir, jniNative) {
+      // override naming standard to match `NativeLoader.java`
+      override lazy val managedNativeLibraries: Seq[(Path, RelPath)] = {
+        val library: Path = jniNative.nativeCompile()
+        val name = System.mapLibraryName(s"native-${jniNative.nativePlatform}-${jniNative.libName}")
+        Seq(library -> new RelPath(List(name)))
+      }
+    }
 
     // copy into place in resources directories
     val writtenPaths = jniPackage.copyTo(started.projectPaths(crosstermProject).resourcesDirs.generated)
