@@ -55,13 +55,6 @@ The library comes with a bunch of widgets: here is example code for all of them:
 Click on each item to see the source of the example. Run the examples with
 bleep (`bleep run demo@jvm213`), and quit by pressing `q`.
 
-**NOTE**: before running the examples you'll need to make sure you've ran the
-following to set up the necessary dependencies to work with `crossterm`:
-
-```sh
-bleep gen-jni-library
-```
-
 The demo shown in the first video can be found here:
 * [Demo](demo/src/scala/tuiexamples/demo)
 

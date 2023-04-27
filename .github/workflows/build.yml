@@ -36,13 +36,13 @@ jobs:
       matrix:
         include:
           - os: ubuntu-20.04
-            jni-folder: .bleep/generated-resources/crossterm/native
+            jni-folder: .bleep/generated-resources/crossterm/tui.scripts.GenJniLibrary
           - os: macos-latest
-            jni-folder: .bleep/generated-resources/crossterm/native
+            jni-folder: .bleep/generated-resources/crossterm/tui.scripts.GenJniLibrary
           - os: macOS-m1
-            jni-folder: .bleep/generated-resources/crossterm/native
+            jni-folder: .bleep/generated-resources/crossterm/tui.scripts.GenJniLibrary
           - os: windows-latest
-            jni-folder: .bleep\generated-resources\crossterm\native
+            jni-folder: .bleep\generated-resources\crossterm\tui.scripts.GenJniLibrary
     steps:
       - uses: actions/checkout@v3
       - uses: bleep-build/bleep-setup-action@0.0.1
@@ -62,26 +62,9 @@ jobs:
           key: v1-${{ runner.arch }}-${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.arch }}-${{ runner.os }}-cargo-
 
-      - name: Build jni library
-        run: bleep gen-jni-library
-        if: runner.os != 'Windows'
-
       - name: Test jni library
         run: bleep run demo@jvm3 check
         if: runner.os != 'Windows'
-
-        # as is normal, everything involving windows is terrible.
-        # - powershell doesn't work, for one: https://github.com/dirs-dev/directories-jvm/issues/49
-        # - with `shell: cmd` only one command can be run at a time, so this is split up
-      - name: bleep config compile-server auto-shutdown-enable (windows)
-        run: bleep config compile-server auto-shutdown-enable
-        shell: cmd
-        if: runner.os == 'Windows'
-
-      - name: Build jni library (windows)
-        run: bleep gen-jni-library
-        shell: cmd
-        if: runner.os == 'Windows'
 
       - name: Test jni library (windows)
         run: bleep run demo@jvm3 check

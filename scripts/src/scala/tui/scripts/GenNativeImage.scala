@@ -12,7 +12,7 @@ object GenNativeImage extends BleepScript("GenNativeImage") {
     GenJniLibrary.crosstermJniNativeLib(started).nativeCompile()
 
     val plugin = new NativeImagePlugin(
-      project = started.bloopProjects(demoProject),
+      project = started.bloopProject(demoProject),
       logger = started.logger,
       nativeImageOptions = List(
         "--verbose",
