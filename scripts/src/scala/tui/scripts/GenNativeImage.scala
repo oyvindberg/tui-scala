@@ -3,18 +3,13 @@ package tui.scripts
 import bleep._
 import bleep.plugin.nativeimage.NativeImagePlugin
 
-import java.nio.file.{Files, Path, StandardCopyOption}
+import java.nio.file.Path
 
 object GenNativeImage extends BleepScript("GenNativeImage") {
   def run(started: Started, commands: Commands, args: List[String]): Unit = {
     commands.compile(List(demoProject))
 
-    val jniLibraryPath = GenJniLibrary.crosstermJniNativeLib(started).nativeCompile()
-
-    val newJniLibraryPath = started.projectPaths(demoProject).resourcesDirs.generated / jniLibraryPath.getFileName.toString
-    Files.createDirectories(newJniLibraryPath.getParent)
-    Files.copy(jniLibraryPath, newJniLibraryPath, StandardCopyOption.REPLACE_EXISTING)
-    started.logger.info(s"workaround for https://github.com/oracle/graal/issues/5219 : copy $jniLibraryPath to $newJniLibraryPath")
+    GenJniLibrary.crosstermJniNativeLib(started).nativeCompile()
 
     val plugin = new NativeImagePlugin(
       project = started.bloopProjects(demoProject),
@@ -27,7 +22,10 @@ object GenNativeImage extends BleepScript("GenNativeImage") {
         "--initialize-at-build-time=scala.Symbol",
         "--initialize-at-build-time=scala.Symbol$",
         "--native-image-info",
-        """-H:IncludeResources=libcrossterm.dylib""",
+        """-H:IncludeResources=libnative-arm64-darwin-crossterm.dylib""",
+        """-H:IncludeResources=libnative-x86_64-darwin-crossterm.dylib""",
+        """-H:IncludeResources=libnative-x86_64-linux-crossterm.so""",
+        """-H:IncludeResources=native-x86_64-windows-crossterm.dll""",
         "-H:-UseServiceLoaderFeature"
       ),
       jvmCommand = started.jvmCommand,
