@@ -3,19 +3,24 @@ package widgets
 
 import tui.internal.ranges
 
-/// Widget to render a sparkline over one or more lines.
-
+/** Widget to render a sparkline over one or more lines.
+  *
+  * @param block
+  *   A block to wrap the widget in
+  * @param style
+  *   Widget style
+  * @param data
+  *   A slice of the data to display
+  * @param max
+  *   The maximum value to take to compute the maximum bar height (if nothing is specified, the widget uses the max of the dataset)
+  * @param bar_set
+  *   A set of bar symbols used to represent the give data
+  */
 case class SparklineWidget(
-    /// A block to wrap the widget in
     block: Option[BlockWidget] = None,
-    /// Widget style
     style: Style = Style.DEFAULT,
-    /// A slice of the data to display
     data: collection.Seq[Int] = Nil,
-    /// The maximum value to take to compute the maximum bar height (if nothing is specified, the
-    /// widget uses the max of the dataset)
     max: Option[Int] = None,
-    /// A set of bar symbols used to represent the give data
     bar_set: symbols.bar.Set = symbols.bar.NINE_LEVELS
 ) extends Widget {
   def render(area: Rect, buf: Buffer): Unit = {

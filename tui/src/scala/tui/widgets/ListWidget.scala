@@ -4,18 +4,27 @@ package widgets
 import tui.internal.ranges
 import tui.internal.saturating._
 
-/// A widget to display several items among which one can be selected (optional)
+/** A widget to display several items among which one can be selected (optional)
+  *
+  * @param block
+  * @param items
+  * @param style
+  *   Style used as a base style for the widget
+  * @param start_corner
+  * @param highlight_style
+  *   Style used to render selected item
+  * @param highlight_symbol
+  *   Symbol in front of the selected item (Shift all items to the right)
+  * @param repeat_highlight_symbol
+  *   Whether to repeat the highlight symbol for each line of the selected item
+  */
 case class ListWidget(
     block: Option[BlockWidget] = None,
     items: Array[ListWidget.Item],
-    /// Style used as a base style for the widget
     style: Style = Style.DEFAULT,
     start_corner: Corner = Corner.TopLeft,
-    /// Style used to render selected item
     highlight_style: Style = Style.DEFAULT,
-    /// Symbol in front of the selected item (Shift all items to the right)
     highlight_symbol: Option[String] = None,
-    /// Whether to repeat the highlight symbol for each line of the selected item
     repeat_highlight_symbol: Boolean = false
 ) extends Widget
     with StatefulWidget {

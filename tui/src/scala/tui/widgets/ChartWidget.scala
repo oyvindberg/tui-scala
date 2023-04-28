@@ -6,23 +6,32 @@ import tui.internal.ranges
 import tui.internal.saturating._
 import tui.widgets.canvas.{CanvasWidget, Line, Points}
 
-/// A widget to plot one or more dataset in a cartesian coordinate system
+/** A widget to plot one or more dataset in a cartesian coordinate system
+  *
+  * @param datasets
+  *   A reference to the datasets
+  * @param block
+  *   A block to display around the widget eventually
+  * @param x_axis
+  *   The horizontal axis
+  * @param y_axis
+  *   The vertical axis
+  * @param style
+  *   The widget base style
+  * @param hidden_legend_constraints
+  *   Set the constraints used to determine whether the legend should be shown or not.
+  */
 case class ChartWidget(
-    /// A reference to the datasets
     datasets: Array[ChartWidget.Dataset],
-    /// A block to display around the widget eventually
     block: Option[BlockWidget] = None,
-    /// The horizontal axis
     x_axis: ChartWidget.Axis = ChartWidget.Axis.default,
-    /// The vertical axis
     y_axis: ChartWidget.Axis = ChartWidget.Axis.default,
-    /// The widget base style
     style: Style = Style.DEFAULT,
-    /// Set the constraints used to determine whether the legend should be shown or not.
     hidden_legend_constraints: (Constraint, Constraint) = (Constraint.Ratio(1, 4), Constraint.Ratio(1, 4))
 ) extends Widget {
-  /// Compute the internal layout of the chart given the area. If the area is too small some
-  /// elements may be automatically hidden
+
+  /** Compute the internal layout of the chart given the area. If the area is too small some elements may be automatically hidden
+    */
   def layout(area: Rect): ChartWidget.ChartLayout = {
     var layout = ChartWidget.ChartLayout.default
     if (area.height == 0 || area.width == 0) {
@@ -322,20 +331,26 @@ case class ChartWidget(
 }
 
 object ChartWidget {
-  /// An X or Y axis for the chart widget
+
+  /** An X or Y axis for the chart widget
+    * @param title
+    *   Title displayed next to axis end
+    * @param bounds
+    *   Bounds for the axis (all data points outside these limits will not be represented)
+    * @param labels
+    *   A list of labels to put to the left or below the axis
+    * @param style
+    *   The style used to draw the axis itself
+    * @param labels_alignment
+    *   Defines the alignment of the labels of the axis. The alignment behaves differently based on the axis:
+    *   - Y-Axis: The labels are aligned within the area on the left of the axis
+    *   - X-Axis: The first X-axis label is aligned relative to the Y-axis
+    */
   case class Axis(
-      /// Title displayed next to axis end
       title: Option[Spans] = None,
-      /// Bounds for the axis (all data points outside these limits will not be represented)
       bounds: Point = Point.Zero,
-      /// A list of labels to put to the left or below the axis
       labels: Option[Array[Span]] = None,
-      /// The style used to draw the axis itself
       style: Style = Style.DEFAULT,
-      /// Defines the alignment of the labels of the axis.
-      /// The alignment behaves differently based on the axis:
-      /// - Y-Axis: The labels are aligned within the area on the left of the axis
-      /// - X-Axis: The first X-axis label is aligned relative to the Y-axis
       labels_alignment: Alignment = Alignment.Left
   )
 
@@ -343,49 +358,69 @@ object ChartWidget {
     val default: Axis = Axis()
   }
 
-  /// Used to determine which style of graphing to use
+  /** Used to determine which style of graphing to use
+    */
   sealed trait GraphType
 
   object GraphType {
-    /// Draw each point
+
+    /** Draw each point
+      */
     case object Scatter extends GraphType
 
-    /// Draw each point and lines between each point using the same marker
+    /** Draw each point and lines between each point using the same marker
+      */
     case object Line extends GraphType
   }
 
-  /// A group of data points
+  /** A group of data points
+    *
+    * @param name
+    *   Name of the dataset (used in the legend if shown)
+    * @param data
+    *   A reference to the actual data
+    * @param marker
+    *   Symbol used for each points of this dataset
+    * @param graph_type
+    *   Determines graph type used for drawing points
+    * @param style
+    *   Style used to plot this dataset
+    */
   case class Dataset(
-      /// Name of the dataset (used in the legend if shown)
       name: String = "",
-      /// A reference to the actual data
       data: Array[Point] = Array.empty,
-      /// Symbol used for each points of this dataset
       marker: symbols.Marker = symbols.Marker.Dot,
-      /// Determines graph type used for drawing points
       graph_type: GraphType = GraphType.Scatter,
-      /// Style used to plot this dataset
       style: Style = Style.DEFAULT
   )
 
-  /// A container that holds all the infos about where to display each elements of the chart (axis,
-  /// labels, legend, ...).
+  /** A container that holds all the infos about where to display each elements of the chart (axis, labels, legend, ...).
+    *
+    * @param title_x
+    *   Location of the title of the x axis
+    * @param title_y
+    *   Location of the title of the y axis
+    * @param label_x
+    *   Location of the first label of the x axis
+    * @param label_y
+    *   Location of the first label of the y axis
+    * @param axis_x
+    *   Y coordinate of the horizontal axis
+    * @param axis_y
+    *   X coordinate of the vertical axis
+    * @param legend_area
+    *   Area of the legend
+    * @param graph_area
+    *   Area of the graph
+    */
   case class ChartLayout(
-      /// Location of the title of the x axis
       title_x: Option[(Int, Int)] = None,
-      /// Location of the title of the y axis
       title_y: Option[(Int, Int)] = None,
-      /// Location of the first label of the x axis
       label_x: Option[Int] = None,
-      /// Location of the first label of the y axis
       label_y: Option[Int] = None,
-      /// Y coordinate of the horizontal axis
       axis_x: Option[Int] = None,
-      /// X coordinate of the vertical axis
       axis_y: Option[Int] = None,
-      /// Area of the legend
       legend_area: Option[Rect] = None,
-      /// Area of the graph
       graph_area: Rect = Rect.default
   )
 

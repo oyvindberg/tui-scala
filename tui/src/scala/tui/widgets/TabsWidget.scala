@@ -5,19 +5,27 @@ package tabs
 import tui.internal.ranges
 import tui.internal.saturating._
 
-/// A widget to display available tabs in a multiple panels context.
+/** A widget to display available tabs in a multiple panels context.
+  *
+  * @param block
+  *   A block to wrap this widget in if necessary
+  * @param titles
+  *   One title for each tab
+  * @param selected
+  *   The index of the selected tabs
+  * @param style
+  *   The style used to draw the text
+  * @param highlight_style
+  *   Style to apply to the selected item
+  * @param divider
+  *   Tab divider
+  */
 case class TabsWidget(
-    /// A block to wrap this widget in if necessary
     block: Option[BlockWidget] = None,
-    /// One title for each tab
     titles: Array[Spans],
-    /// The index of the selected tabs
     selected: Int = 0,
-    /// The style used to draw the text
     style: Style = Style.DEFAULT,
-    /// Style to apply to the selected item
     highlight_style: Style = Style.DEFAULT,
-    /// Tab divider
     divider: Span = Span.nostyle(symbols.line.VERTICAL)
 ) extends Widget {
 

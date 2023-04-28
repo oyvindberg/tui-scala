@@ -2,7 +2,8 @@ package tui
 package widgets
 package canvas
 
-/// Shape to draw a rectangle from a `Rect` with the given color
+/** Shape to draw a rectangle from a `Rect` with the given color
+  */
 case class Rectangle(
     x: Double,
     y: Double,

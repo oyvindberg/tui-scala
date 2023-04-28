@@ -8,25 +8,35 @@ import tui.internal.stepBy.StepBySyntax
 
 import scala.collection.mutable
 
-/// A widget to display data in formatted columns.
-///
-/// It is a collection of [`Row`]s, themselves composed of [`Cell`]s:
+/** A widget to display data in formatted columns.
+  *
+  * It is a collection of `Row`s, themselves composed of `Cell`s:
+  *
+  * @param block
+  *   A block to wrap the widget in
+  * @param style
+  *   Base style for the widget
+  * @param widths
+  *   Width constraints for each column
+  * @param column_spacing
+  *   Space between each column
+  * @param highlight_style
+  *   Style used to render the selected row
+  * @param highlight_symbol
+  *   Symbol in front of the selected rom
+  * @param header
+  *   Optional header
+  * @param rows
+  *   Data to display in each row
+  */
 case class TableWidget(
-    /// A block to wrap the widget in
     block: Option[BlockWidget] = None,
-    /// Base style for the widget
     style: Style = Style.DEFAULT,
-    /// Width constraints for each column
     widths: Array[Constraint] = Array.empty,
-    /// Space between each column
     column_spacing: Int = 1,
-    /// Style used to render the selected row
     highlight_style: Style = Style.DEFAULT,
-    /// Symbol in front of the selected rom
     highlight_symbol: Option[String] = None,
-    /// Optional header
     header: Option[TableWidget.Row] = None,
-    /// Data to display in each row
     rows: Array[TableWidget.Row]
 ) extends StatefulWidget
     with Widget {
@@ -184,26 +194,29 @@ case class TableWidget(
 
 object TableWidget {
 
-  /// A [`Cell`] contains the [`Text`] to be displayed in a [`Row`] of a [`Table`].
-  ///
-  /// It can be created from anything that can be converted to a [`Text`].
+  /** A `Cell` contains the `Text` to be displayed in a `Row` of a `Table`.
+    *
+    * It can be created from anything that can be converted to a `Text`.
+    */
   case class Cell(
       content: Text,
       style: Style = Style.DEFAULT
   )
 
-  /// Holds data to be displayed in a [`Table`] widget.
-  ///
-  /// A [`Row`] is a collection of cells. It can be created from simple strings:
-  /// You can also construct a row from any type that can be converted into [`Text`]:
-  /// By default, a row has a height of 1 but you can change this using [`Row.height`].
+  /** Holds data to be displayed in a `Table` widget.
+    *
+    * A `Row` is a collection of cells. It can be created from simple strings: You can also construct a row from any type that can be converted into `Text`: By
+    * default, a row has a height of 1 but you can change this using `Row.height`.
+    */
   case class Row(
       cells: Array[TableWidget.Cell],
       height: Int = 1,
       style: Style = Style.DEFAULT,
       bottom_margin: Int = 0
   ) {
-    /// Returns the total height of the row.
+
+    /** Returns the total height of the row.
+      */
     val total_height: Int =
       height.saturating_add(bottom_margin)
   }

@@ -4,7 +4,8 @@ import tui.internal.ranges
 import tui._
 import tui.internal.saturating.IntOps
 
-/// A compact widget to display a task progress over a single line.
+/** A compact widget to display a task progress over a single line.
+  */
 case class LineGaugeWidget(
     block: Option[BlockWidget] = None,
     ratio: GaugeWidget.Ratio = GaugeWidget.Ratio.Zero,

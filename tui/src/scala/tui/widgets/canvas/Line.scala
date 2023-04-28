@@ -5,7 +5,8 @@ package canvas
 import tui.internal.ranges
 import tui.internal.saturating._
 
-/// Shape to draw a line from (x1, y1) to (x2, y2) with the given color
+/** Shape to draw a line from (x1, y1) to (x2, y2) with the given color
+  */
 case class Line(
     x1: Double,
     y1: Double,

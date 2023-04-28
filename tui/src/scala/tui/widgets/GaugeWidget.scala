@@ -4,7 +4,8 @@ package widgets
 import tui.Style
 import tui.internal.ranges
 
-/// A widget to display a task progress.
+/** A widget to display a task progress.
+  */
 case class GaugeWidget(
     block: Option[BlockWidget] = None,
     ratio: GaugeWidget.Ratio = GaugeWidget.Ratio.Zero,

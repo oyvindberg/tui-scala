@@ -2,7 +2,8 @@ package tui
 package widgets
 package canvas
 
-/// A shape to draw a group of points with the given color
+/** A shape to draw a group of points with the given color
+  */
 case class Points(
     coords: Array[Point] = Array.empty,
     color: Color = Color.Reset

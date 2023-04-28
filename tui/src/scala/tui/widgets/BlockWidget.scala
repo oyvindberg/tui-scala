@@ -5,25 +5,32 @@ import tui.Style
 import tui.internal.ranges._
 import tui.internal.saturating._
 
-/// Base widget to be used with all upper level ones. It may be used to display a box border around
-/// the widget and/or add a title.
+/** Base widget to be used with all upper level ones. It may be used to display a box border around the widget and/or add a title.
+  *
+  * @param title
+  *   Optional title place on the upper left of the block
+  * @param title_alignment
+  *   Title alignment. The default is top left of the block, but one can choose to place title in the top middle, or top right of the block
+  * @param borders
+  *   Visible borders
+  * @param border_style
+  *   Border style
+  * @param border_type
+  *   Type of the border. The default is plain lines but one can choose to have rounded corners or doubled lines instead.
+  * @param style
+  *   Widget style
+  */
 case class BlockWidget(
-    /// Optional title place on the upper left of the block
     title: Option[Spans] = None,
-    /// Title alignment. The default is top left of the block, but one can choose to place
-    /// title in the top middle, or top right of the block
     title_alignment: Alignment = Alignment.Left,
-    /// Visible borders
     borders: Borders = Borders.NONE,
-    /// Border style
     border_style: Style = Style.DEFAULT,
-    /// Type of the border. The default is plain lines but one can choose to have rounded corners
-    /// or doubled lines instead.
     border_type: BlockWidget.BorderType = BlockWidget.BorderType.Plain,
-    /// Widget style
     style: Style = Style.DEFAULT
 ) extends Widget {
-  /// Compute the inner area of a block based on its border visibility rules.
+
+  /** Compute the inner area of a block based on its border visibility rules.
+    */
   def inner(area: Rect): Rect = {
     var inner = area
     if (borders.intersects(Borders.LEFT)) {
