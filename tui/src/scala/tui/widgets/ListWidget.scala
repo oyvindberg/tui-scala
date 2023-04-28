@@ -19,6 +19,7 @@ import tui.internal.saturating._
   *   Whether to repeat the highlight symbol for each line of the selected item
   */
 case class ListWidget(
+    state: ListWidget.State,
     block: Option[BlockWidget] = None,
     items: Array[ListWidget.Item],
     style: Style = Style.DEFAULT,
@@ -26,8 +27,7 @@ case class ListWidget(
     highlightStyle: Style = Style.DEFAULT,
     highlightSymbol: Option[String] = None,
     repeatHightlightSymbol: Boolean = false
-) extends Widget
-    with StatefulWidget {
+) extends Widget {
 
   def getItemsBounds(
       selected0: Option[Int],
@@ -72,7 +72,7 @@ case class ListWidget(
 
   type State = ListWidget.State
 
-  def render(area: Rect, buf: Buffer, state: State): Unit = {
+  def render(area: Rect, buf: Buffer): Unit = {
     buf.setStyle(area, style)
     val list_area = block match {
       case Some(b) =>
@@ -143,11 +143,6 @@ case class ListWidget(
         buf.setStyle(area, highlightStyle)
       }
     }
-  }
-
-  def render(area: Rect, buf: Buffer): Unit = {
-    val state = ListWidget.State()
-    render(area, buf, state)
   }
 }
 

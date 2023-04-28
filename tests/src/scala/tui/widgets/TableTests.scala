@@ -455,6 +455,7 @@ class TableTests extends TuiTest {
       val terminal = Terminal.init(backend)
       terminal.draw { f =>
         val table = TableWidget(
+          state = state,
           block = Some(BlockWidget(borders = Borders.ALL)),
           widths = Array(Constraint.Length(5), Constraint.Length(5), Constraint.Length(5)),
           highlightSymbol = Some(">> "),
@@ -466,7 +467,7 @@ class TableTests extends TuiTest {
             Row(cells = Array("Row41", "Row42", "Row43").map(cell), height = 2)
           )
         )
-        f.renderStatefulWidget(table, f.size)(state)
+        f.renderWidget(table, f.size)
       }
       assertBuffer(backend, expected)
     }
@@ -543,6 +544,7 @@ class TableTests extends TuiTest {
     state.select(Some(0))
     terminal.draw { f =>
       val table = TableWidget(
+        state = state,
         block = Some(BlockWidget(borders = Borders.LEFT | Borders.RIGHT)),
         widths = Array(Constraint.Length(6), Constraint.Length(6), Constraint.Length(6)),
         highlightStyle = Style(addModifier = Modifier.BOLD),
@@ -563,7 +565,7 @@ class TableTests extends TuiTest {
           )
         )
       )
-      f.renderStatefulWidget(table, f.size)(state)
+      f.renderWidget(table, f.size)
     }
 
     val expected = Buffer.withLines(
@@ -628,7 +630,7 @@ class TableTests extends TuiTest {
       val backend = TestBackend(width, 8)
       val terminal = Terminal.init(backend)
       terminal.draw { f =>
-        f.renderStatefulWidget(table, f.size)(state)
+        f.renderWidget(table.copy(state = state), f.size)
       }
       ()
     }
@@ -659,6 +661,7 @@ class TableTests extends TuiTest {
     state.select(Some(5))
     terminal.draw { f =>
       val table = TableWidget(
+        state = state,
         block = Some(BlockWidget(borders = Borders.ALL)),
         widths = Array(Constraint.Length(5), Constraint.Length(5), Constraint.Length(5)),
         header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
@@ -671,7 +674,7 @@ class TableTests extends TuiTest {
           Row(Array("Row51", "Row52", "Row53").map(cell))
         )
       )
-      f.renderStatefulWidget(table, f.size)(state)
+      f.renderWidget(table, f.size)
     }
     val expected0 = Buffer.withLines(
       "┌────────────────────────────┐",
@@ -689,12 +692,13 @@ class TableTests extends TuiTest {
     state.select(Some(1))
     terminal.draw { f =>
       val table = TableWidget(
+        state = state,
         block = Some(BlockWidget(borders = Borders.ALL)),
         widths = Array(Constraint.Length(5), Constraint.Length(5), Constraint.Length(5)),
         header = Some(Row(Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
         rows = Array(Row(Array("Row31", "Row32", "Row33").map(cell)))
       )
-      f.renderStatefulWidget(table, f.size)(state)
+      f.renderWidget(table, f.size)
     }
     val expected1 = Buffer.withLines(
       "┌────────────────────────────┐",

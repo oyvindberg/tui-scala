@@ -42,7 +42,7 @@ object BarChartExample {
     }
 
     while (true) {
-      terminal.draw(f => ui(f, app))
+      terminal.draw(f => ui(app).render(f.buffer.area, f.buffer))
 
       if (jni.poll(timeout)) {
         jni.read() match {
@@ -61,46 +61,37 @@ object BarChartExample {
     }
   }
 
-  def ui(f: Frame, app: App): Unit = {
-    val verticalChunks = Layout(
-      direction = Direction.Vertical,
-      margin = Margin(2, 2),
-      constraints = Array(Constraint.Percentage(50), Constraint.Percentage(50))
-    ).split(f.size)
-
-    val barchart1 = BarChartWidget(
-      block = Some(BlockWidget(title = Some(Spans.nostyle("Data1")), borders = Borders.ALL)),
-      data = app.data,
-      barWidth = 9,
-      barStyle = Style(fg = Some(Color.Yellow)),
-      valueStyle = Style(fg = Some(Color.Black), bg = Some(Color.Yellow))
+  def ui(app: App): Widget =
+    Layout(direction = Direction.Vertical, margin = Margin(2, 2))(
+      Constraint.Percentage(50) ->
+        BarChartWidget(
+          block = Some(BlockWidget(title = Some(Spans.nostyle("Data1")), borders = Borders.ALL)),
+          data = app.data,
+          barWidth = 9,
+          barStyle = Style(fg = Some(Color.Yellow)),
+          valueStyle = Style(fg = Some(Color.Black), bg = Some(Color.Yellow))
+        ),
+      Constraint.Percentage(50) ->
+        Layout(direction = Direction.Horizontal)(
+          Constraint.Percentage(50) ->
+            BarChartWidget(
+              block = Some(BlockWidget(title = Some(Spans.nostyle("Data2")), borders = Borders.ALL)),
+              barWidth = 5,
+              barGap = 3,
+              barStyle = Style(fg = Some(Color.Green)),
+              valueStyle = Style(bg = Some(Color.Green), addModifier = Modifier.BOLD),
+              data = app.data
+            ),
+          Constraint.Percentage(50) ->
+            BarChartWidget(
+              block = Some(BlockWidget(title = Some(Spans.nostyle("Data3")), borders = Borders.ALL)),
+              data = app.data,
+              barStyle = Style(fg = Some(Color.Red)),
+              barWidth = 7,
+              barGap = 0,
+              valueStyle = Style(bg = Some(Color.Red)),
+              labelStyle = Style(fg = Some(Color.Cyan), addModifier = Modifier.ITALIC)
+            )
+        )
     )
-    f.renderWidget(barchart1, verticalChunks(0))
-
-    val horizontalChunks = Layout(
-      direction = Direction.Horizontal,
-      constraints = Array(Constraint.Percentage(50), Constraint.Percentage(50))
-    ).split(verticalChunks(1))
-
-    val barchart2 = BarChartWidget(
-      block = Some(BlockWidget(title = Some(Spans.nostyle("Data2")), borders = Borders.ALL)),
-      barWidth = 5,
-      barGap = 3,
-      barStyle = Style(fg = Some(Color.Green)),
-      valueStyle = Style(bg = Some(Color.Green), addModifier = Modifier.BOLD),
-      data = app.data
-    )
-    f.renderWidget(barchart2, horizontalChunks(0))
-
-    val barchart3 = BarChartWidget(
-      block = Some(BlockWidget(title = Some(Spans.nostyle("Data3")), borders = Borders.ALL)),
-      data = app.data,
-      barStyle = Style(fg = Some(Color.Red)),
-      barWidth = 7,
-      barGap = 0,
-      valueStyle = Style(bg = Some(Color.Red)),
-      labelStyle = Style(fg = Some(Color.Cyan), addModifier = Modifier.ITALIC)
-    )
-    f.renderWidget(barchart3, horizontalChunks(1))
-  }
 }

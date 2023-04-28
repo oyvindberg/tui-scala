@@ -69,11 +69,6 @@ object UserInputExample {
     }
 
   def ui(f: Frame, app: App): Unit = {
-    val chunks = Layout(
-      direction = Direction.Vertical,
-      margin = Margin(2),
-      constraints = Array(Constraint.Length(1), Constraint.Length(3), Constraint.Min(5))
-    ).split(f.size)
 
     val (msg, style) = app.input_mode match {
       case InputMode.Normal =>
@@ -99,44 +94,40 @@ object UserInputExample {
           Style.DEFAULT
         )
     }
-    val text = msg.overwrittenStyle(style)
-
-    val help_message = ParagraphWidget(text = text)
-    f.renderWidget(help_message, chunks(0))
-
-    val input = ParagraphWidget(
-      text = Text.nostyle(app.input),
-      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Input")))),
-      style = app.input_mode match {
-        case InputMode.Normal  => Style.DEFAULT
-        case InputMode.Editing => Style.DEFAULT.fg(Color.Yellow)
-      }
-    )
-    f.renderWidget(input, chunks(1))
-
-    app.input_mode match {
-      case InputMode.Normal =>
-        // Hide the cursor. `Frame` does this by default, so we don't need to do anything here
-        ()
-
-      case InputMode.Editing =>
-        // Make the cursor visible and ask tui-rs to put it at the specified coordinates after rendering
-        f.setCursor(
-          // Put cursor past the end of the input text
-          x = chunks(1).x + Grapheme(app.input).width + 1,
-          // Move one line down, from the border to the input line
-          y = chunks(1).y + 1
-        )
-    }
-
     val items: Array[ListWidget.Item] =
       app.messages.zipWithIndex.map { case (m, i) => ListWidget.Item(content = Text.nostyle(s"$i: $m")) }
 
-    val messages =
-      ListWidget(
+    Layout(direction = Direction.Vertical, margin = Margin(2))(
+      Constraint.Length(1) -> ParagraphWidget(text = msg.overwrittenStyle(style)),
+      Constraint.Length(3) -> { (area, buf) =>
+        ParagraphWidget(
+          text = Text.nostyle(app.input),
+          block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Input")))),
+          style = app.input_mode match {
+            case InputMode.Normal  => Style.DEFAULT
+            case InputMode.Editing => Style.DEFAULT.fg(Color.Yellow)
+          }
+        ).render(area, buf)
+        app.input_mode match {
+          case InputMode.Normal =>
+            // Hide the cursor. `Frame` does this by default, so we don't need to do anything here
+            ()
+
+          case InputMode.Editing =>
+            // Make the cursor visible and ask tui-rs to put it at the specified coordinates after rendering
+            f.setCursor(
+              // Put cursor past the end of the input text
+              x = area.x + Grapheme(app.input).width + 1,
+              // Move one line down, from the border to the input line
+              y = area.y + 1
+            )
+        }
+      },
+      Constraint.Min(5) -> ListWidget(
+        state = ListWidget.State(),
         items = items,
         block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Messages"))))
       )
-    f.renderWidget(messages, chunks(2))
+    ).render(f.size, f.buffer)
   }
 }

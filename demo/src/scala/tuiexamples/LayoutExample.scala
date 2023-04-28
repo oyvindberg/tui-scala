@@ -20,16 +20,10 @@ object LayoutExample {
       }
     }
 
-  def ui(f: Frame): Unit = {
-    val chunks = Layout(
-      direction = Direction.Vertical,
-      constraints = Array(Constraint.Percentage(10), Constraint.Percentage(80), Constraint.Percentage(10))
-    )
-      .split(f.size)
-
-    val block0 = BlockWidget(title = Some(Spans.nostyle("Block")), borders = Borders.ALL)
-    f.renderWidget(block0, chunks(0))
-    val block1 = BlockWidget(title = Some(Spans.nostyle("Block 2")), borders = Borders.ALL)
-    f.renderWidget(block1, chunks(2))
-  }
+  def ui(f: Frame): Unit =
+    Layout(direction = Direction.Vertical)(
+      Constraint.Percentage(10) -> BlockWidget(title = Some(Spans.nostyle("Block")), borders = Borders.ALL),
+      Constraint.Percentage(80) -> Widget.Empty,
+      Constraint.Percentage(10) -> BlockWidget(title = Some(Spans.nostyle("Block 2")), borders = Borders.ALL)
+    ).render(f.size, f.buffer)
 }

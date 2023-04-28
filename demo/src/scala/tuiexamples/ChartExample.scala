@@ -88,28 +88,39 @@ object ChartExample {
   }
 
   def ui(f: Frame, app: App): Unit = {
-    val size = f.size
-    val chunks = Layout(
-      direction = Direction.Vertical,
-      constraints = Array(Constraint.Ratio(1, 3), Constraint.Ratio(1, 3), Constraint.Ratio(1, 3))
-    ).split(size)
+    val datasets0 = Array(
+      ChartWidget.Dataset(name = "data2", marker = symbols.Marker.Dot, style = Style(fg = Some(Color.Cyan)), data = app.data1),
+      ChartWidget.Dataset(name = "data3", marker = symbols.Marker.Braille, style = Style(fg = Some(Color.Yellow)), data = app.data2)
+    )
+    val datasets1 = Array(
+      ChartWidget.Dataset(
+        name = "data",
+        marker = symbols.Marker.Braille,
+        style = Style(fg = Some(Color.Yellow)),
+        graphType = ChartWidget.GraphType.Line,
+        data = DATA
+      )
+    )
+    val datasets2 = Array(
+      ChartWidget.Dataset(
+        name = "data",
+        marker = symbols.Marker.Braille,
+        style = Style(fg = Some(Color.Yellow)),
+        graphType = ChartWidget.GraphType.Line,
+        data = DATA2
+      )
+    )
 
     val Bold = Style(addModifier = Modifier.BOLD)
-
     val x_labels = Array(
       Span.styled(app.window.x.toString, Bold),
       Span.nostyle(((app.window.x + app.window.y) / 2.0).toString),
       Span.styled(app.window.y.toString, Bold)
     )
 
-    {
-      val datasets = Array(
-        ChartWidget.Dataset(name = "data2", marker = symbols.Marker.Dot, style = Style(fg = Some(Color.Cyan)), data = app.data1),
-        ChartWidget.Dataset(name = "data3", marker = symbols.Marker.Braille, style = Style(fg = Some(Color.Yellow)), data = app.data2)
-      )
-
-      val chart = ChartWidget(
-        datasets = datasets,
+    Layout(direction = Direction.Vertical)(
+      Constraint.Ratio(1, 3) -> ChartWidget(
+        datasets = datasets0,
         block = Some(
           BlockWidget(title = Some(Spans.from(Span.styled("Chart 1", Style(fg = Some(Color.Cyan), addModifier = Modifier.BOLD)))), borders = Borders.ALL)
         ),
@@ -126,22 +137,9 @@ object ChartExample {
           ),
           bounds = Point(-20.0, 20.0)
         )
-      )
-      f.renderWidget(chart, chunks(0))
-    }
-
-    {
-      val datasets = Array(
-        ChartWidget.Dataset(
-          name = "data",
-          marker = symbols.Marker.Braille,
-          style = Style(fg = Some(Color.Yellow)),
-          graphType = ChartWidget.GraphType.Line,
-          data = DATA
-        )
-      )
-      val chart = ChartWidget(
-        datasets = datasets,
+      ),
+      Constraint.Ratio(1, 3) -> ChartWidget(
+        datasets = datasets1,
         block = Some(
           BlockWidget(
             title = Some(Spans.from(Span.styled("Chart 2", Style(fg = Some(Color.Cyan), addModifier = Modifier.BOLD)))),
@@ -160,22 +158,9 @@ object ChartExample {
           bounds = Point(0.0, 5.0),
           labels = Some(Array(Span.styled("0", Bold), Span.nostyle("2.5"), Span.styled("5.0", Bold)))
         )
-      )
-      f.renderWidget(chart, chunks(1))
-    }
-
-    {
-      val datasets = Array(
-        ChartWidget.Dataset(
-          name = "data",
-          marker = symbols.Marker.Braille,
-          style = Style(fg = Some(Color.Yellow)),
-          graphType = ChartWidget.GraphType.Line,
-          data = DATA2
-        )
-      )
-      val chart = ChartWidget(
-        datasets = datasets,
+      ),
+      Constraint.Ratio(1, 3) -> ChartWidget(
+        datasets = datasets2,
         block = Some(
           BlockWidget(title = Some(Spans.from(Span.styled("Chart 3", Style(fg = Some(Color.Cyan), addModifier = Modifier.BOLD)))), borders = Borders.ALL)
         ),
@@ -192,7 +177,6 @@ object ChartExample {
           labels = Some(Array(Span.styled("0", Bold), Span.nostyle("2.5"), Span.styled("5", Bold)))
         )
       )
-      f.renderWidget(chart, chunks(2))
-    }
+    ).render(f.size, f.buffer)
   }
 }

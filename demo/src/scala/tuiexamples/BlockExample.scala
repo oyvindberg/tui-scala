@@ -35,57 +35,34 @@ object BlockExample {
     )
     f.renderWidget(block0, size)
 
-    val chunks = Layout(
-      direction = Direction.Vertical,
-      margin = Margin(4),
-      constraints = Array(Constraint.Percentage(50), Constraint.Percentage(50))
-    )
-      .split(f.size)
-
-    // Top two inner blocks
-    val top_chunks = Layout(
-      direction = Direction.Horizontal,
-      constraints = Array(Constraint.Percentage(50), Constraint.Percentage(50))
-    )
-      .split(chunks(0))
-
-    // Top left inner block with green background
-    val block_top0 = BlockWidget(
-      title = Some(
-        Spans.from(
-          Span.styled("With", Style.DEFAULT.fg(Color.Yellow)),
-          Span.nostyle(" background")
+    val layout = Layout(direction = Direction.Vertical, margin = Margin(4))(
+      Constraint.Percentage(50) -> Layout(direction = Direction.Horizontal)(
+        // Top left inner block with green background
+        Constraint.Percentage(50) -> BlockWidget(
+          title = Some(
+            Spans.from(
+              Span.styled("With", Style.DEFAULT.fg(Color.Yellow)),
+              Span.nostyle(" background")
+            )
+          ),
+          style = Style.DEFAULT.bg(Color.Green)
+        ),
+        // Top right inner block with styled title aligned to the right
+        Constraint.Percentage(50) -> BlockWidget(
+          title = Some(Spans.from(Span.styled("Styled title", Style(fg = Some(Color.White), bg = Some(Color.Red), addModifier = Modifier.BOLD)))),
+          titleAlignment = Alignment.Right
         )
       ),
-      style = Style.DEFAULT.bg(Color.Green)
+      Constraint.Percentage(50) -> Layout(direction = Direction.Horizontal)(
+        Constraint.Percentage(50) -> BlockWidget(title = Some(Spans.nostyle("With borders")), borders = Borders.ALL),
+        Constraint.Percentage(50) -> BlockWidget(
+          title = Some(Spans.nostyle("With styled borders and doubled borders")),
+          borderStyle = Style.DEFAULT.fg(Color.Cyan),
+          borders = Borders.LEFT | Borders.RIGHT,
+          borderType = BlockWidget.BorderType.Double
+        )
+      )
     )
-    f.renderWidget(block_top0, top_chunks(0))
-
-    // Top right inner block with styled title aligned to the right
-    val block_top1 = BlockWidget(
-      title = Some(Spans.from(Span.styled("Styled title", Style(fg = Some(Color.White), bg = Some(Color.Red), addModifier = Modifier.BOLD)))),
-      titleAlignment = Alignment.Right
-    )
-    f.renderWidget(block_top1, top_chunks(1))
-
-    // Bottom two inner blocks
-    val bottom_chunks = Layout(
-      direction = Direction.Horizontal,
-      constraints = Array(Constraint.Percentage(50), Constraint.Percentage(50))
-    )
-      .split(chunks(1))
-
-    // Bottom left block with all default borders
-    val block_bottom_0 = BlockWidget(title = Some(Spans.nostyle("With borders")), borders = Borders.ALL)
-    f.renderWidget(block_bottom_0, bottom_chunks(0))
-
-    // Bottom right block with styled left and right border
-    val block_bottom_1 = BlockWidget(
-      title = Some(Spans.nostyle("With styled borders and doubled borders")),
-      borderStyle = Style.DEFAULT.fg(Color.Cyan),
-      borders = Borders.LEFT | Borders.RIGHT,
-      borderType = BlockWidget.BorderType.Double
-    )
-    f.renderWidget(block_bottom_1, bottom_chunks(1))
+    layout.render(f.size, f.buffer)
   }
 }

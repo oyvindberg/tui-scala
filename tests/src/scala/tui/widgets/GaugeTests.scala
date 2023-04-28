@@ -9,28 +9,22 @@ class GaugeTests extends TuiTest {
     val backend = TestBackend(40, 10)
     val terminal = Terminal.init(backend)
     terminal.draw { f =>
-      val chunks = Layout(
-        direction = Direction.Vertical,
-        margin = Margin(2),
-        constraints = Array(Constraint.Percentage(50), Constraint.Percentage(50))
-      )
-        .split(f.size)
-
-      val gauge0 = GaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Percentage")), borders = Borders.ALL)),
-        gaugeStyle = Style(bg = Some(Color.Blue), fg = Some(Color.Red)),
-        useUnicode = true,
-        ratio = GaugeWidget.Ratio.percent(43)
-      )
-      f.renderWidget(gauge0, chunks(0))
-      val gauge = GaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Ratio")), borders = Borders.ALL)),
-        gaugeStyle = Style(bg = Some(Color.Blue), fg = Some(Color.Red)),
-        useUnicode = true,
-        ratio = GaugeWidget.Ratio(0.511_313_934_313_1)
-      )
-      f.renderWidget(gauge, chunks(1));
+      Layout(direction = Direction.Vertical, margin = Margin(2))(
+        Constraint.Percentage(50) -> GaugeWidget(
+          block = Some(BlockWidget(title = Some(Spans.nostyle("Percentage")), borders = Borders.ALL)),
+          gaugeStyle = Style(bg = Some(Color.Blue), fg = Some(Color.Red)),
+          useUnicode = true,
+          ratio = GaugeWidget.Ratio.percent(43)
+        ),
+        Constraint.Percentage(50) -> GaugeWidget(
+          block = Some(BlockWidget(title = Some(Spans.nostyle("Ratio")), borders = Borders.ALL)),
+          gaugeStyle = Style(bg = Some(Color.Blue), fg = Some(Color.Red)),
+          useUnicode = true,
+          ratio = GaugeWidget.Ratio(0.511_313_934_313_1)
+        )
+      ).render(f.size, f.buffer)
     }
+
     val expected = Buffer.withLines(
       "                                        ",
       "                                        ",
@@ -82,19 +76,16 @@ class GaugeTests extends TuiTest {
     val terminal = Terminal.init(backend)
 
     terminal.draw { f =>
-      val chunks = Layout(direction = Direction.Vertical, margin = Margin(2), constraints = Array(Constraint.Percentage(50), Constraint.Percentage(50)))
-        .split(f.size)
-
-      val gauge0 = GaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Percentage")), borders = Borders.ALL)),
-        ratio = GaugeWidget.Ratio.percent(43)
-      )
-      f.renderWidget(gauge0, chunks(0))
-      val gauge = GaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Ratio")), borders = Borders.ALL)),
-        ratio = GaugeWidget.Ratio(0.211_313_934_313_1)
-      )
-      f.renderWidget(gauge, chunks(1));
+      Layout(direction = Direction.Vertical, margin = Margin(2))(
+        Constraint.Percentage(50) -> GaugeWidget(
+          block = Some(BlockWidget(title = Some(Spans.nostyle("Percentage")), borders = Borders.ALL)),
+          ratio = GaugeWidget.Ratio.percent(43)
+        ),
+        Constraint.Percentage(50) -> GaugeWidget(
+          block = Some(BlockWidget(title = Some(Spans.nostyle("Ratio")), borders = Borders.ALL)),
+          ratio = GaugeWidget.Ratio(0.211_313_934_313_1)
+        )
+      ).render(f.size, f.buffer)
     }
 
     val expected = Buffer.withLines(

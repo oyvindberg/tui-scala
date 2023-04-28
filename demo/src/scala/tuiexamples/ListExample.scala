@@ -161,12 +161,6 @@ object ListExample {
   }
 
   def ui(f: Frame, app: App): Unit = {
-    // Create two chunks with equal horizontal screen space
-    val chunks = Layout(
-      direction = Direction.Horizontal,
-      constraints = Array(Constraint.Percentage(50), Constraint.Percentage(50))
-    ).split(f.size)
-
     // Iterate through all elements in the `items` app and append some debug text to it.
     val items0 = app.items.items
       .map { case (str, int) =>
@@ -183,20 +177,9 @@ object ListExample {
         ListWidget.Item(Text(lines.result()), Style(fg = Some(Color.Black), bg = Some(Color.White)))
       }
 
-    // Create a List from all list items and highlight the currently selected one
-    val items = ListWidget(
-      items = items0,
-      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("List")))),
-      highlightStyle = Style(bg = Some(Color.LightGreen), addModifier = Modifier.BOLD),
-      highlightSymbol = Some(">> ")
-    )
-
-    // We can now render the item list
-    f.renderStatefulWidget(items, chunks(0))(app.items.state)
-
     // Let's do the same for the events.
     // The event list doesn't have any state and only displays the current state of the list.
-    val events: Array[ListWidget.Item] = app.events.toArray.reverse
+    def events(area: Rect): Array[ListWidget.Item] = app.events.toArray.reverse
       .map { case (event, level) =>
         // Colorcode the level depending on its type
         val s = level match {
@@ -225,7 +208,7 @@ object ListExample {
         // 4. Add the actual event
         ListWidget.Item(
           Text.fromSpans(
-            Spans.nostyle("-".repeat(chunks(1).width)),
+            Spans.nostyle("-".repeat(area.width)),
             header,
             Spans.nostyle(""),
             log
@@ -233,12 +216,24 @@ object ListExample {
         )
       }
 
-    val events_list = ListWidget(
-      items = events,
-      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("List")))),
-      startCorner = Corner.BottomLeft
-    )
-
-    f.renderWidget(events_list, chunks(1))
+    // Create two chunks with equal horizontal screen space
+    Layout(direction = Direction.Horizontal)(
+      // Create a List from all list items and highlight the currently selected one
+      Constraint.Percentage(50) -> ListWidget(
+        state = app.items.state,
+        block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("List")))),
+        items = items0,
+        highlightStyle = Style(bg = Some(Color.LightGreen), addModifier = Modifier.BOLD),
+        highlightSymbol = Some(">> ")
+      ),
+      Constraint.Percentage(50) -> Widget { (area, buf) =>
+        ListWidget(
+          state = ListWidget.State(),
+          items = events(area),
+          block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("List")))),
+          startCorner = Corner.BottomLeft
+        ).render(area, buf)
+      }
+    ).render(f.size, f.buffer)
   }
 }

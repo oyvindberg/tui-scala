@@ -66,12 +66,6 @@ object ParagraphExample {
     val block = BlockWidget(style = Style(bg = Some(Color.White), fg = Some(Color.Black)))
     f.renderWidget(block, f.size)
 
-    val chunks = Layout(
-      direction = Direction.Vertical,
-      margin = Margin(5),
-      constraints = Array(Constraint.Percentage(25), Constraint.Percentage(25), Constraint.Percentage(25), Constraint.Percentage(25))
-    ).split(f.size)
-
     val text = Text.fromSpans(
       Spans.nostyle("This is a line "),
       Spans.styled("This is a line   ", Style.DEFAULT.fg(Color.Red)),
@@ -88,39 +82,35 @@ object ParagraphExample {
         title = Some(Spans.from(Span.styled(title, Style.DEFAULT.addModifier(Modifier.BOLD))))
       )
 
-    val paragraph0 = ParagraphWidget(
-      text = text,
-      style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
-      block = Some(create_block("Left, no wrap")),
-      alignment = Alignment.Left
-    )
-    f.renderWidget(paragraph0, chunks(0))
-    val paragraph1 = ParagraphWidget(
-      text = text,
-      style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
-      block = Some(create_block("Left, wrap")),
-      alignment = Alignment.Left,
-      wrap = Some(ParagraphWidget.Wrap(trim = true))
-    )
-    f.renderWidget(paragraph1, chunks(1))
-
-    val paragraph2 = ParagraphWidget(
-      text = text,
-      style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
-      block = Some(create_block("Center, wrap")),
-      alignment = Alignment.Center,
-      wrap = Some(ParagraphWidget.Wrap(trim = true)),
-      scroll = (app.scroll, 0)
-    )
-    f.renderWidget(paragraph2, chunks(2))
-
-    val paragraph3 = ParagraphWidget(
-      text = text,
-      style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
-      block = Some(create_block("Right, wrap")),
-      alignment = Alignment.Right,
-      wrap = Some(ParagraphWidget.Wrap(trim = true))
-    )
-    f.renderWidget(paragraph3, chunks(3))
+    Layout(direction = Direction.Vertical, margin = Margin(5))(
+      Constraint.Percentage(25) -> ParagraphWidget(
+        text = text,
+        style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
+        block = Some(create_block("Left, no wrap")),
+        alignment = Alignment.Left
+      ),
+      Constraint.Percentage(25) -> ParagraphWidget(
+        text = text,
+        style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
+        block = Some(create_block("Left, wrap")),
+        alignment = Alignment.Left,
+        wrap = Some(ParagraphWidget.Wrap(trim = true))
+      ),
+      Constraint.Percentage(25) -> ParagraphWidget(
+        text = text,
+        style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
+        block = Some(create_block("Center, wrap")),
+        alignment = Alignment.Center,
+        wrap = Some(ParagraphWidget.Wrap(trim = true)),
+        scroll = (app.scroll, 0)
+      ),
+      Constraint.Percentage(25) -> ParagraphWidget(
+        text = text,
+        style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
+        block = Some(create_block("Right, wrap")),
+        alignment = Alignment.Right,
+        wrap = Some(ParagraphWidget.Wrap(trim = true))
+      )
+    ).render(f.size, f.buffer)
   }
 }

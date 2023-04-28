@@ -1,6 +1,7 @@
 package tuiexamples
 
 import tui._
+import tui.crossterm.CrosstermJni
 import tui.widgets._
 
 object PopupExample {
@@ -12,13 +13,9 @@ object PopupExample {
     withTerminal { (jni, terminal) =>
       val app = App()
       run_app(terminal, app, jni);
-
     }
-  def run_app(
-      terminal: Terminal,
-      app: App,
-      jni: tui.crossterm.CrosstermJni
-  ): Unit =
+
+  def run_app(terminal: Terminal, app: App, jni: CrosstermJni): Unit =
     while (true) {
       terminal.draw(f => ui(f, app))
 
@@ -34,31 +31,23 @@ object PopupExample {
     }
 
   def ui(f: Frame, app: App): Unit = {
-    val size = f.size
-
-    val chunks = Layout(constraints = Array(Constraint.Percentage(20), Constraint.Percentage(80)))
-      .split(size)
-
-    val text = if (app.show_popup) { "Press p to close the popup" }
-    else { "Press p to show the popup" }
-    val paragraph = ParagraphWidget(
-      text = Text.from(Span.styled(text, Style(addModifier = Modifier.SLOW_BLINK))),
-      alignment = Alignment.Center,
-      wrap = Some(ParagraphWidget.Wrap(trim = true))
-    )
-    f.renderWidget(paragraph, chunks(0))
-
-    val block = BlockWidget(
-      title = Some(Spans.nostyle("Content")),
-      borders = Borders.ALL,
-      style = Style.DEFAULT.bg(Color.Blue)
-    )
-
-    f.renderWidget(block, chunks(1))
+    val text = if (app.show_popup) "Press p to close the popup" else "Press p to show the popup"
+    Layout()(
+      Constraint.Percentage(20) -> ParagraphWidget(
+        text = Text.from(Span.styled(text, Style(addModifier = Modifier.SLOW_BLINK))),
+        alignment = Alignment.Center,
+        wrap = Some(ParagraphWidget.Wrap(trim = true))
+      ),
+      Constraint.Percentage(80) -> BlockWidget(
+        title = Some(Spans.nostyle("Content")),
+        borders = Borders.ALL,
+        style = Style.DEFAULT.bg(Color.Blue)
+      )
+    ).render(f.size, f.buffer)
 
     if (app.show_popup) {
       val block = BlockWidget(title = Some(Spans.nostyle("Popup")), borders = Borders.ALL)
-      val area = centered_rect(60, 20, size)
+      val area = centered_rect(60, 20, f.size)
       f.renderWidget(ClearWidget, area); // this clears out the background
       f.renderWidget(block, area)
     }
@@ -66,24 +55,28 @@ object PopupExample {
 
 /// helper function to create a centered rect using up certain percentage of the available rect `r`
   def centered_rect(percent_x: Int, percent_y: Int, r: Rect): Rect = {
-    val popup_layout = Layout(
-      direction = Direction.Vertical,
+    val popup_layout = Layout.cached(
+      area = r,
       constraints = Array(
         Constraint.Percentage((100 - percent_y) / 2),
         Constraint.Percentage(percent_y),
         Constraint.Percentage((100 - percent_y) / 2)
-      )
+      ),
+      margin = Margin.None,
+      direction = Direction.Vertical,
+      expandToFill = false
     )
-      .split(r)
 
-    Layout(
-      direction = Direction.Horizontal,
+    Layout.cached(
+      area = popup_layout(1),
       constraints = Array(
         Constraint.Percentage((100 - percent_x) / 2),
         Constraint.Percentage(percent_x),
         Constraint.Percentage((100 - percent_x) / 2)
-      )
-    )
-      .split(popup_layout(1))(1)
+      ),
+      margin = Margin.None,
+      direction = Direction.Horizontal,
+      expandToFill = false
+    )(1)
   }
 }

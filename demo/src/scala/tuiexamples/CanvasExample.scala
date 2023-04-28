@@ -90,30 +90,22 @@ object CanvasExample {
     }
   }
 
-  def ui(f: Frame, app: App): Unit = {
-    val chunks = Layout(
-      direction = Direction.Horizontal,
-      constraints = Array(Constraint.Percentage(50), Constraint.Percentage(50))
-    )
-      .split(f.size)
-
-    val canvas0 = CanvasWidget(
-      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("World")))),
-      yBounds = Point(-90.0, 90.0),
-      xBounds = Point(-180.0, 180.0)
-    ) { ctx =>
-      ctx.draw(WorldMap(color = Color.White, resolution = MapResolution.High))
-      ctx.print(app.x, -app.y, Spans.from(Span.styled("You are here", Style(fg = Some(Color.Yellow)))))
-    }
-    f.renderWidget(canvas0, chunks(0))
-
-    val canvas1 = CanvasWidget(
-      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Pong")))),
-      yBounds = Point(10.0, 110.0),
-      xBounds = Point(10.0, 110.0)
-    ) { ctx =>
-      ctx.draw(app.ball)
-    }
-    f.renderWidget(canvas1, chunks(1))
-  }
+  def ui(f: Frame, app: App): Unit =
+    Layout(direction = Direction.Horizontal)(
+      Constraint.Percentage(50) -> CanvasWidget(
+        block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("World")))),
+        yBounds = Point(-90.0, 90.0),
+        xBounds = Point(-180.0, 180.0)
+      ) { ctx =>
+        ctx.draw(WorldMap(color = Color.White, resolution = MapResolution.High))
+        ctx.print(app.x, -app.y, Spans.from(Span.styled("You are here", Style(fg = Some(Color.Yellow)))))
+      },
+      Constraint.Percentage(50) -> CanvasWidget(
+        block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Pong")))),
+        yBounds = Point(10.0, 110.0),
+        xBounds = Point(10.0, 110.0)
+      ) { ctx =>
+        ctx.draw(app.ball)
+      }
+    ).render(f.size, f.buffer)
 }

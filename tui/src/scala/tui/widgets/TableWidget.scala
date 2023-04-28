@@ -30,6 +30,7 @@ import scala.collection.mutable
   *   Data to display in each row
   */
 case class TableWidget(
+    state: TableWidget.State = TableWidget.State(),
     block: Option[BlockWidget] = None,
     style: Style = Style.DEFAULT,
     widths: Array[Constraint] = Array.empty,
@@ -38,8 +39,7 @@ case class TableWidget(
     highlightSymbol: Option[String] = None,
     header: Option[TableWidget.Row] = None,
     rows: Array[TableWidget.Row]
-) extends StatefulWidget
-    with Widget {
+) extends Widget {
   def getColumnsWidths(max_width: Int, has_selection: Boolean): Array[Int] = {
     val constraints = mutable.ArrayBuffer.empty[Constraint]
 
@@ -56,8 +56,15 @@ case class TableWidget(
     if (widths.nonEmpty) {
       constraints.dropRightInPlace(1)
     }
-    var chunks = Layout(direction = Direction.Horizontal, constraints = constraints.toArray, expandToFill = false)
-      .split(Rect(x = 0, y = 0, width = max_width, height = 1))
+    var chunks = Layout
+      .cached(
+        area = Rect(x = 0, y = 0, width = max_width, height = 1),
+        direction = Direction.Horizontal,
+        constraints = constraints.toArray,
+        expandToFill = false,
+        margin = Margin.None
+      )
+
     if (has_selection) {
       chunks = chunks.drop(1)
     }
@@ -104,7 +111,7 @@ case class TableWidget(
   }
   type State = TableWidget.State
 
-  override def render(area: Rect, buf: Buffer, state: State): Unit = {
+  override def render(area: Rect, buf: Buffer): Unit = {
     if (area.area == 0) {
       return
     }
@@ -184,11 +191,6 @@ case class TableWidget(
         breakableForeach.Continue
       }
     }
-  }
-
-  def render(area: Rect, buf: Buffer): Unit = {
-    val state = TableWidget.State()
-    render(area, buf, state)
   }
 }
 
