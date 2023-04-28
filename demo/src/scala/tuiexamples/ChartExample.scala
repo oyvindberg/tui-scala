@@ -119,7 +119,7 @@ object ChartExample {
     )
 
     Layout(direction = Direction.Vertical)(
-      Constraint.Ratio(1, 3) -> ChartWidget(
+      ChartWidget(
         datasets = datasets0,
         block = Some(
           BlockWidget(title = Some(Spans.from(Span.styled("Chart 1", Style(fg = Some(Color.Cyan), addModifier = Modifier.BOLD)))), borders = Borders.ALL)
@@ -138,7 +138,7 @@ object ChartExample {
           bounds = Point(-20.0, 20.0)
         )
       ),
-      Constraint.Ratio(1, 3) -> ChartWidget(
+      ChartWidget(
         datasets = datasets1,
         block = Some(
           BlockWidget(
@@ -159,7 +159,7 @@ object ChartExample {
           labels = Some(Array(Span.styled("0", Bold), Span.nostyle("2.5"), Span.styled("5.0", Bold)))
         )
       ),
-      Constraint.Ratio(1, 3) -> ChartWidget(
+      ChartWidget(
         datasets = datasets2,
         block = Some(
           BlockWidget(title = Some(Spans.from(Span.styled("Chart 3", Style(fg = Some(Color.Cyan), addModifier = Modifier.BOLD)))), borders = Borders.ALL)
@@ -177,6 +177,7 @@ object ChartExample {
           labels = Some(Array(Span.styled("0", Bold), Span.nostyle("2.5"), Span.styled("5", Bold)))
         )
       )
-    ).render(f.size, f.buffer)
+    )
+      .render(f.size, f.buffer)
   }
 }

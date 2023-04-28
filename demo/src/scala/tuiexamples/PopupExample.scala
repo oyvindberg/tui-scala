@@ -32,18 +32,20 @@ object PopupExample {
 
   def ui(f: Frame, app: App): Unit = {
     val text = if (app.show_popup) "Press p to close the popup" else "Press p to show the popup"
-    Layout()(
-      Constraint.Percentage(20) -> ParagraphWidget(
-        text = Text.from(Span.styled(text, Style(addModifier = Modifier.SLOW_BLINK))),
-        alignment = Alignment.Center,
-        wrap = Some(ParagraphWidget.Wrap(trim = true))
-      ),
-      Constraint.Percentage(80) -> BlockWidget(
-        title = Some(Spans.nostyle("Content")),
-        borders = Borders.ALL,
-        style = Style.DEFAULT.bg(Color.Blue)
+    Layout
+      .detailed()(
+        Constraint.Percentage(20) -> ParagraphWidget(
+          text = Text.from(Span.styled(text, Style(addModifier = Modifier.SLOW_BLINK))),
+          alignment = Alignment.Center,
+          wrap = Some(ParagraphWidget.Wrap(trim = true))
+        ),
+        Constraint.Percentage(80) -> BlockWidget(
+          title = Some(Spans.nostyle("Content")),
+          borders = Borders.ALL,
+          style = Style.DEFAULT.bg(Color.Blue)
+        )
       )
-    ).render(f.size, f.buffer)
+      .render(f.size, f.buffer)
 
     if (app.show_popup) {
       val block = BlockWidget(title = Some(Spans.nostyle("Popup")), borders = Borders.ALL)

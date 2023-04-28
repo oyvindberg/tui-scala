@@ -21,9 +21,11 @@ object LayoutExample {
     }
 
   def ui(f: Frame): Unit =
-    Layout(direction = Direction.Vertical)(
-      Constraint.Percentage(10) -> BlockWidget(title = Some(Spans.nostyle("Block")), borders = Borders.ALL),
-      Constraint.Percentage(80) -> Widget.Empty,
-      Constraint.Percentage(10) -> BlockWidget(title = Some(Spans.nostyle("Block 2")), borders = Borders.ALL)
-    ).render(f.size, f.buffer)
+    Layout
+      .detailed(direction = Direction.Vertical)(
+        Constraint.Percentage(10) -> BlockWidget(title = Some(Spans.nostyle("Block")), borders = Borders.ALL),
+        Constraint.Percentage(80) -> Widget.Empty,
+        Constraint.Percentage(10) -> BlockWidget(title = Some(Spans.nostyle("Block 2")), borders = Borders.ALL)
+      )
+      .render(f.size, f.buffer)
 }

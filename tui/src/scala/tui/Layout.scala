@@ -14,7 +14,7 @@ import scala.collection.mutable
   *   Whether the last chunk of the computed layout should be expanded to fill the available space.
   * @param expand_to_fill
   */
-case class Layout(
+class Layout(
     direction: Direction = Direction.Vertical,
     margin: Margin = Margin.None,
     expandToFill: Boolean = true
@@ -34,6 +34,12 @@ case class Layout(
 }
 
 object Layout {
+  def detailed(direction: Direction = Direction.Vertical, margin: Margin = Margin.None, expandToFill: Boolean = true)(widgets: (Constraint, Widget)*) =
+    new Layout(direction, margin, expandToFill)(widgets: _*)
+
+  def apply(direction: Direction = Direction.Vertical, margin: Margin = Margin.None, expandToFill: Boolean = true)(widgets: Widget*) =
+    new Layout(direction, margin, expandToFill)(widgets.map(w => Constraint.Ratio(1, widgets.length) -> w): _*)
+
   private val LAYOUT_CACHE = mutable.HashMap.empty[(Rect, Array[Constraint], Margin, Direction, Boolean), Array[Rect]]
 
   /** A container used by the solver inside split

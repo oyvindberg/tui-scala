@@ -83,20 +83,20 @@ object ParagraphExample {
       )
 
     Layout(direction = Direction.Vertical, margin = Margin(5))(
-      Constraint.Percentage(25) -> ParagraphWidget(
+      ParagraphWidget(
         text = text,
         style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
         block = Some(create_block("Left, no wrap")),
         alignment = Alignment.Left
       ),
-      Constraint.Percentage(25) -> ParagraphWidget(
+      ParagraphWidget(
         text = text,
         style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
         block = Some(create_block("Left, wrap")),
         alignment = Alignment.Left,
         wrap = Some(ParagraphWidget.Wrap(trim = true))
       ),
-      Constraint.Percentage(25) -> ParagraphWidget(
+      ParagraphWidget(
         text = text,
         style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
         block = Some(create_block("Center, wrap")),
@@ -104,13 +104,14 @@ object ParagraphExample {
         wrap = Some(ParagraphWidget.Wrap(trim = true)),
         scroll = (app.scroll, 0)
       ),
-      Constraint.Percentage(25) -> ParagraphWidget(
+      ParagraphWidget(
         text = text,
         style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
         block = Some(create_block("Right, wrap")),
         alignment = Alignment.Right,
         wrap = Some(ParagraphWidget.Wrap(trim = true))
       )
-    ).render(f.size, f.buffer)
+    )
+      .render(f.size, f.buffer)
   }
 }

@@ -55,21 +55,23 @@ object TabsExample {
           Span.styled(rest, Style(fg = Some(Color.Green)))
         )
       }
-    Layout(direction = Direction.Vertical, margin = Margin(5, 5))(
-      Constraint.Length(3) -> TabsWidget(
-        titles = titles,
-        block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Tabs")))),
-        selected = app.index,
-        style = Style(fg = Some(Color.Cyan)),
-        highlightStyle = Style(addModifier = Modifier.BOLD, bg = Some(Color.Black))
-      ),
-      Constraint.Min(0) -> (app.index match {
-        case 0 => BlockWidget(title = Some(Spans.nostyle("Inner 0")), borders = Borders.ALL)
-        case 1 => BlockWidget(title = Some(Spans.nostyle("Inner 1")), borders = Borders.ALL)
-        case 2 => BlockWidget(title = Some(Spans.nostyle("Inner 2")), borders = Borders.ALL)
-        case 3 => BlockWidget(title = Some(Spans.nostyle("Inner 3")), borders = Borders.ALL)
-        case _ => sys.error("unreachable")
-      })
-    ).render(f.size, f.buffer)
+    Layout
+      .detailed(direction = Direction.Vertical, margin = Margin(5, 5))(
+        Constraint.Length(3) -> TabsWidget(
+          titles = titles,
+          block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Tabs")))),
+          selected = app.index,
+          style = Style(fg = Some(Color.Cyan)),
+          highlightStyle = Style(addModifier = Modifier.BOLD, bg = Some(Color.Black))
+        ),
+        Constraint.Min(0) -> (app.index match {
+          case 0 => BlockWidget(title = Some(Spans.nostyle("Inner 0")), borders = Borders.ALL)
+          case 1 => BlockWidget(title = Some(Spans.nostyle("Inner 1")), borders = Borders.ALL)
+          case 2 => BlockWidget(title = Some(Spans.nostyle("Inner 2")), borders = Borders.ALL)
+          case 3 => BlockWidget(title = Some(Spans.nostyle("Inner 3")), borders = Borders.ALL)
+          case _ => sys.error("unreachable")
+        })
+      )
+      .render(f.size, f.buffer)
   }
 }

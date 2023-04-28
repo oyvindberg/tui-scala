@@ -79,18 +79,18 @@ object GaugeExample {
 
   def ui(f: Frame, app: App): Unit =
     Layout(direction = Direction.Vertical, margin = Margin(2))(
-      Constraint.Percentage(25) -> GaugeWidget(
+      GaugeWidget(
         block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge1")), borders = Borders.ALL)),
         gaugeStyle = Style(fg = Some(Color.Yellow)),
         ratio = GaugeWidget.Ratio.percent(app.progress1)
       ),
-      Constraint.Percentage(25) -> GaugeWidget(
+      GaugeWidget(
         block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge2")), borders = Borders.ALL)),
         gaugeStyle = Style(fg = Some(Color.Magenta), bg = Some(Color.Green)),
         ratio = GaugeWidget.Ratio.percent(app.progress2),
         label = Some(Span.nostyle(s"${app.progress2}/100"))
       ),
-      Constraint.Percentage(25) -> GaugeWidget(
+      GaugeWidget(
         block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge3")), borders = Borders.ALL)),
         gaugeStyle = Style(fg = Some(Color.Yellow)),
         ratio = GaugeWidget.Ratio(app.progress3),
@@ -102,11 +102,12 @@ object GaugeExample {
         ),
         useUnicode = true
       ),
-      Constraint.Percentage(25) -> GaugeWidget(
+      GaugeWidget(
         block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge4")))),
         gaugeStyle = Style(fg = Some(Color.Cyan), addModifier = Modifier.ITALIC),
         ratio = GaugeWidget.Ratio.percent(app.progress4),
         label = Some(Span.nostyle(s"${app.progress4}/100"))
       )
-    ).render(f.size, f.buffer)
+    )
+      .render(f.size, f.buffer)
 }

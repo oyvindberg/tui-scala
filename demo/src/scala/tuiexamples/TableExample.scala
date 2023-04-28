@@ -91,8 +91,9 @@ object TableExample {
       val cells = item.map(c => TableWidget.Cell(Text.nostyle(c)))
       TableWidget.Row(cells, height = height, bottomMargin = 1)
     }
+
     Layout(margin = Margin(5))(
-      Constraint.Percentage(100) -> TableWidget(
+      TableWidget(
         state = app.state,
         block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Table")))),
         widths = Array(Constraint.Percentage(50), Constraint.Length(30), Constraint.Min(10)),
@@ -101,6 +102,7 @@ object TableExample {
         header = Some(header),
         rows = rows
       )
-    ).render(f.size, f.buffer)
+    )
+      .render(f.size, f.buffer)
   }
 }

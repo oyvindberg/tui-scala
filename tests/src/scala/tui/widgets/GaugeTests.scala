@@ -10,19 +10,20 @@ class GaugeTests extends TuiTest {
     val terminal = Terminal.init(backend)
     terminal.draw { f =>
       Layout(direction = Direction.Vertical, margin = Margin(2))(
-        Constraint.Percentage(50) -> GaugeWidget(
+        GaugeWidget(
           block = Some(BlockWidget(title = Some(Spans.nostyle("Percentage")), borders = Borders.ALL)),
           gaugeStyle = Style(bg = Some(Color.Blue), fg = Some(Color.Red)),
           useUnicode = true,
           ratio = GaugeWidget.Ratio.percent(43)
         ),
-        Constraint.Percentage(50) -> GaugeWidget(
+        GaugeWidget(
           block = Some(BlockWidget(title = Some(Spans.nostyle("Ratio")), borders = Borders.ALL)),
           gaugeStyle = Style(bg = Some(Color.Blue), fg = Some(Color.Red)),
           useUnicode = true,
           ratio = GaugeWidget.Ratio(0.511_313_934_313_1)
         )
-      ).render(f.size, f.buffer)
+      )
+        .render(f.size, f.buffer)
     }
 
     val expected = Buffer.withLines(
@@ -77,15 +78,16 @@ class GaugeTests extends TuiTest {
 
     terminal.draw { f =>
       Layout(direction = Direction.Vertical, margin = Margin(2))(
-        Constraint.Percentage(50) -> GaugeWidget(
+        GaugeWidget(
           block = Some(BlockWidget(title = Some(Spans.nostyle("Percentage")), borders = Borders.ALL)),
           ratio = GaugeWidget.Ratio.percent(43)
         ),
-        Constraint.Percentage(50) -> GaugeWidget(
+        GaugeWidget(
           block = Some(BlockWidget(title = Some(Spans.nostyle("Ratio")), borders = Borders.ALL)),
           ratio = GaugeWidget.Ratio(0.211_313_934_313_1)
         )
-      ).render(f.size, f.buffer)
+      )
+        .render(f.size, f.buffer)
     }
 
     val expected = Buffer.withLines(

@@ -36,9 +36,9 @@ object BlockExample {
     f.renderWidget(block0, size)
 
     val layout = Layout(direction = Direction.Vertical, margin = Margin(4))(
-      Constraint.Percentage(50) -> Layout(direction = Direction.Horizontal)(
+      Layout(direction = Direction.Horizontal)(
         // Top left inner block with green background
-        Constraint.Percentage(50) -> BlockWidget(
+        BlockWidget(
           title = Some(
             Spans.from(
               Span.styled("With", Style.DEFAULT.fg(Color.Yellow)),
@@ -48,14 +48,14 @@ object BlockExample {
           style = Style.DEFAULT.bg(Color.Green)
         ),
         // Top right inner block with styled title aligned to the right
-        Constraint.Percentage(50) -> BlockWidget(
+        BlockWidget(
           title = Some(Spans.from(Span.styled("Styled title", Style(fg = Some(Color.White), bg = Some(Color.Red), addModifier = Modifier.BOLD)))),
           titleAlignment = Alignment.Right
         )
       ),
-      Constraint.Percentage(50) -> Layout(direction = Direction.Horizontal)(
-        Constraint.Percentage(50) -> BlockWidget(title = Some(Spans.nostyle("With borders")), borders = Borders.ALL),
-        Constraint.Percentage(50) -> BlockWidget(
+      Layout(direction = Direction.Horizontal)(
+        BlockWidget(title = Some(Spans.nostyle("With borders")), borders = Borders.ALL),
+        BlockWidget(
           title = Some(Spans.nostyle("With styled borders and doubled borders")),
           borderStyle = Style.DEFAULT.fg(Color.Cyan),
           borders = Borders.LEFT | Borders.RIGHT,

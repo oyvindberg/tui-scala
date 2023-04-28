@@ -94,28 +94,30 @@ object SparklineExample {
   }
 
   def ui(f: Frame, app: App): Unit =
-    Layout(direction = Direction.Vertical, margin = Margin(2, 2))(
-      Constraint.Length(3) -> SparklineWidget(
-        block = Some(
-          BlockWidget(
-            title = Some(Spans.nostyle("Data1")),
-            borders = Borders.LEFT | Borders.RIGHT
-          )
+    Layout
+      .detailed(direction = Direction.Vertical, margin = Margin(2, 2))(
+        Constraint.Length(3) -> SparklineWidget(
+          block = Some(
+            BlockWidget(
+              title = Some(Spans.nostyle("Data1")),
+              borders = Borders.LEFT | Borders.RIGHT
+            )
+          ),
+          data = app.data1,
+          style = Style(fg = Some(Color.Yellow))
         ),
-        data = app.data1,
-        style = Style(fg = Some(Color.Yellow))
-      ),
-      Constraint.Length(3) -> SparklineWidget(
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Data2")), borders = Borders.LEFT | Borders.RIGHT)),
-        data = app.data2,
-        style = Style(bg = Some(Color.Green))
-      ),
-      // Multiline
-      Constraint.Length(7) -> SparklineWidget(
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Data3")), borders = Borders.LEFT | Borders.RIGHT)),
-        style = Style(fg = Some(Color.Red)),
-        data = app.data3
-      ),
-      Constraint.Min(0) -> Widget.Empty
-    ).render(f.size, f.buffer)
+        Constraint.Length(3) -> SparklineWidget(
+          block = Some(BlockWidget(title = Some(Spans.nostyle("Data2")), borders = Borders.LEFT | Borders.RIGHT)),
+          data = app.data2,
+          style = Style(bg = Some(Color.Green))
+        ),
+        // Multiline
+        Constraint.Length(7) -> SparklineWidget(
+          block = Some(BlockWidget(title = Some(Spans.nostyle("Data3")), borders = Borders.LEFT | Borders.RIGHT)),
+          style = Style(fg = Some(Color.Red)),
+          data = app.data3
+        ),
+        Constraint.Min(0) -> Widget.Empty
+      )
+      .render(f.size, f.buffer)
 }

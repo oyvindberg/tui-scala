@@ -13,32 +13,36 @@ object ui {
     override def render(area: Rect, buf: Buffer): Unit = {
       val titles = app.tabs.titles.map(t => Spans.from(Span.styled(t, Style.DEFAULT.fg(Color.Green))))
 
-      Layout()(
-        Constraint.Length(3) -> TabsWidget(
-          titles = titles,
-          block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle(app.title)))),
-          highlightStyle = Style.DEFAULT.fg(Color.Yellow),
-          selected = app.tabs.index
-        ),
-        Constraint.Min(0) -> (
-          app.tabs.index match {
-            case 0 => draw_first_tab(app)
-            case 1 => draw_second_tab(app)
-            case 2 => draw_third_tab
-            case _ => Widget.Empty
-          }
+      Layout
+        .detailed()(
+          Constraint.Length(3) -> TabsWidget(
+            titles = titles,
+            block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle(app.title)))),
+            highlightStyle = Style.DEFAULT.fg(Color.Yellow),
+            selected = app.tabs.index
+          ),
+          Constraint.Min(0) -> (
+            app.tabs.index match {
+              case 0 => draw_first_tab(app)
+              case 1 => draw_second_tab(app)
+              case 2 => draw_third_tab
+              case _ => Widget.Empty
+            }
+          )
         )
-      ).render(area, buf)
+        .render(area, buf)
     }
   }
 
   case class draw_first_tab(app: App) extends Widget {
     override def render(area: Rect, buf: Buffer): Unit =
-      Layout()(
-        Constraint.Length(9) -> draw_gauges(app),
-        Constraint.Min(8) -> draw_charts(app),
-        Constraint.Length(7) -> draw_text
-      ).render(area, buf)
+      Layout
+        .detailed()(
+          Constraint.Length(9) -> draw_gauges(app),
+          Constraint.Min(8) -> draw_charts(app),
+          Constraint.Length(7) -> draw_text
+        )
+        .render(area, buf)
   }
 
   case class draw_gauges(app: App) extends Widget {
@@ -46,45 +50,41 @@ object ui {
       val block = BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Graphs")))
       block.render(area, buf)
 
-      Layout(margin = Margin(1))(
-        Constraint.Length(2) -> GaugeWidget(
-          block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge:")))),
-          gaugeStyle = Style.DEFAULT.fg(Color.Magenta).bg(Color.Black).addModifier(Modifier.ITALIC | Modifier.BOLD),
-          label = Some(Span.nostyle("%.2f".format(app.progress * 100.0))),
-          ratio = GaugeWidget.Ratio(app.progress)
-        ),
-        Constraint.Length(3) -> SparklineWidget(
-          block = Some(BlockWidget(title = Some(Spans.nostyle("Sparkline:")))),
-          style = Style.DEFAULT.fg(Color.Green),
-          data = app.sparkline.points,
-          barSet = if (app.enhanced_graphics) symbols.bar.NINE_LEVELS else symbols.bar.THREE_LEVELS
-        ),
-        Constraint.Length(1) -> LineGaugeWidget(
-          block = Some(BlockWidget(title = Some(Spans.nostyle("LineGauge:")))),
-          gaugeStyle = Style.DEFAULT.fg(Color.Magenta),
-          lineSet = if (app.enhanced_graphics) symbols.line.THICK else symbols.line.NORMAL,
-          ratio = GaugeWidget.Ratio(app.progress)
+      Layout
+        .detailed(margin = Margin(1))(
+          Constraint.Length(2) -> GaugeWidget(
+            block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge:")))),
+            gaugeStyle = Style.DEFAULT.fg(Color.Magenta).bg(Color.Black).addModifier(Modifier.ITALIC | Modifier.BOLD),
+            label = Some(Span.nostyle("%.2f".format(app.progress * 100.0))),
+            ratio = GaugeWidget.Ratio(app.progress)
+          ),
+          Constraint.Length(3) -> SparklineWidget(
+            block = Some(BlockWidget(title = Some(Spans.nostyle("Sparkline:")))),
+            style = Style.DEFAULT.fg(Color.Green),
+            data = app.sparkline.points,
+            barSet = if (app.enhanced_graphics) symbols.bar.NINE_LEVELS else symbols.bar.THREE_LEVELS
+          ),
+          Constraint.Length(1) -> LineGaugeWidget(
+            block = Some(BlockWidget(title = Some(Spans.nostyle("LineGauge:")))),
+            gaugeStyle = Style.DEFAULT.fg(Color.Magenta),
+            lineSet = if (app.enhanced_graphics) symbols.line.THICK else symbols.line.NORMAL,
+            ratio = GaugeWidget.Ratio(app.progress)
+          )
         )
-      ).render(area, buf)
+        .render(area, buf)
     }
   }
 
   case class draw_charts(app: App) extends Widget {
     override def render(area: Rect, buf: Buffer): Unit = {
       val main = Layout()(
-        Constraint.Percentage(50) -> Layout(direction = Direction.Horizontal)(
-          Constraint.Percentage(50) -> makeTasks,
-          Constraint.Percentage(50) -> makeLogs
-        ),
-        Constraint.Percentage(50) -> makeBarchart
+        Layout(direction = Direction.Horizontal)(makeTasks, makeLogs),
+        makeBarchart
       )
 
       val combined =
         if (app.show_chart)
-          Layout(direction = Direction.Horizontal)(
-            Constraint.Percentage(50) -> main,
-            Constraint.Percentage(50) -> makeChart
-          )
+          Layout(direction = Direction.Horizontal)(main, makeChart)
         else main
 
       combined.render(area, buf)
@@ -283,10 +283,12 @@ object ui {
         }
       }
 
-      Layout(direction = Direction.Horizontal)(
-        Constraint.Percentage(30) -> table,
-        Constraint.Percentage(70) -> map
-      ).render(area, buf)
+      Layout
+        .detailed(direction = Direction.Horizontal)(
+          Constraint.Percentage(30) -> table,
+          Constraint.Percentage(70) -> map
+        )
+        .render(area, buf)
     }
   }
 
@@ -331,10 +333,7 @@ object ui {
         )
       )
 
-      Layout(direction = Direction.Horizontal)(
-        Constraint.Ratio(1, 2) -> table,
-        Constraint.Ratio(1, 2) -> Widget.Empty
-      ).render(area, buf)
+      Layout(direction = Direction.Horizontal)(table, Widget.Empty).render(area, buf)
     }
   }
 }

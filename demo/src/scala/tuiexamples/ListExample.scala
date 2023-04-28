@@ -219,14 +219,14 @@ object ListExample {
     // Create two chunks with equal horizontal screen space
     Layout(direction = Direction.Horizontal)(
       // Create a List from all list items and highlight the currently selected one
-      Constraint.Percentage(50) -> ListWidget(
+      ListWidget(
         state = app.items.state,
         block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("List")))),
         items = items0,
         highlightStyle = Style(bg = Some(Color.LightGreen), addModifier = Modifier.BOLD),
         highlightSymbol = Some(">> ")
       ),
-      Constraint.Percentage(50) -> Widget { (area, buf) =>
+      Widget { (area, buf) =>
         ListWidget(
           state = ListWidget.State(),
           items = events(area),
@@ -234,6 +234,7 @@ object ListExample {
           startCorner = Corner.BottomLeft
         ).render(area, buf)
       }
-    ).render(f.size, f.buffer)
+    )
+      .render(f.size, f.buffer)
   }
 }
