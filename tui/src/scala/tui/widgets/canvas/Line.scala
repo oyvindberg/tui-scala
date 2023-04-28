@@ -15,11 +15,11 @@ case class Line(
     color: Color
 ) extends Shape {
   override def draw(painter: Painter): Unit = {
-    val (x1, y1) = painter.get_point(this.x1, this.y1) match {
+    val (x1, y1) = painter.getPoint(this.x1, this.y1) match {
       case Some(c) => c
       case None    => return
     }
-    val (x2, y2) = painter.get_point(this.x2, this.y2) match {
+    val (x2, y2) = painter.getPoint(this.x2, this.y2) match {
       case Some(c) => c
       case None    => return
     }
@@ -45,20 +45,20 @@ case class Line(
       }
     } else if (dy < dx) {
       if (x1 > x2) {
-        Line.draw_line_low(painter, x2, y2, x1, y1, this.color)
+        Line.drawLineLow(painter, x2, y2, x1, y1, this.color)
       } else {
-        Line.draw_line_low(painter, x1, y1, x2, y2, this.color)
+        Line.drawLineLow(painter, x1, y1, x2, y2, this.color)
       }
     } else if (y1 > y2) {
-      Line.draw_line_high(painter, x2, y2, x1, y1, this.color)
+      Line.drawLineHigh(painter, x2, y2, x1, y1, this.color)
     } else {
-      Line.draw_line_high(painter, x1, y1, x2, y2, this.color)
+      Line.drawLineHigh(painter, x1, y1, x2, y2, this.color)
     }
   }
 }
 
 object Line {
-  def draw_line_low(painter: Painter, x1: Int, y1: Int, x2: Int, y2: Int, color: Color): Unit = {
+  def drawLineLow(painter: Painter, x1: Int, y1: Int, x2: Int, y2: Int, color: Color): Unit = {
     val dx = x2 - x1
     val dy = math.abs(y2 - y1)
     var d = 2 * dy - dx
@@ -77,7 +77,7 @@ object Line {
     }
   }
 
-  def draw_line_high(painter: Painter, x1: Int, y1: Int, x2: Int, y2: Int, color: Color): Unit = {
+  def drawLineHigh(painter: Painter, x1: Int, y1: Int, x2: Int, y2: Int, color: Color): Unit = {
     val dx = math.abs(x2 - x1)
     val dy = y2 - y1
     var d = 2 * dx - dy

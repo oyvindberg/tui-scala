@@ -48,18 +48,18 @@ class CrosstermBackend(buffer: CrosstermJni) extends Backend {
     buffer.enqueue(commands)
   }
 
-  override def hide_cursor(): Unit =
+  override def hideCursor(): Unit =
     buffer.execute(new Command.Hide())
 
-  override def show_cursor(): Unit =
+  override def showCursor(): Unit =
     buffer.execute(new Command.Show())
 
-  override def get_cursor(): (Int, Int) = {
+  override def getCursor(): (Int, Int) = {
     val xy = buffer.cursorPosition()
     (xy.x(), xy.y())
   }
 
-  override def set_cursor(x: Int, y: Int): Unit =
+  override def setCursor(x: Int, y: Int): Unit =
     buffer.execute(new Command.MoveTo(x, y))
 
   override def clear(): Unit =

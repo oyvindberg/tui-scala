@@ -87,39 +87,39 @@ object GaugeExample {
 
     val gauge0 = GaugeWidget(
       block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge1")), borders = Borders.ALL)),
-      gauge_style = Style(fg = Some(Color.Yellow)),
+      gaugeStyle = Style(fg = Some(Color.Yellow)),
       ratio = GaugeWidget.Ratio.percent(app.progress1)
     )
-    f.render_widget(gauge0, chunks(0))
+    f.renderWidget(gauge0, chunks(0))
 
     val gauge1 = GaugeWidget(
       block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge2")), borders = Borders.ALL)),
-      gauge_style = Style(fg = Some(Color.Magenta), bg = Some(Color.Green)),
+      gaugeStyle = Style(fg = Some(Color.Magenta), bg = Some(Color.Green)),
       ratio = GaugeWidget.Ratio.percent(app.progress2),
       label = Some(Span.nostyle(s"${app.progress2}/100"))
     )
-    f.render_widget(gauge1, chunks(1))
+    f.renderWidget(gauge1, chunks(1))
 
     val gauge2 = GaugeWidget(
       block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge3")), borders = Borders.ALL)),
-      gauge_style = Style(fg = Some(Color.Yellow)),
+      gaugeStyle = Style(fg = Some(Color.Yellow)),
       ratio = GaugeWidget.Ratio(app.progress3),
       label = Some(
         Span.styled(
           "%.2f".format(app.progress3 * 100.0),
-          Style(fg = Some(Color.Red), add_modifier = Modifier.ITALIC | Modifier.BOLD)
+          Style(fg = Some(Color.Red), addModifier = Modifier.ITALIC | Modifier.BOLD)
         )
       ),
-      use_unicode = true
+      useUnicode = true
     )
-    f.render_widget(gauge2, chunks(2))
+    f.renderWidget(gauge2, chunks(2))
 
     val gauge3 = GaugeWidget(
       block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge4")))),
-      gauge_style = Style(fg = Some(Color.Cyan), add_modifier = Modifier.ITALIC),
+      gaugeStyle = Style(fg = Some(Color.Cyan), addModifier = Modifier.ITALIC),
       ratio = GaugeWidget.Ratio.percent(app.progress4),
       label = Some(Span.nostyle(s"${app.progress4}/100"))
     )
-    f.render_widget(gauge3, chunks(3))
+    f.renderWidget(gauge3, chunks(3))
   }
 }

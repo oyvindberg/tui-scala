@@ -10,8 +10,8 @@ package tui
 case class Style(
     fg: Option[Color] = None,
     bg: Option[Color] = None,
-    add_modifier: Modifier = Modifier.EMPTY,
-    sub_modifier: Modifier = Modifier.EMPTY
+    addModifier: Modifier = Modifier.EMPTY,
+    subModifier: Modifier = Modifier.EMPTY
 ) {
 
   /** Changes the foreground color.
@@ -28,20 +28,20 @@ case class Style(
     *
     * When applied, it adds the given modifier to the `Style` modifiers.
     */
-  def add_modifier(modifier: Modifier): Style =
+  def addModifier(modifier: Modifier): Style =
     copy(
-      sub_modifier = sub_modifier.remove(modifier),
-      add_modifier = add_modifier.insert(modifier)
+      subModifier = subModifier.remove(modifier),
+      addModifier = addModifier.insert(modifier)
     )
 
   /** Changes the text emphasis.
     *
     * When applied, it removes the given modifier from the `Style` modifiers.
     */
-  def remove_modifier(modifier: Modifier): Style =
+  def removeModifier(modifier: Modifier): Style =
     copy(
-      add_modifier = add_modifier.remove(modifier),
-      sub_modifier = sub_modifier.insert(modifier)
+      addModifier = addModifier.remove(modifier),
+      subModifier = subModifier.insert(modifier)
     )
 
   /** Results in a combined style that is equivalent to applying the two individual styles to a style one after the other.
@@ -50,8 +50,8 @@ case class Style(
     Style(
       fg = other.fg.orElse(this.fg),
       bg = other.bg.orElse(this.bg),
-      add_modifier = add_modifier.remove(other.sub_modifier).insert(other.add_modifier),
-      sub_modifier = sub_modifier.remove(other.add_modifier).insert(other.sub_modifier)
+      addModifier = addModifier.remove(other.subModifier).insert(other.addModifier),
+      subModifier = subModifier.remove(other.addModifier).insert(other.subModifier)
     )
 }
 
@@ -63,7 +63,7 @@ object Style {
   val RESET: Style = Style(
     fg = Some(Color.Reset),
     bg = Some(Color.Reset),
-    add_modifier = Modifier.EMPTY,
-    sub_modifier = Modifier.ALL
+    addModifier = Modifier.EMPTY,
+    subModifier = Modifier.ALL
   )
 }

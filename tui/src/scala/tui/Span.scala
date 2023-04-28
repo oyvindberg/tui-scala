@@ -12,15 +12,16 @@ case class Span(content: String, style: Style) {
 
   /** Returns an iterator over the graphemes held by this span.
     *
-    * `base_style` is the `Style` that will be patched with each grapheme `Style` to get the resulting `Style`.
+    * @param baseStyle
+    *   the `Style` that will be patched with each grapheme `Style` to get the resulting `Style`.
     */
-  def styled_graphemes(base_style: Style): Array[StyledGrapheme] =
+  def styledGraphemes(baseStyle: Style): Array[StyledGrapheme] =
     UnicodeSegmentation
-      .graphemes(content, is_extended = true)
+      .graphemes(content, isExtended = true)
       .map(g =>
         StyledGrapheme(
           symbol = g,
-          style = base_style.patch(style)
+          style = baseStyle.patch(style)
         )
       )
       .filter(s => s.symbol.str != "\n")

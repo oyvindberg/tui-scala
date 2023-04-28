@@ -30,10 +30,10 @@ object BlockExample {
     val block0 = BlockWidget(
       borders = Borders.ALL,
       title = Some(Spans.nostyle("Main block with round corners")),
-      title_alignment = Alignment.Center,
-      border_type = BlockWidget.BorderType.Rounded
+      titleAlignment = Alignment.Center,
+      borderType = BlockWidget.BorderType.Rounded
     )
-    f.render_widget(block0, size)
+    f.renderWidget(block0, size)
 
     val chunks = Layout(
       direction = Direction.Vertical,
@@ -59,14 +59,14 @@ object BlockExample {
       ),
       style = Style.DEFAULT.bg(Color.Green)
     )
-    f.render_widget(block_top0, top_chunks(0))
+    f.renderWidget(block_top0, top_chunks(0))
 
     // Top right inner block with styled title aligned to the right
     val block_top1 = BlockWidget(
-      title = Some(Spans.from(Span.styled("Styled title", Style(fg = Some(Color.White), bg = Some(Color.Red), add_modifier = Modifier.BOLD)))),
-      title_alignment = Alignment.Right
+      title = Some(Spans.from(Span.styled("Styled title", Style(fg = Some(Color.White), bg = Some(Color.Red), addModifier = Modifier.BOLD)))),
+      titleAlignment = Alignment.Right
     )
-    f.render_widget(block_top1, top_chunks(1))
+    f.renderWidget(block_top1, top_chunks(1))
 
     // Bottom two inner blocks
     val bottom_chunks = Layout(
@@ -77,15 +77,15 @@ object BlockExample {
 
     // Bottom left block with all default borders
     val block_bottom_0 = BlockWidget(title = Some(Spans.nostyle("With borders")), borders = Borders.ALL)
-    f.render_widget(block_bottom_0, bottom_chunks(0))
+    f.renderWidget(block_bottom_0, bottom_chunks(0))
 
     // Bottom right block with styled left and right border
     val block_bottom_1 = BlockWidget(
       title = Some(Spans.nostyle("With styled borders and doubled borders")),
-      border_style = Style.DEFAULT.fg(Color.Cyan),
+      borderStyle = Style.DEFAULT.fg(Color.Cyan),
       borders = Borders.LEFT | Borders.RIGHT,
-      border_type = BlockWidget.BorderType.Double
+      borderType = BlockWidget.BorderType.Double
     )
-    f.render_widget(block_bottom_1, bottom_chunks(1))
+    f.renderWidget(block_bottom_1, bottom_chunks(1))
   }
 }

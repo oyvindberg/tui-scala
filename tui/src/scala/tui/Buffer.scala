@@ -24,14 +24,14 @@ case class Buffer(
   /** Returns a reference to Cell at the given coordinates
     */
   def get(x: Int, y: Int): Cell = {
-    val i = this.index_of(x, y)
+    val i = this.indexOf(x, y)
     content(i)
   }
 
   /** Returns a reference to Cell at the given coordinates
     */
   def set(x: Int, y: Int, cell: Cell): Unit = {
-    val i = this.index_of(x, y)
+    val i = this.indexOf(x, y)
     content(i) = cell
   }
 
@@ -39,7 +39,7 @@ case class Buffer(
     *
     * Global coordinates are offset by the Buffer's area offset (`x`/`y`).
     */
-  def index_of(x: Int, y: Int): Int = {
+  def indexOf(x: Int, y: Int): Int = {
     debug_assert(
       x >= this.area.left
         && x < this.area.right
@@ -57,7 +57,7 @@ case class Buffer(
     *
     * Global coordinates are offset by the Buffer's area offset (`x`/`y`).
     */
-  def pos_of(i: Int): (Int, Int) = {
+  def posOf(i: Int): (Int, Int) = {
     debug_assert(
       i < this.content.length,
       "Trying to get the coords of a cell outside the buffer: i={} len={}",
@@ -72,15 +72,15 @@ case class Buffer(
 
   /** Print a string, starting at the position (x, y)
     */
-  def set_string(x: Int, y: Int, string: String, style: Style): (Int, Int) =
-    set_stringn(x, y, string, Int.MaxValue, style)
+  def setString(x: Int, y: Int, string: String, style: Style): (Int, Int) =
+    setStringn(x, y, string, Int.MaxValue, style)
 
   /** Print at most the first n characters of a string if enough space is available until the end of the line
     */
-  def set_stringn(x: Int, y: Int, string: String, width: Int, style: Style): (Int, Int) = {
-    var index = this.index_of(x, y)
+  def setStringn(x: Int, y: Int, string: String, width: Int, style: Style): (Int, Int) = {
+    var index = this.indexOf(x, y)
     var x_offset = x
-    val graphemes = UnicodeSegmentation.graphemes(string, is_extended = true)
+    val graphemes = UnicodeSegmentation.graphemes(string, isExtended = true)
     val max_offset = math.min(this.area.right, width + x)
 
     graphemes.breakableForeach { case (s, _) =>
@@ -90,7 +90,7 @@ case class Buffer(
       else if (s.width > max_offset - x_offset) {
         breakableForeach.Break
       } else {
-        content(index).set_symbol(s).set_style(style)
+        content(index).setSymbol(s).setStyle(style)
 
         // Reset following cells if multi-width (they would be hidden by the grapheme),
         ranges.range(index + 1, index + s.width)(i => content(i).reset())
@@ -103,7 +103,7 @@ case class Buffer(
     (x_offset, y)
   }
 
-  def set_spans(_x: Int, y: Int, spans: Spans, width: Int): (Int, Int) = {
+  def setSpans(_x: Int, y: Int, spans: Spans, width: Int): (Int, Int) = {
     var remaining_width = width
     var x = _x
 
@@ -111,7 +111,7 @@ case class Buffer(
       case _ if remaining_width == 0 =>
         () // break
       case span =>
-        val (newX, _) = set_stringn(x, y, span.content, remaining_width, span.style)
+        val (newX, _) = setStringn(x, y, span.content, remaining_width, span.style)
         val w = newX - x
         x = newX
         remaining_width = remaining_width - w;
@@ -119,15 +119,15 @@ case class Buffer(
     (x, y)
   }
 
-  def set_span(x: Int, y: Int, span: Span, width: Int): (Int, Int) =
-    set_stringn(x, y, span.content, width, span.style)
+  def setSpan(x: Int, y: Int, span: Span, width: Int): (Int, Int) =
+    setStringn(x, y, span.content, width, span.style)
 
-  def set_style(area: Rect, style: Style): Unit = {
+  def setStyle(area: Rect, style: Style): Unit = {
     var y = area.top
     while (y < area.bottom) {
       var x = area.left
       while (x < area.right) {
-        this.get(x, y).set_style(style)
+        this.get(x, y).setStyle(style)
         x += 1
       }
       y += 1
@@ -157,7 +157,7 @@ case class Buffer(
     val thisSize = area.area
     var thisI = thisSize - 1
     while (thisI >= 0) {
-      val (x, y) = pos_of(thisI)
+      val (x, y) = posOf(thisI)
       // index in new content
       val k = (y - newArea.y) * newArea.width + x - newArea.x
       newContent(k) = content(thisI).clone()
@@ -168,7 +168,7 @@ case class Buffer(
     val otherSize = other.area.area
     var otherI = 0
     while (otherI < otherSize) {
-      val (x, y) = other.pos_of(otherI)
+      val (x, y) = other.posOf(otherI)
       // index in new content
       val k = (y - newArea.y) * newArea.width + x - newArea.x
       newContent(k) = other.content(otherI).clone()
@@ -256,7 +256,7 @@ object Buffer {
 
   /** Returns a Buffer containing the given lines
     */
-  def with_lines(lines: String*): Buffer = {
+  def withLines(lines: String*): Buffer = {
     val width = lines
       .map(i => Grapheme(i).width)
       .maxOption
@@ -264,7 +264,7 @@ object Buffer {
 
     val buffer = Buffer.empty(Rect(x = 0, y = 0, width = width, height = lines.length))
     lines.zipWithIndex.foreach { case (line, y) =>
-      buffer.set_string(0, y, line, Style());
+      buffer.setString(0, y, line, Style());
     }
     buffer
   }

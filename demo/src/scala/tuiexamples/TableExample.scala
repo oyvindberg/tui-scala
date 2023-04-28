@@ -83,25 +83,25 @@ object TableExample {
   def ui(f: Frame, app: App): Unit = {
     val rects = Layout(constraints = Array(Constraint.Percentage(100)), margin = Margin(5)).split(f.size)
 
-    val selected_style = Style(add_modifier = Modifier.REVERSED)
+    val selected_style = Style(addModifier = Modifier.REVERSED)
     val normal_style = Style(bg = Some(Color.Blue))
     val header_cells = Array("Header1", "Header2", "Header3").map(h => TableWidget.Cell(Text.nostyle(h), style = Style(fg = Some(Color.Red))))
-    val header = TableWidget.Row(cells = header_cells, style = normal_style, bottom_margin = 1)
+    val header = TableWidget.Row(cells = header_cells, style = normal_style, bottomMargin = 1)
 
     val rows = app.items.map { item =>
       val height = item.map(_.count(_ == '\n')).maxOption.getOrElse(0) + 1
       val cells = item.map(c => TableWidget.Cell(Text.nostyle(c)))
-      TableWidget.Row(cells, height = height, bottom_margin = 1)
+      TableWidget.Row(cells, height = height, bottomMargin = 1)
     }
 
     val t = TableWidget(
       block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Table")))),
       widths = Array(Constraint.Percentage(50), Constraint.Length(30), Constraint.Min(10)),
-      highlight_style = selected_style,
-      highlight_symbol = Some(">> "),
+      highlightStyle = selected_style,
+      highlightSymbol = Some(">> "),
       header = Some(header),
       rows = rows
     )
-    f.render_stateful_widget(t, rects(0))(app.state)
+    f.renderStatefulWidget(t, rects(0))(app.state)
   }
 }

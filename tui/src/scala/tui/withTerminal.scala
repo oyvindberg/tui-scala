@@ -18,7 +18,7 @@ object withTerminal {
       // restore terminal
       jni.disableRawMode()
       jni.execute(new Command.LeaveAlternateScreen(), new Command.DisableMouseCapture())
-      backend.show_cursor()
+      backend.showCursor()
     }
   }
 }

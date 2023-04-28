@@ -8,17 +8,17 @@ import tui.{Grapheme, Style}
   *
   * @param block
   *   Block to wrap the widget in
-  * @param bar_width
+  * @param barWidth
   *   The width of each bar
-  * @param bar_gap
+  * @param barGap
   *   The gap between each bar
-  * @param bar_set
+  * @param barSet
   *   Set of symbols used to display the data
-  * @param bar_style
+  * @param barStyle
   *   Style of the bars
-  * @param value_style
+  * @param valueStyle
   *   Style of the values printed at the bottom of each bar
-  * @param label_style
+  * @param labelStyle
   *   Style of the labels printed under each bar
   * @param style
   *   Style for the widget
@@ -29,12 +29,12 @@ import tui.{Grapheme, Style}
   */
 case class BarChartWidget(
     block: Option[BlockWidget] = None,
-    bar_width: Int = 1,
-    bar_gap: Int = 1,
-    bar_set: symbols.bar.Set = symbols.bar.NINE_LEVELS,
-    bar_style: Style = Style.DEFAULT,
-    value_style: Style = Style.DEFAULT,
-    label_style: Style = Style.DEFAULT,
+    barWidth: Int = 1,
+    barGap: Int = 1,
+    barSet: symbols.bar.Set = symbols.bar.NINE_LEVELS,
+    barStyle: Style = Style.DEFAULT,
+    valueStyle: Style = Style.DEFAULT,
+    labelStyle: Style = Style.DEFAULT,
     style: Style = Style.DEFAULT,
     data: Array[(String, Int)] = Array.empty,
     max: Option[Int] = None
@@ -45,7 +45,7 @@ case class BarChartWidget(
   private lazy val values: Array[Grapheme] = data.collect { case (_, v) => Grapheme(v.toString) }
 
   override def render(area: Rect, buf: Buffer): Unit = {
-    buf.set_style(area, style)
+    buf.setStyle(area, style)
 
     val chart_area: Rect = block match {
       case Some(b) =>
@@ -62,7 +62,7 @@ case class BarChartWidget(
     val max = this.max.getOrElse(data.maxByOption { case (_, value) => value }.fold(0) { case (_, value) => value })
 
     val max_index = math.min(
-      chart_area.width / (bar_width + bar_gap),
+      chart_area.width / (barWidth + barGap),
       data.length
     )
 
@@ -72,24 +72,24 @@ case class BarChartWidget(
     revRange(0, chart_area.height - 1) { j =>
       data2.foreach { case (d, i) =>
         val symbol = d.value match {
-          case 0 => bar_set.empty
-          case 1 => bar_set.one_eighth
-          case 2 => bar_set.one_quarter
-          case 3 => bar_set.three_eighths
-          case 4 => bar_set.half
-          case 5 => bar_set.five_eighths
-          case 6 => bar_set.three_quarters
-          case 7 => bar_set.seven_eighths
-          case _ => bar_set.full
+          case 0 => barSet.empty
+          case 1 => barSet.oneEighth
+          case 2 => barSet.oneQuarter
+          case 3 => barSet.threeEighths
+          case 4 => barSet.half
+          case 5 => barSet.fiveEighths
+          case 6 => barSet.threeQuarters
+          case 7 => barSet.sevenEighths
+          case _ => barSet.full
         }
-        range(0, bar_width) { x =>
+        range(0, barWidth) { x =>
           buf
             .get(
-              chart_area.left + i * (bar_width + bar_gap) + x,
+              chart_area.left + i * (barWidth + barGap) + x,
               chart_area.top + j
             )
-            .set_symbol(symbol)
-            .set_style(bar_style)
+            .setSymbol(symbol)
+            .setStyle(barStyle)
           ()
         }
 
@@ -104,24 +104,24 @@ case class BarChartWidget(
       if (value != 0) {
         val value_label = values(i)
         val width = value_label.width
-        if (width < bar_width) {
-          buf.set_string(
+        if (width < barWidth) {
+          buf.setString(
             chart_area.left
-              + i * (bar_width + bar_gap)
-              + (bar_width - width) / 2,
+              + i * (barWidth + barGap)
+              + (barWidth - width) / 2,
             chart_area.bottom - 2,
             value_label.str,
-            value_style
+            valueStyle
           )
         }
       }
-      buf.set_stringn(
-        chart_area.left + i * (bar_width + bar_gap),
+      buf.setStringn(
+        chart_area.left + i * (barWidth + barGap),
         chart_area.bottom - 1,
         label,
-        bar_width,
-        label_style
-      );
+        barWidth,
+        labelStyle
+      )
 
     }
   }

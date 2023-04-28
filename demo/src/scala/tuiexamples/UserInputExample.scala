@@ -80,20 +80,20 @@ object UserInputExample {
         (
           Text.from(
             Span.nostyle("Press "),
-            Span.styled("q", Style.DEFAULT.add_modifier(Modifier.BOLD)),
+            Span.styled("q", Style.DEFAULT.addModifier(Modifier.BOLD)),
             Span.nostyle(" to exit, "),
-            Span.styled("e", Style.DEFAULT.add_modifier(Modifier.BOLD)),
+            Span.styled("e", Style.DEFAULT.addModifier(Modifier.BOLD)),
             Span.nostyle(" to start editing.")
           ),
-          Style.DEFAULT.add_modifier(Modifier.RAPID_BLINK)
+          Style.DEFAULT.addModifier(Modifier.RAPID_BLINK)
         )
       case InputMode.Editing =>
         (
           Text.from(
             Span.nostyle("Press "),
-            Span.styled("Esc", Style.DEFAULT.add_modifier(Modifier.BOLD)),
+            Span.styled("Esc", Style.DEFAULT.addModifier(Modifier.BOLD)),
             Span.nostyle(" to stop editing, "),
-            Span.styled("Enter", Style.DEFAULT.add_modifier(Modifier.BOLD)),
+            Span.styled("Enter", Style.DEFAULT.addModifier(Modifier.BOLD)),
             Span.nostyle(" to record the message")
           ),
           Style.DEFAULT
@@ -102,7 +102,7 @@ object UserInputExample {
     val text = msg.overwrittenStyle(style)
 
     val help_message = ParagraphWidget(text = text)
-    f.render_widget(help_message, chunks(0))
+    f.renderWidget(help_message, chunks(0))
 
     val input = ParagraphWidget(
       text = Text.nostyle(app.input),
@@ -112,7 +112,7 @@ object UserInputExample {
         case InputMode.Editing => Style.DEFAULT.fg(Color.Yellow)
       }
     )
-    f.render_widget(input, chunks(1))
+    f.renderWidget(input, chunks(1))
 
     app.input_mode match {
       case InputMode.Normal =>
@@ -121,7 +121,7 @@ object UserInputExample {
 
       case InputMode.Editing =>
         // Make the cursor visible and ask tui-rs to put it at the specified coordinates after rendering
-        f.set_cursor(
+        f.setCursor(
           // Put cursor past the end of the input text
           x = chunks(1).x + Grapheme(app.input).width + 1,
           // Move one line down, from the border to the input line
@@ -137,6 +137,6 @@ object UserInputExample {
         items = items,
         block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Messages"))))
       )
-    f.render_widget(messages, chunks(2))
+    f.renderWidget(messages, chunks(2))
   }
 }

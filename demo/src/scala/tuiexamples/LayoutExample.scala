@@ -28,8 +28,8 @@ object LayoutExample {
       .split(f.size)
 
     val block0 = BlockWidget(title = Some(Spans.nostyle("Block")), borders = Borders.ALL)
-    f.render_widget(block0, chunks(0))
+    f.renderWidget(block0, chunks(0))
     val block1 = BlockWidget(title = Some(Spans.nostyle("Block 2")), borders = Borders.ALL)
-    f.render_widget(block1, chunks(2))
+    f.renderWidget(block1, chunks(2))
   }
 }

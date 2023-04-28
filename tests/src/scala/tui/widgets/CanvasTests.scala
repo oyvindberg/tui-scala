@@ -10,23 +10,23 @@ class CanvasTests extends TuiTest {
     val terminal = Terminal.init(backend)
     terminal.draw { f =>
       val label = "test"
-      val canvas = CanvasWidget(background_color = Color.Yellow, x_bounds = Point(0.0, 5.0), y_bounds = Point(0.0, 5.0)) { ctx =>
+      val canvas = CanvasWidget(backgroundColor = Color.Yellow, xBounds = Point(0.0, 5.0), yBounds = Point(0.0, 5.0)) { ctx =>
         ctx.print(0.0, 0.0, Spans.from(Span.styled(label, Style(fg = Some(Color.Blue)))))
       }
-      f.render_widget(canvas, f.size);
+      f.renderWidget(canvas, f.size);
     }
 
-    val expected = Buffer.with_lines("    ", "    ", "     ", "     ", "test ")
+    val expected = Buffer.withLines("    ", "    ", "     ", "     ", "test ")
     ranges.range(0, 5) { row =>
       ranges.range(0, 5) { col =>
-        expected.get(col, row).set_bg(Color.Yellow)
+        expected.get(col, row).setBg(Color.Yellow)
         ()
       }
     }
     ranges.range(0, 4) { col =>
-      expected.get(col, 4).set_fg(Color.Blue)
+      expected.get(col, 4).setFg(Color.Blue)
       ()
     }
-    assert_buffer(backend, expected)
+    assertBuffer(backend, expected)
   }
 }

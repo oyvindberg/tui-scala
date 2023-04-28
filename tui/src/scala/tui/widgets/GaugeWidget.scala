@@ -10,13 +10,13 @@ case class GaugeWidget(
     block: Option[BlockWidget] = None,
     ratio: GaugeWidget.Ratio = GaugeWidget.Ratio.Zero,
     label: Option[Span] = None,
-    use_unicode: Boolean = false,
+    useUnicode: Boolean = false,
     style: Style = Style.DEFAULT,
-    gauge_style: Style = Style.DEFAULT
+    gaugeStyle: Style = Style.DEFAULT
 ) extends Widget {
 
   override def render(area: Rect, buf: Buffer): Unit = {
-    buf.set_style(area, style)
+    buf.setStyle(area, style)
     val gauge_area = block match {
       case Some(b) =>
         val inner_area = b.inner(area)
@@ -25,7 +25,7 @@ case class GaugeWidget(
 
       case None => area
     }
-    buf.set_style(gauge_area, gauge_style)
+    buf.setStyle(gauge_area, gaugeStyle)
     if (gauge_area.height < 1) {
       return
     }
@@ -42,7 +42,7 @@ case class GaugeWidget(
 
     // the gauge will be filled proportionally to the ratio
     val filled_width = gauge_area.width.toDouble * this.ratio.value
-    val end: Int = if (use_unicode) {
+    val end: Int = if (useUnicode) {
       gauge_area.left + math.floor(filled_width).toInt
     } else {
       gauge_area.left + math.round(filled_width).toInt
@@ -53,24 +53,24 @@ case class GaugeWidget(
         // spaces are needed to apply the background styling
         buf
           .get(x, y)
-          .set_symbol(" ")
-          .set_fg(gauge_style.bg.getOrElse(Color.Reset))
-          .set_bg(gauge_style.fg.getOrElse(Color.Reset))
+          .setSymbol(" ")
+          .setFg(gaugeStyle.bg.getOrElse(Color.Reset))
+          .setBg(gaugeStyle.fg.getOrElse(Color.Reset))
         ()
       }
-      if (use_unicode && ratio.value < 1.0) {
+      if (useUnicode && ratio.value < 1.0) {
         buf
           .get(end, y)
-          .set_symbol(get_unicode_block(filled_width % 1.0))
+          .setSymbol(getUnicodeBlock(filled_width % 1.0))
         ()
       }
     }
     // set the span
-    buf.set_span(label_col, label_row, label, clamped_label_width)
+    buf.setSpan(label_col, label_row, label, clamped_label_width)
     ()
   }
 
-  def get_unicode_block(frac: Double): String =
+  def getUnicodeBlock(frac: Double): String =
     math.round(frac * 8.0) match {
       case 1 => symbols.block.ONE_EIGHTH
       case 2 => symbols.block.ONE_QUARTER

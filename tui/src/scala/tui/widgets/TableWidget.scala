@@ -18,11 +18,11 @@ import scala.collection.mutable
   *   Base style for the widget
   * @param widths
   *   Width constraints for each column
-  * @param column_spacing
+  * @param columnSpacing
   *   Space between each column
-  * @param highlight_style
+  * @param highlightStyle
   *   Style used to render the selected row
-  * @param highlight_symbol
+  * @param highlightSymbol
   *   Symbol in front of the selected rom
   * @param header
   *   Optional header
@@ -33,30 +33,30 @@ case class TableWidget(
     block: Option[BlockWidget] = None,
     style: Style = Style.DEFAULT,
     widths: Array[Constraint] = Array.empty,
-    column_spacing: Int = 1,
-    highlight_style: Style = Style.DEFAULT,
-    highlight_symbol: Option[String] = None,
+    columnSpacing: Int = 1,
+    highlightStyle: Style = Style.DEFAULT,
+    highlightSymbol: Option[String] = None,
     header: Option[TableWidget.Row] = None,
     rows: Array[TableWidget.Row]
 ) extends StatefulWidget
     with Widget {
-  def get_columns_widths(max_width: Int, has_selection: Boolean): Array[Int] = {
+  def getColumnsWidths(max_width: Int, has_selection: Boolean): Array[Int] = {
     val constraints = mutable.ArrayBuffer.empty[Constraint]
 
     constraints.sizeHint(widths.length * 2 + 1)
 
     if (has_selection) {
-      val highlight_symbol_width = highlight_symbol.map(s => Grapheme(s).width).getOrElse(0)
+      val highlight_symbol_width = highlightSymbol.map(s => Grapheme(s).width).getOrElse(0)
       constraints += Constraint.Length(highlight_symbol_width)
     }
     widths.foreach { constraint =>
       constraints += constraint
-      constraints += Constraint.Length(column_spacing);
+      constraints += Constraint.Length(columnSpacing);
     }
     if (widths.nonEmpty) {
       constraints.dropRightInPlace(1)
     }
-    var chunks = Layout(direction = Direction.Horizontal, constraints = constraints.toArray, expand_to_fill = false)
+    var chunks = Layout(direction = Direction.Horizontal, constraints = constraints.toArray, expandToFill = false)
       .split(Rect(x = 0, y = 0, width = max_width, height = 1))
     if (has_selection) {
       chunks = chunks.drop(1)
@@ -64,7 +64,7 @@ case class TableWidget(
     chunks.stepBy(2).map(_.width)
   }
 
-  def get_row_bounds(
+  def getRowBounds(
       selected0: Option[Int],
       offset0: Int,
       max_height: Int
@@ -77,7 +77,7 @@ case class TableWidget(
       if (height + item.height > max_height) {
         breakableForeach.Break
       } else {
-        height += item.total_height
+        height += item.totalHeight
         end += 1
         breakableForeach.Continue
       }
@@ -85,19 +85,19 @@ case class TableWidget(
 
     val selected = math.min(selected0.getOrElse(0), rows.length - 1)
     while (selected >= end) {
-      height = height.saturating_add(rows(end).total_height)
+      height = height.saturating_add(rows(end).totalHeight)
       end += 1
       while (height > max_height) {
-        height = height.saturating_sub_unsigned(rows(start).total_height)
+        height = height.saturating_sub_unsigned(rows(start).totalHeight)
         start += 1
       }
     }
     while (selected < start) {
       start -= 1
-      height = height.saturating_add(rows(start).total_height)
+      height = height.saturating_add(rows(start).totalHeight)
       while (height > max_height) {
         end -= 1
-        height = height.saturating_sub_unsigned(rows(end).total_height)
+        height = height.saturating_sub_unsigned(rows(end).totalHeight)
       }
     }
     (start, end)
@@ -108,7 +108,7 @@ case class TableWidget(
     if (area.area == 0) {
       return
     }
-    buf.set_style(area, style)
+    buf.setStyle(area, style)
     val table_area = block match {
       case Some(b) =>
         val inner_area = b.inner(area)
@@ -119,25 +119,25 @@ case class TableWidget(
     }
 
     val has_selection = state.selected.isDefined
-    val columns_widths = get_columns_widths(table_area.width, has_selection)
-    val highlight_symbol = Grapheme(this.highlight_symbol.getOrElse(""))
+    val columns_widths = getColumnsWidths(table_area.width, has_selection)
+    val highlight_symbol = Grapheme(this.highlightSymbol.getOrElse(""))
     val blank_symbol = " ".repeat(highlight_symbol.width)
     var current_height = 0
     var rows_height = table_area.height
 
     // Draw header
     this.header.foreach { header =>
-      val max_header_height = table_area.height.min(header.total_height)
+      val max_header_height = table_area.height.min(header.totalHeight)
       val header_rect = Rect(x = table_area.left, y = table_area.top, width = table_area.width, height = table_area.height.min(header.height))
-      buf.set_style(header_rect, header.style)
+      buf.setStyle(header_rect, header.style)
       var col = table_area.left
       if (has_selection) {
         col += highlight_symbol.width.min(table_area.width)
       }
       columns_widths.zip(header.cells).foreach { case (width, cell) =>
         val cell_rect = Rect(x = col, y = table_area.top, width = width, height = max_header_height)
-        render_cell(buf, cell, cell_rect)
-        col += width + column_spacing;
+        renderCell(buf, cell, cell_rect)
+        col += width + columnSpacing;
       }
       current_height += max_header_height
       rows_height = rows_height.saturating_sub_unsigned(max_header_height);
@@ -147,40 +147,40 @@ case class TableWidget(
     if (rows.isEmpty) {
       return
     }
-    val (start, end) = get_row_bounds(state.selected, state.offset, rows_height)
+    val (start, end) = getRowBounds(state.selected, state.offset, rows_height)
     state.offset = start
     rows.zipWithIndex.slice(state.offset, state.offset + end - start).foreach { case (table_row, i) =>
       val (row, col0) = (table_area.top + current_height, table_area.left)
-      current_height += table_row.total_height
+      current_height += table_row.totalHeight
       val table_row_area = Rect(x = col0, y = row, width = table_area.width, height = table_row.height)
-      buf.set_style(table_row_area, table_row.style)
+      buf.setStyle(table_row_area, table_row.style)
       val is_selected = state.selected.contains(i)
       val table_row_start_col =
         if (has_selection) {
           val symbol = if (is_selected) highlight_symbol.str else blank_symbol
-          val (col, _) = buf.set_stringn(col0, row, symbol, table_area.width, table_row.style)
+          val (col, _) = buf.setStringn(col0, row, symbol, table_area.width, table_row.style)
           col
         } else col0
 
       var col1 = table_row_start_col
       columns_widths.zip(table_row.cells).foreach { case (width, cell) =>
         val rect = Rect(x = col1, y = row, width = width, height = table_row.height)
-        render_cell(buf, cell, rect)
-        col1 += width + column_spacing;
+        renderCell(buf, cell, rect)
+        col1 += width + columnSpacing;
       }
       if (is_selected) {
-        buf.set_style(table_row_area, highlight_style)
+        buf.setStyle(table_row_area, highlightStyle)
       }
     }
   }
 
-  def render_cell(buf: Buffer, cell: TableWidget.Cell, area: Rect): Unit = {
-    buf.set_style(area, cell.style)
+  def renderCell(buf: Buffer, cell: TableWidget.Cell, area: Rect): Unit = {
+    buf.setStyle(area, cell.style)
     cell.content.lines.breakableForeach { case (spans, i) =>
       if (i >= area.height) {
         breakableForeach.Break
       } else {
-        buf.set_spans(area.x, area.y + i, spans, area.width)
+        buf.setSpans(area.x, area.y + i, spans, area.width)
         breakableForeach.Continue
       }
     }
@@ -212,13 +212,13 @@ object TableWidget {
       cells: Array[TableWidget.Cell],
       height: Int = 1,
       style: Style = Style.DEFAULT,
-      bottom_margin: Int = 0
+      bottomMargin: Int = 0
   ) {
 
     /** Returns the total height of the row.
       */
-    val total_height: Int =
-      height.saturating_add(bottom_margin)
+    val totalHeight: Int =
+      height.saturating_add(bottomMargin)
   }
 
   case class State(

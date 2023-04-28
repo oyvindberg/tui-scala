@@ -2,14 +2,14 @@ package tui
 
 case class Viewport(
     var area: Rect,
-    resize_behavior: ResizeBehavior
+    resizeBehavior: ResizeBehavior
 )
 
 object Viewport {
-  /// UNSTABLE
+  // UNSTABLE
   def fixed(area: Rect): Viewport =
     Viewport(
       area,
-      resize_behavior = ResizeBehavior.Fixed
+      resizeBehavior = ResizeBehavior.Fixed
     )
 }

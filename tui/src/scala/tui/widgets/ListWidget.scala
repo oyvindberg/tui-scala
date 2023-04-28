@@ -10,29 +10,29 @@ import tui.internal.saturating._
   * @param items
   * @param style
   *   Style used as a base style for the widget
-  * @param start_corner
-  * @param highlight_style
+  * @param startCorner
+  * @param highlightStyle
   *   Style used to render selected item
-  * @param highlight_symbol
+  * @param highlightSymbol
   *   Symbol in front of the selected item (Shift all items to the right)
-  * @param repeat_highlight_symbol
+  * @param repeatHighlightSymbol
   *   Whether to repeat the highlight symbol for each line of the selected item
   */
 case class ListWidget(
     block: Option[BlockWidget] = None,
     items: Array[ListWidget.Item],
     style: Style = Style.DEFAULT,
-    start_corner: Corner = Corner.TopLeft,
-    highlight_style: Style = Style.DEFAULT,
-    highlight_symbol: Option[String] = None,
-    repeat_highlight_symbol: Boolean = false
+    startCorner: Corner = Corner.TopLeft,
+    highlightStyle: Style = Style.DEFAULT,
+    highlightSymbol: Option[String] = None,
+    repeatHightlightSymbol: Boolean = false
 ) extends Widget
     with StatefulWidget {
 
-  def get_items_bounds(
+  def getItemsBounds(
       selected0: Option[Int],
       offset0: Int,
-      max_height: Int
+      maxHeight: Int
   ): (Int, Int) = {
     val offset = math.min(offset0, items.length.saturating_sub_unsigned(1))
     var start = offset
@@ -42,7 +42,7 @@ case class ListWidget(
     var continue = true
     while (continue && it.hasNext) {
       val item = it.next()
-      if (height + item.height > max_height) {
+      if (height + item.height > maxHeight) {
         continue = false
       } else {
         height += item.height
@@ -54,7 +54,7 @@ case class ListWidget(
     while (selected >= end) {
       height = height.saturating_add(items(end).height)
       end += 1
-      while (height > max_height) {
+      while (height > maxHeight) {
         height = height.saturating_sub_unsigned(items(start).height)
         start += 1
       }
@@ -62,7 +62,7 @@ case class ListWidget(
     while (selected < start) {
       start -= 1
       height = height.saturating_add(items(start).height)
-      while (height > max_height) {
+      while (height > maxHeight) {
         end -= 1
         height = height.saturating_sub_unsigned(items(end).height)
       }
@@ -73,7 +73,7 @@ case class ListWidget(
   type State = ListWidget.State
 
   def render(area: Rect, buf: Buffer, state: State): Unit = {
-    buf.set_style(area, style)
+    buf.setStyle(area, style)
     val list_area = block match {
       case Some(b) =>
         val inner_area = b.inner(area)
@@ -91,17 +91,17 @@ case class ListWidget(
     }
     val list_height = list_area.height
 
-    val (start, end) = get_items_bounds(state.selected, state.offset, list_height)
+    val (start, end) = getItemsBounds(state.selected, state.offset, list_height)
     state.offset = start
 
-    val highlight_symbol1 = highlight_symbol.getOrElse("")
+    val highlight_symbol1 = highlightSymbol.getOrElse("")
     val blank_symbol = " ".repeat(Grapheme(highlight_symbol1).width)
 
     var current_height = 0
     val has_selection = state.selected.isDefined
     ranges.range(state.offset, state.offset + end - start) { i =>
       val item = items(i)
-      val (x, y) = start_corner match {
+      val (x, y) = startCorner match {
         case Corner.BottomLeft =>
           current_height += item.height
           (list_area.left, list_area.bottom - current_height)
@@ -113,20 +113,20 @@ case class ListWidget(
       val area = Rect(x, y, width = list_area.width, height = item.height)
 
       val item_style = style.patch(item.style)
-      buf.set_style(area, item_style)
+      buf.setStyle(area, item_style)
 
       val is_selected = state.selected.contains(i)
       item.content.lines.zipWithIndex.foreach { case (line, j) =>
         // if the item is selected, we need to display the hightlight symbol:
         // - either for the first line of the item only,
         // - or for each line of the item if the appropriate option is set
-        val symbol = if (is_selected && (j == 0 || repeat_highlight_symbol)) {
+        val symbol = if (is_selected && (j == 0 || repeatHightlightSymbol)) {
           highlight_symbol1
         } else {
           blank_symbol
         }
         val (elem_x, max_element_width) = if (has_selection) {
-          val (elem_x, _) = buf.set_stringn(
+          val (elem_x, _) = buf.setStringn(
             x,
             y + j,
             symbol,
@@ -137,10 +137,10 @@ case class ListWidget(
         } else {
           (x, list_area.width)
         }
-        buf.set_spans(elem_x, y + j, line, max_element_width);
+        buf.setSpans(elem_x, y + j, line, max_element_width);
       }
       if (is_selected) {
-        buf.set_style(area, highlight_style)
+        buf.setStyle(area, highlightStyle)
       }
     }
   }

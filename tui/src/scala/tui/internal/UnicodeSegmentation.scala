@@ -6,7 +6,7 @@ import java.util.Locale
 
 object UnicodeSegmentation {
 
-  def graphemes(str: String, is_extended: Boolean, locale: Locale = Locale.getDefault): Array[tui.Grapheme] = {
+  def graphemes(str: String, isExtended: Boolean, locale: Locale = Locale.getDefault): Array[tui.Grapheme] = {
     val b = Array.newBuilder[tui.Grapheme]
     val boundary = BreakIterator.getCharacterInstance(locale)
     boundary.setText(str)

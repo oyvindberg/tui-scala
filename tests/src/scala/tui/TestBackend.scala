@@ -18,16 +18,16 @@ case class TestBackend(
   def draw(content: Array[(Int, Int, Cell)]): Unit =
     content.foreach { case (x, y, c) => buffer.set(x, y, c) }
 
-  def hide_cursor(): Unit =
+  def hideCursor(): Unit =
     this.cursor = false
 
-  def show_cursor(): Unit =
+  def showCursor(): Unit =
     this.cursor = true
 
-  def get_cursor(): (Int, Int) =
+  def getCursor(): (Int, Int) =
     pos
 
-  def set_cursor(x: Int, y: Int): Unit =
+  def setCursor(x: Int, y: Int): Unit =
     pos = (x, y)
 
   def clear(): Unit =

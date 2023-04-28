@@ -12,22 +12,22 @@ import tui.widgets.canvas.{CanvasWidget, Line, Points}
   *   A reference to the datasets
   * @param block
   *   A block to display around the widget eventually
-  * @param x_axis
+  * @param xAxis
   *   The horizontal axis
-  * @param y_axis
+  * @param yAxis
   *   The vertical axis
   * @param style
   *   The widget base style
-  * @param hidden_legend_constraints
+  * @param hiddenLegendConstraints
   *   Set the constraints used to determine whether the legend should be shown or not.
   */
 case class ChartWidget(
     datasets: Array[ChartWidget.Dataset],
     block: Option[BlockWidget] = None,
-    x_axis: ChartWidget.Axis = ChartWidget.Axis.default,
-    y_axis: ChartWidget.Axis = ChartWidget.Axis.default,
+    xAxis: ChartWidget.Axis = ChartWidget.Axis.default,
+    yAxis: ChartWidget.Axis = ChartWidget.Axis.default,
     style: Style = Style.DEFAULT,
-    hidden_legend_constraints: (Constraint, Constraint) = (Constraint.Ratio(1, 4), Constraint.Ratio(1, 4))
+    hiddenLegendConstraints: (Constraint, Constraint) = (Constraint.Ratio(1, 4), Constraint.Ratio(1, 4))
 ) extends Widget {
 
   /** Compute the internal layout of the chart given the area. If the area is too small some elements may be automatically hidden
@@ -40,43 +40,43 @@ case class ChartWidget(
     var x = area.left
     var y = area.bottom - 1
 
-    if (x_axis.labels.isDefined && y > area.top) {
-      layout = layout.copy(label_x = Some(y))
+    if (xAxis.labels.isDefined && y > area.top) {
+      layout = layout.copy(labelX = Some(y))
       y -= 1
     }
 
-    layout = layout.copy(label_y = this.y_axis.labels.map(_ => x))
-    x += this.max_width_of_labels_left_of_y_axis(area, this.y_axis.labels.isDefined)
+    layout = layout.copy(labelY = this.yAxis.labels.map(_ => x))
+    x += this.maxWidthOfLabelsLeftOfYAxis(area, this.yAxis.labels.isDefined)
 
-    if (this.x_axis.labels.isDefined && y > area.top) {
-      layout = layout.copy(axis_x = Some(y))
+    if (this.xAxis.labels.isDefined && y > area.top) {
+      layout = layout.copy(axisX = Some(y))
       y -= 1
     }
 
-    if (this.y_axis.labels.isDefined && x + 1 < area.right) {
-      layout = layout.copy(axis_y = Some(x))
+    if (this.yAxis.labels.isDefined && x + 1 < area.right) {
+      layout = layout.copy(axisY = Some(x))
       x += 1
     }
 
     if (x < area.right && y > 1) {
-      layout = layout.copy(graph_area = Rect(x, area.top, area.right - x, y - area.top + 1))
+      layout = layout.copy(graphArea = Rect(x, area.top, area.right - x, y - area.top + 1))
     }
 
-    this.x_axis.title match {
+    this.xAxis.title match {
       case None => ()
       case Some(title) =>
         val w = title.width
-        if (w < layout.graph_area.width && layout.graph_area.height > 2) {
-          layout = layout.copy(title_x = Some((x + layout.graph_area.width - w, y)))
+        if (w < layout.graphArea.width && layout.graphArea.height > 2) {
+          layout = layout.copy(titleX = Some((x + layout.graphArea.width - w, y)))
         }
     }
 
-    this.y_axis.title match {
+    this.yAxis.title match {
       case None => ()
       case Some(title) =>
         val w = title.width
-        if (w + 1 < layout.graph_area.width && layout.graph_area.height > 2) {
-          layout = layout.copy(title_y = Some((x, area.top)))
+        if (w + 1 < layout.graphArea.width && layout.graphArea.height > 2) {
+          layout = layout.copy(titleY = Some((x, area.top)))
         }
     }
 
@@ -85,29 +85,29 @@ case class ChartWidget(
       case Some(inner_width) =>
         val legend_width = inner_width + 2
         val legend_height = this.datasets.length + 2
-        val max_legend_width = this.hidden_legend_constraints._1(layout.graph_area.width)
-        val max_legend_height = this.hidden_legend_constraints._2(layout.graph_area.height)
+        val max_legend_width = this.hiddenLegendConstraints._1(layout.graphArea.width)
+        val max_legend_height = this.hiddenLegendConstraints._2(layout.graphArea.height)
         if (inner_width > 0 && legend_width < max_legend_width && legend_height < max_legend_height) {
           val rect = Rect(
-            x = layout.graph_area.right - legend_width,
-            y = layout.graph_area.top,
+            x = layout.graphArea.right - legend_width,
+            y = layout.graphArea.top,
             width = legend_width,
             height = legend_height
           )
-          layout = layout.copy(legend_area = Some(rect))
+          layout = layout.copy(legendArea = Some(rect))
         }
     }
     layout
   }
 
-  def max_width_of_labels_left_of_y_axis(area: Rect, has_y_axis: Boolean): Int = {
-    var max_width = this.y_axis.labels.flatMap(labels => labels.map(_.width).maxOption).getOrElse(0)
+  def maxWidthOfLabelsLeftOfYAxis(area: Rect, has_y_axis: Boolean): Int = {
+    var max_width = this.yAxis.labels.flatMap(labels => labels.map(_.width).maxOption).getOrElse(0)
 
-    this.x_axis.labels.flatMap(labels => labels.headOption) match {
+    this.xAxis.labels.flatMap(labels => labels.headOption) match {
       case None => ()
       case Some(first_x_label) =>
         val first_label_width = Grapheme(first_x_label.content).width
-        val width_left_of_y_axis = this.x_axis.labels_alignment match {
+        val width_left_of_y_axis = this.xAxis.labelsAlignment match {
           case Alignment.Left =>
             // The last character of the label should be below the Y-Axis when it exists, not on its left
             val y_axis_offset = if (has_y_axis) 1 else 0
@@ -121,95 +121,95 @@ case class ChartWidget(
     max_width.min(area.width / 3)
   }
 
-  def render_x_labels(buf: Buffer, layout: ChartWidget.ChartLayout, chart_area: Rect, graph_area: Rect): Unit = {
-    val y = layout.label_x match {
+  def renderXLabels(buf: Buffer, layout: ChartWidget.ChartLayout, chartArea: Rect, graphArea: Rect): Unit = {
+    val y = layout.labelX match {
       case Some(y) => y
       case None    => return
     }
-    val labels = this.x_axis.labels.getOrElse(Array.empty[Span])
+    val labels = this.xAxis.labels.getOrElse(Array.empty[Span])
     val labels_len = labels.length
     if (labels_len < 2) {
       return
     }
 
-    val width_between_ticks = graph_area.width / labels_len
+    val width_between_ticks = graphArea.width / labels_len
 
-    val label_area = this.first_x_label_area(y, labels.head.width, width_between_ticks, chart_area, graph_area)
+    val label_area = this.firstXLabelArea(y, labels.head.width, width_between_ticks, chartArea, graphArea)
 
-    val label_alignment = this.x_axis.labels_alignment match {
+    val label_alignment = this.xAxis.labelsAlignment match {
       case Alignment.Left   => Alignment.Right
       case Alignment.Center => Alignment.Center
       case Alignment.Right  => Alignment.Left
     }
 
-    render_label(buf, labels.head, label_area, label_alignment)
+    renderLabel(buf, labels.head, label_area, label_alignment)
 
     ranges.range(0, labels.length /* first and last not rendered  here */ - 2) { i =>
       val label = labels(i + 1)
       // We add 1 to x (and width-1 below) to leave at least one space before each intermediate labels
-      val x = graph_area.left + (i + 1) * width_between_ticks + 1
+      val x = graphArea.left + (i + 1) * width_between_ticks + 1
       val label_area = Rect(x, y, width_between_ticks.saturating_sub_unsigned(1), 1)
 
-      render_label(buf, label, label_area, Alignment.Center)
+      renderLabel(buf, label, label_area, Alignment.Center)
       ()
     }
 
-    val x = graph_area.right - width_between_ticks
+    val x = graphArea.right - width_between_ticks
     val label_area1 = Rect(x, y, width_between_ticks, 1)
     // The last label should be aligned Right to be at the edge of the graph area
-    render_label(buf, labels.last, label_area1, Alignment.Right)
+    renderLabel(buf, labels.last, label_area1, Alignment.Right)
     ()
   }
 
-  def first_x_label_area(y: Int, label_width: Int, max_width_after_y_axis: Int, chart_area: Rect, graph_area: Rect): Rect = {
-    val (min_x, max_x) = this.x_axis.labels_alignment match {
-      case Alignment.Left => (chart_area.left, graph_area.left)
+  def firstXLabelArea(y: Int, labelWidth: Int, maxWidthAfterYAxis: Int, chartArea: Rect, graphArea: Rect): Rect = {
+    val (min_x, max_x) = this.xAxis.labelsAlignment match {
+      case Alignment.Left => (chartArea.left, graphArea.left)
       case Alignment.Center =>
         (
-          chart_area.left,
-          graph_area.left + max_width_after_y_axis.min(label_width)
+          chartArea.left,
+          graphArea.left + maxWidthAfterYAxis.min(labelWidth)
         )
       case Alignment.Right =>
         (
-          graph_area.left.saturating_sub_unsigned(1),
-          graph_area.left + max_width_after_y_axis
+          graphArea.left.saturating_sub_unsigned(1),
+          graphArea.left + maxWidthAfterYAxis
         )
     }
 
     Rect(min_x, y, max_x - min_x, 1)
   }
 
-  def render_label(buf: Buffer, label: Span, label_area: Rect, alignment: Alignment): (Int, Int) = {
+  def renderLabel(buf: Buffer, label: Span, labelArea: Rect, alignment: Alignment): (Int, Int) = {
     val label_width = label.width
-    val bounded_label_width = label_area.width.min(label_width)
+    val bounded_label_width = labelArea.width.min(label_width)
 
     val x = alignment match {
-      case Alignment.Left   => label_area.left
-      case Alignment.Center => label_area.left + label_area.width / 2 - bounded_label_width / 2
-      case Alignment.Right  => label_area.right - bounded_label_width
+      case Alignment.Left   => labelArea.left
+      case Alignment.Center => labelArea.left + labelArea.width / 2 - bounded_label_width / 2
+      case Alignment.Right  => labelArea.right - bounded_label_width
     }
 
-    buf.set_span(x, label_area.top, label, bounded_label_width)
+    buf.setSpan(x, labelArea.top, label, bounded_label_width)
   }
 
-  def render_y_labels(buf: Buffer, layout: ChartWidget.ChartLayout, chart_area: Rect, graph_area: Rect): Unit = {
-    val x = layout.label_y match {
+  def renderYLabels(buf: Buffer, layout: ChartWidget.ChartLayout, chartArea: Rect, graphArea: Rect): Unit = {
+    val x = layout.labelY match {
       case Some(x) => x
       case None    => return
     }
-    val labels = this.y_axis.labels.getOrElse(Array.empty[Span])
+    val labels = this.yAxis.labels.getOrElse(Array.empty[Span])
     val labels_len = labels.length
     ranges.range(0, labels.length) { i =>
       val label = labels(i)
-      val dy = i * (graph_area.height - 1) / (labels_len - 1)
-      if (dy < graph_area.bottom) {
+      val dy = i * (graphArea.height - 1) / (labels_len - 1)
+      if (dy < graphArea.bottom) {
         val label_area = Rect(
           x,
-          graph_area.bottom.saturating_sub_unsigned(1) - dy,
-          (graph_area.left - chart_area.left).saturating_sub_unsigned(1),
+          graphArea.bottom.saturating_sub_unsigned(1) - dy,
+          (graphArea.left - chartArea.left).saturating_sub_unsigned(1),
           1
         )
-        render_label(buf, label, label_area, this.y_axis.labels_alignment)
+        renderLabel(buf, label, label_area, this.yAxis.labelsAlignment)
         ()
       }
     }
@@ -219,7 +219,7 @@ case class ChartWidget(
     if (area.area == 0) {
       return
     }
-    buf.set_style(area, this.style)
+    buf.setStyle(area, this.style)
     // Sample the style of the entire widget. This sample will be used to reset the style of
     // the cells that are part of the components put on top of the grah area (i.e legend and
     // axis names).
@@ -234,51 +234,51 @@ case class ChartWidget(
     }
 
     val layout = this.layout(chart_area)
-    val graph_area = layout.graph_area
+    val graph_area = layout.graphArea
     if (graph_area.width < 1 || graph_area.height < 1) {
       return
     }
 
-    this.render_x_labels(buf, layout, chart_area, graph_area)
-    this.render_y_labels(buf, layout, chart_area, graph_area)
+    this.renderXLabels(buf, layout, chart_area, graph_area)
+    this.renderYLabels(buf, layout, chart_area, graph_area)
 
-    layout.axis_x match {
+    layout.axisX match {
       case None => ()
       case Some(y) =>
         ranges.range(graph_area.left, graph_area.right) { x =>
-          buf.get(x, y).set_symbol(symbols.line.HORIZONTAL).set_style(this.x_axis.style)
+          buf.get(x, y).setSymbol(symbols.line.HORIZONTAL).setStyle(this.xAxis.style)
           ()
         }
     }
 
-    layout.axis_y match {
+    layout.axisY match {
       case None => ()
       case Some(x) =>
         ranges.range(graph_area.top, graph_area.bottom) { y =>
-          buf.get(x, y).set_symbol(symbols.line.VERTICAL).set_style(this.y_axis.style)
+          buf.get(x, y).setSymbol(symbols.line.VERTICAL).setStyle(this.yAxis.style)
           ()
         }
     }
 
-    layout.axis_x match {
+    layout.axisX match {
       case None => ()
       case Some(y) =>
-        layout.axis_y match {
+        layout.axisY match {
           case None    => ()
-          case Some(x) => buf.get(x, y).set_symbol(symbols.line.BOTTOM_LEFT).set_style(this.x_axis.style)
+          case Some(x) => buf.get(x, y).setSymbol(symbols.line.BOTTOM_LEFT).setStyle(this.xAxis.style)
         }
     }
 
     this.datasets.foreach { dataset =>
       CanvasWidget(
-        background_color = this.style.bg.getOrElse(Color.Reset),
-        x_bounds = this.x_axis.bounds,
-        y_bounds = this.y_axis.bounds,
+        backgroundColor = this.style.bg.getOrElse(Color.Reset),
+        xBounds = this.xAxis.bounds,
+        yBounds = this.yAxis.bounds,
         marker = dataset.marker
       ) { ctx =>
         val points = Points(coords = dataset.data, color = dataset.style.fg.getOrElse(Color.Reset))
         ctx.draw(points)
-        dataset.graph_type match {
+        dataset.graphType match {
           case ChartWidget.GraphType.Scatter => ()
           case ChartWidget.GraphType.Line =>
             dataset.data.sliding(2).foreach {
@@ -292,14 +292,14 @@ case class ChartWidget(
         .render(graph_area, buf)
     }
 
-    layout.legend_area match {
+    layout.legendArea match {
       case None => ()
       case Some(legend_area) =>
-        buf.set_style(legend_area, original_style)
+        buf.setStyle(legend_area, original_style)
         BlockWidget(borders = Borders.ALL).render(legend_area, buf)
         ranges.range(0, this.datasets.length) { i =>
           val dataset = this.datasets(i)
-          buf.set_string(
+          buf.setString(
             legend_area.x + 1,
             legend_area.y + 1 + i,
             dataset.name,
@@ -309,22 +309,22 @@ case class ChartWidget(
         }
     }
 
-    layout.title_x match {
+    layout.titleX match {
       case None => ()
       case Some((x, y)) =>
-        val title = this.x_axis.title.get
+        val title = this.xAxis.title.get
         val width = graph_area.right.saturating_sub_unsigned(x)
-        buf.set_style(Rect(x, y, width, height = 1), original_style)
-        buf.set_spans(x, y, title, width)
+        buf.setStyle(Rect(x, y, width, height = 1), original_style)
+        buf.setSpans(x, y, title, width)
     }
 
-    layout.title_y match {
+    layout.titleY match {
       case None => ()
       case Some((x, y)) =>
-        val title = this.y_axis.title.get
+        val title = this.yAxis.title.get
         val width = graph_area.right.saturating_sub_unsigned(x)
-        buf.set_style(Rect(x, y, width, height = 1), original_style)
-        buf.set_spans(x, y, title, width)
+        buf.setStyle(Rect(x, y, width, height = 1), original_style)
+        buf.setSpans(x, y, title, width)
         ()
     }
   }
@@ -341,7 +341,7 @@ object ChartWidget {
     *   A list of labels to put to the left or below the axis
     * @param style
     *   The style used to draw the axis itself
-    * @param labels_alignment
+    * @param labelsAlignment
     *   Defines the alignment of the labels of the axis. The alignment behaves differently based on the axis:
     *   - Y-Axis: The labels are aligned within the area on the left of the axis
     *   - X-Axis: The first X-axis label is aligned relative to the Y-axis
@@ -351,7 +351,7 @@ object ChartWidget {
       bounds: Point = Point.Zero,
       labels: Option[Array[Span]] = None,
       style: Style = Style.DEFAULT,
-      labels_alignment: Alignment = Alignment.Left
+      labelsAlignment: Alignment = Alignment.Left
   )
 
   object Axis {
@@ -381,7 +381,7 @@ object ChartWidget {
     *   A reference to the actual data
     * @param marker
     *   Symbol used for each points of this dataset
-    * @param graph_type
+    * @param graphType
     *   Determines graph type used for drawing points
     * @param style
     *   Style used to plot this dataset
@@ -390,38 +390,38 @@ object ChartWidget {
       name: String = "",
       data: Array[Point] = Array.empty,
       marker: symbols.Marker = symbols.Marker.Dot,
-      graph_type: GraphType = GraphType.Scatter,
+      graphType: GraphType = GraphType.Scatter,
       style: Style = Style.DEFAULT
   )
 
   /** A container that holds all the infos about where to display each elements of the chart (axis, labels, legend, ...).
     *
-    * @param title_x
+    * @param titleX
     *   Location of the title of the x axis
-    * @param title_y
+    * @param titleY
     *   Location of the title of the y axis
-    * @param label_x
+    * @param labelX
     *   Location of the first label of the x axis
-    * @param label_y
+    * @param labelY
     *   Location of the first label of the y axis
-    * @param axis_x
+    * @param axisX
     *   Y coordinate of the horizontal axis
-    * @param axis_y
+    * @param axisY
     *   X coordinate of the vertical axis
-    * @param legend_area
+    * @param legendArea
     *   Area of the legend
-    * @param graph_area
+    * @param graphArea
     *   Area of the graph
     */
   case class ChartLayout(
-      title_x: Option[(Int, Int)] = None,
-      title_y: Option[(Int, Int)] = None,
-      label_x: Option[Int] = None,
-      label_y: Option[Int] = None,
-      axis_x: Option[Int] = None,
-      axis_y: Option[Int] = None,
-      legend_area: Option[Rect] = None,
-      graph_area: Rect = Rect.default
+      titleX: Option[(Int, Int)] = None,
+      titleY: Option[(Int, Int)] = None,
+      labelX: Option[Int] = None,
+      labelY: Option[Int] = None,
+      axisX: Option[Int] = None,
+      axisY: Option[Int] = None,
+      legendArea: Option[Rect] = None,
+      graphArea: Rect = Rect.default
   )
 
   object ChartLayout {

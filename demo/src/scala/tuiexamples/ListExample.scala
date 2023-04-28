@@ -176,7 +176,7 @@ object ListExample {
           lines += Spans.from(
             Span.styled(
               "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-              Style(add_modifier = Modifier.ITALIC)
+              Style(addModifier = Modifier.ITALIC)
             )
           )
         }
@@ -187,12 +187,12 @@ object ListExample {
     val items = ListWidget(
       items = items0,
       block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("List")))),
-      highlight_style = Style(bg = Some(Color.LightGreen), add_modifier = Modifier.BOLD),
-      highlight_symbol = Some(">> ")
+      highlightStyle = Style(bg = Some(Color.LightGreen), addModifier = Modifier.BOLD),
+      highlightSymbol = Some(">> ")
     )
 
     // We can now render the item list
-    f.render_stateful_widget(items, chunks(0))(app.items.state)
+    f.renderStatefulWidget(items, chunks(0))(app.items.state)
 
     // Let's do the same for the events.
     // The event list doesn't have any state and only displays the current state of the list.
@@ -212,7 +212,7 @@ object ListExample {
           Span.nostyle(" "),
           Span.styled(
             "2020-01-01 10:00:00",
-            Style(add_modifier = Modifier.ITALIC)
+            Style(addModifier = Modifier.ITALIC)
           )
         )
         // The event gets its own line
@@ -236,9 +236,9 @@ object ListExample {
     val events_list = ListWidget(
       items = events,
       block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("List")))),
-      start_corner = Corner.BottomLeft
+      startCorner = Corner.BottomLeft
     )
 
-    f.render_widget(events_list, chunks(1))
+    f.renderWidget(events_list, chunks(1))
   }
 }
