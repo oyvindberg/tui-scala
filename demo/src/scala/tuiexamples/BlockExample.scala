@@ -27,7 +27,7 @@ object BlockExample {
     val size = f.size
 
     // Surrounding block
-    val block0 = BlockWidget(
+    val block0 = BlockWidget.noChildren(
       borders = Borders.ALL,
       title = Some(Spans.nostyle("Main block with round corners")),
       titleAlignment = Alignment.Center,
@@ -38,7 +38,7 @@ object BlockExample {
     val layout = Layout(direction = Direction.Vertical, margin = Margin(4))(
       Layout(direction = Direction.Horizontal)(
         // Top left inner block with green background
-        BlockWidget(
+        BlockWidget.noChildren(
           title = Some(
             Spans.from(
               Span.styled("With", Style.DEFAULT.fg(Color.Yellow)),
@@ -48,14 +48,14 @@ object BlockExample {
           style = Style.DEFAULT.bg(Color.Green)
         ),
         // Top right inner block with styled title aligned to the right
-        BlockWidget(
+        BlockWidget.noChildren(
           title = Some(Spans.from(Span.styled("Styled title", Style(fg = Some(Color.White), bg = Some(Color.Red), addModifier = Modifier.BOLD)))),
           titleAlignment = Alignment.Right
         )
       ),
       Layout(direction = Direction.Horizontal)(
-        BlockWidget(title = Some(Spans.nostyle("With borders")), borders = Borders.ALL),
-        BlockWidget(
+        BlockWidget.noChildren(title = Some(Spans.nostyle("With borders")), borders = Borders.ALL),
+        BlockWidget.noChildren(
           title = Some(Spans.nostyle("With styled borders and doubled borders")),
           borderStyle = Style.DEFAULT.fg(Color.Cyan),
           borders = Borders.LEFT | Borders.RIGHT,

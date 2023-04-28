@@ -15,12 +15,14 @@ object ui {
 
       Layout
         .detailed()(
-          Constraint.Length(3) -> TabsWidget(
-            titles = titles,
-            block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle(app.title)))),
-            highlightStyle = Style.DEFAULT.fg(Color.Yellow),
-            selected = app.tabs.index
-          ),
+          Constraint.Length(3) ->
+            BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle(app.title)))(
+              TabsWidget(
+                titles = titles,
+                highlightStyle = Style.DEFAULT.fg(Color.Yellow),
+                selected = app.tabs.index
+              )
+            ),
           Constraint.Min(0) -> (
             app.tabs.index match {
               case 0 => draw_first_tab(app)
@@ -47,29 +49,35 @@ object ui {
 
   case class draw_gauges(app: App) extends Widget {
     override def render(area: Rect, buf: Buffer): Unit = {
-      val block = BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Graphs")))
+      val block = BlockWidget.noChildren(borders = Borders.ALL, title = Some(Spans.nostyle("Graphs")))
       block.render(area, buf)
 
       Layout
         .detailed(margin = Margin(1))(
-          Constraint.Length(2) -> GaugeWidget(
-            block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge:")))),
-            gaugeStyle = Style.DEFAULT.fg(Color.Magenta).bg(Color.Black).addModifier(Modifier.ITALIC | Modifier.BOLD),
-            label = Some(Span.nostyle("%.2f".format(app.progress * 100.0))),
-            ratio = GaugeWidget.Ratio(app.progress)
-          ),
-          Constraint.Length(3) -> SparklineWidget(
-            block = Some(BlockWidget(title = Some(Spans.nostyle("Sparkline:")))),
-            style = Style.DEFAULT.fg(Color.Green),
-            data = app.sparkline.points,
-            barSet = if (app.enhanced_graphics) symbols.bar.NINE_LEVELS else symbols.bar.THREE_LEVELS
-          ),
-          Constraint.Length(1) -> LineGaugeWidget(
-            block = Some(BlockWidget(title = Some(Spans.nostyle("LineGauge:")))),
-            gaugeStyle = Style.DEFAULT.fg(Color.Magenta),
-            lineSet = if (app.enhanced_graphics) symbols.line.THICK else symbols.line.NORMAL,
-            ratio = GaugeWidget.Ratio(app.progress)
-          )
+          Constraint.Length(2) ->
+            BlockWidget(title = Some(Spans.nostyle("Gauge:")))(
+              GaugeWidget(
+                style = Style.DEFAULT.fg(Color.Magenta).bg(Color.Black).addModifier(Modifier.ITALIC | Modifier.BOLD),
+                label = Some(Span.nostyle("%.2f".format(app.progress * 100.0))),
+                ratio = GaugeWidget.Ratio(app.progress)
+              )
+            ),
+          Constraint.Length(3) ->
+            BlockWidget(title = Some(Spans.nostyle("Sparkline:")))(
+              SparklineWidget(
+                style = Style.DEFAULT.fg(Color.Green),
+                data = app.sparkline.points,
+                barSet = if (app.enhanced_graphics) symbols.bar.NINE_LEVELS else symbols.bar.THREE_LEVELS
+              )
+            ),
+          Constraint.Length(1) ->
+            BlockWidget(title = Some(Spans.nostyle("LineGauge:")))(
+              LineGaugeWidget(
+                gaugeStyle = Style.DEFAULT.fg(Color.Magenta),
+                lineSet = if (app.enhanced_graphics) symbols.line.THICK else symbols.line.NORMAL,
+                ratio = GaugeWidget.Ratio(app.progress)
+              )
+            )
         )
         .render(area, buf)
     }
@@ -90,19 +98,20 @@ object ui {
       combined.render(area, buf)
     }
 
-    def makeBarchart: BarChartWidget =
-      BarChartWidget(
-        block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Bar chart")))),
-        data = app.barchart.toArray,
-        barWidth = 3,
-        barGap = 2,
-        barSet = if (app.enhanced_graphics) symbols.bar.NINE_LEVELS else symbols.bar.THREE_LEVELS,
-        valueStyle = Style.DEFAULT.fg(Color.Black).bg(Color.Green).addModifier(Modifier.ITALIC),
-        labelStyle = Style.DEFAULT.fg(Color.Yellow),
-        barStyle = Style.DEFAULT.fg(Color.Green)
+    def makeBarchart: Widget =
+      BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Bar chart")))(
+        BarChartWidget(
+          data = app.barchart.toArray,
+          barWidth = 3,
+          barGap = 2,
+          barSet = if (app.enhanced_graphics) symbols.bar.NINE_LEVELS else symbols.bar.THREE_LEVELS,
+          valueStyle = Style.DEFAULT.fg(Color.Black).bg(Color.Green).addModifier(Modifier.ITALIC),
+          labelStyle = Style.DEFAULT.fg(Color.Yellow),
+          barStyle = Style.DEFAULT.fg(Color.Green)
+        )
       )
 
-    def makeLogs: ListWidget = {
+    def makeLogs: Widget = {
       val logMessages = app.logs.items.map { case (evt, level) =>
         val s = level match {
           case "ERROR"    => Style.DEFAULT.fg(Color.Magenta)
@@ -113,28 +122,26 @@ object ui {
         val content = Text.from(Span.styled(level.padTo(9, ' '), s), Span.nostyle(evt))
         ListWidget.Item(content = content)
       }
-
-      ListWidget(
-        state = app.logs.state,
-        items = logMessages.toArray,
-        block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("List"))))
+      BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("List")))(
+        ListWidget(state = app.logs.state, items = logMessages.toArray)
       )
     }
 
-    def makeTasks: ListWidget = {
+    def makeTasks: Widget = {
       val items: Array[ListWidget.Item] = app.tasks.items
         .map(i => ListWidget.Item(content = Text.nostyle(i)))
         .toArray
-      ListWidget(
-        state = app.tasks.state,
-        items = items,
-        block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("List")))),
-        highlightStyle = Style.DEFAULT.addModifier(Modifier.BOLD),
-        highlightSymbol = Some("> ")
+      BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("List")))(
+        ListWidget(
+          state = app.tasks.state,
+          items = items,
+          highlightStyle = Style.DEFAULT.addModifier(Modifier.BOLD),
+          highlightSymbol = Some("> ")
+        )
       )
     }
 
-    def makeChart: ChartWidget = {
+    def makeChart: Widget = {
       val x_labels = Array(
         Span.styled(app.signals.window.x.toString, Style.DEFAULT.addModifier(Modifier.BOLD)),
         Span.nostyle(((app.signals.window.x + app.signals.window.y) / 2.0).toString),
@@ -151,27 +158,26 @@ object ui {
         )
       )
 
-      ChartWidget(
-        datasets = datasets,
-        block = {
-          val title = Span.styled("Chart", Style.DEFAULT.fg(Color.Cyan).addModifier(Modifier.BOLD))
-          Some(BlockWidget(title = Some(Spans.from(title)), borders = Borders.ALL))
-        },
-        xAxis = ChartWidget.Axis(
-          title = Some(Spans.nostyle("X Axis")),
-          style = Style.DEFAULT.fg(Color.Gray),
-          bounds = app.signals.window,
-          labels = Some(x_labels)
-        ),
-        yAxis = ChartWidget.Axis(
-          title = Some(Spans.nostyle("Y Axis")),
-          style = Style.DEFAULT.fg(Color.Gray),
-          bounds = Point(-20.0, 20.0),
-          labels = Some(
-            Array(
-              Span.styled("-20", Style.DEFAULT.addModifier(Modifier.BOLD)),
-              Span.nostyle("0"),
-              Span.styled("20", Style.DEFAULT.addModifier(Modifier.BOLD))
+      val title = Span.styled("Chart", Style.DEFAULT.fg(Color.Cyan).addModifier(Modifier.BOLD))
+      BlockWidget(title = Some(Spans.from(title)), borders = Borders.ALL)(
+        ChartWidget(
+          datasets = datasets,
+          xAxis = ChartWidget.Axis(
+            title = Some(Spans.nostyle("X Axis")),
+            style = Style.DEFAULT.fg(Color.Gray),
+            bounds = app.signals.window,
+            labels = Some(x_labels)
+          ),
+          yAxis = ChartWidget.Axis(
+            title = Some(Spans.nostyle("Y Axis")),
+            style = Style.DEFAULT.fg(Color.Gray),
+            bounds = Point(-20.0, 20.0),
+            labels = Some(
+              Array(
+                Span.styled("-20", Style.DEFAULT.addModifier(Modifier.BOLD)),
+                Span.nostyle("0"),
+                Span.styled("20", Style.DEFAULT.addModifier(Modifier.BOLD))
+              )
             )
           )
         )
@@ -208,14 +214,11 @@ object ui {
           "One more thing is that it should display unicode characters: 10€"
         )
       )
-      val block = {
-        val titleStyle = Style.DEFAULT
-          .fg(Color.Magenta)
-          .addModifier(Modifier.BOLD)
-        BlockWidget(borders = Borders.ALL, title = Some(Spans.from(Span.styled("Footer", titleStyle))))
-      }
-      ParagraphWidget(text = text, block = Some(block), wrap = Some(ParagraphWidget.Wrap(trim = true)))
-        .render(area, buf)
+      val titleStyle = Style.DEFAULT.fg(Color.Magenta).addModifier(Modifier.BOLD)
+
+      BlockWidget(borders = Borders.ALL, title = Some(Spans.from(Span.styled("Footer", titleStyle))))(
+        ParagraphWidget(text = text, wrap = Some(ParagraphWidget.Wrap(trim = true)))
+      ).render(area, buf)
     }
   }
 
@@ -229,59 +232,36 @@ object ui {
         TableWidget.Row(cells = Array(s.name, s.location, s.status).map(cell), style = style)
       }
 
-      val table = TableWidget(
-        rows = rows,
-        header = Some(
-          TableWidget.Row(cells = Array("Server", "Location", "Status").map(cell), style = Style.DEFAULT.fg(Color.Yellow), bottomMargin = 1)
-        ),
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Servers")), borders = Borders.ALL)),
-        widths = Array(Constraint.Length(15), Constraint.Length(15), Constraint.Length(10))
+      val table = BlockWidget(title = Some(Spans.nostyle("Servers")), borders = Borders.ALL)(
+        TableWidget(
+          rows = rows,
+          header = Some(
+            TableWidget.Row(cells = Array("Server", "Location", "Status").map(cell), style = Style.DEFAULT.fg(Color.Yellow), bottomMargin = 1)
+          ),
+          widths = Array(Constraint.Length(15), Constraint.Length(15), Constraint.Length(10))
+        )
       )
 
-      val map = CanvasWidget(
-        block = Some(BlockWidget(title = Some(Spans.nostyle("World")), borders = Borders.ALL)),
-        marker = if (app.enhanced_graphics) symbols.Marker.Braille else symbols.Marker.Dot,
-        xBounds = Point(-180.0, 180.0),
-        yBounds = Point(-90.0, 90.0)
-      ) { ctx =>
-        ctx.draw(
-          WorldMap(
-            resolution = MapResolution.High,
-            color = Color.White
-          )
-        )
-        ctx.layer()
-        ctx.draw(
-          Rectangle(
-            x = 0.0,
-            y = 30.0,
-            width = 10.0,
-            height = 10.0,
-            color = Color.Yellow
-          )
-        )
-        app.servers.zipWithIndex.foreach { case (s1, i) =>
-          app.servers.drop(i).foreach { s2 =>
-            ctx.draw(
-              Line(
-                x1 = s1.coords.y,
-                y1 = s1.coords.x,
-                y2 = s2.coords.x,
-                x2 = s2.coords.y,
-                color = Color.Yellow
-              )
-            );
+      val map = BlockWidget(title = Some(Spans.nostyle("World")), borders = Borders.ALL)(
+        CanvasWidget(
+          marker = if (app.enhanced_graphics) symbols.Marker.Braille else symbols.Marker.Dot,
+          xBounds = Point(-180.0, 180.0),
+          yBounds = Point(-90.0, 90.0)
+        ) { ctx =>
+          ctx.draw(WorldMap(resolution = MapResolution.High, color = Color.White))
+          ctx.layer()
+          ctx.draw(Rectangle(x = 0.0, y = 30.0, width = 10.0, height = 10.0, color = Color.Yellow))
+          app.servers.zipWithIndex.foreach { case (s1, i) =>
+            app.servers.drop(i).foreach { s2 =>
+              ctx.draw(Line(x1 = s1.coords.y, y1 = s1.coords.x, y2 = s2.coords.x, x2 = s2.coords.y, color = Color.Yellow))
+            }
+          }
+          app.servers.foreach { server =>
+            val color = if (server.status == "Up") Color.Green else Color.Red
+            ctx.print(server.coords.y, server.coords.x, Spans.from(Span.styled("X", Style.DEFAULT.fg(color))))
           }
         }
-        app.servers.foreach { server =>
-          val color = if (server.status == "Up") Color.Green else Color.Red
-          ctx.print(
-            server.coords.y,
-            server.coords.x,
-            Spans.from(Span.styled("X", Style.DEFAULT.fg(color)))
-          );
-        }
-      }
+      )
 
       Layout
         .detailed(direction = Direction.Horizontal)(
@@ -323,13 +303,10 @@ object ui {
         TableWidget.Row(cells)
       }
 
-      val table = TableWidget(
-        rows = items,
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Colors")), borders = Borders.ALL)),
-        widths = Array(
-          Constraint.Ratio(1, 3),
-          Constraint.Ratio(1, 3),
-          Constraint.Ratio(1, 3)
+      val table = BlockWidget(title = Some(Spans.nostyle("Colors")), borders = Borders.ALL)(
+        TableWidget(
+          rows = items,
+          widths = Array(Constraint.Ratio(1, 3), Constraint.Ratio(1, 3), Constraint.Ratio(1, 3))
         )
       )
 

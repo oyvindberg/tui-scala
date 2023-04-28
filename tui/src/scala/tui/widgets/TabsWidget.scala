@@ -21,7 +21,6 @@ import tui.internal.saturating._
   *   Tab divider
   */
 case class TabsWidget(
-    block: Option[BlockWidget] = None,
     titles: Array[Spans],
     selected: Int = 0,
     style: Style = Style.DEFAULT,
@@ -31,34 +30,26 @@ case class TabsWidget(
 
   def render(area: Rect, buf: Buffer): Unit = {
     buf.setStyle(area, style)
-    val tabs_area = block match {
-      case Some(b) =>
-        val inner_area = b.inner(area)
-        b.render(area, buf)
-        inner_area
-      case None => area
-    }
-
-    if (tabs_area.height < 1) {
+    if (area.height < 1) {
       return
     }
 
-    var x = tabs_area.left
+    var x = area.left
     val titles_length = titles.length
     ranges.range(0, titles_length) { i =>
       val title = titles(i)
       val last_title = titles_length - 1 == i
       x = x.saturating_add(1)
-      val remaining_width = tabs_area.right.saturating_sub_unsigned(x)
+      val remaining_width = area.right.saturating_sub_unsigned(x)
       if (remaining_width == 0) {
         ()
       } else {
-        val pos = buf.setSpans(x, tabs_area.top, title, remaining_width)
+        val pos = buf.setSpans(x, area.top, title, remaining_width)
         if (i == selected) {
           buf.setStyle(
             Rect(
               x,
-              y = tabs_area.top,
+              y = area.top,
               width = pos._1.saturating_sub_unsigned(x),
               height = 1
             ),
@@ -66,11 +57,11 @@ case class TabsWidget(
           )
         }
         x = pos._1.saturating_add(1)
-        val remaining_width1 = tabs_area.right.saturating_sub_unsigned(x)
+        val remaining_width1 = area.right.saturating_sub_unsigned(x)
         if (remaining_width1 == 0 || last_title) {
           ()
         } else {
-          val pos = buf.setSpan(x, tabs_area.top, divider, remaining_width1)
+          val pos = buf.setSpan(x, area.top, divider, remaining_width1)
           x = pos._1
         }
       }

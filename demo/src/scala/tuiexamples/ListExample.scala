@@ -219,19 +219,20 @@ object ListExample {
     // Create two chunks with equal horizontal screen space
     Layout(direction = Direction.Horizontal)(
       // Create a List from all list items and highlight the currently selected one
-      ListWidget(
-        state = app.items.state,
-        block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("List")))),
-        items = items0,
-        highlightStyle = Style(bg = Some(Color.LightGreen), addModifier = Modifier.BOLD),
-        highlightSymbol = Some(">> ")
+      BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("List")))(
+        ListWidget(
+          state = app.items.state,
+          items = items0,
+          highlightStyle = Style(bg = Some(Color.LightGreen), addModifier = Modifier.BOLD),
+          highlightSymbol = Some(">> ")
+        )
       ),
       Widget { (area, buf) =>
-        ListWidget(
-          state = ListWidget.State(),
-          items = events(area),
-          block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("List")))),
-          startCorner = Corner.BottomLeft
+        BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("List")))(
+          ListWidget(
+            items = events(area),
+            startCorner = Corner.BottomLeft
+          )
         ).render(area, buf)
       }
     )

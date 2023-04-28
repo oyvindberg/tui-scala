@@ -63,11 +63,12 @@ class ChartTests extends TuiTest {
       terminal.draw { f =>
         val datasets = Array(ChartWidget.Dataset(marker = symbols.Marker.Braille, style = Style.DEFAULT.fg(Color.Magenta), data = Array(Point.Zero)))
 
-        val chart = ChartWidget(
-          datasets = datasets,
-          block = Some(BlockWidget(title = Some(Spans.nostyle("Plot")), borders = Borders.ALL)),
-          xAxis = ChartWidget.Axis(bounds = Point.Zero, labels = Some(create_labels(Array("0.0", "1.0")))),
-          yAxis = ChartWidget.Axis(bounds = Point.Zero, labels = Some(create_labels(Array("1.0", "0.0"))))
+        val chart = BlockWidget(title = Some(Spans.nostyle("Plot")), borders = Borders.ALL)(
+          ChartWidget(
+            datasets = datasets,
+            xAxis = ChartWidget.Axis(bounds = Point.Zero, labels = Some(create_labels(Array("0.0", "1.0")))),
+            yAxis = ChartWidget.Axis(bounds = Point.Zero, labels = Some(create_labels(Array("1.0", "0.0"))))
+          )
         )
         f.renderWidget(chart, f.size);
       }
@@ -251,11 +252,12 @@ class ChartTests extends TuiTest {
       val datasets = Array(
         ChartWidget.Dataset(marker = symbols.Marker.Braille, style = Style.DEFAULT.fg(Color.Magenta), data = Array(Point.Zero))
       )
-      val chart = ChartWidget(
-        datasets = datasets,
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Plot")), borders = Borders.ALL)),
-        xAxis = ChartWidget.Axis(bounds = Point.Zero, labels = Option(create_labels(Array("0.0", "1.0")))),
-        yAxis = ChartWidget.Axis(bounds = Point.Zero, labels = Option(create_labels(Array("0.0", "1.0"))))
+      val chart = BlockWidget(title = Some(Spans.nostyle("Plot")), borders = Borders.ALL)(
+        ChartWidget(
+          datasets = datasets,
+          xAxis = ChartWidget.Axis(bounds = Point.Zero, labels = Option(create_labels(Array("0.0", "1.0")))),
+          yAxis = ChartWidget.Axis(bounds = Point.Zero, labels = Option(create_labels(Array("0.0", "1.0"))))
+        )
       )
       f.renderWidget(
         chart,
@@ -277,11 +279,12 @@ class ChartTests extends TuiTest {
         )
       )
 
-      val chart = ChartWidget(
-        datasets = datasets,
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Plot")), borders = Borders.ALL)),
-        xAxis = ChartWidget.Axis(bounds = Point(1_588_298_471.0, 1_588_992_600.0), labels = Some(create_labels(Array("1588298471.0", "1588992600.0")))),
-        yAxis = ChartWidget.Axis(bounds = Point(0.0, 1.0), labels = Some(create_labels(Array("0.0", "1.0"))))
+      val chart = BlockWidget(title = Some(Spans.nostyle("Plot")), borders = Borders.ALL)(
+        ChartWidget(
+          datasets = datasets,
+          xAxis = ChartWidget.Axis(bounds = Point(1_588_298_471.0, 1_588_992_600.0), labels = Some(create_labels(Array("1588298471.0", "1588992600.0")))),
+          yAxis = ChartWidget.Axis(bounds = Point(0.0, 1.0), labels = Some(create_labels(Array("0.0", "1.0"))))
+        )
       )
       f.renderWidget(chart, Rect(x = 0, y = 0, width = 80, height = 30))
     }
@@ -293,11 +296,12 @@ class ChartTests extends TuiTest {
 
     terminal.draw { f =>
       val datasets = Array(ChartWidget.Dataset(data = Array.empty, graphType = ChartWidget.GraphType.Line))
-      val chart = ChartWidget(
-        datasets = datasets,
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Empty Dataset With Line")), borders = Borders.ALL)),
-        xAxis = ChartWidget.Axis(bounds = Point.Zero, labels = Some(create_labels(Array("0.0", "1.0")))),
-        yAxis = ChartWidget.Axis(bounds = Point(0.0, 1.0), labels = Some(create_labels(Array("0.0", "1.0"))))
+      val chart = BlockWidget(title = Some(Spans.nostyle("Empty Dataset With Line")), borders = Borders.ALL)(
+        ChartWidget(
+          datasets = datasets,
+          xAxis = ChartWidget.Axis(bounds = Point.Zero, labels = Some(create_labels(Array("0.0", "1.0")))),
+          yAxis = ChartWidget.Axis(bounds = Point(0.0, 1.0), labels = Some(create_labels(Array("0.0", "1.0"))))
+        )
       )
       f.renderWidget(chart, Rect(x = 0, y = 0, width = 100, height = 100));
     }
@@ -345,17 +349,22 @@ class ChartTests extends TuiTest {
           graphType = ChartWidget.GraphType.Line
         )
       )
-      val chart = ChartWidget(
-        datasets = datasets,
-        style = Style.DEFAULT.bg(Color.White),
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Chart Test")), borders = Borders.ALL)),
-        xAxis = ChartWidget.Axis(
-          bounds = Point(0.0, 100.0),
-          title = Some(Spans.from(Span.styled("X Axis", Style.DEFAULT.fg(Color.Yellow)))),
-          labels = Some(create_labels(Array("0.0", "50.0", "100.0")))
-        ),
-        yAxis = ChartWidget.Axis(bounds = Point(0.0, 10.0), title = Some(Spans.nostyle("Y Axis")), labels = Some(create_labels(Array("0.0", "5.0", "10.0"))))
+      val chart = BlockWidget(
+        title = Some(Spans.nostyle("Chart Test")),
+        borders = Borders.ALL,
+        style = Style.DEFAULT.bg(Color.White)
+      )(
+        ChartWidget(
+          datasets = datasets,
+          xAxis = ChartWidget.Axis(
+            bounds = Point(0.0, 100.0),
+            title = Some(Spans.from(Span.styled("X Axis", Style.DEFAULT.fg(Color.Yellow)))),
+            labels = Some(create_labels(Array("0.0", "50.0", "100.0")))
+          ),
+          yAxis = ChartWidget.Axis(bounds = Point(0.0, 10.0), title = Some(Spans.nostyle("Y Axis")), labels = Some(create_labels(Array("0.0", "5.0", "10.0"))))
+        )
       )
+
       f.renderWidget(chart, Rect(x = 0, y = 0, width = 60, height = 30));
     }
 

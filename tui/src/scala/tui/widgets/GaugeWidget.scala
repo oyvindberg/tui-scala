@@ -7,26 +7,15 @@ import tui.internal.ranges
 /** A widget to display a task progress.
   */
 case class GaugeWidget(
-    block: Option[BlockWidget] = None,
     ratio: GaugeWidget.Ratio = GaugeWidget.Ratio.Zero,
     label: Option[Span] = None,
     useUnicode: Boolean = false,
-    style: Style = Style.DEFAULT,
-    gaugeStyle: Style = Style.DEFAULT
+    style: Style = Style.DEFAULT
 ) extends Widget {
 
   override def render(area: Rect, buf: Buffer): Unit = {
     buf.setStyle(area, style)
-    val gauge_area = block match {
-      case Some(b) =>
-        val inner_area = b.inner(area)
-        b.render(area, buf)
-        inner_area
-
-      case None => area
-    }
-    buf.setStyle(gauge_area, gaugeStyle)
-    if (gauge_area.height < 1) {
+    if (area.height < 1) {
       return
     }
 
@@ -36,26 +25,26 @@ case class GaugeWidget(
       val pct = math.round(ratio.value * 100.0)
       this.label.getOrElse(Span.nostyle(pct.toString + "%"))
     }
-    val clamped_label_width = gauge_area.width.min(label.width)
-    val label_col = gauge_area.left + (gauge_area.width - clamped_label_width) / 2
-    val label_row = gauge_area.top + gauge_area.height / 2
+    val clamped_label_width = area.width.min(label.width)
+    val label_col = area.left + (area.width - clamped_label_width) / 2
+    val label_row = area.top + area.height / 2
 
     // the gauge will be filled proportionally to the ratio
-    val filled_width = gauge_area.width.toDouble * this.ratio.value
+    val filled_width = area.width.toDouble * this.ratio.value
     val end: Int = if (useUnicode) {
-      gauge_area.left + math.floor(filled_width).toInt
+      area.left + math.floor(filled_width).toInt
     } else {
-      gauge_area.left + math.round(filled_width).toInt
+      area.left + math.round(filled_width).toInt
     }
-    ranges.range(gauge_area.top, gauge_area.bottom) { y =>
+    ranges.range(area.top, area.bottom) { y =>
       // render the filled area (left to end)
-      ranges.range(gauge_area.left, end) { x =>
+      ranges.range(area.left, end) { x =>
         // spaces are needed to apply the background styling
         buf
           .get(x, y)
           .setSymbol(" ")
-          .setFg(gaugeStyle.bg.getOrElse(Color.Reset))
-          .setBg(gaugeStyle.fg.getOrElse(Color.Reset))
+          .setFg(style.bg.getOrElse(Color.Reset))
+          .setBg(style.fg.getOrElse(Color.Reset))
         ()
       }
       if (useUnicode && ratio.value < 1.0) {

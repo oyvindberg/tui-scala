@@ -79,34 +79,38 @@ object GaugeExample {
 
   def ui(f: Frame, app: App): Unit =
     Layout(direction = Direction.Vertical, margin = Margin(2))(
-      GaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge1")), borders = Borders.ALL)),
-        gaugeStyle = Style(fg = Some(Color.Yellow)),
-        ratio = GaugeWidget.Ratio.percent(app.progress1)
+      BlockWidget(title = Some(Spans.nostyle("Gauge1")), borders = Borders.ALL)(
+        GaugeWidget(
+          style = Style(fg = Some(Color.Yellow)),
+          ratio = GaugeWidget.Ratio.percent(app.progress1)
+        )
       ),
-      GaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge2")), borders = Borders.ALL)),
-        gaugeStyle = Style(fg = Some(Color.Magenta), bg = Some(Color.Green)),
-        ratio = GaugeWidget.Ratio.percent(app.progress2),
-        label = Some(Span.nostyle(s"${app.progress2}/100"))
+      BlockWidget(title = Some(Spans.nostyle("Gauge2")), borders = Borders.ALL)(
+        GaugeWidget(
+          style = Style(fg = Some(Color.Magenta), bg = Some(Color.Green)),
+          ratio = GaugeWidget.Ratio.percent(app.progress2),
+          label = Some(Span.nostyle(s"${app.progress2}/100"))
+        )
       ),
-      GaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge3")), borders = Borders.ALL)),
-        gaugeStyle = Style(fg = Some(Color.Yellow)),
-        ratio = GaugeWidget.Ratio(app.progress3),
-        label = Some(
-          Span.styled(
-            "%.2f".format(app.progress3 * 100.0),
-            Style(fg = Some(Color.Red), addModifier = Modifier.ITALIC | Modifier.BOLD)
-          )
-        ),
-        useUnicode = true
+      BlockWidget(title = Some(Spans.nostyle("Gauge3")), borders = Borders.ALL)(
+        GaugeWidget(
+          style = Style(fg = Some(Color.Yellow)),
+          ratio = GaugeWidget.Ratio(app.progress3),
+          label = Some(
+            Span.styled(
+              "%.2f".format(app.progress3 * 100.0),
+              Style(fg = Some(Color.Red), addModifier = Modifier.ITALIC | Modifier.BOLD)
+            )
+          ),
+          useUnicode = true
+        )
       ),
-      GaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge4")))),
-        gaugeStyle = Style(fg = Some(Color.Cyan), addModifier = Modifier.ITALIC),
-        ratio = GaugeWidget.Ratio.percent(app.progress4),
-        label = Some(Span.nostyle(s"${app.progress4}/100"))
+      BlockWidget(title = Some(Spans.nostyle("Gauge4")))(
+        GaugeWidget(
+          style = Style(fg = Some(Color.Cyan), addModifier = Modifier.ITALIC),
+          ratio = GaugeWidget.Ratio.percent(app.progress4),
+          label = Some(Span.nostyle(s"${app.progress4}/100"))
+        )
       )
     )
       .render(f.size, f.buffer)

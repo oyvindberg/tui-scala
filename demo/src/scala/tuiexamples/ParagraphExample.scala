@@ -63,7 +63,7 @@ object ParagraphExample {
     val s = "Veeeeeeeeeeeeeeeery    loooooooooooooooooong   striiiiiiiiiiiiiiiiiiiiiiiiiing.   "
     val long_line = s.repeat(f.size.width / s.length + 4) + "\n"
 
-    val block = BlockWidget(style = Style(bg = Some(Color.White), fg = Some(Color.Black)))
+    val block = BlockWidget.noChildren(style = Style(bg = Some(Color.White), fg = Some(Color.Black)))
     f.renderWidget(block, f.size)
 
     val text = Text.fromSpans(
@@ -75,41 +75,41 @@ object ParagraphExample {
       Spans.styled("This is a line", Style.DEFAULT.fg(Color.Green).addModifier(Modifier.ITALIC))
     )
 
-    def create_block(title: String): BlockWidget =
+    def create_block(title: String, style: Style)(children: Widget): BlockWidget =
       BlockWidget(
         borders = Borders.ALL,
-        style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
+        style = style,
         title = Some(Spans.from(Span.styled(title, Style.DEFAULT.addModifier(Modifier.BOLD))))
-      )
+      )(children)
 
     Layout(direction = Direction.Vertical, margin = Margin(5))(
-      ParagraphWidget(
-        text = text,
-        style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
-        block = Some(create_block("Left, no wrap")),
-        alignment = Alignment.Left
+      create_block("Left, no wrap", Style(bg = Some(Color.White), fg = Some(Color.Black)))(
+        ParagraphWidget(
+          text = text,
+          alignment = Alignment.Left
+        )
       ),
-      ParagraphWidget(
-        text = text,
-        style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
-        block = Some(create_block("Left, wrap")),
-        alignment = Alignment.Left,
-        wrap = Some(ParagraphWidget.Wrap(trim = true))
+      create_block("Left, wrap", Style(bg = Some(Color.White), fg = Some(Color.Black)))(
+        ParagraphWidget(
+          text = text,
+          alignment = Alignment.Left,
+          wrap = Some(ParagraphWidget.Wrap(trim = true))
+        )
       ),
-      ParagraphWidget(
-        text = text,
-        style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
-        block = Some(create_block("Center, wrap")),
-        alignment = Alignment.Center,
-        wrap = Some(ParagraphWidget.Wrap(trim = true)),
-        scroll = (app.scroll, 0)
+      create_block("Center, wrap", Style(bg = Some(Color.White), fg = Some(Color.Black)))(
+        ParagraphWidget(
+          text = text,
+          alignment = Alignment.Center,
+          wrap = Some(ParagraphWidget.Wrap(trim = true)),
+          scroll = (app.scroll, 0)
+        )
       ),
-      ParagraphWidget(
-        text = text,
-        style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
-        block = Some(create_block("Right, wrap")),
-        alignment = Alignment.Right,
-        wrap = Some(ParagraphWidget.Wrap(trim = true))
+      create_block("Right, wrap", Style(bg = Some(Color.White), fg = Some(Color.Black)))(
+        ParagraphWidget(
+          text = text,
+          alignment = Alignment.Right,
+          wrap = Some(ParagraphWidget.Wrap(trim = true))
+        )
       )
     )
       .render(f.size, f.buffer)

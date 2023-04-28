@@ -93,14 +93,15 @@ object TableExample {
     }
 
     Layout(margin = Margin(5))(
-      TableWidget(
-        state = app.state,
-        block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Table")))),
-        widths = Array(Constraint.Percentage(50), Constraint.Length(30), Constraint.Min(10)),
-        highlightStyle = selected_style,
-        highlightSymbol = Some(">> "),
-        header = Some(header),
-        rows = rows
+      BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Table")))(
+        TableWidget(
+          state = app.state,
+          widths = Array(Constraint.Percentage(50), Constraint.Length(30), Constraint.Min(10)),
+          highlightStyle = selected_style,
+          highlightSymbol = Some(">> "),
+          header = Some(header),
+          rows = rows
+        )
       )
     )
       .render(f.size, f.buffer)

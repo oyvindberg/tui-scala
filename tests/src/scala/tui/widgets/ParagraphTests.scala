@@ -19,11 +19,12 @@ class ParagraphTests extends TuiTest {
 
       terminal.draw { f =>
         val text = Text.from(Spans.nostyle(SAMPLE_STRING))
-        val paragraph = ParagraphWidget(
-          text = text,
-          block = Some(BlockWidget(borders = Borders.ALL)),
-          wrap = Some(ParagraphWidget.Wrap(trim = true)),
-          alignment = alignment
+        val paragraph = BlockWidget(borders = Borders.ALL)(
+          ParagraphWidget(
+            text = text,
+            wrap = Some(ParagraphWidget.Wrap(trim = true)),
+            alignment = alignment
+          )
         )
         f.renderWidget(paragraph, f.size);
       }
@@ -83,7 +84,9 @@ class ParagraphTests extends TuiTest {
 
     val s = "コンピュータ上で文字を扱う場合、典型的には文字による通信を行う場合にその両端点では、"
     terminal.draw { f =>
-      val paragraph = ParagraphWidget(text = Text.nostyle(s), block = Some(BlockWidget(borders = Borders.ALL)), wrap = Some(ParagraphWidget.Wrap(trim = true)))
+      val paragraph = BlockWidget(borders = Borders.ALL)(
+        ParagraphWidget(text = Text.nostyle(s), wrap = Some(ParagraphWidget.Wrap(trim = true)))
+      )
       f.renderWidget(paragraph, f.size);
     }
 
@@ -108,7 +111,9 @@ class ParagraphTests extends TuiTest {
 
     terminal.draw { f =>
       val text = Text.nostyle("aコンピュータ上で文字を扱う場合、")
-      val paragraph = ParagraphWidget(text = text, block = Some(BlockWidget(borders = Borders.ALL)), wrap = Some(ParagraphWidget.Wrap(trim = true)))
+      val paragraph = BlockWidget(borders = Borders.ALL)(
+        ParagraphWidget(text = text, wrap = Some(ParagraphWidget.Wrap(trim = true)))
+      )
       f.renderWidget(paragraph, f.size);
     }
 
@@ -136,7 +141,7 @@ class ParagraphTests extends TuiTest {
       "└──────────────────┘"
     )
     terminal.draw { f =>
-      val paragraph = ParagraphWidget(text = line, block = Some(BlockWidget(borders = Borders.ALL)))
+      val paragraph = BlockWidget(borders = Borders.ALL)(ParagraphWidget(text = line))
       f.renderWidget(paragraph, f.size);
     }
     assertBuffer(backend, expected)
@@ -149,7 +154,9 @@ class ParagraphTests extends TuiTest {
 
       terminal.draw { f =>
         val text = Text.nostyle("段落现在可以水平滚动了！\nParagraph can scroll horizontally!\nShort line")
-        val paragraph = ParagraphWidget(text = text, block = Some(BlockWidget(borders = Borders.ALL)), alignment = alignment, scroll = scroll)
+        val paragraph = BlockWidget(borders = Borders.ALL)(
+          ParagraphWidget(text = text, alignment = alignment, scroll = scroll)
+        )
         f.renderWidget(paragraph, f.size);
       }
       assertBuffer(backend, expected)

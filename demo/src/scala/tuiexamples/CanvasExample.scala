@@ -92,21 +92,17 @@ object CanvasExample {
 
   def ui(f: Frame, app: App): Unit =
     Layout(direction = Direction.Horizontal)(
-      CanvasWidget(
-        block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("World")))),
-        yBounds = Point(-90.0, 90.0),
-        xBounds = Point(-180.0, 180.0)
-      ) { ctx =>
-        ctx.draw(WorldMap(color = Color.White, resolution = MapResolution.High))
-        ctx.print(app.x, -app.y, Spans.from(Span.styled("You are here", Style(fg = Some(Color.Yellow)))))
-      },
-      CanvasWidget(
-        block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Pong")))),
-        yBounds = Point(10.0, 110.0),
-        xBounds = Point(10.0, 110.0)
-      ) { ctx =>
-        ctx.draw(app.ball)
-      }
+      BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("World")))(
+        CanvasWidget(yBounds = Point(-90.0, 90.0), xBounds = Point(-180.0, 180.0)) { ctx =>
+          ctx.draw(WorldMap(color = Color.White, resolution = MapResolution.High))
+          ctx.print(app.x, -app.y, Spans.from(Span.styled("You are here", Style(fg = Some(Color.Yellow)))))
+        }
+      ),
+      BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Pong")))(
+        CanvasWidget(yBounds = Point(10.0, 110.0), xBounds = Point(10.0, 110.0)) { ctx =>
+          ctx.draw(app.ball)
+        }
+      )
     )
       .render(f.size, f.buffer)
 }

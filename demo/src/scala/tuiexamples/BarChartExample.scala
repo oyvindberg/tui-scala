@@ -63,30 +63,33 @@ object BarChartExample {
 
   def ui(app: App): Widget =
     Layout(direction = Direction.Vertical, margin = Margin(2, 2))(
-      BarChartWidget(
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Data1")), borders = Borders.ALL)),
-        data = app.data,
-        barWidth = 9,
-        barStyle = Style(fg = Some(Color.Yellow)),
-        valueStyle = Style(fg = Some(Color.Black), bg = Some(Color.Yellow))
+      BlockWidget(title = Some(Spans.nostyle("Data1")), borders = Borders.ALL)(
+        BarChartWidget(
+          data = app.data,
+          barWidth = 9,
+          barStyle = Style(fg = Some(Color.Yellow)),
+          valueStyle = Style(fg = Some(Color.Black), bg = Some(Color.Yellow))
+        )
       ),
       Layout(direction = Direction.Horizontal)(
-        BarChartWidget(
-          block = Some(BlockWidget(title = Some(Spans.nostyle("Data2")), borders = Borders.ALL)),
-          barWidth = 5,
-          barGap = 3,
-          barStyle = Style(fg = Some(Color.Green)),
-          valueStyle = Style(bg = Some(Color.Green), addModifier = Modifier.BOLD),
-          data = app.data
+        BlockWidget(title = Some(Spans.nostyle("Data2")), borders = Borders.ALL)(
+          BarChartWidget(
+            barWidth = 5,
+            barGap = 3,
+            barStyle = Style(fg = Some(Color.Green)),
+            valueStyle = Style(bg = Some(Color.Green), addModifier = Modifier.BOLD),
+            data = app.data
+          )
         ),
-        BarChartWidget(
-          block = Some(BlockWidget(title = Some(Spans.nostyle("Data3")), borders = Borders.ALL)),
-          data = app.data,
-          barStyle = Style(fg = Some(Color.Red)),
-          barWidth = 7,
-          barGap = 0,
-          valueStyle = Style(bg = Some(Color.Red)),
-          labelStyle = Style(fg = Some(Color.Cyan), addModifier = Modifier.ITALIC)
+        BlockWidget(title = Some(Spans.nostyle("Data3")), borders = Borders.ALL)(
+          BarChartWidget(
+            data = app.data,
+            barStyle = Style(fg = Some(Color.Red)),
+            barWidth = 7,
+            barGap = 0,
+            valueStyle = Style(bg = Some(Color.Red)),
+            labelStyle = Style(fg = Some(Color.Cyan), addModifier = Modifier.ITALIC)
+          )
         )
       )
     )

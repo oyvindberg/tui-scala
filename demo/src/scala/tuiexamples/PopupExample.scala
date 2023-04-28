@@ -39,7 +39,7 @@ object PopupExample {
           alignment = Alignment.Center,
           wrap = Some(ParagraphWidget.Wrap(trim = true))
         ),
-        Constraint.Percentage(80) -> BlockWidget(
+        Constraint.Percentage(80) -> BlockWidget.noChildren(
           title = Some(Spans.nostyle("Content")),
           borders = Borders.ALL,
           style = Style.DEFAULT.bg(Color.Blue)
@@ -48,7 +48,7 @@ object PopupExample {
       .render(f.size, f.buffer)
 
     if (app.show_popup) {
-      val block = BlockWidget(title = Some(Spans.nostyle("Popup")), borders = Borders.ALL)
+      val block = BlockWidget.noChildren(title = Some(Spans.nostyle("Popup")), borders = Borders.ALL)
       val area = centered_rect(60, 20, f.size)
       f.renderWidget(ClearWidget, area); // this clears out the background
       f.renderWidget(block, area)

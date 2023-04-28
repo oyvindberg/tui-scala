@@ -96,27 +96,19 @@ object SparklineExample {
   def ui(f: Frame, app: App): Unit =
     Layout
       .detailed(direction = Direction.Vertical, margin = Margin(2, 2))(
-        Constraint.Length(3) -> SparklineWidget(
-          block = Some(
-            BlockWidget(
-              title = Some(Spans.nostyle("Data1")),
-              borders = Borders.LEFT | Borders.RIGHT
-            )
+        Constraint.Length(3) ->
+          BlockWidget(title = Some(Spans.nostyle("Data1")), borders = Borders.LEFT | Borders.RIGHT, style = Style(fg = Some(Color.Yellow)))(
+            SparklineWidget(data = app.data1)
           ),
-          data = app.data1,
-          style = Style(fg = Some(Color.Yellow))
-        ),
-        Constraint.Length(3) -> SparklineWidget(
-          block = Some(BlockWidget(title = Some(Spans.nostyle("Data2")), borders = Borders.LEFT | Borders.RIGHT)),
-          data = app.data2,
-          style = Style(bg = Some(Color.Green))
-        ),
+        Constraint.Length(3) ->
+          BlockWidget(title = Some(Spans.nostyle("Data2")), borders = Borders.LEFT | Borders.RIGHT, style = Style(bg = Some(Color.Green)))(
+            SparklineWidget(data = app.data2)
+          ),
         // Multiline
-        Constraint.Length(7) -> SparklineWidget(
-          block = Some(BlockWidget(title = Some(Spans.nostyle("Data3")), borders = Borders.LEFT | Borders.RIGHT)),
-          style = Style(fg = Some(Color.Red)),
-          data = app.data3
-        ),
+        Constraint.Length(7) ->
+          BlockWidget(title = Some(Spans.nostyle("Data3")), borders = Borders.LEFT | Borders.RIGHT, style = Style(fg = Some(Color.Red)))(
+            SparklineWidget(data = app.data3)
+          ),
         Constraint.Min(0) -> Widget.Empty
       )
       .render(f.size, f.buffer)

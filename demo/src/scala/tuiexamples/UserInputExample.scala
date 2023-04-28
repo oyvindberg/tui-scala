@@ -100,15 +100,16 @@ object UserInputExample {
     Layout
       .detailed(direction = Direction.Vertical, margin = Margin(2))(
         Constraint.Length(1) -> ParagraphWidget(text = msg.overwrittenStyle(style)),
-        Constraint.Length(3) -> { (area, buf) =>
-          ParagraphWidget(
-            text = Text.nostyle(app.input),
-            block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Input")))),
+        Constraint.Length(3) -> Widget { (area, buf) =>
+          BlockWidget(
+            title = Some(Spans.nostyle("Input")),
+            borders = Borders.ALL,
             style = app.input_mode match {
               case InputMode.Normal  => Style.DEFAULT
               case InputMode.Editing => Style.DEFAULT.fg(Color.Yellow)
             }
-          ).render(area, buf)
+          )(ParagraphWidget(text = Text.nostyle(app.input)))
+            .render(area, buf)
           app.input_mode match {
             case InputMode.Normal =>
               // Hide the cursor. `Frame` does this by default, so we don't need to do anything here
@@ -124,11 +125,10 @@ object UserInputExample {
               )
           }
         },
-        Constraint.Min(5) -> ListWidget(
-          state = ListWidget.State(),
-          items = items,
-          block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Messages"))))
-        )
+        Constraint.Min(5) ->
+          BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Messages")))(
+            ListWidget(items = items)
+          )
       )
       .render(f.size, f.buffer)
   }

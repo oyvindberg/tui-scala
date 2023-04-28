@@ -19,8 +19,7 @@ import tui.internal.saturating._
   *   Whether to repeat the highlight symbol for each line of the selected item
   */
 case class ListWidget(
-    state: ListWidget.State,
-    block: Option[BlockWidget] = None,
+    state: ListWidget.State = ListWidget.State(),
     items: Array[ListWidget.Item],
     style: Style = Style.DEFAULT,
     startCorner: Corner = Corner.TopLeft,
@@ -74,22 +73,14 @@ case class ListWidget(
 
   def render(area: Rect, buf: Buffer): Unit = {
     buf.setStyle(area, style)
-    val list_area = block match {
-      case Some(b) =>
-        val inner_area = b.inner(area)
-        b.render(area, buf)
-        inner_area
-      case None => area
-    }
-
-    if (list_area.width < 1 || list_area.height < 1) {
+    if (area.width < 1 || area.height < 1) {
       return
     }
 
     if (items.isEmpty) {
       return
     }
-    val list_height = list_area.height
+    val list_height = area.height
 
     val (start, end) = getItemsBounds(state.selected, state.offset, list_height)
     state.offset = start
@@ -104,16 +95,16 @@ case class ListWidget(
       val (x, y) = startCorner match {
         case Corner.BottomLeft =>
           current_height += item.height
-          (list_area.left, list_area.bottom - current_height)
+          (area.left, area.bottom - current_height)
         case _ =>
-          val pos = (list_area.left, list_area.top + current_height)
+          val pos = (area.left, area.top + current_height)
           current_height += item.height
           pos
       }
-      val area = Rect(x, y, width = list_area.width, height = item.height)
+      val itemArea = Rect(x, y, width = area.width, height = item.height)
 
       val item_style = style.patch(item.style)
-      buf.setStyle(area, item_style)
+      buf.setStyle(itemArea, item_style)
 
       val is_selected = state.selected.contains(i)
       item.content.lines.zipWithIndex.foreach { case (line, j) =>
@@ -130,17 +121,17 @@ case class ListWidget(
             x,
             y + j,
             symbol,
-            list_area.width,
+            area.width,
             item_style
           )
-          (elem_x, list_area.width - (elem_x - x))
+          (elem_x, area.width - (elem_x - x))
         } else {
-          (x, list_area.width)
+          (x, area.width)
         }
         buf.setSpans(elem_x, y + j, line, max_element_width);
       }
       if (is_selected) {
-        buf.setStyle(area, highlightStyle)
+        buf.setStyle(itemArea, highlightStyle)
       }
     }
   }

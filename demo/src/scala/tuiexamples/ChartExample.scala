@@ -119,62 +119,59 @@ object ChartExample {
     )
 
     Layout(direction = Direction.Vertical)(
-      ChartWidget(
-        datasets = datasets0,
-        block = Some(
-          BlockWidget(title = Some(Spans.from(Span.styled("Chart 1", Style(fg = Some(Color.Cyan), addModifier = Modifier.BOLD)))), borders = Borders.ALL)
-        ),
-        xAxis = ChartWidget.Axis(title = Some(Spans.nostyle("X Axis")), style = Style(fg = Some(Color.Gray)), labels = Some(x_labels), bounds = app.window),
-        yAxis = ChartWidget.Axis(
-          title = Some(Spans.nostyle("Y Axis")),
-          style = Style(fg = Some(Color.Gray)),
-          labels = Some(
-            Array(
-              Span.styled("-20", Bold),
-              Span.nostyle("0"),
-              Span.styled("20", Bold)
-            )
-          ),
-          bounds = Point(-20.0, 20.0)
-        )
-      ),
-      ChartWidget(
-        datasets = datasets1,
-        block = Some(
-          BlockWidget(
-            title = Some(Spans.from(Span.styled("Chart 2", Style(fg = Some(Color.Cyan), addModifier = Modifier.BOLD)))),
-            borders = Borders.ALL
+      BlockWidget(title = Some(Spans.from(Span.styled("Chart 1", Style(fg = Some(Color.Cyan), addModifier = Modifier.BOLD)))), borders = Borders.ALL)(
+        ChartWidget(
+          datasets = datasets0,
+          xAxis = ChartWidget.Axis(title = Some(Spans.nostyle("X Axis")), style = Style(fg = Some(Color.Gray)), labels = Some(x_labels), bounds = app.window),
+          yAxis = ChartWidget.Axis(
+            title = Some(Spans.nostyle("Y Axis")),
+            style = Style(fg = Some(Color.Gray)),
+            labels = Some(
+              Array(
+                Span.styled("-20", Bold),
+                Span.nostyle("0"),
+                Span.styled("20", Bold)
+              )
+            ),
+            bounds = Point(-20.0, 20.0)
           )
-        ),
-        xAxis = ChartWidget.Axis(
-          title = Some(Spans.nostyle("X Axis")),
-          style = Style(fg = Some(Color.Gray)),
-          bounds = Point(0.0, 5.0),
-          labels = Some(Array(Span.styled("0", Bold), Span.nostyle("2.5"), Span.styled("5.0", Bold)))
-        ),
-        yAxis = ChartWidget.Axis(
-          title = Some(Spans.nostyle("Y Axis")),
-          style = Style(fg = Some(Color.Gray)),
-          bounds = Point(0.0, 5.0),
-          labels = Some(Array(Span.styled("0", Bold), Span.nostyle("2.5"), Span.styled("5.0", Bold)))
         )
       ),
-      ChartWidget(
-        datasets = datasets2,
-        block = Some(
-          BlockWidget(title = Some(Spans.from(Span.styled("Chart 3", Style(fg = Some(Color.Cyan), addModifier = Modifier.BOLD)))), borders = Borders.ALL)
-        ),
-        xAxis = ChartWidget.Axis(
-          title = Some(Spans.nostyle("X Axis")),
-          bounds = Point(0.0, 50.0),
-          labels = Some(Array(Span.styled("0", Bold), Span.nostyle("25"), Span.styled("50", Bold))),
-          style = Style(fg = Some(Color.Gray))
-        ),
-        yAxis = ChartWidget.Axis(
-          title = Some(Spans.nostyle("Y Axis")),
-          style = Style(fg = Some(Color.Gray)),
-          bounds = Point(0.0, 5.0),
-          labels = Some(Array(Span.styled("0", Bold), Span.nostyle("2.5"), Span.styled("5", Bold)))
+      BlockWidget(
+        title = Some(Spans.from(Span.styled("Chart 2", Style(fg = Some(Color.Cyan), addModifier = Modifier.BOLD)))),
+        borders = Borders.ALL
+      )(
+        ChartWidget(
+          datasets = datasets1,
+          xAxis = ChartWidget.Axis(
+            title = Some(Spans.nostyle("X Axis")),
+            style = Style(fg = Some(Color.Gray)),
+            bounds = Point(0.0, 5.0),
+            labels = Some(Array(Span.styled("0", Bold), Span.nostyle("2.5"), Span.styled("5.0", Bold)))
+          ),
+          yAxis = ChartWidget.Axis(
+            title = Some(Spans.nostyle("Y Axis")),
+            style = Style(fg = Some(Color.Gray)),
+            bounds = Point(0.0, 5.0),
+            labels = Some(Array(Span.styled("0", Bold), Span.nostyle("2.5"), Span.styled("5.0", Bold)))
+          )
+        )
+      ),
+      BlockWidget(title = Some(Spans.from(Span.styled("Chart 3", Style(fg = Some(Color.Cyan), addModifier = Modifier.BOLD)))), borders = Borders.ALL)(
+        ChartWidget(
+          datasets = datasets2,
+          xAxis = ChartWidget.Axis(
+            title = Some(Spans.nostyle("X Axis")),
+            bounds = Point(0.0, 50.0),
+            labels = Some(Array(Span.styled("0", Bold), Span.nostyle("25"), Span.styled("50", Bold))),
+            style = Style(fg = Some(Color.Gray))
+          ),
+          yAxis = ChartWidget.Axis(
+            title = Some(Spans.nostyle("Y Axis")),
+            style = Style(fg = Some(Color.Gray)),
+            bounds = Point(0.0, 5.0),
+            labels = Some(Array(Span.styled("0", Bold), Span.nostyle("2.5"), Span.styled("5", Bold)))
+          )
         )
       )
     )

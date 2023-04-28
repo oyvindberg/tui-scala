@@ -13,16 +13,17 @@ class TableTests extends TuiTest {
       val terminal = Terminal.init(backend)
 
       terminal.draw { f =>
-        val table = TableWidget(
-          block = Some(BlockWidget(borders = Borders.ALL)),
-          widths = Array(Constraint.Length(5), Constraint.Length(5), Constraint.Length(5)),
-          columnSpacing = column_spacing,
-          header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
-          rows = Array(
-            Row(Array("Row11", "Row12", "Row13").map(cell)),
-            Row(Array("Row21", "Row22", "Row23").map(cell)),
-            Row(Array("Row31", "Row32", "Row33").map(cell)),
-            Row(Array("Row41", "Row42", "Row43").map(cell))
+        val table = BlockWidget(borders = Borders.ALL)(
+          TableWidget(
+            widths = Array(Constraint.Length(5), Constraint.Length(5), Constraint.Length(5)),
+            columnSpacing = column_spacing,
+            header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
+            rows = Array(
+              Row(Array("Row11", "Row12", "Row13").map(cell)),
+              Row(Array("Row21", "Row22", "Row23").map(cell)),
+              Row(Array("Row31", "Row32", "Row33").map(cell)),
+              Row(Array("Row41", "Row42", "Row43").map(cell))
+            )
           )
         )
         f.renderWidget(table, f.size);
@@ -105,15 +106,16 @@ class TableTests extends TuiTest {
       val terminal = Terminal.init(backend)
 
       terminal.draw { f =>
-        val table = TableWidget(
-          block = Some(BlockWidget(borders = Borders.ALL)),
-          widths = widths,
-          header = Some(Row(Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
-          rows = Array(
-            Row(Array("Row11", "Row12", "Row13").map(cell)),
-            Row(Array("Row21", "Row22", "Row23").map(cell)),
-            Row(Array("Row31", "Row32", "Row33").map(cell)),
-            Row(Array("Row41", "Row42", "Row43").map(cell))
+        val table = BlockWidget(borders = Borders.ALL)(
+          TableWidget(
+            widths = widths,
+            header = Some(Row(Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
+            rows = Array(
+              Row(Array("Row11", "Row12", "Row13").map(cell)),
+              Row(Array("Row21", "Row22", "Row23").map(cell)),
+              Row(Array("Row31", "Row32", "Row33").map(cell)),
+              Row(Array("Row41", "Row42", "Row43").map(cell))
+            )
           )
         )
         f.renderWidget(table, f.size)
@@ -179,16 +181,17 @@ class TableTests extends TuiTest {
       val terminal = Terminal.init(backend)
 
       terminal.draw { f =>
-        val table = TableWidget(
-          block = Some(BlockWidget(borders = Borders.ALL)),
-          widths = widths,
-          columnSpacing = 0,
-          header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
-          rows = Array(
-            Row(Array("Row11", "Row12", "Row13").map(cell)),
-            Row(Array("Row21", "Row22", "Row23").map(cell)),
-            Row(Array("Row31", "Row32", "Row33").map(cell)),
-            Row(Array("Row41", "Row42", "Row43").map(cell))
+        val table = BlockWidget(borders = Borders.ALL)(
+          TableWidget(
+            widths = widths,
+            columnSpacing = 0,
+            header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
+            rows = Array(
+              Row(Array("Row11", "Row12", "Row13").map(cell)),
+              Row(Array("Row21", "Row22", "Row23").map(cell)),
+              Row(Array("Row31", "Row32", "Row33").map(cell)),
+              Row(Array("Row41", "Row42", "Row43").map(cell))
+            )
           )
         )
         f.renderWidget(table, f.size)
@@ -271,15 +274,16 @@ class TableTests extends TuiTest {
       val terminal = Terminal.init(backend)
 
       terminal.draw { f =>
-        val table = TableWidget(
-          block = Some(BlockWidget(borders = Borders.ALL)),
-          widths = widths,
-          header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
-          rows = Array(
-            Row(Array("Row11", "Row12", "Row13").map(cell)),
-            Row(Array("Row21", "Row22", "Row23").map(cell)),
-            Row(Array("Row31", "Row32", "Row33").map(cell)),
-            Row(Array("Row41", "Row42", "Row43").map(cell))
+        val table = BlockWidget(borders = Borders.ALL)(
+          TableWidget(
+            widths = widths,
+            header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
+            rows = Array(
+              Row(Array("Row11", "Row12", "Row13").map(cell)),
+              Row(Array("Row21", "Row22", "Row23").map(cell)),
+              Row(Array("Row31", "Row32", "Row33").map(cell)),
+              Row(Array("Row41", "Row42", "Row43").map(cell))
+            )
           )
         )
         f.renderWidget(table, f.size)
@@ -363,16 +367,17 @@ class TableTests extends TuiTest {
       val terminal = Terminal.init(backend)
 
       terminal.draw { f =>
-        val table = TableWidget(
-          block = Some(BlockWidget(borders = Borders.ALL)),
-          widths = widths,
-          columnSpacing = 0,
-          header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
-          rows = Array(
-            Row(Array("Row11", "Row12", "Row13").map(cell)),
-            Row(Array("Row21", "Row22", "Row23").map(cell)),
-            Row(Array("Row31", "Row32", "Row33").map(cell)),
-            Row(Array("Row41", "Row42", "Row43").map(cell))
+        val table = BlockWidget(borders = Borders.ALL)(
+          TableWidget(
+            widths = widths,
+            columnSpacing = 0,
+            header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
+            rows = Array(
+              Row(Array("Row11", "Row12", "Row13").map(cell)),
+              Row(Array("Row21", "Row22", "Row23").map(cell)),
+              Row(Array("Row31", "Row32", "Row33").map(cell)),
+              Row(Array("Row41", "Row42", "Row43").map(cell))
+            )
           )
         )
         f.renderWidget(table, f.size)
@@ -454,17 +459,18 @@ class TableTests extends TuiTest {
       val backend = TestBackend(30, 8)
       val terminal = Terminal.init(backend)
       terminal.draw { f =>
-        val table = TableWidget(
-          state = state,
-          block = Some(BlockWidget(borders = Borders.ALL)),
-          widths = Array(Constraint.Length(5), Constraint.Length(5), Constraint.Length(5)),
-          highlightSymbol = Some(">> "),
-          header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
-          rows = Array(
-            Row(cells = Array("Row11", "Row12", "Row13").map(cell)),
-            Row(cells = Array("Row21", "Row22", "Row23").map(cell), height = 2),
-            Row(cells = Array("Row31", "Row32", "Row33").map(cell)),
-            Row(cells = Array("Row41", "Row42", "Row43").map(cell), height = 2)
+        val table = BlockWidget(borders = Borders.ALL)(
+          TableWidget(
+            state = state,
+            widths = Array(Constraint.Length(5), Constraint.Length(5), Constraint.Length(5)),
+            highlightSymbol = Some(">> "),
+            header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
+            rows = Array(
+              Row(cells = Array("Row11", "Row12", "Row13").map(cell)),
+              Row(cells = Array("Row21", "Row22", "Row23").map(cell), height = 2),
+              Row(cells = Array("Row31", "Row32", "Row33").map(cell)),
+              Row(cells = Array("Row41", "Row42", "Row43").map(cell), height = 2)
+            )
           )
         )
         f.renderWidget(table, f.size)
@@ -543,25 +549,26 @@ class TableTests extends TuiTest {
     val state = TableWidget.State()
     state.select(Some(0))
     terminal.draw { f =>
-      val table = TableWidget(
-        state = state,
-        block = Some(BlockWidget(borders = Borders.LEFT | Borders.RIGHT)),
-        widths = Array(Constraint.Length(6), Constraint.Length(6), Constraint.Length(6)),
-        highlightStyle = Style(addModifier = Modifier.BOLD),
-        highlightSymbol = Some(">> "),
-        header = Some(Row(Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
-        rows = Array(
-          Row(cells = Array("Row11", "Row12", "Row13").map(cell), style = Style(fg = Some(Color.Green))),
-          Row(
-            cells = Array(
-              TableWidget.Cell(content = Text.nostyle("Row21")),
-              TableWidget.Cell(content = Text.nostyle("Row22"), style = Style(fg = Some(Color.Yellow))),
-              TableWidget.Cell(
-                content = Text.from(Span.nostyle("Row"), Span.styled("23", Style.DEFAULT.fg(Color.Blue))),
-                style = Style(fg = Some(Color.Red))
-              )
-            ),
-            style = Style(fg = Some(Color.LightGreen))
+      val table = BlockWidget(borders = Borders.LEFT | Borders.RIGHT)(
+        TableWidget(
+          state = state,
+          widths = Array(Constraint.Length(6), Constraint.Length(6), Constraint.Length(6)),
+          highlightStyle = Style(addModifier = Modifier.BOLD),
+          highlightSymbol = Some(">> "),
+          header = Some(Row(Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
+          rows = Array(
+            Row(cells = Array("Row11", "Row12", "Row13").map(cell), style = Style(fg = Some(Color.Green))),
+            Row(
+              cells = Array(
+                TableWidget.Cell(content = Text.nostyle("Row21")),
+                TableWidget.Cell(content = Text.nostyle("Row22"), style = Style(fg = Some(Color.Yellow))),
+                TableWidget.Cell(
+                  content = Text.from(Span.nostyle("Row"), Span.styled("23", Style.DEFAULT.fg(Color.Blue))),
+                  style = Style(fg = Some(Color.Red))
+                )
+              ),
+              style = Style(fg = Some(Color.LightGreen))
+            )
           )
         )
       )
@@ -606,11 +613,12 @@ class TableTests extends TuiTest {
     val backend = TestBackend(30, 4)
     val terminal = Terminal.init(backend)
     terminal.draw { f =>
-      val table = TableWidget(
-        block = Some(BlockWidget(borders = Borders.LEFT | Borders.RIGHT)),
-        widths = Array(Constraint.Length(6), Constraint.Length(6), Constraint.Length(6)),
-        header = Some(Row(Array("Head1", "Head2", "Head3").map(cell))),
-        rows = Array()
+      val table = BlockWidget(borders = Borders.LEFT | Borders.RIGHT)(
+        TableWidget(
+          widths = Array(Constraint.Length(6), Constraint.Length(6), Constraint.Length(6)),
+          header = Some(Row(Array("Head1", "Head2", "Head3").map(cell))),
+          rows = Array()
+        )
       )
       f.renderWidget(table, f.size)
     }
@@ -626,30 +634,32 @@ class TableTests extends TuiTest {
   }
 
   test("widgets_table_columns_dont_panic") {
-    def test_case(state: TableWidget.State, table: TableWidget, width: Int): Unit = {
+    def test_case(table: Widget, width: Int): Unit = {
       val backend = TestBackend(width, 8)
       val terminal = Terminal.init(backend)
       terminal.draw { f =>
-        f.renderWidget(table.copy(state = state), f.size)
+        f.renderWidget(table, f.size)
       }
       ()
     }
 
     // based on https://github.com/fdehau/tui-rs/issues/470#issuecomment-852562848
     val table1_width = 98
-    val table1 = TableWidget(
-      block = Some(BlockWidget(borders = Borders.ALL)),
-      widths = Array(Constraint.Percentage(15), Constraint.Percentage(15), Constraint.Percentage(25), Constraint.Percentage(45)),
-      highlightSymbol = Some(">> "),
-      header = Some(Row(Array("h1", "h2", "h3", "h4").map(cell))),
-      rows = Array(Row(Array("r1", "r2", "r3", "r4").map(cell)))
-    )
-
     val state = TableWidget.State()
 
     // select first, which would cause a panic before fix
     state.select(Some(0))
-    test_case(state, table1, table1_width)
+    val table1 = BlockWidget(borders = Borders.ALL)(
+      TableWidget(
+        state = state,
+        widths = Array(Constraint.Percentage(15), Constraint.Percentage(15), Constraint.Percentage(25), Constraint.Percentage(45)),
+        highlightSymbol = Some(">> "),
+        header = Some(Row(Array("h1", "h2", "h3", "h4").map(cell))),
+        rows = Array(Row(Array("r1", "r2", "r3", "r4").map(cell)))
+      )
+    )
+
+    test_case(table1, table1_width)
   }
 
   ignore("widgets_table_should_clamp_offset_if_rows_are_removed") {
@@ -660,18 +670,19 @@ class TableTests extends TuiTest {
     // render with 6 items => offset will be at 2
     state.select(Some(5))
     terminal.draw { f =>
-      val table = TableWidget(
-        state = state,
-        block = Some(BlockWidget(borders = Borders.ALL)),
-        widths = Array(Constraint.Length(5), Constraint.Length(5), Constraint.Length(5)),
-        header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
-        rows = Array(
-          Row(Array("Row01", "Row02", "Row03").map(cell)),
-          Row(Array("Row11", "Row12", "Row13").map(cell)),
-          Row(Array("Row21", "Row22", "Row23").map(cell)),
-          Row(Array("Row31", "Row32", "Row33").map(cell)),
-          Row(Array("Row41", "Row42", "Row43").map(cell)),
-          Row(Array("Row51", "Row52", "Row53").map(cell))
+      val table = BlockWidget(borders = Borders.ALL)(
+        TableWidget(
+          state = state,
+          widths = Array(Constraint.Length(5), Constraint.Length(5), Constraint.Length(5)),
+          header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
+          rows = Array(
+            Row(Array("Row01", "Row02", "Row03").map(cell)),
+            Row(Array("Row11", "Row12", "Row13").map(cell)),
+            Row(Array("Row21", "Row22", "Row23").map(cell)),
+            Row(Array("Row31", "Row32", "Row33").map(cell)),
+            Row(Array("Row41", "Row42", "Row43").map(cell)),
+            Row(Array("Row51", "Row52", "Row53").map(cell))
+          )
         )
       )
       f.renderWidget(table, f.size)
@@ -691,12 +702,13 @@ class TableTests extends TuiTest {
     // render with 1 item => offset will be at 1
     state.select(Some(1))
     terminal.draw { f =>
-      val table = TableWidget(
-        state = state,
-        block = Some(BlockWidget(borders = Borders.ALL)),
-        widths = Array(Constraint.Length(5), Constraint.Length(5), Constraint.Length(5)),
-        header = Some(Row(Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
-        rows = Array(Row(Array("Row31", "Row32", "Row33").map(cell)))
+      val table = BlockWidget(borders = Borders.ALL)(
+        TableWidget(
+          state = state,
+          widths = Array(Constraint.Length(5), Constraint.Length(5), Constraint.Length(5)),
+          header = Some(Row(Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
+          rows = Array(Row(Array("Row31", "Row32", "Row33").map(cell)))
+        )
       )
       f.renderWidget(table, f.size)
     }
