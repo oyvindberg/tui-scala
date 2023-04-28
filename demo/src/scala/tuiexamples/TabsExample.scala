@@ -51,7 +51,7 @@ object TabsExample {
     ).split(f.size)
 
     val block = BlockWidget(style = Style(bg = Some(Color.White), fg = Some(Color.Black)))
-    f.render_widget(block, f.size)
+    f.renderWidget(block, f.size)
     val titles = app.titles
       .map { t =>
         val (first, rest) = t.splitAt(1)
@@ -66,9 +66,9 @@ object TabsExample {
       block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Tabs")))),
       selected = app.index,
       style = Style(fg = Some(Color.Cyan)),
-      highlight_style = Style(add_modifier = Modifier.BOLD, bg = Some(Color.Black))
+      highlightStyle = Style(addModifier = Modifier.BOLD, bg = Some(Color.Black))
     )
-    f.render_widget(tabs, chunks(0))
+    f.renderWidget(tabs, chunks(0))
     val inner = app.index match {
       case 0 => BlockWidget(title = Some(Spans.nostyle("Inner 0")), borders = Borders.ALL)
       case 1 => BlockWidget(title = Some(Spans.nostyle("Inner 1")), borders = Borders.ALL)
@@ -76,6 +76,6 @@ object TabsExample {
       case 3 => BlockWidget(title = Some(Spans.nostyle("Inner 3")), borders = Borders.ALL)
       case _ => sys.error("unreachable")
     }
-    f.render_widget(inner, chunks(1))
+    f.renderWidget(inner, chunks(1))
   }
 }

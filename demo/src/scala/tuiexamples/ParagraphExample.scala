@@ -64,7 +64,7 @@ object ParagraphExample {
     val long_line = s.repeat(f.size.width / s.length + 4) + "\n"
 
     val block = BlockWidget(style = Style(bg = Some(Color.White), fg = Some(Color.Black)))
-    f.render_widget(block, f.size)
+    f.renderWidget(block, f.size)
 
     val chunks = Layout(
       direction = Direction.Vertical,
@@ -76,16 +76,16 @@ object ParagraphExample {
       Spans.nostyle("This is a line "),
       Spans.styled("This is a line   ", Style.DEFAULT.fg(Color.Red)),
       Spans.styled("This is a line", Style.DEFAULT.bg(Color.Blue)),
-      Spans.styled("This is a longer line", Style.DEFAULT.add_modifier(Modifier.CROSSED_OUT)),
+      Spans.styled("This is a longer line", Style.DEFAULT.addModifier(Modifier.CROSSED_OUT)),
       Spans.styled(long_line, Style.DEFAULT.bg(Color.Green)),
-      Spans.styled("This is a line", Style.DEFAULT.fg(Color.Green).add_modifier(Modifier.ITALIC))
+      Spans.styled("This is a line", Style.DEFAULT.fg(Color.Green).addModifier(Modifier.ITALIC))
     )
 
     def create_block(title: String): BlockWidget =
       BlockWidget(
         borders = Borders.ALL,
         style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
-        title = Some(Spans.from(Span.styled(title, Style.DEFAULT.add_modifier(Modifier.BOLD))))
+        title = Some(Spans.from(Span.styled(title, Style.DEFAULT.addModifier(Modifier.BOLD))))
       )
 
     val paragraph0 = ParagraphWidget(
@@ -94,7 +94,7 @@ object ParagraphExample {
       block = Some(create_block("Left, no wrap")),
       alignment = Alignment.Left
     )
-    f.render_widget(paragraph0, chunks(0))
+    f.renderWidget(paragraph0, chunks(0))
     val paragraph1 = ParagraphWidget(
       text = text,
       style = Style(bg = Some(Color.White), fg = Some(Color.Black)),
@@ -102,7 +102,7 @@ object ParagraphExample {
       alignment = Alignment.Left,
       wrap = Some(ParagraphWidget.Wrap(trim = true))
     )
-    f.render_widget(paragraph1, chunks(1))
+    f.renderWidget(paragraph1, chunks(1))
 
     val paragraph2 = ParagraphWidget(
       text = text,
@@ -112,7 +112,7 @@ object ParagraphExample {
       wrap = Some(ParagraphWidget.Wrap(trim = true)),
       scroll = (app.scroll, 0)
     )
-    f.render_widget(paragraph2, chunks(2))
+    f.renderWidget(paragraph2, chunks(2))
 
     val paragraph3 = ParagraphWidget(
       text = text,
@@ -121,6 +121,6 @@ object ParagraphExample {
       alignment = Alignment.Right,
       wrap = Some(ParagraphWidget.Wrap(trim = true))
     )
-    f.render_widget(paragraph3, chunks(3))
+    f.renderWidget(paragraph3, chunks(3))
   }
 }

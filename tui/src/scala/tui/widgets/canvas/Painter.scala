@@ -9,16 +9,16 @@ case class Painter(
 
   /** Convert the (x, y) coordinates to location of a point on the grid
     */
-  def get_point(x: Double, y: Double): Option[(Int, Int)] = {
-    val left = this.context.x_bounds.x
-    val right = this.context.x_bounds.y
-    val top = this.context.y_bounds.y
-    val bottom = this.context.y_bounds.x
+  def getPoint(x: Double, y: Double): Option[(Int, Int)] = {
+    val left = this.context.xBounds.x
+    val right = this.context.xBounds.y
+    val top = this.context.yBounds.y
+    val bottom = this.context.yBounds.x
     if (x < left || x > right || y < bottom || y > top) {
       return None
     }
-    val width = math.abs(this.context.x_bounds.y - this.context.x_bounds.x)
-    val height = math.abs(this.context.y_bounds.y - this.context.y_bounds.x)
+    val width = math.abs(this.context.xBounds.y - this.context.xBounds.x)
+    val height = math.abs(this.context.yBounds.y - this.context.yBounds.x)
     if (width == 0.0 || height == 0.0) {
       return None
     }

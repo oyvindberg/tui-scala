@@ -29,7 +29,7 @@ case class ParagraphWidget(
 ) extends Widget {
 
   def render(area: Rect, buf: Buffer): Unit = {
-    buf.set_style(area, this.style)
+    buf.setStyle(area, this.style)
     val text_area = block match {
       case Some(b) =>
         val inner_area = b.inner(area)
@@ -44,7 +44,7 @@ case class ParagraphWidget(
 
     val styled: Array[StyledGrapheme] =
       text.lines.flatMap { case Spans(spans: Array[Span]) =>
-        spans.flatMap(span => span.styled_graphemes(this.style)) :+ StyledGrapheme(Grapheme("\n"), this.style)
+        spans.flatMap(span => span.styledGraphemes(this.style)) :+ StyledGrapheme(Grapheme("\n"), this.style)
       }
 
     val line_composer: LineComposer =
@@ -65,7 +65,7 @@ case class ParagraphWidget(
         case None => continue = false
         case Some((current_line, current_line_width)) =>
           if (y >= this.scroll._1) {
-            var x = ParagraphWidget.get_line_offset(current_line_width, text_area.width, this.alignment)
+            var x = ParagraphWidget.getLineOffset(current_line_width, text_area.width, this.alignment)
             current_line.foreach { case StyledGrapheme(symbol, style) =>
               // If the symbol is empty, the last char which rendered last time will
               // leave on the line. It's a quick fix.
@@ -73,8 +73,8 @@ case class ParagraphWidget(
 
               buf
                 .get(text_area.left + x, text_area.top + y - this.scroll._1)
-                .set_symbol(newSymbol)
-                .set_style(style)
+                .setSymbol(newSymbol)
+                .setStyle(style)
 
               x += symbol.width
             }
@@ -87,10 +87,10 @@ case class ParagraphWidget(
   }
 }
 object ParagraphWidget {
-  def get_line_offset(line_width: Int, text_area_width: Int, alignment: Alignment): Int =
+  def getLineOffset(lineWidth: Int, textAreaWidth: Int, alignment: Alignment): Int =
     alignment match {
-      case Alignment.Center => (text_area_width / 2).saturating_sub_unsigned(line_width / 2)
-      case Alignment.Right  => text_area_width.saturating_sub_unsigned(line_width)
+      case Alignment.Center => (textAreaWidth / 2).saturating_sub_unsigned(lineWidth / 2)
+      case Alignment.Right  => textAreaWidth.saturating_sub_unsigned(lineWidth)
       case Alignment.Left   => 0
     }
 

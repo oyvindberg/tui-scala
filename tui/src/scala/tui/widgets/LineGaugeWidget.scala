@@ -10,12 +10,12 @@ case class LineGaugeWidget(
     block: Option[BlockWidget] = None,
     ratio: GaugeWidget.Ratio = GaugeWidget.Ratio.Zero,
     label: Option[Spans] = None,
-    line_set: symbols.line.Set = symbols.line.NORMAL,
+    lineSet: symbols.line.Set = symbols.line.NORMAL,
     style: Style = Style.DEFAULT,
-    gauge_style: Style = Style.DEFAULT
+    gaugeStyle: Style = Style.DEFAULT
 ) extends Widget {
   override def render(area: Rect, buf: Buffer): Unit = {
-    buf.set_style(area, style)
+    buf.setStyle(area, style)
     val gauge_area = block match {
       case Some(b) =>
         val inner_area = b.inner(area)
@@ -29,7 +29,7 @@ case class LineGaugeWidget(
     }
 
     val label = this.label.getOrElse(Spans.nostyle(s"${(ratio.value * 100.0).toInt}%"))
-    val (col, row) = buf.set_spans(
+    val (col, row) = buf.setSpans(
       gauge_area.left,
       gauge_area.top,
       label,
@@ -44,13 +44,13 @@ case class LineGaugeWidget(
     ranges.range(start, end) { col =>
       buf
         .get(col, row)
-        .set_symbol(line_set.horizontal)
-        .set_style(
+        .setSymbol(lineSet.horizontal)
+        .setStyle(
           Style(
-            fg = gauge_style.fg,
+            fg = gaugeStyle.fg,
             bg = None,
-            add_modifier = gauge_style.add_modifier,
-            sub_modifier = gauge_style.sub_modifier
+            addModifier = gaugeStyle.addModifier,
+            subModifier = gaugeStyle.subModifier
           )
         )
       ()
@@ -58,13 +58,13 @@ case class LineGaugeWidget(
     ranges.range(end, gauge_area.right) { col =>
       buf
         .get(col, row)
-        .set_symbol(line_set.horizontal)
-        .set_style(
+        .setSymbol(lineSet.horizontal)
+        .setStyle(
           Style(
-            fg = gauge_style.bg,
+            fg = gaugeStyle.bg,
             bg = None,
-            add_modifier = gauge_style.add_modifier,
-            sub_modifier = gauge_style.sub_modifier
+            addModifier = gaugeStyle.addModifier,
+            subModifier = gaugeStyle.subModifier
           )
         )
       ()

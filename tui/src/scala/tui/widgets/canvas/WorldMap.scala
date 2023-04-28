@@ -16,7 +16,7 @@ case class WorldMap(
       case MapResolution.High => WorldMap.world.WORLD_HIGH_RESOLUTION
     }
     data.foreach { case Point(x, y) =>
-      painter.get_point(x, y) match {
+      painter.getPoint(x, y) match {
         case Some((x, y)) => painter.paint(x, y, color)
         case None         => ()
       }
@@ -25,7 +25,9 @@ case class WorldMap(
 }
 
 object WorldMap {
-  /// [Source data](http://www.gnuplotting.org/plotting-the-world-revisited)
+
+  /** [Source data](http://www.gnuplotting.org/plotting-the-world-revisited)
+    */
   object world {
     private def WORLD_HIGH_RESOLUTION1: Array[Point] = Array(
       Point(-163.7128, -78.5956),

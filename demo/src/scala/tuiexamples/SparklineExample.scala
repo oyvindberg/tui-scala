@@ -110,20 +110,20 @@ object SparklineExample {
       data = app.data1,
       style = Style(fg = Some(Color.Yellow))
     )
-    f.render_widget(sparkline0, chunks(0))
+    f.renderWidget(sparkline0, chunks(0))
 
     val sparkline1 = SparklineWidget(
       block = Some(BlockWidget(title = Some(Spans.nostyle("Data2")), borders = Borders.LEFT | Borders.RIGHT)),
       data = app.data2,
       style = Style(bg = Some(Color.Green))
     )
-    f.render_widget(sparkline1, chunks(1))
+    f.renderWidget(sparkline1, chunks(1))
     // Multiline
     val sparkline2 = SparklineWidget(
       block = Some(BlockWidget(title = Some(Spans.nostyle("Data3")), borders = Borders.LEFT | Borders.RIGHT)),
       style = Style(fg = Some(Color.Red)),
       data = app.data3
     )
-    f.render_widget(sparkline2, chunks(2))
+    f.renderWidget(sparkline2, chunks(2))
   }
 }

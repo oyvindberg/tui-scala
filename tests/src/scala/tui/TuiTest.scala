@@ -5,11 +5,11 @@ import org.scalatest.Assertion
 import org.scalatest.funsuite.AnyFunSuite
 
 trait TuiTest extends AnyFunSuite with TypeCheckedTripleEquals {
-  def assert_eq[L, R](actual: L, expected: R, msg: String = "")(implicit constraint: L CanEqual R, prettifier: Prettifier, pos: source.Position): Assertion =
+  def assertEq[L, R](actual: L, expected: R, msg: String = "")(implicit constraint: L CanEqual R, prettifier: Prettifier, pos: source.Position): Assertion =
     assert(actual === expected)
 
-  def assert_buffer(actual: TestBackend, expected: Buffer): Unit = {
-    assert_eq(expected.area, actual.buffer.area)
+  def assertBuffer(actual: TestBackend, expected: Buffer): Unit = {
+    assertEq(expected.area, actual.buffer.area)
     val diff = expected.diff(actual.buffer)
     if (diff.isEmpty) {
       return

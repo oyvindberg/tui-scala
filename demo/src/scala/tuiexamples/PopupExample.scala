@@ -42,11 +42,11 @@ object PopupExample {
     val text = if (app.show_popup) { "Press p to close the popup" }
     else { "Press p to show the popup" }
     val paragraph = ParagraphWidget(
-      text = Text.from(Span.styled(text, Style(add_modifier = Modifier.SLOW_BLINK))),
+      text = Text.from(Span.styled(text, Style(addModifier = Modifier.SLOW_BLINK))),
       alignment = Alignment.Center,
       wrap = Some(ParagraphWidget.Wrap(trim = true))
     )
-    f.render_widget(paragraph, chunks(0))
+    f.renderWidget(paragraph, chunks(0))
 
     val block = BlockWidget(
       title = Some(Spans.nostyle("Content")),
@@ -54,13 +54,13 @@ object PopupExample {
       style = Style.DEFAULT.bg(Color.Blue)
     )
 
-    f.render_widget(block, chunks(1))
+    f.renderWidget(block, chunks(1))
 
     if (app.show_popup) {
       val block = BlockWidget(title = Some(Spans.nostyle("Popup")), borders = Borders.ALL)
       val area = centered_rect(60, 20, size)
-      f.render_widget(ClearWidget, area); // this clears out the background
-      f.render_widget(block, area)
+      f.renderWidget(ClearWidget, area); // this clears out the background
+      f.renderWidget(block, area)
     }
   }
 

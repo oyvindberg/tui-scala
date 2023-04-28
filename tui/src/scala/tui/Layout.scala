@@ -18,7 +18,7 @@ case class Layout(
     direction: Direction = Direction.Vertical,
     margin: Margin = Margin(horizontal = 0, vertical = 0),
     constraints: Array[Constraint] = Array.empty,
-    expand_to_fill: Boolean = true
+    expandToFill: Boolean = true
 ) {
   def split(area: Rect): Array[Rect] =
     Layout.LAYOUT_CACHE.getOrElseUpdate((area, this), Layout.split(area, this))
@@ -80,7 +80,7 @@ object Layout {
       ccs += c
     }
 
-    if (layout.expand_to_fill) {
+    if (layout.expandToFill) {
       elements.lastOption.foreach { last =>
         val c = layout.direction match {
           case Direction.Horizontal => last.right | EQ(REQUIRED) | dest_area.right.toDouble
@@ -157,7 +157,7 @@ object Layout {
       }
     }
 
-    if (layout.expand_to_fill) {
+    if (layout.expandToFill) {
       // Fix imprecision by extending the last item a bit if necessary
       if (results.nonEmpty) {
         val lastIdx = results.length - 1

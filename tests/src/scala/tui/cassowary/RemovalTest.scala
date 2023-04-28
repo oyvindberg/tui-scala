@@ -16,12 +16,12 @@ class RemovalTest extends TuiTest {
     solver.add_constraint(constraint).unwrap()
     values.update_values(solver.fetch_changes())
 
-    assert_eq(values.value_of(v), 100.0)
+    assertEq(values.value_of(v), 100.0)
 
     solver.remove_constraint(constraint).unwrap()
     solver.add_constraint(v | EQ(Strength.REQUIRED) | 0.0).unwrap()
     values.update_values(solver.fetch_changes())
 
-    assert_eq(values.value_of(v), 0.0)
+    assertEq(values.value_of(v), 0.0)
   }
 }

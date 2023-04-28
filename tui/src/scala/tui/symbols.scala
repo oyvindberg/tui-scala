@@ -13,37 +13,37 @@ object symbols {
 
     case class Set(
         full: String,
-        seven_eighths: String,
-        three_quarters: String,
-        five_eighths: String,
+        sevenEighths: String,
+        threeQuarters: String,
+        fiveEighths: String,
         half: String,
-        three_eighths: String,
-        one_quarter: String,
-        one_eighth: String,
+        threeEights: String,
+        oneQuarter: String,
+        oneEighth: String,
         empty: String
     )
 
     val THREE_LEVELS: Set = Set(
       full = FULL,
-      seven_eighths = FULL,
-      three_quarters = HALF,
-      five_eighths = HALF,
+      sevenEighths = FULL,
+      threeQuarters = HALF,
+      fiveEighths = HALF,
       half = HALF,
-      three_eighths = HALF,
-      one_quarter = HALF,
-      one_eighth = " ",
+      threeEights = HALF,
+      oneQuarter = HALF,
+      oneEighth = " ",
       empty = " "
     )
 
     val NINE_LEVELS: Set = Set(
       full = FULL,
-      seven_eighths = SEVEN_EIGHTHS,
-      three_quarters = THREE_QUARTERS,
-      five_eighths = FIVE_EIGHTHS,
+      sevenEighths = SEVEN_EIGHTHS,
+      threeQuarters = THREE_QUARTERS,
+      fiveEighths = FIVE_EIGHTHS,
       half = HALF,
-      three_eighths = THREE_EIGHTHS,
-      one_quarter = ONE_QUARTER,
-      one_eighth = ONE_EIGHTH,
+      threeEights = THREE_EIGHTHS,
+      oneQuarter = ONE_QUARTER,
+      oneEighth = ONE_EIGHTH,
       empty = " "
     )
   }
@@ -60,37 +60,37 @@ object symbols {
 
     case class Set(
         full: String,
-        seven_eighths: String,
-        three_quarters: String,
-        five_eighths: String,
+        sevenEighths: String,
+        threeQuarters: String,
+        fiveEighths: String,
         half: String,
-        three_eighths: String,
-        one_quarter: String,
-        one_eighth: String,
+        threeEighths: String,
+        oneQuarter: String,
+        oneEighth: String,
         empty: String
     )
 
     val THREE_LEVELS: Set = Set(
       full = FULL,
-      seven_eighths = FULL,
-      three_quarters = HALF,
-      five_eighths = HALF,
+      sevenEighths = FULL,
+      threeQuarters = HALF,
+      fiveEighths = HALF,
       half = HALF,
-      three_eighths = HALF,
-      one_quarter = HALF,
-      one_eighth = " ",
+      threeEighths = HALF,
+      oneQuarter = HALF,
+      oneEighth = " ",
       empty = " "
     )
 
     val NINE_LEVELS: Set = Set(
       full = FULL,
-      seven_eighths = SEVEN_EIGHTHS,
-      three_quarters = THREE_QUARTERS,
-      five_eighths = FIVE_EIGHTHS,
+      sevenEighths = SEVEN_EIGHTHS,
+      threeQuarters = THREE_QUARTERS,
+      fiveEighths = FIVE_EIGHTHS,
       half = HALF,
-      three_eighths = THREE_EIGHTHS,
-      one_quarter = ONE_QUARTER,
-      one_eighth = ONE_EIGHTH,
+      threeEighths = THREE_EIGHTHS,
+      oneQuarter = ONE_QUARTER,
+      oneEighth = ONE_EIGHTH,
       empty = " "
     )
   }
@@ -147,63 +147,63 @@ object symbols {
     case class Set(
         vertical: String,
         horizontal: String,
-        top_right: String,
-        top_left: String,
-        bottom_right: String,
-        bottom_left: String,
-        vertical_left: String,
-        vertical_right: String,
-        horizontal_down: String,
-        horizontal_up: String,
+        topRight: String,
+        topLeft: String,
+        bottomRight: String,
+        bottomLeft: String,
+        verticalLeft: String,
+        verticalRight: String,
+        horizontalDown: String,
+        horizontalUp: String,
         cross: String
     )
 
     val NORMAL: Set = Set(
       vertical = VERTICAL,
       horizontal = HORIZONTAL,
-      top_right = TOP_RIGHT,
-      top_left = TOP_LEFT,
-      bottom_right = BOTTOM_RIGHT,
-      bottom_left = BOTTOM_LEFT,
-      vertical_left = VERTICAL_LEFT,
-      vertical_right = VERTICAL_RIGHT,
-      horizontal_down = HORIZONTAL_DOWN,
-      horizontal_up = HORIZONTAL_UP,
+      topRight = TOP_RIGHT,
+      topLeft = TOP_LEFT,
+      bottomRight = BOTTOM_RIGHT,
+      bottomLeft = BOTTOM_LEFT,
+      verticalLeft = VERTICAL_LEFT,
+      verticalRight = VERTICAL_RIGHT,
+      horizontalDown = HORIZONTAL_DOWN,
+      horizontalUp = HORIZONTAL_UP,
       cross = CROSS
     )
 
     val ROUNDED: Set = NORMAL.copy(
-      top_right = ROUNDED_TOP_RIGHT,
-      top_left = ROUNDED_TOP_LEFT,
-      bottom_right = ROUNDED_BOTTOM_RIGHT,
-      bottom_left = ROUNDED_BOTTOM_LEFT
+      topRight = ROUNDED_TOP_RIGHT,
+      topLeft = ROUNDED_TOP_LEFT,
+      bottomRight = ROUNDED_BOTTOM_RIGHT,
+      bottomLeft = ROUNDED_BOTTOM_LEFT
     )
 
     val DOUBLE: Set = Set(
       vertical = DOUBLE_VERTICAL,
       horizontal = DOUBLE_HORIZONTAL,
-      top_right = DOUBLE_TOP_RIGHT,
-      top_left = DOUBLE_TOP_LEFT,
-      bottom_right = DOUBLE_BOTTOM_RIGHT,
-      bottom_left = DOUBLE_BOTTOM_LEFT,
-      vertical_left = DOUBLE_VERTICAL_LEFT,
-      vertical_right = DOUBLE_VERTICAL_RIGHT,
-      horizontal_down = DOUBLE_HORIZONTAL_DOWN,
-      horizontal_up = DOUBLE_HORIZONTAL_UP,
+      topRight = DOUBLE_TOP_RIGHT,
+      topLeft = DOUBLE_TOP_LEFT,
+      bottomRight = DOUBLE_BOTTOM_RIGHT,
+      bottomLeft = DOUBLE_BOTTOM_LEFT,
+      verticalLeft = DOUBLE_VERTICAL_LEFT,
+      verticalRight = DOUBLE_VERTICAL_RIGHT,
+      horizontalDown = DOUBLE_HORIZONTAL_DOWN,
+      horizontalUp = DOUBLE_HORIZONTAL_UP,
       cross = DOUBLE_CROSS
     )
 
     val THICK: Set = Set(
       vertical = THICK_VERTICAL,
       horizontal = THICK_HORIZONTAL,
-      top_right = THICK_TOP_RIGHT,
-      top_left = THICK_TOP_LEFT,
-      bottom_right = THICK_BOTTOM_RIGHT,
-      bottom_left = THICK_BOTTOM_LEFT,
-      vertical_left = THICK_VERTICAL_LEFT,
-      vertical_right = THICK_VERTICAL_RIGHT,
-      horizontal_down = THICK_HORIZONTAL_DOWN,
-      horizontal_up = THICK_HORIZONTAL_UP,
+      topRight = THICK_TOP_RIGHT,
+      topLeft = THICK_TOP_LEFT,
+      bottomRight = THICK_BOTTOM_RIGHT,
+      bottomLeft = THICK_BOTTOM_LEFT,
+      verticalLeft = THICK_VERTICAL_LEFT,
+      verticalRight = THICK_VERTICAL_RIGHT,
+      horizontalDown = THICK_HORIZONTAL_DOWN,
+      horizontalUp = THICK_HORIZONTAL_UP,
       cross = THICK_CROSS
     )
   }

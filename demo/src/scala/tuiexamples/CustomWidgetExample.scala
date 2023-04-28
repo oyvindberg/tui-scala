@@ -6,7 +6,7 @@ import tui.crossterm.CrosstermJni
 object CustomWidgetExample {
   case class Label(text: String) extends Widget {
     override def render(area: Rect, buf: Buffer): Unit = {
-      buf.set_string(area.left, area.top, text, Style.DEFAULT)
+      buf.setString(area.left, area.top, text, Style.DEFAULT)
       ()
     }
   }
@@ -31,6 +31,6 @@ object CustomWidgetExample {
   def ui(f: Frame): Unit = {
     val size = f.size
     val label = Label(text = "Test")
-    f.render_widget(label, size)
+    f.renderWidget(label, size)
   }
 }

@@ -10,19 +10,19 @@ class BarchartTests extends TuiTest {
       terminal.draw { f =>
         val barchart = BarChartWidget(
           block = Some(BlockWidget(borders = Borders.ALL)),
-          bar_width = 7,
-          bar_gap = 0,
+          barWidth = 7,
+          barGap = 0,
           data = Array(("empty", 0), ("half", 50), ("almost", 99), ("full", 100)),
           max = Some(100)
         )
-        f.render_widget(barchart, f.size);
+        f.renderWidget(barchart, f.size);
       }
-      assert_buffer(backend, expected)
+      assertBuffer(backend, expected)
     }
 
     // check that bars fill up correctly up to max value
     test_case(
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│              ▇▇▇▇▇▇▇███████│",
         "│              ██████████████│",

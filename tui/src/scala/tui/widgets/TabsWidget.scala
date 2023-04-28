@@ -15,7 +15,7 @@ import tui.internal.saturating._
   *   The index of the selected tabs
   * @param style
   *   The style used to draw the text
-  * @param highlight_style
+  * @param highlightStyle
   *   Style to apply to the selected item
   * @param divider
   *   Tab divider
@@ -25,12 +25,12 @@ case class TabsWidget(
     titles: Array[Spans],
     selected: Int = 0,
     style: Style = Style.DEFAULT,
-    highlight_style: Style = Style.DEFAULT,
+    highlightStyle: Style = Style.DEFAULT,
     divider: Span = Span.nostyle(symbols.line.VERTICAL)
 ) extends Widget {
 
   def render(area: Rect, buf: Buffer): Unit = {
-    buf.set_style(area, style)
+    buf.setStyle(area, style)
     val tabs_area = block match {
       case Some(b) =>
         val inner_area = b.inner(area)
@@ -53,16 +53,16 @@ case class TabsWidget(
       if (remaining_width == 0) {
         ()
       } else {
-        val pos = buf.set_spans(x, tabs_area.top, title, remaining_width)
+        val pos = buf.setSpans(x, tabs_area.top, title, remaining_width)
         if (i == selected) {
-          buf.set_style(
+          buf.setStyle(
             Rect(
               x,
               y = tabs_area.top,
               width = pos._1.saturating_sub_unsigned(x),
               height = 1
             ),
-            highlight_style
+            highlightStyle
           )
         }
         x = pos._1.saturating_add(1)
@@ -70,7 +70,7 @@ case class TabsWidget(
         if (remaining_width1 == 0 || last_title) {
           ()
         } else {
-          val pos = buf.set_span(x, tabs_area.top, divider, remaining_width1)
+          val pos = buf.setSpan(x, tabs_area.top, divider, remaining_width1)
           x = pos._1
         }
       }

@@ -16,8 +16,8 @@ class TableTests extends TuiTest {
         val table = TableWidget(
           block = Some(BlockWidget(borders = Borders.ALL)),
           widths = Array(Constraint.Length(5), Constraint.Length(5), Constraint.Length(5)),
-          column_spacing = column_spacing,
-          header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottom_margin = 1)),
+          columnSpacing = column_spacing,
+          header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
           rows = Array(
             Row(Array("Row11", "Row12", "Row13").map(cell)),
             Row(Array("Row21", "Row22", "Row23").map(cell)),
@@ -25,15 +25,15 @@ class TableTests extends TuiTest {
             Row(Array("Row41", "Row42", "Row43").map(cell))
           )
         )
-        f.render_widget(table, f.size);
+        f.renderWidget(table, f.size);
       }
-      assert_buffer(backend, expected)
+      assertBuffer(backend, expected)
     }
 
     // no space between columns
     test_case(
       0,
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│Head1Head2Head3             │",
         "│                            │",
@@ -50,7 +50,7 @@ class TableTests extends TuiTest {
     // one space between columns
     test_case(
       1,
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│Head1 Head2 Head3           │",
         "│                            │",
@@ -67,7 +67,7 @@ class TableTests extends TuiTest {
     // enough space to just not hide the third column
     test_case(
       6,
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│Head1      Head2      Head3 │",
         "│                            │",
@@ -84,7 +84,7 @@ class TableTests extends TuiTest {
     // enough space to hide part of the third column
     test_case(
       7,
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│Head1       Head2       Head│",
         "│                            │",
@@ -108,7 +108,7 @@ class TableTests extends TuiTest {
         val table = TableWidget(
           block = Some(BlockWidget(borders = Borders.ALL)),
           widths = widths,
-          header = Some(Row(Array("Head1", "Head2", "Head3").map(cell), bottom_margin = 1)),
+          header = Some(Row(Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
           rows = Array(
             Row(Array("Row11", "Row12", "Row13").map(cell)),
             Row(Array("Row21", "Row22", "Row23").map(cell)),
@@ -116,15 +116,15 @@ class TableTests extends TuiTest {
             Row(Array("Row41", "Row42", "Row43").map(cell))
           )
         )
-        f.render_widget(table, f.size)
+        f.renderWidget(table, f.size)
       }
-      assert_buffer(backend, expected)
+      assertBuffer(backend, expected)
     }
 
     // columns of zero width show nothing
     test_case(
       Array(Constraint.Length(0), Constraint.Length(0), Constraint.Length(0)),
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│                            │",
         "│                            │",
@@ -141,7 +141,7 @@ class TableTests extends TuiTest {
     // columns of 1 width trim
     test_case(
       Array(Constraint.Length(1), Constraint.Length(1), Constraint.Length(1)),
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│H H H                       │",
         "│                            │",
@@ -158,7 +158,7 @@ class TableTests extends TuiTest {
     // columns of large width just before pushing a column off
     test_case(
       Array(Constraint.Length(8), Constraint.Length(8), Constraint.Length(8)),
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│Head1    Head2    Head3     │",
         "│                            │",
@@ -182,8 +182,8 @@ class TableTests extends TuiTest {
         val table = TableWidget(
           block = Some(BlockWidget(borders = Borders.ALL)),
           widths = widths,
-          column_spacing = 0,
-          header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottom_margin = 1)),
+          columnSpacing = 0,
+          header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
           rows = Array(
             Row(Array("Row11", "Row12", "Row13").map(cell)),
             Row(Array("Row21", "Row22", "Row23").map(cell)),
@@ -191,15 +191,15 @@ class TableTests extends TuiTest {
             Row(Array("Row41", "Row42", "Row43").map(cell))
           )
         )
-        f.render_widget(table, f.size)
+        f.renderWidget(table, f.size)
       }
-      assert_buffer(backend, expected)
+      assertBuffer(backend, expected)
     }
 
     // columns of zero width show nothing
     test_case(
       Array(Constraint.Percentage(0), Constraint.Percentage(0), Constraint.Percentage(0)),
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│                            │",
         "│                            │",
@@ -216,7 +216,7 @@ class TableTests extends TuiTest {
     // columns of not enough width trims the data
     test_case(
       Array(Constraint.Percentage(11), Constraint.Percentage(11), Constraint.Percentage(11)),
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│HeaHeaHea                   │",
         "│                            │",
@@ -233,7 +233,7 @@ class TableTests extends TuiTest {
     // columns of large width just before pushing a column off
     test_case(
       Array(Constraint.Percentage(33), Constraint.Percentage(33), Constraint.Percentage(33)),
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│Head1    Head2    Head3     │",
         "│                            │",
@@ -250,7 +250,7 @@ class TableTests extends TuiTest {
     // percentages summing to 100 should give equal widths
     test_case(
       Array(Constraint.Percentage(50), Constraint.Percentage(50)),
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│Head1         Head2         │",
         "│                            │",
@@ -274,7 +274,7 @@ class TableTests extends TuiTest {
         val table = TableWidget(
           block = Some(BlockWidget(borders = Borders.ALL)),
           widths = widths,
-          header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottom_margin = 1)),
+          header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
           rows = Array(
             Row(Array("Row11", "Row12", "Row13").map(cell)),
             Row(Array("Row21", "Row22", "Row23").map(cell)),
@@ -282,16 +282,16 @@ class TableTests extends TuiTest {
             Row(Array("Row41", "Row42", "Row43").map(cell))
           )
         )
-        f.render_widget(table, f.size)
+        f.renderWidget(table, f.size)
       }
 
-      assert_buffer(backend, expected)
+      assertBuffer(backend, expected)
     }
 
     // columns of zero width show nothing
     test_case(
       Array(Constraint.Percentage(0), Constraint.Length(0), Constraint.Percentage(0)),
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│                            │",
         "│                            │",
@@ -308,7 +308,7 @@ class TableTests extends TuiTest {
     // columns of not enough width trims the data
     test_case(
       Array(Constraint.Percentage(11), Constraint.Length(20), Constraint.Percentage(11)),
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│Hea Head2                He │",
         "│                            │",
@@ -325,7 +325,7 @@ class TableTests extends TuiTest {
     // columns of large width just before pushing a column off
     test_case(
       Array(Constraint.Percentage(33), Constraint.Length(10), Constraint.Percentage(33)),
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│Head1     Head2      Head3  │",
         "│                            │",
@@ -342,7 +342,7 @@ class TableTests extends TuiTest {
     // columns of large size (>100% total) hide the last column
     test_case(
       Array(Constraint.Percentage(60), Constraint.Length(10), Constraint.Percentage(60)),
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│Head1            Head2      │",
         "│                            │",
@@ -366,8 +366,8 @@ class TableTests extends TuiTest {
         val table = TableWidget(
           block = Some(BlockWidget(borders = Borders.ALL)),
           widths = widths,
-          column_spacing = 0,
-          header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottom_margin = 1)),
+          columnSpacing = 0,
+          header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
           rows = Array(
             Row(Array("Row11", "Row12", "Row13").map(cell)),
             Row(Array("Row21", "Row22", "Row23").map(cell)),
@@ -375,15 +375,15 @@ class TableTests extends TuiTest {
             Row(Array("Row41", "Row42", "Row43").map(cell))
           )
         )
-        f.render_widget(table, f.size)
+        f.renderWidget(table, f.size)
       }
-      assert_buffer(backend, expected)
+      assertBuffer(backend, expected)
     }
 
     // columns of zero width show nothing
     test_case(
       Array(Constraint.Ratio(0, 1), Constraint.Ratio(0, 1), Constraint.Ratio(0, 1)),
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│                            │",
         "│                            │",
@@ -400,7 +400,7 @@ class TableTests extends TuiTest {
     // columns of not enough width trims the data
     test_case(
       Array(Constraint.Ratio(1, 9), Constraint.Ratio(1, 9), Constraint.Ratio(1, 9)),
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│HeaHeaHea                   │",
         "│                            │",
@@ -417,7 +417,7 @@ class TableTests extends TuiTest {
     // columns of large width just before pushing a column off
     test_case(
       Array(Constraint.Ratio(1, 3), Constraint.Ratio(1, 3), Constraint.Ratio(1, 3)),
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│Head1    Head2    Head3     │",
         "│                            │",
@@ -434,7 +434,7 @@ class TableTests extends TuiTest {
     // percentages summing to 100 should give equal widths
     test_case(
       Array(Constraint.Ratio(1, 2), Constraint.Ratio(1, 2)),
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│Head1         Head2         │",
         "│                            │",
@@ -457,8 +457,8 @@ class TableTests extends TuiTest {
         val table = TableWidget(
           block = Some(BlockWidget(borders = Borders.ALL)),
           widths = Array(Constraint.Length(5), Constraint.Length(5), Constraint.Length(5)),
-          highlight_symbol = Some(">> "),
-          header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottom_margin = 1)),
+          highlightSymbol = Some(">> "),
+          header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
           rows = Array(
             Row(cells = Array("Row11", "Row12", "Row13").map(cell)),
             Row(cells = Array("Row21", "Row22", "Row23").map(cell), height = 2),
@@ -466,16 +466,16 @@ class TableTests extends TuiTest {
             Row(cells = Array("Row41", "Row42", "Row43").map(cell), height = 2)
           )
         )
-        f.render_stateful_widget(table, f.size)(state)
+        f.renderStatefulWidget(table, f.size)(state)
       }
-      assert_buffer(backend, expected)
+      assertBuffer(backend, expected)
     }
 
     val state = TableWidget.State()
     // no selection
     test_case(
       state,
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│Head1 Head2 Head3           │",
         "│                            │",
@@ -491,7 +491,7 @@ class TableTests extends TuiTest {
     state.select(Some(0))
     test_case(
       state,
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│   Head1 Head2 Head3        │",
         "│                            │",
@@ -507,7 +507,7 @@ class TableTests extends TuiTest {
     state.select(Some(1))
     test_case(
       state,
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│   Head1 Head2 Head3        │",
         "│                            │",
@@ -523,7 +523,7 @@ class TableTests extends TuiTest {
     state.select(Some(3))
     test_case(
       state,
-      Buffer.with_lines(
+      Buffer.withLines(
         "┌────────────────────────────┐",
         "│   Head1 Head2 Head3        │",
         "│                            │",
@@ -545,9 +545,9 @@ class TableTests extends TuiTest {
       val table = TableWidget(
         block = Some(BlockWidget(borders = Borders.LEFT | Borders.RIGHT)),
         widths = Array(Constraint.Length(6), Constraint.Length(6), Constraint.Length(6)),
-        highlight_style = Style(add_modifier = Modifier.BOLD),
-        highlight_symbol = Some(">> "),
-        header = Some(Row(Array("Head1", "Head2", "Head3").map(cell), bottom_margin = 1)),
+        highlightStyle = Style(addModifier = Modifier.BOLD),
+        highlightSymbol = Some(">> "),
+        header = Some(Row(Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
         rows = Array(
           Row(cells = Array("Row11", "Row12", "Row13").map(cell), style = Style(fg = Some(Color.Green))),
           Row(
@@ -563,10 +563,10 @@ class TableTests extends TuiTest {
           )
         )
       )
-      f.render_stateful_widget(table, f.size)(state)
+      f.renderStatefulWidget(table, f.size)(state)
     }
 
-    val expected = Buffer.with_lines(
+    val expected = Buffer.withLines(
       "│   Head1  Head2  Head3      │",
       "│                            │",
       "│>> Row11  Row12  Row13      │",
@@ -574,30 +574,30 @@ class TableTests extends TuiTest {
     )
     // First row = row color + highlight style
     ranges.range(1, 29) { col =>
-      expected.get(col, 2).set_style(Style.DEFAULT.fg(Color.Green).add_modifier(Modifier.BOLD))
+      expected.get(col, 2).setStyle(Style.DEFAULT.fg(Color.Green).addModifier(Modifier.BOLD))
       ()
     }
     // Second row:
     // 1. row color
     internal.ranges.range(1, 29) { col =>
-      expected.get(col, 3).set_style(Style.DEFAULT.fg(Color.LightGreen))
+      expected.get(col, 3).setStyle(Style.DEFAULT.fg(Color.LightGreen))
       ()
     }
     // 2. cell color
     internal.ranges.range(11, 17) { col =>
-      expected.get(col, 3).set_style(Style.DEFAULT.fg(Color.Yellow))
+      expected.get(col, 3).setStyle(Style.DEFAULT.fg(Color.Yellow))
       ()
     }
     internal.ranges.range(18, 24) { col =>
-      expected.get(col, 3).set_style(Style.DEFAULT.fg(Color.Red))
+      expected.get(col, 3).setStyle(Style.DEFAULT.fg(Color.Red))
       ()
     }
     // 3. text color
     internal.ranges.range(21, 23) { col =>
-      expected.get(col, 3).set_style(Style.DEFAULT.fg(Color.Blue))
+      expected.get(col, 3).setStyle(Style.DEFAULT.fg(Color.Blue))
       ()
     }
-    assert_buffer(backend, expected)
+    assertBuffer(backend, expected)
   }
 
   test("widgets_table_should_render_even_if_empty") {
@@ -610,17 +610,17 @@ class TableTests extends TuiTest {
         header = Some(Row(Array("Head1", "Head2", "Head3").map(cell))),
         rows = Array()
       )
-      f.render_widget(table, f.size)
+      f.renderWidget(table, f.size)
     }
 
-    val expected = Buffer.with_lines(
+    val expected = Buffer.withLines(
       "│Head1  Head2  Head3         │",
       "│                            │",
       "│                            │",
       "│                            │"
     )
 
-    assert_buffer(backend, expected)
+    assertBuffer(backend, expected)
   }
 
   test("widgets_table_columns_dont_panic") {
@@ -628,7 +628,7 @@ class TableTests extends TuiTest {
       val backend = TestBackend(width, 8)
       val terminal = Terminal.init(backend)
       terminal.draw { f =>
-        f.render_stateful_widget(table, f.size)(state)
+        f.renderStatefulWidget(table, f.size)(state)
       }
       ()
     }
@@ -638,7 +638,7 @@ class TableTests extends TuiTest {
     val table1 = TableWidget(
       block = Some(BlockWidget(borders = Borders.ALL)),
       widths = Array(Constraint.Percentage(15), Constraint.Percentage(15), Constraint.Percentage(25), Constraint.Percentage(45)),
-      highlight_symbol = Some(">> "),
+      highlightSymbol = Some(">> "),
       header = Some(Row(Array("h1", "h2", "h3", "h4").map(cell))),
       rows = Array(Row(Array("r1", "r2", "r3", "r4").map(cell)))
     )
@@ -661,7 +661,7 @@ class TableTests extends TuiTest {
       val table = TableWidget(
         block = Some(BlockWidget(borders = Borders.ALL)),
         widths = Array(Constraint.Length(5), Constraint.Length(5), Constraint.Length(5)),
-        header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottom_margin = 1)),
+        header = Some(Row(cells = Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
         rows = Array(
           Row(Array("Row01", "Row02", "Row03").map(cell)),
           Row(Array("Row11", "Row12", "Row13").map(cell)),
@@ -671,9 +671,9 @@ class TableTests extends TuiTest {
           Row(Array("Row51", "Row52", "Row53").map(cell))
         )
       )
-      f.render_stateful_widget(table, f.size)(state)
+      f.renderStatefulWidget(table, f.size)(state)
     }
-    val expected0 = Buffer.with_lines(
+    val expected0 = Buffer.withLines(
       "┌────────────────────────────┐",
       "│Head1 Head2 Head3           │",
       "│                            │",
@@ -683,7 +683,7 @@ class TableTests extends TuiTest {
       "│Row51 Row52 Row53           │",
       "└────────────────────────────┘"
     )
-    assert_buffer(backend, expected0)
+    assertBuffer(backend, expected0)
 
     // render with 1 item => offset will be at 1
     state.select(Some(1))
@@ -691,12 +691,12 @@ class TableTests extends TuiTest {
       val table = TableWidget(
         block = Some(BlockWidget(borders = Borders.ALL)),
         widths = Array(Constraint.Length(5), Constraint.Length(5), Constraint.Length(5)),
-        header = Some(Row(Array("Head1", "Head2", "Head3").map(cell), bottom_margin = 1)),
+        header = Some(Row(Array("Head1", "Head2", "Head3").map(cell), bottomMargin = 1)),
         rows = Array(Row(Array("Row31", "Row32", "Row33").map(cell)))
       )
-      f.render_stateful_widget(table, f.size)(state)
+      f.renderStatefulWidget(table, f.size)(state)
     }
-    val expected1 = Buffer.with_lines(
+    val expected1 = Buffer.withLines(
       "┌────────────────────────────┐",
       "│Head1 Head2 Head3           │",
       "│                            │",
@@ -706,6 +706,6 @@ class TableTests extends TuiTest {
       "│                            │",
       "└────────────────────────────┘"
     )
-    assert_buffer(backend, expected1)
+    assertBuffer(backend, expected1)
   }
 }

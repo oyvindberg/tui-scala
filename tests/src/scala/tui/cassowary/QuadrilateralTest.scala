@@ -39,7 +39,7 @@ class QuadrilateralTest extends TuiTest {
           )
         )
 
-        assert_eq(expected = expectedCs.toList.toString(), actual = cs.toList.toString())
+        assertEq(expected = expectedCs.toList.toString(), actual = cs.toList.toString())
       }
 
       solver.add_constraints(cs).unwrap()
@@ -85,7 +85,7 @@ class QuadrilateralTest extends TuiTest {
 
     values.update_values(solver.fetch_changes())
 
-    assert_eq(
+    assertEq(
       Array(
         (values.value_of(midpoints(0).x), values.value_of(midpoints(0).y)),
         (values.value_of(midpoints(1).x), values.value_of(midpoints(1).y)),
@@ -102,7 +102,7 @@ class QuadrilateralTest extends TuiTest {
 
     values.update_values(solver.fetch_changes())
 
-    assert_eq(
+    assertEq(
       Array(
         (values.value_of(points(0).x), values.value_of(points(0).y)),
         (values.value_of(points(1).x), values.value_of(points(1).y)),
@@ -117,7 +117,7 @@ class QuadrilateralTest extends TuiTest {
       )
     )
 
-    assert_eq(
+    assertEq(
       Array(
         (values.value_of(midpoints(0).x), values.value_of(midpoints(0).y)),
         (values.value_of(midpoints(1).x), values.value_of(midpoints(1).y)),

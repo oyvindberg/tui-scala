@@ -8,7 +8,7 @@ case class CharGrid(
     height: Int,
     cells: Array[Char],
     colors: Array[Color],
-    cell_char: Char
+    cellChar: Char
 ) extends Grid {
 
   override def resolution: Point =
@@ -32,7 +32,7 @@ case class CharGrid(
   override def paint(x: Int, y: Int, color: Color): Unit = {
     val index = y * this.width + x
     if (index < this.cells.length) {
-      this.cells(index) = this.cell_char
+      this.cells(index) = this.cellChar
     }
     if (index < this.colors.length) {
       this.colors(index) = color

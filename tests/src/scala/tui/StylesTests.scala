@@ -6,12 +6,12 @@ class StylesTests extends TuiTest {
       Style(),
       Style().fg(Color.Yellow),
       Style().bg(Color.Yellow),
-      Style().add_modifier(Modifier.BOLD),
-      Style().remove_modifier(Modifier.BOLD),
-      Style().add_modifier(Modifier.ITALIC),
-      Style().remove_modifier(Modifier.ITALIC),
-      Style().add_modifier(Modifier.ITALIC | Modifier.BOLD),
-      Style().remove_modifier(Modifier.ITALIC | Modifier.BOLD)
+      Style().addModifier(Modifier.BOLD),
+      Style().removeModifier(Modifier.BOLD),
+      Style().addModifier(Modifier.ITALIC),
+      Style().removeModifier(Modifier.ITALIC),
+      Style().addModifier(Modifier.ITALIC | Modifier.BOLD),
+      Style().removeModifier(Modifier.ITALIC | Modifier.BOLD)
     )
 
   test("combined_patch_gives_same_result_as_individual_patch") {
@@ -23,7 +23,7 @@ class StylesTests extends TuiTest {
       d <- styles2
     } {
       val combined = a.patch(b.patch(c.patch(d)))
-      assert_eq(Style().patch(a).patch(b).patch(c).patch(d), Style().patch(combined))
+      assertEq(Style().patch(a).patch(b).patch(c).patch(d), Style().patch(combined))
     }
   }
   test("flaff") {

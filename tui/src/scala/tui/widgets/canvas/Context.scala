@@ -7,8 +7,8 @@ import scala.collection.mutable
 /** Holds the state of the Canvas when painting to it.
   */
 case class Context(
-    x_bounds: Point,
-    y_bounds: Point,
+    xBounds: Point,
+    yBounds: Point,
     grid: Grid,
     var dirty: Boolean,
     layers: mutable.ArrayBuffer[Layer],

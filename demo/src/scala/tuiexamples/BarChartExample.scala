@@ -71,11 +71,11 @@ object BarChartExample {
     val barchart1 = BarChartWidget(
       block = Some(BlockWidget(title = Some(Spans.nostyle("Data1")), borders = Borders.ALL)),
       data = app.data,
-      bar_width = 9,
-      bar_style = Style(fg = Some(Color.Yellow)),
-      value_style = Style(fg = Some(Color.Black), bg = Some(Color.Yellow))
+      barWidth = 9,
+      barStyle = Style(fg = Some(Color.Yellow)),
+      valueStyle = Style(fg = Some(Color.Black), bg = Some(Color.Yellow))
     )
-    f.render_widget(barchart1, verticalChunks(0))
+    f.renderWidget(barchart1, verticalChunks(0))
 
     val horizontalChunks = Layout(
       direction = Direction.Horizontal,
@@ -84,23 +84,23 @@ object BarChartExample {
 
     val barchart2 = BarChartWidget(
       block = Some(BlockWidget(title = Some(Spans.nostyle("Data2")), borders = Borders.ALL)),
-      bar_width = 5,
-      bar_gap = 3,
-      bar_style = Style(fg = Some(Color.Green)),
-      value_style = Style(bg = Some(Color.Green), add_modifier = Modifier.BOLD),
+      barWidth = 5,
+      barGap = 3,
+      barStyle = Style(fg = Some(Color.Green)),
+      valueStyle = Style(bg = Some(Color.Green), addModifier = Modifier.BOLD),
       data = app.data
     )
-    f.render_widget(barchart2, horizontalChunks(0))
+    f.renderWidget(barchart2, horizontalChunks(0))
 
     val barchart3 = BarChartWidget(
       block = Some(BlockWidget(title = Some(Spans.nostyle("Data3")), borders = Borders.ALL)),
       data = app.data,
-      bar_style = Style(fg = Some(Color.Red)),
-      bar_width = 7,
-      bar_gap = 0,
-      value_style = Style(bg = Some(Color.Red)),
-      label_style = Style(fg = Some(Color.Cyan), add_modifier = Modifier.ITALIC)
+      barStyle = Style(fg = Some(Color.Red)),
+      barWidth = 7,
+      barGap = 0,
+      valueStyle = Style(bg = Some(Color.Red)),
+      labelStyle = Style(fg = Some(Color.Cyan), addModifier = Modifier.ITALIC)
     )
-    f.render_widget(barchart3, horizontalChunks(1))
+    f.renderWidget(barchart3, horizontalChunks(1))
   }
 }

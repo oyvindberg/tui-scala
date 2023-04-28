@@ -10,7 +10,7 @@ import scala.util.control.NonFatal
   *   terminal
   * @param current
   *   Index of the current buffer in the previous array
-  * @param hidden_cursor
+  * @param hiddenCursor
   *   Whether the cursor is currently hidden
   * @param viewport
   */
@@ -18,15 +18,15 @@ case class Terminal private (
     backend: Backend,
     buffers: Array[Buffer],
     var current: Int,
-    var hidden_cursor: Boolean,
+    var hiddenCursor: Boolean,
     viewport: Viewport
 ) {
   require(buffers.length == 2)
 
   def drop(): Unit =
     // Attempt to restore the cursor state
-    if (hidden_cursor) {
-      try show_cursor()
+    if (hiddenCursor) {
+      try showCursor()
       catch {
         case NonFatal(e) => System.err.println(s"Failed to show the cursor: ${e.getMessage}")
       }
@@ -34,14 +34,14 @@ case class Terminal private (
 
   /** Get a Frame object which provides a consistent view into the terminal state for rendering.
     */
-  def get_frame(): Frame =
+  def getFrame(): Frame =
     Frame(
-      buffer = current_buffer_mut(),
+      buffer = currentBufferMut(),
       size = viewport.area,
-      cursor_position = None
+      cursorPosition = None
     )
 
-  def current_buffer_mut(): Buffer =
+  def currentBufferMut(): Buffer =
     buffers(current)
 
   /** Obtains a difference between the previous and the current buffer and passes it to the current backend for drawing.
@@ -66,7 +66,7 @@ case class Terminal private (
   /** Queries the backend for size and resizes if it doesn't match the previous size.
     */
   def autoresize(): Unit =
-    if (viewport.resize_behavior == ResizeBehavior.Auto) {
+    if (viewport.resizeBehavior == ResizeBehavior.Auto) {
       val size_ = size()
       if (size_ != viewport.area) {
         resize(size_)
@@ -80,21 +80,21 @@ case class Terminal private (
     // and the terminal (if growing), which may OOB.
     autoresize()
 
-    val frame = get_frame()
+    val frame = getFrame()
     f(frame)
     // We can't change the cursor position right away because we have to flush the frame to
     // stdout first. But we also can't keep the frame around, since it holds a &mut to
     // Terminal. Thus, we're taking the important data out of the Frame and dropping it.
-    val cursor_position = frame.cursor_position
+    val cursor_position = frame.cursorPosition
 
     // Draw to stdout
     flush()
 
     cursor_position match {
-      case None => hide_cursor()
+      case None => hideCursor()
       case Some((x, y)) =>
-        show_cursor()
-        set_cursor(x, y)
+        showCursor()
+        setCursor(x, y)
     }
 
     // Swap buffers
@@ -109,21 +109,21 @@ case class Terminal private (
     )
   }
 
-  def hide_cursor(): Unit = {
-    backend.hide_cursor()
-    hidden_cursor = true
+  def hideCursor(): Unit = {
+    backend.hideCursor()
+    hiddenCursor = true
   }
 
-  def show_cursor(): Unit = {
-    backend.show_cursor()
-    hidden_cursor = false
+  def showCursor(): Unit = {
+    backend.showCursor()
+    hiddenCursor = false
   }
 
-  def get_cursor(): (Int, Int) =
-    backend.get_cursor()
+  def getCursor(): (Int, Int) =
+    backend.getCursor()
 
-  def set_cursor(x: Int, y: Int): Unit =
-    backend.set_cursor(x, y)
+  def setCursor(x: Int, y: Int): Unit =
+    backend.setCursor(x, y)
 
   /** Clear the terminal and force a full redraw on the next draw call.
     */
@@ -147,19 +147,19 @@ object Terminal {
 
     val size = backend.size()
 
-    Terminal.with_options(
+    Terminal.withOptions(
       backend,
       TerminalOptions(
         viewport = Viewport(
           area = size,
-          resize_behavior = ResizeBehavior.Auto
+          resizeBehavior = ResizeBehavior.Auto
         )
       )
     )
   }
 
-  /// UNSTABLE
-  def with_options(backend: Backend, options: TerminalOptions): Terminal =
+  // UNSTABLE
+  def withOptions(backend: Backend, options: TerminalOptions): Terminal =
     Terminal(
       backend,
       buffers = Array(
@@ -167,7 +167,7 @@ object Terminal {
         Buffer.empty(options.viewport.area)
       ),
       current = 0,
-      hidden_cursor = false,
+      hiddenCursor = false,
       viewport = options.viewport
     )
 }
