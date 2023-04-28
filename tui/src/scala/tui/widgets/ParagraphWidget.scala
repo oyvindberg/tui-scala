@@ -4,19 +4,27 @@ package widgets
 import tui.internal.saturating._
 import tui.internal.reflow.{LineComposer, LineTruncator, WordWrapper}
 
-/// A widget to display some text.
+/** A widget to display some text.
+  *
+  * @param text
+  *   The text to display
+  * @param block
+  *   A block to wrap the widget in
+  * @param style
+  *   Widget style
+  * @param wrap
+  *   How to wrap the text
+  * @param scroll
+  *   Scroll
+  * @param alignment
+  *   Alignment of the text
+  */
 case class ParagraphWidget(
-    /// The text to display
     text: Text,
-    /// A block to wrap the widget in
     block: Option[BlockWidget] = None,
-    /// Widget style
     style: Style = Style.DEFAULT,
-    /// How to wrap the text
     wrap: Option[ParagraphWidget.Wrap] = None,
-    /// Scroll
     scroll: (Int, Int) = (0, 0),
-    /// Alignment of the text
     alignment: Alignment = Alignment.Left
 ) extends Widget {
 
@@ -86,9 +94,12 @@ object ParagraphWidget {
       case Alignment.Left   => 0
     }
 
-  /// Describes how to wrap text across lines.
+  /** Describes how to wrap text across lines.
+    *
+    * @param trim
+    *   Should leading whitespace be trimmed
+    */
   case class Wrap(
-      /// Should leading whitespace be trimmed
       trim: Boolean
   )
 }

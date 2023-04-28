@@ -4,7 +4,8 @@ package canvas
 
 import tui.Point
 
-/// Shape to draw a world map with the given resolution and color
+/** Shape to draw a world map with the given resolution and color
+  */
 case class WorldMap(
     resolution: MapResolution = MapResolution.Low,
     color: Color = Color.Reset

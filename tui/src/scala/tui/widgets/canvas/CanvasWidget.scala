@@ -5,16 +5,22 @@ package canvas
 import tui.Style
 import tui.internal.ranges
 
-/// The Canvas widget may be used to draw more detailed figures using braille patterns (each
-/// cell can have a braille character in 8 different positions).
+/** The Canvas widget may be used to draw more detailed figures using braille patterns (each cell can have a braille character in 8 different positions).
+  *
+  * @param block
+  * @param x_bounds
+  * @param y_bounds
+  * @param background_color
+  * @param marker
+  *   Change the type of points used to draw the shapes. By default the braille patterns are used as they provide a more fine grained result but you might want
+  *   to use the simple dot or block instead if the targeted terminal does not support those symbols.
+  * @param painter
+  */
 case class CanvasWidget(
     block: Option[BlockWidget] = None,
     x_bounds: Point = Point.Zero,
     y_bounds: Point = Point.Zero,
     background_color: Color = Color.Reset,
-    /// Change the type of points used to draw the shapes. By default the braille patterns are used
-    /// as they provide a more fine grained result but you might want to use the simple dot or
-    /// block instead if the targeted terminal does not support those symbols.
     marker: symbols.Marker = symbols.Marker.Braille
 )(painter: Context => Unit)
     extends Widget {

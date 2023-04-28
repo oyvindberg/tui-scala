@@ -6,7 +6,9 @@ case class Painter(
     context: Context,
     resolution: Point
 ) {
-  /// Convert the (x, y) coordinates to location of a point on the grid
+
+  /** Convert the (x, y) coordinates to location of a point on the grid
+    */
   def get_point(x: Double, y: Double): Option[(Int, Int)] = {
     val left = this.context.x_bounds.x
     val right = this.context.x_bounds.y
@@ -25,7 +27,8 @@ case class Painter(
     Some((x0, y0))
   }
 
-  /// Paint a point of the grid
+  /** Paint a point of the grid
+    */
   def paint(x: Int, y: Int, color: Color): Unit =
     this.context.grid.paint(x, y, color)
 }

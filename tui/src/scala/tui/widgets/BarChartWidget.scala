@@ -4,31 +4,44 @@ package widgets
 import tui.internal.ranges._
 import tui.{Grapheme, Style}
 
-/// Display multiple bars in a single widgets
+/** Display multiple bars in a single widgets
+  *
+  * @param block
+  *   Block to wrap the widget in
+  * @param bar_width
+  *   The width of each bar
+  * @param bar_gap
+  *   The gap between each bar
+  * @param bar_set
+  *   Set of symbols used to display the data
+  * @param bar_style
+  *   Style of the bars
+  * @param value_style
+  *   Style of the values printed at the bottom of each bar
+  * @param label_style
+  *   Style of the labels printed under each bar
+  * @param style
+  *   Style for the widget
+  * @param data
+  *   Slice of (label, value) pair to plot on the chart
+  * @param max
+  *   Value necessary for a bar to reach the maximum height (if no value is specified, the maximum value in the data is taken as reference)
+  */
 case class BarChartWidget(
-    /// Block to wrap the widget in
     block: Option[BlockWidget] = None,
-    /// The width of each bar
     bar_width: Int = 1,
-    /// The gap between each bar
     bar_gap: Int = 1,
-    /// Set of symbols used to display the data
     bar_set: symbols.bar.Set = symbols.bar.NINE_LEVELS,
-    /// Style of the bars
     bar_style: Style = Style.DEFAULT,
-    /// Style of the values printed at the bottom of each bar
     value_style: Style = Style.DEFAULT,
-    /// Style of the labels printed under each bar
     label_style: Style = Style.DEFAULT,
-    /// Style for the widget
     style: Style = Style.DEFAULT,
-    /// Slice of (label, value) pair to plot on the chart
     data: Array[(String, Int)] = Array.empty,
-    /// Value necessary for a bar to reach the maximum height (if no value is specified,
-    /// the maximum value in the data is taken as reference)
     max: Option[Int] = None
 ) extends Widget {
-  /// Values to display on the bar (computed when the data is passed to the widget)
+
+  /** Values to display on the bar (computed when the data is passed to the widget)
+    */
   private lazy val values: Array[Grapheme] = data.collect { case (_, v) => Grapheme(v.toString) }
 
   override def render(area: Rect, buf: Buffer): Unit = {
