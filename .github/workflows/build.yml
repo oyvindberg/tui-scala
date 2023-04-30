@@ -74,7 +74,7 @@ jobs:
       - name: Temporarily save package
         uses: actions/upload-artifact@v3
         with:
-          name: native
+          name: tui.scripts.GenJniLibrary
           path: ${{ matrix.jni-folder }}
           retention-days: 1
 
@@ -94,6 +94,11 @@ jobs:
           path: .bleep/generated-resources/crossterm/
       - name: Display structure of downloaded files
         run: find .bleep/generated-resources/crossterm
+      # next two tasks are optimization to avoid compiling rust code again
+      - name: load build
+        run: bleep projects
+      - name: touch all downloaded files (for newer timestamp)
+        run: find .bleep/generated-resources/crossterm | xargs touch
       - name: Release
         run: bleep publish
         env:
