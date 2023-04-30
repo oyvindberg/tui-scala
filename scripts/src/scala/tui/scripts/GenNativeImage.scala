@@ -9,8 +9,6 @@ object GenNativeImage extends BleepScript("GenNativeImage") {
   def run(started: Started, commands: Commands, args: List[String]): Unit = {
     commands.compile(List(demoProject))
 
-    GenJniLibrary.crosstermJniNativeLib(started).nativeCompile()
-
     val plugin = new NativeImagePlugin(
       project = started.bloopProject(demoProject),
       logger = started.logger,
