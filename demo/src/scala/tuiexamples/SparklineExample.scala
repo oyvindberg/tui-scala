@@ -93,37 +93,23 @@ object SparklineExample {
     }
   }
 
-  def ui(f: Frame, app: App): Unit = {
-    val chunks = Layout(
-      direction = Direction.Vertical,
-      margin = Margin(2, 2),
-      constraints = Array(Constraint.Length(3), Constraint.Length(3), Constraint.Length(7), Constraint.Min(0))
-    ).split(f.size)
-
-    val sparkline0 = SparklineWidget(
-      block = Some(
-        BlockWidget(
-          title = Some(Spans.nostyle("Data1")),
-          borders = Borders.LEFT | Borders.RIGHT
-        )
-      ),
-      data = app.data1,
-      style = Style(fg = Some(Color.Yellow))
-    )
-    f.renderWidget(sparkline0, chunks(0))
-
-    val sparkline1 = SparklineWidget(
-      block = Some(BlockWidget(title = Some(Spans.nostyle("Data2")), borders = Borders.LEFT | Borders.RIGHT)),
-      data = app.data2,
-      style = Style(bg = Some(Color.Green))
-    )
-    f.renderWidget(sparkline1, chunks(1))
-    // Multiline
-    val sparkline2 = SparklineWidget(
-      block = Some(BlockWidget(title = Some(Spans.nostyle("Data3")), borders = Borders.LEFT | Borders.RIGHT)),
-      style = Style(fg = Some(Color.Red)),
-      data = app.data3
-    )
-    f.renderWidget(sparkline2, chunks(2))
-  }
+  def ui(f: Frame, app: App): Unit =
+    Layout
+      .detailed(direction = Direction.Vertical, margin = Margin(2, 2))(
+        Constraint.Length(3) ->
+          BlockWidget(title = Some(Spans.nostyle("Data1")), borders = Borders.LEFT | Borders.RIGHT, style = Style(fg = Some(Color.Yellow)))(
+            SparklineWidget(data = app.data1)
+          ),
+        Constraint.Length(3) ->
+          BlockWidget(title = Some(Spans.nostyle("Data2")), borders = Borders.LEFT | Borders.RIGHT, style = Style(bg = Some(Color.Green)))(
+            SparklineWidget(data = app.data2)
+          ),
+        // Multiline
+        Constraint.Length(7) ->
+          BlockWidget(title = Some(Spans.nostyle("Data3")), borders = Borders.LEFT | Borders.RIGHT, style = Style(fg = Some(Color.Red)))(
+            SparklineWidget(data = app.data3)
+          ),
+        Constraint.Min(0) -> Widget.Empty
+      )
+      .render(f.size, f.buffer)
 }

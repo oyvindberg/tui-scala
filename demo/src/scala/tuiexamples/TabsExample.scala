@@ -44,14 +44,9 @@ object TabsExample {
     }
 
   def ui(f: Frame, app: App): Unit = {
-    val chunks = Layout(
-      direction = Direction.Vertical,
-      margin = Margin(5, 5),
-      constraints = Array(Constraint.Length(3), Constraint.Min(0))
-    ).split(f.size)
 
-    val block = BlockWidget(style = Style(bg = Some(Color.White), fg = Some(Color.Black)))
-    f.renderWidget(block, f.size)
+    BlockWidget.noChildren(style = Style(bg = Some(Color.White), fg = Some(Color.Black))).render(f.size, f.buffer)
+
     val titles = app.titles
       .map { t =>
         val (first, rest) = t.splitAt(1)
@@ -60,22 +55,24 @@ object TabsExample {
           Span.styled(rest, Style(fg = Some(Color.Green)))
         )
       }
-
-    val tabs = TabsWidget(
-      titles = titles,
-      block = Some(BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Tabs")))),
-      selected = app.index,
-      style = Style(fg = Some(Color.Cyan)),
-      highlightStyle = Style(addModifier = Modifier.BOLD, bg = Some(Color.Black))
-    )
-    f.renderWidget(tabs, chunks(0))
-    val inner = app.index match {
-      case 0 => BlockWidget(title = Some(Spans.nostyle("Inner 0")), borders = Borders.ALL)
-      case 1 => BlockWidget(title = Some(Spans.nostyle("Inner 1")), borders = Borders.ALL)
-      case 2 => BlockWidget(title = Some(Spans.nostyle("Inner 2")), borders = Borders.ALL)
-      case 3 => BlockWidget(title = Some(Spans.nostyle("Inner 3")), borders = Borders.ALL)
-      case _ => sys.error("unreachable")
-    }
-    f.renderWidget(inner, chunks(1))
+    Layout
+      .detailed(direction = Direction.Vertical, margin = Margin(5, 5))(
+        Constraint.Length(3) ->
+          BlockWidget(title = Some(Spans.nostyle("Tabs")), borders = Borders.ALL, style = Style(fg = Some(Color.Cyan)))(
+            TabsWidget(
+              titles = titles,
+              selected = app.index,
+              highlightStyle = Style(addModifier = Modifier.BOLD, bg = Some(Color.Black))
+            )
+          ),
+        Constraint.Min(0) -> (app.index match {
+          case 0 => BlockWidget.noChildren(title = Some(Spans.nostyle("Inner 0")), borders = Borders.ALL)
+          case 1 => BlockWidget.noChildren(title = Some(Spans.nostyle("Inner 1")), borders = Borders.ALL)
+          case 2 => BlockWidget.noChildren(title = Some(Spans.nostyle("Inner 2")), borders = Borders.ALL)
+          case 3 => BlockWidget.noChildren(title = Some(Spans.nostyle("Inner 3")), borders = Borders.ALL)
+          case _ => sys.error("unreachable")
+        })
+      )
+      .render(f.size, f.buffer)
   }
 }

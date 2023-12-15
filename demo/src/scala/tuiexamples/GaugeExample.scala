@@ -77,49 +77,41 @@ object GaugeExample {
     }
   }
 
-  def ui(f: Frame, app: App): Unit = {
-    val chunks = Layout(
-      direction = Direction.Vertical,
-      margin = Margin(2),
-      constraints = Array(Constraint.Percentage(25), Constraint.Percentage(25), Constraint.Percentage(25), Constraint.Percentage(25))
-    )
-      .split(f.size)
-
-    val gauge0 = GaugeWidget(
-      block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge1")), borders = Borders.ALL)),
-      gaugeStyle = Style(fg = Some(Color.Yellow)),
-      ratio = GaugeWidget.Ratio.percent(app.progress1)
-    )
-    f.renderWidget(gauge0, chunks(0))
-
-    val gauge1 = GaugeWidget(
-      block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge2")), borders = Borders.ALL)),
-      gaugeStyle = Style(fg = Some(Color.Magenta), bg = Some(Color.Green)),
-      ratio = GaugeWidget.Ratio.percent(app.progress2),
-      label = Some(Span.nostyle(s"${app.progress2}/100"))
-    )
-    f.renderWidget(gauge1, chunks(1))
-
-    val gauge2 = GaugeWidget(
-      block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge3")), borders = Borders.ALL)),
-      gaugeStyle = Style(fg = Some(Color.Yellow)),
-      ratio = GaugeWidget.Ratio(app.progress3),
-      label = Some(
-        Span.styled(
-          "%.2f".format(app.progress3 * 100.0),
-          Style(fg = Some(Color.Red), addModifier = Modifier.ITALIC | Modifier.BOLD)
+  def ui(f: Frame, app: App): Unit =
+    Layout(direction = Direction.Vertical, margin = Margin(2))(
+      BlockWidget(title = Some(Spans.nostyle("Gauge1")), borders = Borders.ALL)(
+        GaugeWidget(
+          style = Style(fg = Some(Color.Yellow)),
+          ratio = GaugeWidget.Ratio.percent(app.progress1)
         )
       ),
-      useUnicode = true
+      BlockWidget(title = Some(Spans.nostyle("Gauge2")), borders = Borders.ALL)(
+        GaugeWidget(
+          style = Style(fg = Some(Color.Magenta), bg = Some(Color.Green)),
+          ratio = GaugeWidget.Ratio.percent(app.progress2),
+          label = Some(Span.nostyle(s"${app.progress2}/100"))
+        )
+      ),
+      BlockWidget(title = Some(Spans.nostyle("Gauge3")), borders = Borders.ALL)(
+        GaugeWidget(
+          style = Style(fg = Some(Color.Yellow)),
+          ratio = GaugeWidget.Ratio(app.progress3),
+          label = Some(
+            Span.styled(
+              "%.2f".format(app.progress3 * 100.0),
+              Style(fg = Some(Color.Red), addModifier = Modifier.ITALIC | Modifier.BOLD)
+            )
+          ),
+          useUnicode = true
+        )
+      ),
+      BlockWidget(title = Some(Spans.nostyle("Gauge4")))(
+        GaugeWidget(
+          style = Style(fg = Some(Color.Cyan), addModifier = Modifier.ITALIC),
+          ratio = GaugeWidget.Ratio.percent(app.progress4),
+          label = Some(Span.nostyle(s"${app.progress4}/100"))
+        )
+      )
     )
-    f.renderWidget(gauge2, chunks(2))
-
-    val gauge3 = GaugeWidget(
-      block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge4")))),
-      gaugeStyle = Style(fg = Some(Color.Cyan), addModifier = Modifier.ITALIC),
-      ratio = GaugeWidget.Ratio.percent(app.progress4),
-      label = Some(Span.nostyle(s"${app.progress4}/100"))
-    )
-    f.renderWidget(gauge3, chunks(3))
-  }
+      .render(f.size, f.buffer)
 }

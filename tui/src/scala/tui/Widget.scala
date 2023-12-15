@@ -8,3 +8,10 @@ trait Widget {
     */
   def render(area: Rect, buf: Buffer): Unit
 }
+
+object Widget {
+  def apply(f: (Rect, Buffer) => Unit): Widget = f(_, _)
+  object Empty extends Widget {
+    def render(area: Rect, buf: Buffer): Unit = ()
+  }
+}

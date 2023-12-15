@@ -23,7 +23,6 @@ import tui.widgets.canvas.{CanvasWidget, Line, Points}
   */
 case class ChartWidget(
     datasets: Array[ChartWidget.Dataset],
-    block: Option[BlockWidget] = None,
     xAxis: ChartWidget.Axis = ChartWidget.Axis.default,
     yAxis: ChartWidget.Axis = ChartWidget.Axis.default,
     style: Style = Style.DEFAULT,
@@ -225,22 +224,14 @@ case class ChartWidget(
     // axis names).
     val original_style = buf.get(area.left, area.top).style
 
-    val chart_area = this.block match {
-      case Some(b) =>
-        val inner_area = b.inner(area)
-        b.render(area, buf)
-        inner_area
-      case None => area
-    }
-
-    val layout = this.layout(chart_area)
+    val layout = this.layout(area)
     val graph_area = layout.graphArea
     if (graph_area.width < 1 || graph_area.height < 1) {
       return
     }
 
-    this.renderXLabels(buf, layout, chart_area, graph_area)
-    this.renderYLabels(buf, layout, chart_area, graph_area)
+    this.renderXLabels(buf, layout, area, graph_area)
+    this.renderYLabels(buf, layout, area, graph_area)
 
     layout.axisX match {
       case None => ()
@@ -271,7 +262,7 @@ case class ChartWidget(
 
     this.datasets.foreach { dataset =>
       CanvasWidget(
-        backgroundColor = this.style.bg.getOrElse(Color.Reset),
+        backgroundColor = original_style.bg.getOrElse(Color.Reset),
         xBounds = this.xAxis.bounds,
         yBounds = this.yAxis.bounds,
         marker = dataset.marker
@@ -296,7 +287,7 @@ case class ChartWidget(
       case None => ()
       case Some(legend_area) =>
         buf.setStyle(legend_area, original_style)
-        BlockWidget(borders = Borders.ALL).render(legend_area, buf)
+        BlockWidget.noChildren(borders = Borders.ALL).render(legend_area, buf)
         ranges.range(0, this.datasets.length) { i =>
           val dataset = this.datasets(i)
           buf.setString(

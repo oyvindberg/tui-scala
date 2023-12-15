@@ -20,13 +20,14 @@ import tui.internal.saturating._
   * @param style
   *   Widget style
   */
-case class BlockWidget(
-    title: Option[Spans] = None,
-    titleAlignment: Alignment = Alignment.Left,
-    borders: Borders = Borders.NONE,
-    borderStyle: Style = Style.DEFAULT,
-    borderType: BlockWidget.BorderType = BlockWidget.BorderType.Plain,
-    style: Style = Style.DEFAULT
+class BlockWidget(
+    title: Option[Spans],
+    titleAlignment: Alignment,
+    borders: Borders,
+    borderStyle: Style,
+    borderType: BlockWidget.BorderType,
+    style: Style,
+    children: Option[Widget]
 ) extends Widget {
 
   /** Compute the inner area of a block based on its border visibility rules.
@@ -153,10 +154,32 @@ case class BlockWidget(
 
       buf.setSpans(title_x, title_y, title, title_area_width);
     }
+
+    children.foreach { child =>
+      child.render(inner(area), buf)
+    }
   }
 }
 
 object BlockWidget {
+  def noChildren(
+      title: Option[Spans] = None,
+      titleAlignment: Alignment = Alignment.Left,
+      borders: Borders = Borders.NONE,
+      borderStyle: Style = Style.DEFAULT,
+      borderType: BlockWidget.BorderType = BlockWidget.BorderType.Plain,
+      style: Style = Style.DEFAULT
+  ): BlockWidget =
+    new BlockWidget(title, titleAlignment, borders, borderStyle, borderType, style, None)
+  def apply(
+      title: Option[Spans] = None,
+      titleAlignment: Alignment = Alignment.Left,
+      borders: Borders = Borders.NONE,
+      borderStyle: Style = Style.DEFAULT,
+      borderType: BlockWidget.BorderType = BlockWidget.BorderType.Plain,
+      style: Style = Style.DEFAULT
+  )(child: Widget): BlockWidget = new BlockWidget(title, titleAlignment, borders, borderStyle, borderType, style, Some(child))
+
   sealed trait BorderType
 
   object BorderType {

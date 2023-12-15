@@ -14,18 +14,33 @@ import scala.collection.mutable
   *   Whether the last chunk of the computed layout should be expanded to fill the available space.
   * @param expand_to_fill
   */
-case class Layout(
+class Layout(
     direction: Direction = Direction.Vertical,
-    margin: Margin = Margin(horizontal = 0, vertical = 0),
-    constraints: Array[Constraint] = Array.empty,
+    margin: Margin = Margin.None,
     expandToFill: Boolean = true
-) {
-  def split(area: Rect): Array[Rect] =
-    Layout.LAYOUT_CACHE.getOrElseUpdate((area, this), Layout.split(area, this))
+)(widgets: (Constraint, Widget)*)
+    extends Widget {
+
+  override def render(area: Rect, buf: Buffer): Unit = {
+    val constraints = widgets.map(_._1).toArray
+    val chunks = Layout.cached(area, constraints, margin, direction, expandToFill)
+
+    ranges.range(0, widgets.length) { i =>
+      val (_, widget) = widgets(i)
+      val chunk = chunks(i)
+      widget.render(chunk, buf)
+    }
+  }
 }
 
 object Layout {
-  val LAYOUT_CACHE = mutable.HashMap.empty[(Rect, Layout), Array[Rect]]
+  def detailed(direction: Direction = Direction.Vertical, margin: Margin = Margin.None, expandToFill: Boolean = true)(widgets: (Constraint, Widget)*) =
+    new Layout(direction, margin, expandToFill)(widgets: _*)
+
+  def apply(direction: Direction = Direction.Vertical, margin: Margin = Margin.None, expandToFill: Boolean = true)(widgets: Widget*) =
+    new Layout(direction, margin, expandToFill)(widgets.map(w => Constraint.Ratio(1, widgets.length) -> w): _*)
+
+  private val LAYOUT_CACHE = mutable.HashMap.empty[(Rect, Array[Constraint], Margin, Direction, Boolean), Array[Rect]]
 
   /** A container used by the solver inside split
     */
@@ -44,14 +59,19 @@ object Layout {
     def bottom: Expression = y + height
   }
 
-  def split(area: Rect, layout: Layout): Array[Rect] = {
+  def cached(area: Rect, constraints: Array[Constraint], margin: Margin, direction: Direction, expandToFill: Boolean): Array[Rect] =
+    Layout.LAYOUT_CACHE.getOrElseUpdate(
+      (area, constraints, margin, direction, expandToFill),
+      split(area, constraints, margin, direction, expandToFill)
+    )
+
+  def split(area: Rect, constraints: Array[Constraint], margin: Margin, direction: Direction, expandToFill: Boolean): Array[Rect] = {
     val solver = new Solver
     val vars: mutable.Map[Variable, (Int, Int)] = mutable.Map.empty
-    val elements = layout.constraints.map(_ => new Element)
-    val results: Array[Rect] = layout.constraints
-      .map(_ => Rect.default)
+    val elements = constraints.map(_ => new Element)
+    val results: Array[Rect] = constraints.map(_ => Rect.default)
 
-    val dest_area = area.inner(layout.margin)
+    val dest_area = area.inner(margin)
     ranges.range(0, elements.length) { i =>
       val e = elements(i)
       vars.update(e.x, (i, 0))
@@ -61,7 +81,7 @@ object Layout {
     }
 
     val ccs = Array.newBuilder[CassowaryConstraint]
-    ccs.sizeHint(elements.length * 4 + layout.constraints.length * 6)
+    ccs.sizeHint(elements.length * 4 + constraints.length * 6)
 
     elements.foreach { elt =>
       ccs += (elt.width | GE(REQUIRED) | 0.0)
@@ -73,16 +93,16 @@ object Layout {
     }
 
     elements.headOption foreach { first =>
-      val c = layout.direction match {
+      val c = direction match {
         case Direction.Horizontal => first.left | EQ(REQUIRED) | dest_area.left.toDouble
         case Direction.Vertical   => first.top | EQ(REQUIRED) | dest_area.top.toDouble
       }
       ccs += c
     }
 
-    if (layout.expandToFill) {
+    if (expandToFill) {
       elements.lastOption.foreach { last =>
-        val c = layout.direction match {
+        val c = direction match {
           case Direction.Horizontal => last.right | EQ(REQUIRED) | dest_area.right.toDouble
           case Direction.Vertical   => last.bottom | EQ(REQUIRED) | dest_area.bottom.toDouble
         }
@@ -90,17 +110,17 @@ object Layout {
       }
     }
 
-    layout.direction match {
+    direction match {
       case Direction.Horizontal =>
         elements.sliding(2).foreach {
           case Array(one, two) => ccs += ((one.x + one.width) | EQ(REQUIRED) | two.x);
           case _               => // ignore if only one
         }
 
-        ranges.range(0, layout.constraints.length) { i =>
+        ranges.range(0, constraints.length) { i =>
           ccs += (elements(i).y | EQ(REQUIRED) | dest_area.y.toDouble)
           ccs += (elements(i).height | EQ(REQUIRED) | dest_area.height.toDouble)
-          val size = layout.constraints(i)
+          val size = constraints(i)
           ccs += (size match {
             case Constraint.Length(v) =>
               elements(i).width | EQ(WEAK) | v.toDouble
@@ -119,10 +139,10 @@ object Layout {
           case Array(one, two) => ccs += ((one.y + one.height) | EQ(REQUIRED) | two.y);
           case _               => // ignore if only one
         }
-        ranges.range(0, layout.constraints.length) { i =>
+        ranges.range(0, constraints.length) { i =>
           ccs += (elements(i).x | EQ(REQUIRED) | dest_area.x.toDouble)
           ccs += (elements(i).width | EQ(REQUIRED) | dest_area.width.toDouble)
-          val size = layout.constraints(i)
+          val size = constraints(i)
           ccs += (size match {
             case Constraint.Length(v) =>
               elements(i).height | EQ(WEAK) | v.toDouble
@@ -157,12 +177,12 @@ object Layout {
       }
     }
 
-    if (layout.expandToFill) {
+    if (expandToFill) {
       // Fix imprecision by extending the last item a bit if necessary
       if (results.nonEmpty) {
         val lastIdx = results.length - 1
         val last = results(lastIdx)
-        val updated = layout.direction match {
+        val updated = direction match {
           case Direction.Horizontal => last.copy(height = dest_area.bottom - last.y)
           case Direction.Vertical   => last.copy(width = dest_area.right - last.x)
         }

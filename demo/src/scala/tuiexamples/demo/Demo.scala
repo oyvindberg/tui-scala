@@ -27,7 +27,7 @@ object Demo {
     }
 
     while (true) {
-      terminal.draw(f => ui.draw(f, app))
+      terminal.draw(f => ui.draw(app).render(f.size, f.buffer))
 
       if (jni.poll(timeout)) {
         jni.read() match {
