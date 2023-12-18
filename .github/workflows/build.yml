@@ -72,7 +72,7 @@ jobs:
         if: runner.os == 'Windows'
 
       - name: Temporarily save package
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: tui.scripts.GenJniLibrary
           path: ${{ matrix.jni-folder }}
