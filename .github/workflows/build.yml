@@ -50,7 +50,7 @@ jobs:
         with:
           extraFiles: bleep.yaml
       - name: Set up cargo cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         continue-on-error: false
         with:
           path: |
