@@ -13,7 +13,8 @@ object PublishLocal extends BleepScript("PublishLocal") {
         groupId = groupId,
         version = dynVer.version,
         publishTarget = bleep.commands.PublishLocal.LocalIvy,
-        projects = projects
+        projects = projects,
+        manifestCreator = bleep.packaging.ManifestCreator.default
       )
     )
   }

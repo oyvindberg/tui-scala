@@ -33,14 +33,14 @@ object GenJniLibrary extends bleep.BleepCodegenScript("GenJniLibrary") {
       override lazy val managedNativeLibraries: Seq[(Path, RelPath)] = {
         val library: Path = jniNative.nativeCompile()
         val name = System.mapLibraryName(s"native-${jniNative.nativePlatform}-${jniNative.libName}")
-        Seq(library -> new RelPath(List(name)))
+        Seq(library -> RelPath.force(name))
       }
     }
 
     targets.foreach { target =>
       // copy into place in resources directories
       val writtenPaths = jniPackage.copyTo(target.resources)
-      writtenPaths.foreach(path => started.logger.withContext(path).info("wrote"))
+      writtenPaths.foreach(p => started.logger.withContext("path", p).info("wrote"))
     }
   }
 }

@@ -9,6 +9,6 @@ object GenHeaders extends BleepScript("GenHeaders") {
 
     val javah = new JniJavah(started.logger, started.projectPaths(crosstermProject), started.bloopProject(crosstermProject))
     val path = javah.javah()
-    started.logger.withContext(path).warn("Generated")
+    started.logger.withContext("path", path).warn("Generated")
   }
 }
