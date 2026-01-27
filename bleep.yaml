@@ -6,11 +6,13 @@ projects:
   cassowary:
     extends: template-cross-scala
   crossterm:
+    java:
+      options: --release 17
     sourcegen:
       main: tui.scripts.GenJniLibrary
       project: scripts
   demo:
-    dependencies: org.graalvm.nativeimage:svm:22.3.1
+    dependencies: org.graalvm.nativeimage:svm:25.0.1
     dependsOn: tui
     extends: template-cross-scala
     platform:
@@ -24,7 +26,7 @@ projects:
     - template-scala-2
     - template-scala-common
   tests:
-    dependencies: org.scalatest::scalatest:3.2.15
+    dependencies: org.scalatest::scalatest:3.2.19
     dependsOn: tui
     extends: template-cross-scala
     isTestProject: true
@@ -56,10 +58,10 @@ templates:
     extends: template-scala-common
   template-scala-2:
     scala:
-      version: 2.13.10
+      version: 2.13.18
   template-scala-3:
     scala:
-      version: 3.2.2
+      version: 3.7.4
   template-scala-common:
     platform:
       name: jvm
