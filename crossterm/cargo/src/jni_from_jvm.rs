@@ -25,12 +25,12 @@ fn int_field<F>(env: JNIEnv, obj: JObject, name: F) -> JniResult<jint> where F: 
     Ok(env.get_field(obj, name, "I")?.i()?)
 }
 
-// one doesn't simply...
-fn as_rust_string(env: JNIEnv, _1: JObject) -> JniResult<String> {
-    let _2: JString = _1.into();
-    let _3: JavaStr = env.get_string(_2)?;
-    let _4: String = _3.to_string_lossy().into();
-    Ok(_4)
+// Convert Java String to Rust String, properly handling CESU-8 encoding
+// (which Java/JNI uses for characters outside the BMP, like emojis)
+fn as_rust_string(env: JNIEnv, obj: JObject) -> JniResult<String> {
+    let jstring: JString = obj.into();
+    let java_str: JavaStr = env.get_string(jstring)?;
+    Ok(String::from(java_str))
 }
 
 fn str_field<F>(env: JNIEnv, obj: JObject, name: F) -> JniResult<String> where F: Into<JNIString> {

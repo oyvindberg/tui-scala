@@ -6,7 +6,7 @@ package tui.crossterm;
 ///
 /// - Used with SetCursorShape
 public enum CursorShape {
-    UnderScore,
-    Line,
-    Block
+  UnderScore,
+  Line,
+  Block
 }

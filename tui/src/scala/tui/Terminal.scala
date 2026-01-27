@@ -6,8 +6,7 @@ import scala.util.control.NonFatal
   *
   * @param backend
   * @param buffers
-  *   Holds the results of the current and previous draw calls. The two are compared at the end of each draw pass to output the necessary updates to the
-  *   terminal
+  *   Holds the results of the current and previous draw calls. The two are compared at the end of each draw pass to output the necessary updates to the terminal
   * @param current
   *   Index of the current buffer in the previous array
   * @param hiddenCursor
@@ -53,8 +52,7 @@ case class Terminal private (
     backend.draw(updates)
   }
 
-  /** Updates the Terminal so that internal buffers match the requested size. Requested size will be saved so the size can remain consistent when rendering.
-    * This leads to a full clear of the screen.
+  /** Updates the Terminal so that internal buffers match the requested size. Requested size will be saved so the size can remain consistent when rendering. This leads to a full clear of the screen.
     */
   def resize(area: Rect): Unit = {
     buffers(current).resize(area)

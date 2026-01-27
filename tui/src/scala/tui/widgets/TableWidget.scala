@@ -205,8 +205,8 @@ object TableWidget {
 
   /** Holds data to be displayed in a `Table` widget.
     *
-    * A `Row` is a collection of cells. It can be created from simple strings: You can also construct a row from any type that can be converted into `Text`: By
-    * default, a row has a height of 1 but you can change this using `Row.height`.
+    * A `Row` is a collection of cells. It can be created from simple strings: You can also construct a row from any type that can be converted into `Text`: By default, a row has a height of 1 but you
+    * can change this using `Row.height`.
     */
   case class Row(
       cells: Array[TableWidget.Cell],

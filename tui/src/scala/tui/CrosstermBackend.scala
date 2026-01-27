@@ -93,7 +93,7 @@ object CrosstermBackend {
       case Color.LightMagenta => new crossterm.Color.Magenta()
       case Color.LightCyan    => new crossterm.Color.Cyan()
       case Color.White        => new crossterm.Color.White()
-      case Color.Indexed(i)   => new crossterm.Color.AnsiValue(i)
+      case Color.Indexed(i)   => new crossterm.Color.AnsiValue(i & 0xff)
       case Color.Rgb(r, g, b) => new crossterm.Color.Rgb(r, g, b)
     }
 

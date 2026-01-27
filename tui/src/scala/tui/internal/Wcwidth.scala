@@ -30,26 +30,23 @@ package internal
   *
   * http://www.opengroup.org/onlinepubs/007904975/functions/wcwidth.html http://www.opengroup.org/onlinepubs/007904975/functions/wcswidth.html
   *
-  * <p>In fixed-width output devices, Latin characters all occupy a single "cell" position of equal width, whereas ideographic CJK characters occupy two such
-  * cells. Interoperability between terminal-line applications and (teletype-style) character terminals using the UTF-8 encoding requires agreement on which
-  * character should advance the cursor by how many cell positions. No established formal standards exist at present on which Unicode character shall occupy how
-  * many cell positions on character terminals. These routines are a first attempt of defining such behavior based on simple rules applied to data provided by
-  * the Unicode Consortium.</p>
+  * <p>In fixed-width output devices, Latin characters all occupy a single "cell" position of equal width, whereas ideographic CJK characters occupy two such cells. Interoperability between
+  * terminal-line applications and (teletype-style) character terminals using the UTF-8 encoding requires agreement on which character should advance the cursor by how many cell positions. No
+  * established formal standards exist at present on which Unicode character shall occupy how many cell positions on character terminals. These routines are a first attempt of defining such behavior
+  * based on simple rules applied to data provided by the Unicode Consortium.</p>
   *
-  * <p>For some graphical characters, the Unicode standard explicitly defines a character-cell width via the definition of the East Asian FullWidth (F), Wide
-  * (W), Half-width (H), and Narrow (Na) classes. In all these cases, there is no ambiguity about which width a terminal shall use. For characters in the East
-  * Asian Ambiguous (A) class, the width choice depends purely on a preference of backward compatibility with either historic CJK or Western practice. Choosing
-  * single-width for these characters is easy to justify as the appropriate long-term solution, as the CJK practice of displaying these characters as
-  * double-width comes from historic implementation simplicity (8-bit encoded characters were displayed single-width and 16-bit ones double-width, even for
-  * Greek, Cyrillic, etc.) and not any typographic considerations.</p>
+  * <p>For some graphical characters, the Unicode standard explicitly defines a character-cell width via the definition of the East Asian FullWidth (F), Wide (W), Half-width (H), and Narrow (Na)
+  * classes. In all these cases, there is no ambiguity about which width a terminal shall use. For characters in the East Asian Ambiguous (A) class, the width choice depends purely on a preference of
+  * backward compatibility with either historic CJK or Western practice. Choosing single-width for these characters is easy to justify as the appropriate long-term solution, as the CJK practice of
+  * displaying these characters as double-width comes from historic implementation simplicity (8-bit encoded characters were displayed single-width and 16-bit ones double-width, even for Greek,
+  * Cyrillic, etc.) and not any typographic considerations.</p>
   *
-  * <p>Much less clear is the choice of width for the Not East Asian (Neutral) class. Existing practice does not dictate a width for any of these characters. It
-  * would nevertheless make sense typographically to allocate two character cells to characters such as for instance EM SPACE or VOLUME INTEGRAL, which cannot
-  * be represented adequately with a single-width glyph. The following routines at present merely assign a single-cell width to all neutral characters, in the
-  * interest of simplicity. This is not entirely satisfactory and should be reconsidered before establishing a formal standard in this area. At the moment, the
-  * decision which Not East Asian (Neutral) characters should be represented by double-width glyphs cannot yet be answered by applying a simple rule from the
-  * Unicode database content. Setting up a proper standard for the behavior of UTF-8 character terminals will require a careful analysis not only of each
-  * Unicode character, but also of each presentation form, something the author of these routines has avoided to do so far.</p>
+  * <p>Much less clear is the choice of width for the Not East Asian (Neutral) class. Existing practice does not dictate a width for any of these characters. It would nevertheless make sense
+  * typographically to allocate two character cells to characters such as for instance EM SPACE or VOLUME INTEGRAL, which cannot be represented adequately with a single-width glyph. The following
+  * routines at present merely assign a single-cell width to all neutral characters, in the interest of simplicity. This is not entirely satisfactory and should be reconsidered before establishing a
+  * formal standard in this area. At the moment, the decision which Not East Asian (Neutral) characters should be represented by double-width glyphs cannot yet be answered by applying a simple rule
+  * from the Unicode database content. Setting up a proper standard for the behavior of UTF-8 character terminals will require a careful analysis not only of each Unicode character, but also of each
+  * presentation form, something the author of these routines has avoided to do so far.</p>
   *
   * <p>http://www.unicode.org/unicode/reports/tr11/</p>
   */
@@ -232,8 +229,7 @@ object Wcwidth {
     *
     *   - Hangul Jamo medial vowels and final consonants (U+1160-U+11FF) have a column width of 0.
     *
-    *   - Spacing characters in the East Asian Wide (W) or East Asian Full-width (F) category as defined in Unicode Technical Report #11 have a column width of
-    *     2.
+    *   - Spacing characters in the East Asian Wide (W) or East Asian Full-width (F) category as defined in Unicode Technical Report #11 have a column width of 2.
     *
     *   - All remaining characters (including all printable ISO 8859-1 and WGL4 characters, Unicode control characters, etc.) have a column width of 1.
     *
@@ -254,7 +250,59 @@ object Wcwidth {
              (codePoint >= 0xfe10 && codePoint <= 0xfe19) || // Vertical forms
              (codePoint >= 0xfe30 && codePoint <= 0xfe6f) || // CJK Compatibility Forms
              (codePoint >= 0xff00 && codePoint <= 0xff60) || // Fullwidth Forms
-             (codePoint >= 0xffe0 && codePoint <= 0xffe6) || (codePoint >= 0x20000 && codePoint <= 0x2fffd) || (codePoint >= 0x30000 && codePoint <= 0x3fffd))
+             (codePoint >= 0xffe0 && codePoint <= 0xffe6) ||
+             (codePoint >= 0x20000 && codePoint <= 0x2fffd) ||
+             (codePoint >= 0x30000 && codePoint <= 0x3fffd) ||
+             // Emoji ranges - all emojis are typically displayed as 2 cells wide
+             (codePoint >= 0x1f300 && codePoint <= 0x1f5ff) || // Miscellaneous Symbols and Pictographs
+             (codePoint >= 0x1f600 && codePoint <= 0x1f64f) || // Emoticons
+             (codePoint >= 0x1f680 && codePoint <= 0x1f6ff) || // Transport and Map Symbols
+             (codePoint >= 0x1f700 && codePoint <= 0x1f77f) || // Alchemical Symbols
+             (codePoint >= 0x1f780 && codePoint <= 0x1f7ff) || // Geometric Shapes Extended
+             (codePoint >= 0x1f800 && codePoint <= 0x1f8ff) || // Supplemental Arrows-C
+             (codePoint >= 0x1f900 && codePoint <= 0x1f9ff) || // Supplemental Symbols and Pictographs
+             (codePoint >= 0x1fa00 && codePoint <= 0x1fa6f) || // Chess Symbols
+             (codePoint >= 0x1fa70 && codePoint <= 0x1faff) || // Symbols and Pictographs Extended-A
+             (codePoint >= 0x2600 && codePoint <= 0x26ff) || // Miscellaneous Symbols
+             (codePoint >= 0x2700 && codePoint <= 0x27bf) || // Dingbats
+             (codePoint >= 0x231a && codePoint <= 0x231b) || // Watch, Hourglass
+             (codePoint >= 0x23e9 && codePoint <= 0x23f3) || // Various symbols
+             (codePoint >= 0x23f8 && codePoint <= 0x23fa) || // Various symbols
+             codePoint == 0x25aa || codePoint == 0x25ab || // Small squares
+             codePoint == 0x25b6 || codePoint == 0x25c0 || // Play buttons
+             (codePoint >= 0x25fb && codePoint <= 0x25fe) || // Medium squares
+             codePoint == 0x2614 || codePoint == 0x2615 || // Umbrella, Hot beverage
+             codePoint == 0x2648 || (codePoint >= 0x2648 && codePoint <= 0x2653) || // Zodiac
+             codePoint == 0x267f || codePoint == 0x2693 || // Wheelchair, Anchor
+             codePoint == 0x26a1 || codePoint == 0x26aa || // High voltage, circles
+             codePoint == 0x26ab || codePoint == 0x26bd || // circles, soccer
+             codePoint == 0x26be || codePoint == 0x26c4 || // baseball, snowman
+             codePoint == 0x26c5 || codePoint == 0x26ce || // sun behind cloud, ophiuchus
+             codePoint == 0x26d4 || codePoint == 0x26ea || // no entry, church
+             codePoint == 0x26f2 || codePoint == 0x26f3 || // fountain, golf
+             codePoint == 0x26f5 || codePoint == 0x26fa || // sailboat, tent
+             codePoint == 0x26fd || codePoint == 0x2702 || // fuel pump, scissors
+             codePoint == 0x2705 || codePoint == 0x2708 || // check mark, airplane
+             (codePoint >= 0x2709 && codePoint <= 0x270d) || // envelope to writing hand
+             codePoint == 0x270f || codePoint == 0x2712 || // pencil, black nib
+             codePoint == 0x2714 || codePoint == 0x2716 || // check marks
+             codePoint == 0x271d || codePoint == 0x2721 || // crosses
+             codePoint == 0x2728 || codePoint == 0x2733 || // sparkles, eight spoked
+             codePoint == 0x2734 || codePoint == 0x2744 || // eight pointed, snowflake
+             codePoint == 0x2747 || codePoint == 0x274c || // sparkle, cross mark
+             codePoint == 0x274e || codePoint == 0x2753 || // cross, question
+             (codePoint >= 0x2754 && codePoint <= 0x2755) || // question marks
+             codePoint == 0x2757 || codePoint == 0x2763 || // exclamation, heart exclamation
+             codePoint == 0x2764 || codePoint == 0x2795 || // heart, plus
+             (codePoint >= 0x2796 && codePoint <= 0x2797) || // minus, divide
+             codePoint == 0x27a1 || codePoint == 0x27b0 || // arrows
+             codePoint == 0x27bf || codePoint == 0x2934 || // loop, arrows
+             codePoint == 0x2935 ||
+             (codePoint >= 0x2b05 && codePoint <= 0x2b07) || // arrows
+             codePoint == 0x2b1b || codePoint == 0x2b1c || // squares
+             codePoint == 0x2b50 || codePoint == 0x2b55 || // star, circle
+             codePoint == 0x3030 || codePoint == 0x303d || // wavy dash, part alternation
+             codePoint == 0x3297 || codePoint == 0x3299) // circled ideograph
          ) 1
          else 0)
   }

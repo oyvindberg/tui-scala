@@ -6,9 +6,9 @@ import tui.internal.UnicodeSegmentation
   */
 case class Span(content: String, style: Style) {
 
-  /** Returns the width of the content held by this span.
+  /** Returns the width of the content held by this span. This calculates the visual display width, not the string length.
     */
-  def width: Int = content.length
+  def width: Int = UnicodeSegmentation.graphemes(content, isExtended = true).map(_.width).sum
 
   /** Returns an iterator over the graphemes held by this span.
     *
