@@ -1,7 +1,7 @@
 $schema: https://raw.githubusercontent.com/oyvindberg/bleep/master/schema.json
 $version: 0.0.14
 jvm:
-  name: graalvm-java17:22.3.1
+  name: graalvm-community:25.0.1
 projects:
   cassowary:
     extends: template-cross-scala

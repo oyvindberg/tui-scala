@@ -7,8 +7,9 @@ import scala.collection.mutable
 
 /** A buffer that maps to the desired content of the terminal after the draw call
   *
-  * No widget in the library interacts directly with the terminal. Instead each of them is required to draw their state to an intermediate buffer. It is basically a grid where each cell contains a
-  * grapheme, a foreground color and a background color. This grid will then be used to output the appropriate escape sequences and characters to draw the UI as the user has defined it.
+  * No widget in the library interacts directly with the terminal. Instead each of them is required to draw their state to an intermediate buffer. It is
+  * basically a grid where each cell contains a grapheme, a foreground color and a background color. This grid will then be used to output the appropriate
+  * escape sequences and characters to draw the UI as the user has defined it.
   *
   * @param area
   *   The area represented by this buffer

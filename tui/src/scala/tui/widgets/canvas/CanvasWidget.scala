@@ -12,8 +12,8 @@ import tui.internal.ranges
   * @param yBounds
   * @param backgroundColor
   * @param marker
-  *   Change the type of points used to draw the shapes. By default the braille patterns are used as they provide a more fine grained result but you might want to use the simple dot or block instead
-  *   if the targeted terminal does not support those symbols.
+  *   Change the type of points used to draw the shapes. By default the braille patterns are used as they provide a more fine grained result but you might want
+  *   to use the simple dot or block instead if the targeted terminal does not support those symbols.
   * @param painter
   */
 case class CanvasWidget(

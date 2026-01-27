@@ -4,7 +4,8 @@ package tui
   *
   * Style let you control the main characteristics of the displayed elements.
   *
-  * It represents an incremental change. If you apply the styles S1, S2, S3 to a cell of the terminal buffer, the style of this cell will be the result of the merge of S1, S2 and S3, not just S3.
+  * It represents an incremental change. If you apply the styles S1, S2, S3 to a cell of the terminal buffer, the style of this cell will be the result of the
+  * merge of S1, S2 and S3, not just S3.
   */
 case class Style(
     fg: Option[Color] = None,
