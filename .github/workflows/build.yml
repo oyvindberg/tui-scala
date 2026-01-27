@@ -37,6 +37,8 @@ jobs:
         include:
           - os: ubuntu-24.04
             jni-folder: .bleep/generated-resources/crossterm/tui.scripts.GenJniLibrary
+          - os: macos-15-intel
+            jni-folder: .bleep/generated-resources/crossterm/tui.scripts.GenJniLibrary
           - os: macos-latest
             jni-folder: .bleep/generated-resources/crossterm/tui.scripts.GenJniLibrary
           - os: windows-latest
