@@ -13,9 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'ci skip')"
     steps:
-      - uses: actions/checkout@v4
-      - uses: bleep-build/bleep-setup-action@0.0.1
-      - uses: coursier/cache-action@v6
+      - uses: actions/checkout@v6
+      - uses: bleep-build/bleep-setup-action@0.0.2
+      - uses: coursier/cache-action@v7
         with:
           extraFiles: bleep.yaml
 
@@ -35,22 +35,20 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-20.04
+          - os: ubuntu-24.04
             jni-folder: .bleep/generated-resources/crossterm/tui.scripts.GenJniLibrary
           - os: macos-latest
-            jni-folder: .bleep/generated-resources/crossterm/tui.scripts.GenJniLibrary
-          - os: macOS-m1
             jni-folder: .bleep/generated-resources/crossterm/tui.scripts.GenJniLibrary
           - os: windows-latest
             jni-folder: .bleep\generated-resources\crossterm\tui.scripts.GenJniLibrary
     steps:
-      - uses: actions/checkout@v4
-      - uses: bleep-build/bleep-setup-action@0.0.1
-      - uses: coursier/cache-action@v6
+      - uses: actions/checkout@v6
+      - uses: bleep-build/bleep-setup-action@0.0.2
+      - uses: coursier/cache-action@v7
         with:
           extraFiles: bleep.yaml
       - name: Set up cargo cache
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         continue-on-error: false
         with:
           path: |
@@ -72,9 +70,9 @@ jobs:
         if: runner.os == 'Windows'
 
       - name: Temporarily save package
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: tui.scripts.GenJniLibrary
+          name: tui.scripts.GenJniLibrary-${{ matrix.os }}
           path: ${{ matrix.jni-folder }}
           retention-days: 1
 
@@ -84,14 +82,16 @@ jobs:
     needs: [ build, build-native ]
     if: "startsWith(github.ref, 'refs/tags/v')"
     steps:
-      - uses: actions/checkout@v4
-      - uses: bleep-build/bleep-setup-action@0.0.1
+      - uses: actions/checkout@v6
+      - uses: bleep-build/bleep-setup-action@0.0.2
       - id: get_version
         uses: battila7/get-version-action@v2
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: .bleep/generated-resources/crossterm/
+          pattern: tui.scripts.GenJniLibrary-*
+          merge-multiple: true
       - name: Display structure of downloaded files
         run: find .bleep/generated-resources/crossterm
       # next two tasks are optimization to avoid compiling rust code again
@@ -107,7 +107,7 @@ jobs:
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
       - name: Upload-to-release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           name: "${{ steps.get_version.outputs.version-without-v }}"
           prerelease: false
