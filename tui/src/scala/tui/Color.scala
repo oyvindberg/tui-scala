@@ -37,7 +37,7 @@ object Color {
 
   case object White extends Color
 
-  case class Rgb(r: Byte, g: Byte, b: Byte) extends Color
+  case class Rgb(r: Int, g: Int, b: Int) extends Color
 
-  case class Indexed(byte: Byte) extends Color
+  case class Indexed(index: Int) extends Color
 }

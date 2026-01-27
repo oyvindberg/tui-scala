@@ -1,10 +1,10 @@
 package tui.scripts
 
 import bleep._
+import bleep.nosbt.InteractionService
 import bleep.packaging.{packageLibraries, CoordinatesFor, PackagedLibrary, PublishLayout}
 import bleep.plugin.cirelease.CiReleasePlugin
 import bleep.plugin.dynver.DynVerPlugin
-import bleep.plugin.nosbt.InteractionService
 import bleep.plugin.pgp.PgpPlugin
 import bleep.plugin.sonatype.Sonatype
 import coursier.Info
@@ -68,7 +68,7 @@ object Publish extends BleepScript("Publish") {
       packagedLibraries.flatMap { case (_, PackagedLibrary(_, files)) => files.all }
 
     files.foreach { case (path, bytes) =>
-      started.logger.withContext(path)(_.asString).withContext(bytes.length).debug("will publish")
+      started.logger.withContext("path", path.asString).withContext("size", bytes.length).debug("will publish")
     }
     ciRelease.ciRelease(files)
   }
