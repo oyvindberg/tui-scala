@@ -91,7 +91,7 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
-          path: .bleep/generated-resources/crossterm/
+          path: .bleep/generated-resources/crossterm/tui.scripts.GenJniLibrary
           pattern: tui.scripts.GenJniLibrary-*
           merge-multiple: true
       - name: Display structure of downloaded files
