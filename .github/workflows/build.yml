@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: bleep-build/bleep-setup-action@0.0.2
-      - uses: coursier/cache-action@v7
+      - uses: coursier/cache-action@v8
         with:
           extraFiles: bleep.yaml
 
@@ -46,7 +46,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: bleep-build/bleep-setup-action@0.0.2
-      - uses: coursier/cache-action@v7
+      - uses: coursier/cache-action@v8
         with:
           extraFiles: bleep.yaml
       - name: Set up cargo cache
