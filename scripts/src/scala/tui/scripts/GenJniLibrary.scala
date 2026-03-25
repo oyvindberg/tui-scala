@@ -18,12 +18,12 @@ object GenJniLibrary extends bleep.BleepCodegenScript("GenJniLibrary") {
     ) {
       override lazy val nativePlatform: String =
         OsArch.current match {
-          case OsArch.LinuxAmd64    => "x86_64-linux"
-          case OsArch.WindowsAmd64  => "x86_64-windows"
-          case OsArch.MacosAmd64    => "x86_64-darwin"
-          case OsArch.MacosArm64(_) => "arm64-darwin"
+          case OsArch.LinuxAmd64                                                    => "x86_64-linux"
+          case OsArch.WindowsAmd64                                                  => "x86_64-windows"
+          case OsArch.MacosAmd64                                                    => "x86_64-darwin"
+          case OsArch.MacosArm64(_)                                                 => "arm64-darwin"
           case OsArch.Other(os, arch) if os == model.Os.Linux && arch == Arch.Arm64 => "arm64-linux"
-          case other: OsArch.Other  => sys.error(s"not implemented: $other")
+          case other: OsArch.Other                                                  => sys.error(s"not implemented: $other")
         }
     }
 
