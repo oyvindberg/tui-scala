@@ -47,13 +47,14 @@ class NativeLoader {
     if (isAmd64 && nameLower.contains("lin")) return "x86_64-linux";
     if (isAmd64 && nameLower.contains("mac")) return "x86_64-darwin";
     if (isArm64 && nameLower.contains("mac")) return "arm64-darwin";
+    if (isArm64 && nameLower.contains("lin")) return "arm64-linux";
     throw new RuntimeException(
         "Platform detection does not understand os.name = "
             + name
             + " and os.arch = "
             + arch
             + ". You can set environment variable TUI_SCALA_PLATFORM to x86_64-windows,"
-            + " x86_64-linux, x86_64-darwin, arm64-darwin to override. Open an issue at"
+            + " x86_64-linux, x86_64-darwin, arm64-darwin, arm64-linux to override. Open an issue at"
             + " https://github.com/oyvindberg/tui-scala/issues .");
   }
 }
