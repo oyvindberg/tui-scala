@@ -88,111 +88,93 @@ object ChartExample {
   }
 
   def ui(f: Frame, app: App): Unit = {
-    val size = f.size
-    val chunks = Layout(
-      direction = Direction.Vertical,
-      constraints = Array(Constraint.Ratio(1, 3), Constraint.Ratio(1, 3), Constraint.Ratio(1, 3))
-    ).split(size)
+    val datasets0 = Array(
+      ChartWidget.Dataset(name = "data2", marker = symbols.Marker.Dot, style = Style(fg = Some(Color.Cyan)), data = app.data1),
+      ChartWidget.Dataset(name = "data3", marker = symbols.Marker.Braille, style = Style(fg = Some(Color.Yellow)), data = app.data2)
+    )
+    val datasets1 = Array(
+      ChartWidget.Dataset(
+        name = "data",
+        marker = symbols.Marker.Braille,
+        style = Style(fg = Some(Color.Yellow)),
+        graphType = ChartWidget.GraphType.Line,
+        data = DATA
+      )
+    )
+    val datasets2 = Array(
+      ChartWidget.Dataset(
+        name = "data",
+        marker = symbols.Marker.Braille,
+        style = Style(fg = Some(Color.Yellow)),
+        graphType = ChartWidget.GraphType.Line,
+        data = DATA2
+      )
+    )
 
     val Bold = Style(addModifier = Modifier.BOLD)
-
     val x_labels = Array(
       Span.styled(app.window.x.toString, Bold),
       Span.nostyle(((app.window.x + app.window.y) / 2.0).toString),
       Span.styled(app.window.y.toString, Bold)
     )
 
-    {
-      val datasets = Array(
-        ChartWidget.Dataset(name = "data2", marker = symbols.Marker.Dot, style = Style(fg = Some(Color.Cyan)), data = app.data1),
-        ChartWidget.Dataset(name = "data3", marker = symbols.Marker.Braille, style = Style(fg = Some(Color.Yellow)), data = app.data2)
-      )
-
-      val chart = ChartWidget(
-        datasets = datasets,
-        block = Some(
-          BlockWidget(title = Some(Spans.from(Span.styled("Chart 1", Style(fg = Some(Color.Cyan), addModifier = Modifier.BOLD)))), borders = Borders.ALL)
-        ),
-        xAxis = ChartWidget.Axis(title = Some(Spans.nostyle("X Axis")), style = Style(fg = Some(Color.Gray)), labels = Some(x_labels), bounds = app.window),
-        yAxis = ChartWidget.Axis(
-          title = Some(Spans.nostyle("Y Axis")),
-          style = Style(fg = Some(Color.Gray)),
-          labels = Some(
-            Array(
-              Span.styled("-20", Bold),
-              Span.nostyle("0"),
-              Span.styled("20", Bold)
-            )
-          ),
-          bounds = Point(-20.0, 20.0)
-        )
-      )
-      f.renderWidget(chart, chunks(0))
-    }
-
-    {
-      val datasets = Array(
-        ChartWidget.Dataset(
-          name = "data",
-          marker = symbols.Marker.Braille,
-          style = Style(fg = Some(Color.Yellow)),
-          graphType = ChartWidget.GraphType.Line,
-          data = DATA
-        )
-      )
-      val chart = ChartWidget(
-        datasets = datasets,
-        block = Some(
-          BlockWidget(
-            title = Some(Spans.from(Span.styled("Chart 2", Style(fg = Some(Color.Cyan), addModifier = Modifier.BOLD)))),
-            borders = Borders.ALL
+    Layout(direction = Direction.Vertical)(
+      BlockWidget(title = Some(Spans.from(Span.styled("Chart 1", Style(fg = Some(Color.Cyan), addModifier = Modifier.BOLD)))), borders = Borders.ALL)(
+        ChartWidget(
+          datasets = datasets0,
+          xAxis = ChartWidget.Axis(title = Some(Spans.nostyle("X Axis")), style = Style(fg = Some(Color.Gray)), labels = Some(x_labels), bounds = app.window),
+          yAxis = ChartWidget.Axis(
+            title = Some(Spans.nostyle("Y Axis")),
+            style = Style(fg = Some(Color.Gray)),
+            labels = Some(
+              Array(
+                Span.styled("-20", Bold),
+                Span.nostyle("0"),
+                Span.styled("20", Bold)
+              )
+            ),
+            bounds = Point(-20.0, 20.0)
           )
-        ),
-        xAxis = ChartWidget.Axis(
-          title = Some(Spans.nostyle("X Axis")),
-          style = Style(fg = Some(Color.Gray)),
-          bounds = Point(0.0, 5.0),
-          labels = Some(Array(Span.styled("0", Bold), Span.nostyle("2.5"), Span.styled("5.0", Bold)))
-        ),
-        yAxis = ChartWidget.Axis(
-          title = Some(Spans.nostyle("Y Axis")),
-          style = Style(fg = Some(Color.Gray)),
-          bounds = Point(0.0, 5.0),
-          labels = Some(Array(Span.styled("0", Bold), Span.nostyle("2.5"), Span.styled("5.0", Bold)))
+        )
+      ),
+      BlockWidget(
+        title = Some(Spans.from(Span.styled("Chart 2", Style(fg = Some(Color.Cyan), addModifier = Modifier.BOLD)))),
+        borders = Borders.ALL
+      )(
+        ChartWidget(
+          datasets = datasets1,
+          xAxis = ChartWidget.Axis(
+            title = Some(Spans.nostyle("X Axis")),
+            style = Style(fg = Some(Color.Gray)),
+            bounds = Point(0.0, 5.0),
+            labels = Some(Array(Span.styled("0", Bold), Span.nostyle("2.5"), Span.styled("5.0", Bold)))
+          ),
+          yAxis = ChartWidget.Axis(
+            title = Some(Spans.nostyle("Y Axis")),
+            style = Style(fg = Some(Color.Gray)),
+            bounds = Point(0.0, 5.0),
+            labels = Some(Array(Span.styled("0", Bold), Span.nostyle("2.5"), Span.styled("5.0", Bold)))
+          )
+        )
+      ),
+      BlockWidget(title = Some(Spans.from(Span.styled("Chart 3", Style(fg = Some(Color.Cyan), addModifier = Modifier.BOLD)))), borders = Borders.ALL)(
+        ChartWidget(
+          datasets = datasets2,
+          xAxis = ChartWidget.Axis(
+            title = Some(Spans.nostyle("X Axis")),
+            bounds = Point(0.0, 50.0),
+            labels = Some(Array(Span.styled("0", Bold), Span.nostyle("25"), Span.styled("50", Bold))),
+            style = Style(fg = Some(Color.Gray))
+          ),
+          yAxis = ChartWidget.Axis(
+            title = Some(Spans.nostyle("Y Axis")),
+            style = Style(fg = Some(Color.Gray)),
+            bounds = Point(0.0, 5.0),
+            labels = Some(Array(Span.styled("0", Bold), Span.nostyle("2.5"), Span.styled("5", Bold)))
+          )
         )
       )
-      f.renderWidget(chart, chunks(1))
-    }
-
-    {
-      val datasets = Array(
-        ChartWidget.Dataset(
-          name = "data",
-          marker = symbols.Marker.Braille,
-          style = Style(fg = Some(Color.Yellow)),
-          graphType = ChartWidget.GraphType.Line,
-          data = DATA2
-        )
-      )
-      val chart = ChartWidget(
-        datasets = datasets,
-        block = Some(
-          BlockWidget(title = Some(Spans.from(Span.styled("Chart 3", Style(fg = Some(Color.Cyan), addModifier = Modifier.BOLD)))), borders = Borders.ALL)
-        ),
-        xAxis = ChartWidget.Axis(
-          title = Some(Spans.nostyle("X Axis")),
-          bounds = Point(0.0, 50.0),
-          labels = Some(Array(Span.styled("0", Bold), Span.nostyle("25"), Span.styled("50", Bold))),
-          style = Style(fg = Some(Color.Gray))
-        ),
-        yAxis = ChartWidget.Axis(
-          title = Some(Spans.nostyle("Y Axis")),
-          style = Style(fg = Some(Color.Gray)),
-          bounds = Point(0.0, 5.0),
-          labels = Some(Array(Span.styled("0", Bold), Span.nostyle("2.5"), Span.styled("5", Bold)))
-        )
-      )
-      f.renderWidget(chart, chunks(2))
-    }
+    )
+      .render(f.size, f.buffer)
   }
 }

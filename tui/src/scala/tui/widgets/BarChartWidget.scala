@@ -28,7 +28,6 @@ import tui.{Grapheme, Style}
   *   Value necessary for a bar to reach the maximum height (if no value is specified, the maximum value in the data is taken as reference)
   */
 case class BarChartWidget(
-    block: Option[BlockWidget] = None,
     barWidth: Int = 1,
     barGap: Int = 1,
     barSet: symbols.bar.Set = symbols.bar.NINE_LEVELS,
@@ -47,29 +46,21 @@ case class BarChartWidget(
   override def render(area: Rect, buf: Buffer): Unit = {
     buf.setStyle(area, style)
 
-    val chart_area: Rect = block match {
-      case Some(b) =>
-        val inner_area = b.inner(area)
-        b.render(area, buf)
-        inner_area
-      case None => area
-    }
-
-    if (chart_area.height < 2) {
+    if (area.height < 2) {
       return
     }
 
     val max = this.max.getOrElse(data.maxByOption { case (_, value) => value }.fold(0) { case (_, value) => value })
 
     val max_index = math.min(
-      chart_area.width / (barWidth + barGap),
+      area.width / (barWidth + barGap),
       data.length
     )
 
     case class Data(label: String, var value: Int)
-    val data2 = this.data.take(max_index).map { case (l, v) => Data(l, v * (chart_area.height - 1) * 8 / math.max(max, 1)) }.zipWithIndex
+    val data2 = this.data.take(max_index).map { case (l, v) => Data(l, v * (area.height - 1) * 8 / math.max(max, 1)) }.zipWithIndex
 
-    revRange(0, chart_area.height - 1) { j =>
+    revRange(0, area.height - 1) { j =>
       data2.foreach { case (d, i) =>
         val symbol = d.value match {
           case 0 => barSet.empty
@@ -85,8 +76,8 @@ case class BarChartWidget(
         range(0, barWidth) { x =>
           buf
             .get(
-              chart_area.left + i * (barWidth + barGap) + x,
-              chart_area.top + j
+              area.left + i * (barWidth + barGap) + x,
+              area.top + j
             )
             .setSymbol(symbol)
             .setStyle(barStyle)
@@ -106,18 +97,18 @@ case class BarChartWidget(
         val width = value_label.width
         if (width < barWidth) {
           buf.setString(
-            chart_area.left
+            area.left
               + i * (barWidth + barGap)
               + (barWidth - width) / 2,
-            chart_area.bottom - 2,
+            area.bottom - 2,
             value_label.str,
             valueStyle
           )
         }
       }
       buf.setStringn(
-        chart_area.left + i * (barWidth + barGap),
-        chart_area.bottom - 1,
+        area.left + i * (barWidth + barGap),
+        area.bottom - 1,
         label,
         barWidth,
         labelStyle

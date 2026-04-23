@@ -21,7 +21,6 @@ import tui.internal.reflow.{LineComposer, LineTruncator, WordWrapper}
   */
 case class ParagraphWidget(
     text: Text,
-    block: Option[BlockWidget] = None,
     style: Style = Style.DEFAULT,
     wrap: Option[ParagraphWidget.Wrap] = None,
     scroll: (Int, Int) = (0, 0),
@@ -30,15 +29,7 @@ case class ParagraphWidget(
 
   def render(area: Rect, buf: Buffer): Unit = {
     buf.setStyle(area, this.style)
-    val text_area = block match {
-      case Some(b) =>
-        val inner_area = b.inner(area)
-        b.render(area, buf)
-        inner_area
-      case None => area
-    }
-
-    if (text_area.height < 1) {
+    if (area.height < 1) {
       return
     }
 
@@ -49,9 +40,9 @@ case class ParagraphWidget(
 
     val line_composer: LineComposer =
       wrap match {
-        case Some(ParagraphWidget.Wrap(trim)) => WordWrapper(styled.iterator, text_area.width, trim)
+        case Some(ParagraphWidget.Wrap(trim)) => WordWrapper(styled.iterator, area.width, trim)
         case None =>
-          val line_composer = LineTruncator(styled.iterator, text_area.width)
+          val line_composer = LineTruncator(styled.iterator, area.width)
           alignment match {
             case Alignment.Left => line_composer.copy(horizontal_offset = this.scroll._2)
             case _              => line_composer
@@ -65,14 +56,14 @@ case class ParagraphWidget(
         case None => continue = false
         case Some((current_line, current_line_width)) =>
           if (y >= this.scroll._1) {
-            var x = ParagraphWidget.getLineOffset(current_line_width, text_area.width, this.alignment)
+            var x = ParagraphWidget.getLineOffset(current_line_width, area.width, this.alignment)
             current_line.foreach { case StyledGrapheme(symbol, style) =>
               // If the symbol is empty, the last char which rendered last time will
               // leave on the line. It's a quick fix.
               val newSymbol = if (symbol.str.isEmpty) " " else symbol.str
 
               buf
-                .get(text_area.left + x, text_area.top + y - this.scroll._1)
+                .get(area.left + x, area.top + y - this.scroll._1)
                 .setSymbol(newSymbol)
                 .setStyle(style)
 
@@ -80,7 +71,7 @@ case class ParagraphWidget(
             }
           }
           y += 1
-          if (y >= text_area.height + this.scroll._1) {
+          if (y >= area.height + this.scroll._1) {
             continue = false
           }
       }

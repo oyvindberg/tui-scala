@@ -17,7 +17,6 @@ import tui.internal.ranges
   * @param painter
   */
 case class CanvasWidget(
-    block: Option[BlockWidget] = None,
     xBounds: Point = Point.Zero,
     yBounds: Point = Point.Zero,
     backgroundColor: Color = Color.Reset,
@@ -25,20 +24,12 @@ case class CanvasWidget(
 )(painter: Context => Unit)
     extends Widget {
   override def render(area: Rect, buf: Buffer): Unit = {
-    val canvas_area = this.block match {
-      case Some(b) =>
-        val inner_area = b.inner(area)
-        b.render(area, buf)
-        inner_area
-      case None => area
-    }
-
-    buf.setStyle(canvas_area, Style.DEFAULT.bg(this.backgroundColor))
+    buf.setStyle(area, Style.DEFAULT.bg(this.backgroundColor))
 
     // Create a blank context that match the size of the canvas
     val ctx = Context(
-      canvas_area.width,
-      canvas_area.height,
+      area.width,
+      area.height,
       this.xBounds,
       this.yBounds,
       this.marker
@@ -53,9 +44,9 @@ case class CanvasWidget(
         val ch = layer.string.charAt(i)
         val color = layer.colors(i)
         if (ch != ' ' && ch != '\u2800') {
-          val (x, y) = (i % canvas_area.width, i / canvas_area.width)
+          val (x, y) = (i % area.width, i / area.width)
           buf
-            .get(x + canvas_area.left, y + canvas_area.top)
+            .get(x + area.left, y + area.top)
             .setChar(ch)
             .setFg(color)
           ()
@@ -71,17 +62,17 @@ case class CanvasWidget(
     val width = math.abs(this.xBounds.y - this.xBounds.x)
     val height = math.abs(this.yBounds.y - this.yBounds.x)
     val resolution = {
-      val width = (canvas_area.width - 1).toDouble
-      val height = (canvas_area.height - 1).toDouble
+      val width = (area.width - 1).toDouble
+      val height = (area.height - 1).toDouble
       (width, height)
     }
     ranges.range(0, ctx.labels.length) { i =>
       val l = ctx.labels(i)
       if (l.x >= left && l.x <= right && l.y <= top && l.y >= bottom) {
         val label = l
-        val x = ((label.x - left) * resolution._1 / width).toInt + canvas_area.left
-        val y = ((top - label.y) * resolution._2 / height).toInt + canvas_area.top
-        buf.setSpans(x, y, label.spans, canvas_area.right - x)
+        val x = ((label.x - left) * resolution._1 / width).toInt + area.left
+        val y = ((top - label.y) * resolution._2 / height).toInt + area.top
+        buf.setSpans(x, y, label.spans, area.right - x)
         ()
       }
     }

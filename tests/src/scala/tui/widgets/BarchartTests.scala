@@ -8,12 +8,13 @@ class BarchartTests extends TuiTest {
       val terminal = Terminal.init(backend)
 
       terminal.draw { f =>
-        val barchart = BarChartWidget(
-          block = Some(BlockWidget(borders = Borders.ALL)),
-          barWidth = 7,
-          barGap = 0,
-          data = Array(("empty", 0), ("half", 50), ("almost", 99), ("full", 100)),
-          max = Some(100)
+        val barchart = BlockWidget(borders = Borders.ALL)(
+          BarChartWidget(
+            barWidth = 7,
+            barGap = 0,
+            data = Array(("empty", 0), ("half", 50), ("almost", 99), ("full", 100)),
+            max = Some(100)
+          )
         )
         f.renderWidget(barchart, f.size);
       }
