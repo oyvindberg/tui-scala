@@ -16,11 +16,15 @@ public final class Launcher {
     DEMOS.put("block", BlockExample::main);
     DEMOS.put("canvas", CanvasExample::main);
     DEMOS.put("chart", ChartExample::main);
+    DEMOS.put("colors", ColorsExample::main);
+    DEMOS.put("colors_rgb", ColorsRgbExample::main);
     DEMOS.put("custom_widget", CustomWidgetExample::main);
     DEMOS.put("demo", tuiexamples.demo.Demo::main);
     DEMOS.put("gauge", GaugeExample::main);
+    DEMOS.put("hello_world", HelloWorldExample::main);
     DEMOS.put("layout", LayoutExample::main);
     DEMOS.put("list", ListExample::main);
+    DEMOS.put("modifiers", ModifiersExample::main);
     DEMOS.put("paragraph", ParagraphExample::main);
     DEMOS.put("popup", PopupExample::main);
     DEMOS.put("sparkline", SparklineExample::main);

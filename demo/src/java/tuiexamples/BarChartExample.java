@@ -2,7 +2,6 @@ package tuiexamples;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Optional;
 import tui.Borders;
 import tui.Color;
 import tui.Constraint;
@@ -14,7 +13,6 @@ import tui.Modifier;
 import tui.Rect;
 import tui.Spans;
 import tui.Style;
-import tui.Symbols;
 import tui.Terminal;
 import tui.WithTerminal;
 import tui.crossterm.CrosstermJni;
@@ -109,66 +107,56 @@ public final class BarChartExample {
     Layout vertical =
         new Layout(
             Direction.Vertical,
-            new Margin(2, 2),
-            new Constraint[] {new Constraint.Percentage(50), new Constraint.Percentage(50)}, true);
+            Margin.of(0),
+            new Constraint[] {new Constraint.Ratio(1, 3), new Constraint.Ratio(2, 3)},
+            true);
     Rect[] verticalChunks = vertical.split(f.size);
 
     BarChartWidget barchart1 =
-        new BarChartWidget(
-            Optional.of(
+        BarChartWidget.empty()
+            .withBlock(
                 BlockWidget.empty()
                     .withTitle(Spans.nostyle("Data1"))
-                    .withBorders(Borders.ALL)),
-            9,
-            1,
-            Symbols.bar.NINE_LEVELS,
-            Style.empty().withFg(Color.Yellow),
-            Style.empty().withFg(Color.Black).withBg(Color.Yellow),
-            Style.DEFAULT,
-            Style.DEFAULT,
-            app.data,
-            Optional.empty());
+                    .withBorders(Borders.ALL))
+            .withData(app.data)
+            .withBarWidth(9)
+            .withBarStyle(Style.empty().withFg(Color.Yellow))
+            .withValueStyle(Style.empty().withFg(Color.Black).withBg(Color.Yellow));
     f.renderWidget(barchart1, verticalChunks[0]);
 
     Layout horizontal =
         new Layout(
             Direction.Horizontal,
-            new Margin(0, 0),
-            new Constraint[] {new Constraint.Percentage(50), new Constraint.Percentage(50)}, true);
+            Margin.of(0),
+            new Constraint[] {new Constraint.Percentage(50), new Constraint.Percentage(50)},
+            true);
     Rect[] horizontalChunks = horizontal.split(verticalChunks[1]);
 
     BarChartWidget barchart2 =
-        new BarChartWidget(
-            Optional.of(
+        BarChartWidget.empty()
+            .withBlock(
                 BlockWidget.empty()
                     .withTitle(Spans.nostyle("Data2"))
-                    .withBorders(Borders.ALL)),
-            5,
-            3,
-            Symbols.bar.NINE_LEVELS,
-            Style.empty().withFg(Color.Green),
-            Style.empty().withBg(Color.Green).withAddModifier(Modifier.BOLD),
-            Style.DEFAULT,
-            Style.DEFAULT,
-            app.data,
-            Optional.empty());
+                    .withBorders(Borders.ALL))
+            .withData(app.data)
+            .withBarWidth(5)
+            .withBarGap(3)
+            .withBarStyle(Style.empty().withFg(Color.Green))
+            .withValueStyle(Style.empty().withBg(Color.Green).withAddModifier(Modifier.BOLD));
     f.renderWidget(barchart2, horizontalChunks[0]);
 
     BarChartWidget barchart3 =
-        new BarChartWidget(
-            Optional.of(
+        BarChartWidget.empty()
+            .withBlock(
                 BlockWidget.empty()
                     .withTitle(Spans.nostyle("Data3"))
-                    .withBorders(Borders.ALL)),
-            7,
-            0,
-            Symbols.bar.NINE_LEVELS,
-            Style.empty().withFg(Color.Red),
-            Style.empty().withBg(Color.Red),
-            Style.empty().withFg(Color.Cyan).withAddModifier(Modifier.ITALIC),
-            Style.DEFAULT,
-            app.data,
-            Optional.empty());
+                    .withBorders(Borders.ALL))
+            .withData(app.data)
+            .withBarWidth(7)
+            .withBarGap(0)
+            .withBarStyle(Style.empty().withFg(Color.Red))
+            .withValueStyle(Style.empty().withBg(Color.Red))
+            .withLabelStyle(Style.empty().withFg(Color.Cyan).withAddModifier(Modifier.ITALIC));
     f.renderWidget(barchart3, horizontalChunks[1]);
   }
 }

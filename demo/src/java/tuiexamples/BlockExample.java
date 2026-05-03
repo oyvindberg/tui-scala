@@ -14,11 +14,13 @@ import tui.Span;
 import tui.Spans;
 import tui.Style;
 import tui.Terminal;
+import tui.Text;
 import tui.WithTerminal;
 import tui.crossterm.CrosstermJni;
 import tui.crossterm.Event;
 import tui.crossterm.KeyCode;
 import tui.widgets.BlockWidget;
+import tui.widgets.ParagraphWidget;
 
 public final class BlockExample {
   private BlockExample() {}
@@ -32,7 +34,7 @@ public final class BlockExample {
 
   public static void runApp(Terminal terminal, CrosstermJni jni) {
     while (true) {
-      terminal.draw(f -> ui(f));
+      terminal.draw(BlockExample::ui);
       Event ev = jni.read();
       if (ev instanceof Event.Key key) {
         if (key.keyEvent().code() instanceof KeyCode.Char c && c.c() == 'q') {
@@ -42,70 +44,134 @@ public final class BlockExample {
     }
   }
 
-  public static void ui(Frame f) {
-    Rect size = f.size;
-
-    BlockWidget block0 =
-        BlockWidget.empty()
-            .withBorders(Borders.ALL)
-            .withTitle(Spans.nostyle("Main block with round corners"))
-            .withTitleAlignment(Alignment.Center)
-            .withBorderType(BlockWidget.BorderType.Rounded);
-    f.renderWidget(block0, size);
-
-    Layout outerLayout =
+  public static void ui(Frame frame) {
+    Layout outer =
         new Layout(
             Direction.Vertical,
-            Margin.of(4),
-            new Constraint[] {new Constraint.Percentage(50), new Constraint.Percentage(50)}, true);
-    Rect[] chunks = outerLayout.split(f.size);
+            Margin.of(0),
+            new Constraint[] {new Constraint.Length(1), new Constraint.Min(0)},
+            true);
+    Rect[] outerChunks = outer.split(frame.size);
+    Rect titleArea = outerChunks[0];
 
-    Layout topLayout =
-        new Layout(
-            Direction.Horizontal,
-            new Margin(0, 0),
-            new Constraint[] {new Constraint.Percentage(50), new Constraint.Percentage(50)}, true);
-    Rect[] topChunks = topLayout.split(chunks[0]);
+    // 6 rows of pairs of cells.
+    Constraint[] rowConstraints = {
+      new Constraint.Max(4),
+      new Constraint.Max(4),
+      new Constraint.Max(4),
+      new Constraint.Max(4),
+      new Constraint.Max(4),
+      new Constraint.Max(4),
+      new Constraint.Min(0)
+    };
+    Layout rowsLayout =
+        new Layout(Direction.Vertical, Margin.of(0), rowConstraints, true);
+    Rect[] rows = rowsLayout.split(outerChunks[1]);
 
-    BlockWidget blockTop0 =
+    Rect[][] grid = new Rect[6][];
+    for (int i = 0; i < 6; i++) {
+      Layout cells =
+          new Layout(
+              Direction.Horizontal,
+              Margin.of(0),
+              new Constraint[] {new Constraint.Percentage(50), new Constraint.Percentage(50)},
+              true);
+      grid[i] = cells.split(rows[i]);
+    }
+
+    renderTitle(frame, titleArea);
+
+    ParagraphWidget paragraph = placeholderParagraph();
+
+    renderBorders(frame, paragraph, Borders.ALL, grid[0][0]);
+    renderBorders(frame, paragraph, Borders.NONE, grid[0][1]);
+    renderBorders(frame, paragraph, Borders.LEFT, grid[1][0]);
+    renderBorders(frame, paragraph, Borders.RIGHT, grid[1][1]);
+    renderBorders(frame, paragraph, Borders.TOP, grid[2][0]);
+    renderBorders(frame, paragraph, Borders.BOTTOM, grid[2][1]);
+
+    renderBorderType(frame, paragraph, BlockWidget.BorderType.Plain, grid[3][0]);
+    renderBorderType(frame, paragraph, BlockWidget.BorderType.Rounded, grid[3][1]);
+    renderBorderType(frame, paragraph, BlockWidget.BorderType.Double, grid[4][0]);
+    renderBorderType(frame, paragraph, BlockWidget.BorderType.Thick, grid[4][1]);
+
+    renderStyledBlock(frame, paragraph, grid[5][0]);
+    renderStyledBorders(frame, paragraph, grid[5][1]);
+  }
+
+  private static void renderTitle(Frame frame, Rect area) {
+    ParagraphWidget title =
+        ParagraphWidget.empty(Text.nostyle("Block example. Press q to quit"))
+            .withStyle(Style.empty().withFg(Color.DarkGray))
+            .withAlignment(Alignment.Center);
+    frame.renderWidget(title, area);
+  }
+
+  private static ParagraphWidget placeholderParagraph() {
+    String text =
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+            + " incididunt ut labore et dolore magna aliqua.";
+    return ParagraphWidget.empty(
+            Text.from(Span.styled(text, Style.empty().withFg(Color.DarkGray))))
+        .withWrap(new ParagraphWidget.Wrap(true));
+  }
+
+  private static void renderBorders(
+      Frame frame, ParagraphWidget paragraph, Borders borders, Rect area) {
+    BlockWidget block =
+        BlockWidget.empty().withBorders(borders).withTitle(Spans.nostyle("Borders::" + bordersName(borders)));
+    frame.renderWidget(paragraph.withBlock(block), area);
+  }
+
+  private static void renderBorderType(
+      Frame frame, ParagraphWidget paragraph, BlockWidget.BorderType type, Rect area) {
+    BlockWidget block =
         BlockWidget.empty()
-            .withTitle(
-                Spans.from(
-                    Span.styled("With", Style.DEFAULT.withFg(Color.Yellow)),
-                    Span.nostyle(" background")))
-            .withStyle(Style.DEFAULT.withBg(Color.Green));
-    f.renderWidget(blockTop0, topChunks[0]);
+            .withBorders(Borders.ALL)
+            .withBorderType(type)
+            .withTitle(Spans.nostyle("BorderType::" + type.name()));
+    frame.renderWidget(paragraph.withBlock(block), area);
+  }
 
-    BlockWidget blockTop1 =
+  private static void renderStyledBlock(Frame frame, ParagraphWidget paragraph, Rect area) {
+    BlockWidget block =
         BlockWidget.empty()
-            .withTitle(
-                Spans.from(
-                    Span.styled(
-                        "Styled title",
-                        Style.empty()
-                            .withFg(Color.White)
-                            .withBg(Color.Red)
-                            .withAddModifier(Modifier.BOLD))))
-            .withTitleAlignment(Alignment.Right);
-    f.renderWidget(blockTop1, topChunks[1]);
+            .withBorders(Borders.ALL)
+            .withStyle(
+                Style.empty()
+                    .withFg(Color.Blue)
+                    .withBg(Color.White)
+                    .withAddModifier(Modifier.BOLD.or(Modifier.ITALIC)))
+            .withTitle(Spans.nostyle("Styled block"));
+    frame.renderWidget(paragraph.withBlock(block), area);
+  }
 
-    Layout bottomLayout =
-        new Layout(
-            Direction.Horizontal,
-            new Margin(0, 0),
-            new Constraint[] {new Constraint.Percentage(50), new Constraint.Percentage(50)}, true);
-    Rect[] bottomChunks = bottomLayout.split(chunks[1]);
-
-    BlockWidget blockBottom0 =
-        BlockWidget.empty().withTitle(Spans.nostyle("With borders")).withBorders(Borders.ALL);
-    f.renderWidget(blockBottom0, bottomChunks[0]);
-
-    BlockWidget blockBottom1 =
+  private static void renderStyledBorders(Frame frame, ParagraphWidget paragraph, Rect area) {
+    BlockWidget block =
         BlockWidget.empty()
-            .withTitle(Spans.nostyle("With styled borders and doubled borders"))
-            .withBorderStyle(Style.DEFAULT.withFg(Color.Cyan))
-            .withBorders(Borders.LEFT.or(Borders.RIGHT))
-            .withBorderType(BlockWidget.BorderType.Double);
-    f.renderWidget(blockBottom1, bottomChunks[1]);
+            .withBorders(Borders.ALL)
+            .withBorderStyle(
+                Style.empty()
+                    .withFg(Color.Blue)
+                    .withBg(Color.White)
+                    .withAddModifier(Modifier.BOLD.or(Modifier.ITALIC)))
+            .withTitle(Spans.nostyle("Styled borders"));
+    frame.renderWidget(paragraph.withBlock(block), area);
+  }
+
+  private static String bordersName(Borders borders) {
+    if (borders.equals(Borders.NONE)) return "NONE";
+    if (borders.equals(Borders.ALL)) return "ALL";
+    StringBuilder sb = new StringBuilder();
+    if (borders.intersects(Borders.LEFT)) appendBit(sb, "LEFT");
+    if (borders.intersects(Borders.RIGHT)) appendBit(sb, "RIGHT");
+    if (borders.intersects(Borders.TOP)) appendBit(sb, "TOP");
+    if (borders.intersects(Borders.BOTTOM)) appendBit(sb, "BOTTOM");
+    return sb.toString();
+  }
+
+  private static void appendBit(StringBuilder sb, String name) {
+    if (sb.length() > 0) sb.append(" | ");
+    sb.append(name);
   }
 }

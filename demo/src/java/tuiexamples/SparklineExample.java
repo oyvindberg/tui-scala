@@ -128,13 +128,13 @@ public final class SparklineExample {
     Layout layout =
         new Layout(
             Direction.Vertical,
-            new Margin(2, 2),
+            Margin.of(0),
             new Constraint[] {
               new Constraint.Length(3),
               new Constraint.Length(3),
-              new Constraint.Length(7),
               new Constraint.Min(0)
-            }, true);
+            },
+            true);
     Rect[] chunks = layout.split(f.size);
 
     SparklineWidget sparkline0 =

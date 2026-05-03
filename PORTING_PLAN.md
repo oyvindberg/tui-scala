@@ -30,6 +30,11 @@ For each release `<R>`:
    - **Integration tests under `tests/widgets_*.rs`** → port to `tests/src/scala/tui/widgets/*Tests.scala`.
    - **Skip doctests** (`/// ``` ` examples in comments) — Rust-specific executable doc snippets with no Java equivalent.
    - For tests that exercise features we deferred (e.g. calendar, `Masked`, inline viewport): defer the tests too. Track in this file.
+4b. **Port demo/example changes** in `submodules/ratatui/examples/`:
+   - For each Java example we already have, mirror upstream changes that don't depend on deferred features.
+   - When upstream rewrites an example end-to-end (structural overhaul), do the same on our Java side — don't try to incrementally diff.
+   - Pick up small new examples (e.g. `hello_world`, `modifiers`, `colors`) opportunistically as smoke tests.
+   - Skip examples that depend on deferred features (`scrollbar`, `calendar`, `inline`, `demo2`, `docsrs`).
 5. **Run tests**: `BLEEP_VERSION=0.0.13 bleep test tests` — must be green.
 6. **Commit** with subject `Port ratatui <R>` and body summarising notable changes (and any deferrals).
 

@@ -6,7 +6,6 @@ import tui.Color;
 import tui.Constraint;
 import tui.Direction;
 import tui.Frame;
-import tui.Grapheme;
 import tui.Layout;
 import tui.Margin;
 import tui.Modifier;
@@ -34,17 +33,56 @@ public final class UserInputExample {
 
   public static final class App {
     public String input;
+    /// Position of the cursor (in characters) within the input buffer.
+    public int cursorPosition;
     public InputMode inputMode;
     public String[] messages;
 
-    public App(String input, InputMode inputMode, String[] messages) {
+    public App(String input, int cursorPosition, InputMode inputMode, String[] messages) {
       this.input = input;
+      this.cursorPosition = cursorPosition;
       this.inputMode = inputMode;
       this.messages = messages;
     }
 
     public static App empty() {
-      return new App("", InputMode.Normal, new String[0]);
+      return new App("", 0, InputMode.Normal, new String[0]);
+    }
+
+    public void moveCursorLeft() {
+      cursorPosition = clampCursor(Math.max(0, cursorPosition - 1));
+    }
+
+    public void moveCursorRight() {
+      cursorPosition = clampCursor(cursorPosition + 1);
+    }
+
+    public void enterChar(char c) {
+      input = input.substring(0, cursorPosition) + c + input.substring(cursorPosition);
+      moveCursorRight();
+    }
+
+    public void deleteChar() {
+      if (cursorPosition == 0) return;
+      input = input.substring(0, cursorPosition - 1) + input.substring(cursorPosition);
+      moveCursorLeft();
+    }
+
+    private int clampCursor(int pos) {
+      return Math.max(0, Math.min(pos, input.length()));
+    }
+
+    public void resetCursor() {
+      cursorPosition = 0;
+    }
+
+    public void submitMessage() {
+      String[] next = new String[messages.length + 1];
+      System.arraycopy(messages, 0, next, 0, messages.length);
+      next[messages.length] = input;
+      messages = next;
+      input = "";
+      resetCursor();
     }
   }
 
@@ -75,15 +113,15 @@ public final class UserInputExample {
           }
           case Editing -> {
             if (code instanceof KeyCode.Enter) {
-              String[] next = new String[app.messages.length + 1];
-              System.arraycopy(app.messages, 0, next, 0, app.messages.length);
-              next[app.messages.length] = app.input;
-              app.messages = next;
-              app.input = "";
+              app.submitMessage();
             } else if (code instanceof KeyCode.Char c) {
-              app.input = app.input + c.c();
+              app.enterChar(c.c());
             } else if (code instanceof KeyCode.Backspace) {
-              app.input = app.input.substring(0, app.input.length() - 1);
+              app.deleteChar();
+            } else if (code instanceof KeyCode.Left) {
+              app.moveCursorLeft();
+            } else if (code instanceof KeyCode.Right) {
+              app.moveCursorRight();
             } else if (code instanceof KeyCode.Esc) {
               app.inputMode = InputMode.Normal;
             }
@@ -97,12 +135,13 @@ public final class UserInputExample {
     Layout layout =
         new Layout(
             Direction.Vertical,
-            Margin.of(2),
+            Margin.of(0),
             new Constraint[] {
               new Constraint.Length(1),
               new Constraint.Length(3),
-              new Constraint.Min(5)
-            }, true);
+              new Constraint.Min(1)
+            },
+            true);
     Rect[] chunks = layout.split(f.size);
 
     Text msg;
@@ -154,7 +193,10 @@ public final class UserInputExample {
         // Hide the cursor. `Frame` does this by default, so we don't need to do anything here
       }
       case Editing -> f.setCursor(
-          chunks[1].x() + new Grapheme(app.input).width() + 1, chunks[1].y() + 1);
+          // Place the cursor at the current input position; +1 accounts for the left border.
+          chunks[1].x() + app.cursorPosition + 1,
+          // Move one row down past the top border.
+          chunks[1].y() + 1);
     }
 
     ListWidget.Item[] items = new ListWidget.Item[app.messages.length];

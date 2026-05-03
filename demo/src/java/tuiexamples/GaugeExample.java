@@ -2,6 +2,7 @@ package tuiexamples;
 
 import java.time.Duration;
 import java.time.Instant;
+import tui.Alignment;
 import tui.Borders;
 import tui.Color;
 import tui.Constraint;
@@ -39,32 +40,20 @@ public final class GaugeExample {
     }
 
     public static App empty() {
-      return new App(0, 0, 0.45, 0);
+      return new App(0, 0, 0.0, 0);
     }
 
-    public void onTick() {
-      progress1 += 1;
-      if (progress1 > 100) {
-        progress1 = 0;
-      }
-      progress2 += 2;
-      if (progress2 > 100) {
-        progress2 = 0;
-      }
-      progress3 += 0.001;
-      if (progress3 > 1.0) {
-        progress3 = 0.0;
-      }
-      progress4 += 1;
-      if (progress4 > 100) {
-        progress4 = 0;
-      }
+    public void update() {
+      progress1 = Math.min(progress1 + 4, 100);
+      progress2 = Math.min(progress2 + 3, 100);
+      progress3 = Math.min(progress3 + 0.02, 1.0);
+      progress4 = Math.min(progress4 + 1, 100);
     }
   }
 
   public static void main(String[] args) {
     WithTerminal.apply((jni, terminal) -> {
-      Duration tickRate = Duration.ofMillis(250);
+      Duration tickRate = Duration.ofMillis(100);
       App app = App.empty();
       runApp(terminal, app, tickRate, jni);
       return null;
@@ -91,7 +80,7 @@ public final class GaugeExample {
       }
       Duration elapsed2 = Duration.between(lastTick[0], Instant.now());
       if (elapsed2.compareTo(tickRate) >= 0) {
-        app.onTick();
+        app.update();
         lastTick[0] = Instant.now();
       }
     }
@@ -101,59 +90,73 @@ public final class GaugeExample {
     Layout layout =
         new Layout(
             Direction.Vertical,
-            Margin.of(2),
+            Margin.of(0),
             new Constraint[] {
               new Constraint.Percentage(25),
               new Constraint.Percentage(25),
               new Constraint.Percentage(25),
               new Constraint.Percentage(25)
-            }, true);
+            },
+            true);
     Rect[] chunks = layout.split(f.size);
 
-    GaugeWidget gauge0 =
-        GaugeWidget.empty()
-            .withBlock(
-                BlockWidget.empty()
-                    .withTitle(Spans.nostyle("Gauge1"))
-                    .withBorders(Borders.ALL))
-            .withGaugeStyle(Style.empty().withFg(Color.Yellow))
-            .withRatio(GaugeWidget.Ratio.percent(app.progress1));
-    f.renderWidget(gauge0, chunks[0]);
+    renderGauge1(f, app.progress1, chunks[0]);
+    renderGauge2(f, app.progress2, chunks[1]);
+    renderGauge3(f, app.progress3, chunks[2]);
+    renderGauge4(f, app.progress4, chunks[3]);
+  }
 
-    GaugeWidget gauge1 =
-        GaugeWidget.empty()
-            .withBlock(
-                BlockWidget.empty()
-                    .withTitle(Spans.nostyle("Gauge2"))
-                    .withBorders(Borders.ALL))
-            .withGaugeStyle(Style.empty().withFg(Color.Magenta).withBg(Color.Green))
-            .withRatio(GaugeWidget.Ratio.percent(app.progress2))
-            .withLabel(Span.nostyle(app.progress2 + "/100"));
-    f.renderWidget(gauge1, chunks[1]);
+  private static BlockWidget titleBlock(String title) {
+    return BlockWidget.empty()
+        .withTitle(Spans.nostyle(title))
+        .withTitleAlignment(Alignment.Center)
+        .withBorders(Borders.TOP);
+  }
 
-    GaugeWidget gauge2 =
+  private static void renderGauge1(Frame f, int progress, Rect area) {
+    GaugeWidget gauge =
+        GaugeWidget.empty()
+            .withBlock(titleBlock("Gauge with percentage progress"))
+            .withGaugeStyle(Style.empty().withFg(Color.LightRed))
+            .withRatio(GaugeWidget.Ratio.percent(progress));
+    f.renderWidget(gauge, area);
+  }
+
+  private static void renderGauge2(Frame f, int progress, Rect area) {
+    GaugeWidget gauge =
+        GaugeWidget.empty()
+            .withBlock(titleBlock("Gauge with percentage progress and custom label"))
+            .withGaugeStyle(Style.empty().withFg(Color.Blue).withBg(Color.LightBlue))
+            .withRatio(GaugeWidget.Ratio.percent(progress))
+            .withLabel(Span.nostyle(progress + "/100"));
+    f.renderWidget(gauge, area);
+  }
+
+  private static void renderGauge3(Frame f, double progress, Rect area) {
+    Span label =
+        Span.styled(
+            String.format("%.2f%%", progress * 100.0),
+            Style.empty()
+                .withFg(Color.Red)
+                .withAddModifier(Modifier.ITALIC.or(Modifier.BOLD)));
+    GaugeWidget gauge =
         GaugeWidget.empty()
             .withBlock(
-                BlockWidget.empty()
-                    .withTitle(Spans.nostyle("Gauge3"))
-                    .withBorders(Borders.ALL))
+                titleBlock("Gauge with ratio progress, custom label with style, and unicode"))
             .withGaugeStyle(Style.empty().withFg(Color.Yellow))
-            .withRatio(new GaugeWidget.Ratio(app.progress3))
-            .withLabel(
-                Span.styled(
-                    String.format("%.2f", app.progress3 * 100.0),
-                    Style.empty()
-                        .withFg(Color.Red)
-                        .withAddModifier(Modifier.ITALIC.or(Modifier.BOLD))))
+            .withRatio(new GaugeWidget.Ratio(progress))
+            .withLabel(label)
             .withUseUnicode(true);
-    f.renderWidget(gauge2, chunks[2]);
+    f.renderWidget(gauge, area);
+  }
 
-    GaugeWidget gauge3 =
+  private static void renderGauge4(Frame f, int progress, Rect area) {
+    GaugeWidget gauge =
         GaugeWidget.empty()
-            .withBlock(BlockWidget.empty().withTitle(Spans.nostyle("Gauge4")))
-            .withGaugeStyle(Style.empty().withFg(Color.Cyan).withAddModifier(Modifier.ITALIC))
-            .withRatio(GaugeWidget.Ratio.percent(app.progress4))
-            .withLabel(Span.nostyle(app.progress4 + "/100"));
-    f.renderWidget(gauge3, chunks[3]);
+            .withBlock(titleBlock("Gauge with percentage progress and label"))
+            .withGaugeStyle(Style.empty().withFg(Color.Green).withAddModifier(Modifier.ITALIC))
+            .withRatio(GaugeWidget.Ratio.percent(progress))
+            .withLabel(Span.nostyle(progress + "/100"));
+    f.renderWidget(gauge, area);
   }
 }
