@@ -49,7 +49,7 @@ For each release `<R>`:
 | 2 | `v0.20.1` | 2023-03-22 | 3 | — | **done** |
 | 3 | `v0.21.0` | 2023-05-29 | 33 | — | **done** |
 | 4 | `v0.22.0` | 2023-07-17 | 40 | — | **done** |
-| 5 | `v0.23.0` | 2023-08-28 | 62 | **0.26 → 0.27** | pending |
+| 5 | `v0.23.0` | 2023-08-28 | 62 | **0.26 → 0.27** | **done** |
 | 6 | `v0.24.0` | 2023-10-23 | 63 | — | pending |
 | 7 | `v0.25.0` | 2023-12-18 | 50 | — | pending |
 
@@ -114,3 +114,11 @@ Features or tests that were skipped in a release commit and need to be revisited
 | v0.22.0 | Prelude (#304) | Rust-only. |
 | v0.22.0 | Reflow simplification (#290) | Internal Rust refactor; behavior preserved. |
 | v0.22.0 | bitflags 2.3 upgrade (#205) | Rust dep — N/A. |
+| v0.23.0 | BarChart direction (#325) — horizontal bars | Additive feature. |
+| v0.23.0 | List highlight_spacing (#394) | Additive feature. |
+| v0.23.0 | Table highlight_spacing (#375) | Additive feature. |
+| v0.23.0 | Table line alignment (#392) | Additive rendering option. |
+| v0.23.0 | Layout big rewrite (#411 #405 #51950994 #de25de0a) | Ratatui replaced its layout impl. Our cassowary-based port already handles the bug cases (gaps, left<=right) via REQUIRED constraints. Port the new impl only if we want to abandon cassowary, which we shouldn't. |
+| v0.23.0 | Weak constraints for similar-size rects (#395) | Defer until layout itself is revisited. |
+| v0.23.0 | Block title_style fix (#349) | Part of multi-title; we deferred multi-title. |
+| v0.23.0 | Common traits Clone/Copy/Debug/Default | Java equivalents already in place via records. |

@@ -6,17 +6,24 @@ public final class Cell {
   public Color fg;
   public Color bg;
   public Modifier modifier;
+  /// When true, the cell is left untouched when diffing the buffer to the screen.
+  /// Useful so an image rendered via a terminal graphics protocol (Sixel / iTerm / Kitty)
+  /// is not overwritten by subsequent draws that happen to land on its area.
+  public boolean skip;
 
   public Cell(Grapheme symbol, Color fg, Color bg, Modifier modifier) {
     this.symbol = symbol;
     this.fg = fg;
     this.bg = bg;
     this.modifier = modifier;
+    this.skip = false;
   }
 
   @Override
   public Cell clone() {
-    return new Cell(symbol, fg, bg, modifier);
+    Cell c = new Cell(symbol, fg, bg, modifier);
+    c.skip = skip;
+    return c;
   }
 
   public Cell setSymbol(String symbol) {
@@ -55,11 +62,17 @@ public final class Cell {
         java.util.Optional.of(fg), java.util.Optional.of(bg), modifier, Modifier.EMPTY);
   }
 
+  public Cell setSkip(boolean skip) {
+    this.skip = skip;
+    return this;
+  }
+
   public void reset() {
     this.symbol = Grapheme.Empty;
     this.fg = Color.Reset;
     this.bg = Color.Reset;
     this.modifier = Modifier.EMPTY;
+    this.skip = false;
   }
 
   public static Cell empty() {

@@ -214,4 +214,17 @@ class BufferTests extends TuiTest {
     merged.area = new Rect(1, 1, 4, 4)
     assertEq(one, merged)
   }
+
+  // Ported from ratatui v0.23.0 #215.
+  test("buffer_diffing_skip") {
+    val prev = Buffer.withLines("123")
+    val next = Buffer.withLines("456")
+    next.content(1).setSkip(true)
+    next.content(2).setSkip(true)
+    val diff = prev.diff(next)
+    assertEq(diff.length, 1)
+    assertEq(diff(0).x, 0)
+    assertEq(diff(0).y, 0)
+    assertEq(diff(0).cell, cell("4"))
+  }
 }

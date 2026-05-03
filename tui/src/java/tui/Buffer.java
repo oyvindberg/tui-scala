@@ -193,7 +193,7 @@ public final class Buffer {
     while (i < max) {
       Cell current = nextBuffer[i];
       Cell previous = previousBuffer[i];
-      if ((!current.equals(previous) || invalidated > 0) && toSkip == 0) {
+      if (!current.skip && (!current.equals(previous) || invalidated > 0) && toSkip == 0) {
         int x = i % width;
         int y = i / width;
         updates.add(new BufferUpdate(x, y, nextBuffer[i]));
