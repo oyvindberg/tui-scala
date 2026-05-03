@@ -9,21 +9,20 @@ public sealed interface Constraint
 
   default int apply(int length) {
     return switch (this) {
-      case Percentage p -> length * p.p() / 100;
-      case Ratio r -> r.num() * length / r.den();
+      case Percentage p -> Math.min((int) ((p.p() / 100.0) * length), length);
+      case Ratio r -> {
+        // avoid division by zero by using 1 when denominator is 0:
+        // 0/0 -> 0 and x/0 -> length for x != 0
+        double pct = r.num() / (double) Math.max(1, r.den());
+        yield Math.min((int) (pct * length), length);
+      }
       case Length l -> Math.min(length, l.l());
       case Max m -> Math.min(length, m.m());
       case Min m -> Math.max(length, m.m());
     };
   }
 
-  record Percentage(int p) implements Constraint {
-    public Percentage {
-      if (p < 0 || p > 100) {
-        throw new IllegalArgumentException("Percentage out of range: " + p);
-      }
-    }
-  }
+  record Percentage(int p) implements Constraint {}
 
   record Ratio(int num, int den) implements Constraint {}
 

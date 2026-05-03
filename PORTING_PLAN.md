@@ -48,7 +48,7 @@ For each release `<R>`:
 | 1 | `v0.20.0` | 2023-03-19 | 16 | **0.25 → 0.26** | **done** |
 | 2 | `v0.20.1` | 2023-03-22 | 3 | — | **done** |
 | 3 | `v0.21.0` | 2023-05-29 | 33 | — | **done** |
-| 4 | `v0.22.0` | 2023-07-17 | 40 | — | pending |
+| 4 | `v0.22.0` | 2023-07-17 | 40 | — | **done** |
 | 5 | `v0.23.0` | 2023-08-28 | 62 | **0.26 → 0.27** | pending |
 | 6 | `v0.24.0` | 2023-10-23 | 63 | — | pending |
 | 7 | `v0.25.0` | 2023-12-18 | 50 | — | pending |
@@ -106,3 +106,11 @@ Features or tests that were skipped in a release commit and need to be revisited
 | v0.21.0 | `Spans` → `Line` rename (#178) | Touches every widget and test; do as a dedicated commit. |
 | v0.21.0 | Termwiz backend (#5) | Rust-only backend. |
 | v0.21.0 | `border!` macro (#11) | Rust macro — not portable. Equivalent: `Borders.LEFT.or(Borders.TOP)`. |
+| v0.22.0 | Block multi-title (#232) | Restructures BlockWidget; defer until needed. |
+| v0.22.0 | Stylize trait + shorthands (#283, #289) | Rust trait pattern; in Java just chain `.withFg(...).withBg(...)`. Skip unless useful. |
+| v0.22.0 | Scrollbar widget (#228) | New widget. |
+| v0.22.0 | Underline color (#308) | Needs Modifier extension; defer. |
+| v0.22.0 | Barchart groups (#288), custom bar text (#309) | Restructures BarChartWidget. |
+| v0.22.0 | Prelude (#304) | Rust-only. |
+| v0.22.0 | Reflow simplification (#290) | Internal Rust refactor; behavior preserved. |
+| v0.22.0 | bitflags 2.3 upgrade (#205) | Rust dep — N/A. |

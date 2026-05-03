@@ -60,11 +60,25 @@ class StylesTests extends TuiTest {
     val bad = Array(
       "invalid_color", // not a color string
       "abcdef0",       // 7 chars but no '#'
-      " bcdefa",       // leading space
-      "blue ",         // trailing space
-      " blue",         // leading space
+      " bcdefa",       // not hex
       "#abcdef00"      // too many chars
     )
     bad.foreach(s => assert(Color.fromString(s).isEmpty, s"bad color: '$s'"))
+  }
+
+  test("color_fromString_extended_formats") {
+    // Spaces, dashes, underscores all stripped (added in v0.22.0)
+    assertEq[Color, Color](Color.fromString("light-red").get, Color.LightRed)
+    assertEq[Color, Color](Color.fromString("light_red").get, Color.LightRed)
+    assertEq[Color, Color](Color.fromString("lightRed").get, Color.LightRed)
+    // "bright" treated as "light"
+    assertEq[Color, Color](Color.fromString("bright red").get, Color.LightRed)
+    assertEq[Color, Color](Color.fromString("bright-red").get, Color.LightRed)
+    // synonyms
+    assertEq[Color, Color](Color.fromString("silver").get, Color.Gray)
+    assertEq[Color, Color](Color.fromString("dark-grey").get, Color.DarkGray)
+    assertEq[Color, Color](Color.fromString("dark gray").get, Color.DarkGray)
+    assertEq[Color, Color](Color.fromString("light-black").get, Color.DarkGray)
+    assertEq[Color, Color](Color.fromString("bright white").get, Color.White)
   }
 }

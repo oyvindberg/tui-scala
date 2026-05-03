@@ -79,12 +79,26 @@ public sealed interface Color
 
   /// Parses a string representation into a Color.
   ///
-  /// Supports named colors ("blue", "lightblue", "light blue"), `#RRGGBB` hex RGB
-  /// and 0..255 indexed values. Returns empty Optional if the string does not match
-  /// any known form.
+  /// Supports many spellings and formats:
+  ///   * named colors: "blue", "lightblue", "light blue", "light-blue", "light_blue", "lightBlue"
+  ///   * "bright" prefix is treated as "light": "bright red" == "lightred"
+  ///   * "grey" == "gray", "silver" == "gray", "lightblack" == "darkgray", "lightwhite" == "white"
+  ///   * `#RRGGBB` hex RGB
+  ///   * 0..255 indexed value as a decimal string
+  /// Returns empty Optional if the string does not match any known form.
   static java.util.Optional<Color> fromString(String s) {
-    String lower = s.toLowerCase(java.util.Locale.ROOT);
-    Color named = switch (lower) {
+    String normalized = s
+        .toLowerCase(java.util.Locale.ROOT)
+        .replace(" ", "")
+        .replace("-", "")
+        .replace("_", "")
+        .replace("bright", "light")
+        .replace("grey", "gray")
+        .replace("silver", "gray")
+        .replace("lightblack", "darkgray")
+        .replace("lightwhite", "white")
+        .replace("lightgray", "white");
+    Color named = switch (normalized) {
       case "reset" -> Reset;
       case "black" -> Black;
       case "red" -> Red;
@@ -94,13 +108,13 @@ public sealed interface Color
       case "magenta" -> Magenta;
       case "cyan" -> Cyan;
       case "gray" -> Gray;
-      case "darkgray", "dark gray" -> DarkGray;
-      case "lightred", "light red" -> LightRed;
-      case "lightgreen", "light green" -> LightGreen;
-      case "lightyellow", "light yellow" -> LightYellow;
-      case "lightblue", "light blue" -> LightBlue;
-      case "lightmagenta", "light magenta" -> LightMagenta;
-      case "lightcyan", "light cyan" -> LightCyan;
+      case "darkgray" -> DarkGray;
+      case "lightred" -> LightRed;
+      case "lightgreen" -> LightGreen;
+      case "lightyellow" -> LightYellow;
+      case "lightblue" -> LightBlue;
+      case "lightmagenta" -> LightMagenta;
+      case "lightcyan" -> LightCyan;
       case "white" -> White;
       default -> null;
     };
