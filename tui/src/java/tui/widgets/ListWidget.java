@@ -238,5 +238,9 @@ public final class ListWidget implements Widget, StatefulWidget<ListWidget.State
     public int height() {
       return content.height();
     }
+
+    public int width() {
+      return content.width();
+    }
   }
 }

@@ -207,25 +207,42 @@ public final class Layout {
                   switch (size) {
                     case tui.Constraint.Length l ->
                         CassowaryOps.constraint(
-                            elements[i].width, WeightedRelation.EQ(Strength.WEAK), (double) l.l());
+                            elements[i].width,
+                            WeightedRelation.EQ(Strength.MEDIUM),
+                            (double) l.l());
                     case tui.Constraint.Percentage p ->
                         CassowaryOps.constraint(
                             elements[i].width,
-                            WeightedRelation.EQ(Strength.WEAK),
+                            WeightedRelation.EQ(Strength.MEDIUM),
                             ((double) (p.p() * destArea.width())) / 100.0);
                     case tui.Constraint.Ratio r ->
                         CassowaryOps.constraint(
                             elements[i].width,
-                            WeightedRelation.EQ(Strength.WEAK),
+                            WeightedRelation.EQ(Strength.MEDIUM),
                             (double) destArea.width() * (double) r.num() / (double) r.den());
                     case tui.Constraint.Min m ->
                         CassowaryOps.constraint(
-                            elements[i].width, WeightedRelation.GE(Strength.WEAK), (double) m.m());
+                            elements[i].width, WeightedRelation.GE(Strength.MEDIUM), (double) m.m());
                     case tui.Constraint.Max m ->
                         CassowaryOps.constraint(
-                            elements[i].width, WeightedRelation.LE(Strength.WEAK), (double) m.m());
+                            elements[i].width, WeightedRelation.LE(Strength.MEDIUM), (double) m.m());
                   };
               ccs.add(built);
+              switch (size) {
+                case tui.Constraint.Min m ->
+                    ccs.add(
+                        CassowaryOps.constraint(
+                            elements[i].width,
+                            WeightedRelation.EQ(Strength.WEAK),
+                            (double) m.m()));
+                case tui.Constraint.Max m ->
+                    ccs.add(
+                        CassowaryOps.constraint(
+                            elements[i].width,
+                            WeightedRelation.EQ(Strength.WEAK),
+                            (double) m.m()));
+                default -> {}
+              }
             });
       }
       case Vertical -> {
@@ -258,26 +275,45 @@ public final class Layout {
                     case tui.Constraint.Length l ->
                         CassowaryOps.constraint(
                             elements[i].height,
-                            WeightedRelation.EQ(Strength.WEAK),
+                            WeightedRelation.EQ(Strength.MEDIUM),
                             (double) l.l());
                     case tui.Constraint.Percentage p ->
                         CassowaryOps.constraint(
                             elements[i].height,
-                            WeightedRelation.EQ(Strength.WEAK),
+                            WeightedRelation.EQ(Strength.MEDIUM),
                             ((double) (p.p() * destArea.height())) / 100.0);
                     case tui.Constraint.Ratio r ->
                         CassowaryOps.constraint(
                             elements[i].height,
-                            WeightedRelation.EQ(Strength.WEAK),
+                            WeightedRelation.EQ(Strength.MEDIUM),
                             (double) destArea.height() * (double) r.num() / (double) r.den());
                     case tui.Constraint.Min m ->
                         CassowaryOps.constraint(
-                            elements[i].height, WeightedRelation.GE(Strength.WEAK), (double) m.m());
+                            elements[i].height,
+                            WeightedRelation.GE(Strength.MEDIUM),
+                            (double) m.m());
                     case tui.Constraint.Max m ->
                         CassowaryOps.constraint(
-                            elements[i].height, WeightedRelation.LE(Strength.WEAK), (double) m.m());
+                            elements[i].height,
+                            WeightedRelation.LE(Strength.MEDIUM),
+                            (double) m.m());
                   };
               ccs.add(built);
+              switch (size) {
+                case tui.Constraint.Min m ->
+                    ccs.add(
+                        CassowaryOps.constraint(
+                            elements[i].height,
+                            WeightedRelation.EQ(Strength.WEAK),
+                            (double) m.m()));
+                case tui.Constraint.Max m ->
+                    ccs.add(
+                        CassowaryOps.constraint(
+                            elements[i].height,
+                            WeightedRelation.EQ(Strength.WEAK),
+                            (double) m.m()));
+                default -> {}
+              }
             });
       }
     }

@@ -111,11 +111,15 @@ public final class ParagraphWidget implements Widget {
         if (y >= scroll.y()) {
           int x = getLineOffset(line.width(), textArea.width(), alignment);
           for (StyledGrapheme sg : line.graphemes()) {
+            int width = sg.symbol().width();
+            if (width == 0) {
+              continue;
+            }
             String newSymbol = sg.symbol().str.isEmpty() ? " " : sg.symbol().str;
             buf.get(textArea.left() + x, textArea.top() + y - scroll.y())
                 .setSymbol(newSymbol)
                 .setStyle(sg.style());
-            x += sg.symbol().width();
+            x += width;
           }
         }
         y += 1;

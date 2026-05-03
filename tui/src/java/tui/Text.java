@@ -55,6 +55,9 @@ public record Text(Spans[] lines) {
 
   /// Create some text (potentially multiple lines) with no style.
   public static Text nostyle(String content) {
+    if (content.isEmpty()) {
+      return new Text(new Spans[] {Spans.nostyle("")});
+    }
     List<Spans> result = new ArrayList<>();
     content.lines().forEach(line -> result.add(Spans.nostyle(line)));
     return new Text(result.toArray(new Spans[0]));

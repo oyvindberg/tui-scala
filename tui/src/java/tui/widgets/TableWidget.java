@@ -303,5 +303,12 @@ public final class TableWidget implements Widget, StatefulWidget<TableWidget.Sta
         offset = 0;
       }
     }
+
+    /// Returns the receiver's scroll offset.
+    ///
+    /// Useful, for example, if you need to "synchronize" the scrolling of a `Table` and a `Paragraph`.
+    public int offset() {
+      return offset;
+    }
   }
 }
