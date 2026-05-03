@@ -86,6 +86,14 @@ public final class ListWidget implements Widget, StatefulWidget<ListWidget.State
         block, items, style, startCorner, highlightStyle, highlightSymbol, r);
   }
 
+  public int len() {
+    return items.length;
+  }
+
+  public boolean isEmpty() {
+    return items.length == 0;
+  }
+
   public Bounds getItemsBounds(Optional<Integer> selected0, int offset0, int maxHeight) {
     int offset = Math.min(offset0, Saturating.saturatingSubUnsigned(items.length, 1));
     int start = offset;

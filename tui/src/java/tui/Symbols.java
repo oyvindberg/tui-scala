@@ -175,6 +175,8 @@ public final class Symbols {
     Dot,
     /// One point per cell in shape of a block
     Block,
+    /// One point per cell in the shape of a bar
+    Bar,
     /// Up to 8 points per cell
     Braille
   }

@@ -44,4 +44,18 @@ public record Spans(Span[] spans) {
   public static Spans from(Span... spans) {
     return new Spans(spans);
   }
+
+  /// Returns a new Spans whose every Span has its style patched with the given style.
+  public Spans patchStyle(Style other) {
+    Span[] out = new Span[spans.length];
+    for (int i = 0; i < spans.length; i++) {
+      out[i] = spans[i].patchStyle(other);
+    }
+    return new Spans(out);
+  }
+
+  /// Returns a new Spans whose every Span has its style reset to Style.RESET.
+  public Spans resetStyle() {
+    return patchStyle(Style.RESET);
+  }
 }

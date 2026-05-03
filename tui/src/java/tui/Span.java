@@ -39,4 +39,14 @@ public record Span(String content, Style style) {
   public static Span styled(String content, Style style) {
     return new Span(content, style);
   }
+
+  /// Returns a new Span whose style is patched with the given style.
+  public Span patchStyle(Style other) {
+    return new Span(content, style.patch(other));
+  }
+
+  /// Returns a new Span with the style reset to Style.RESET.
+  public Span resetStyle() {
+    return patchStyle(Style.RESET);
+  }
 }

@@ -24,15 +24,20 @@ For each release `<R>`:
    - `cd submodules/ratatui && git fetch --tags && git checkout <R>`
    - If the row says crossterm bumps: `cd submodules/crossterm && git checkout <new-version>`
 2. **Read** `submodules/ratatui/CHANGELOG.md` between previous and current tag.
-3. **Apply** the equivalent changes in Java to `cassowary/`, `tui/`, `demo/`.
-4. **Update tests** if APIs changed.
+3. **Apply** the equivalent code changes in Java to `cassowary/`, `tui/`, `demo/`.
+4. **Port tests** added in this release:
+   - **Inline `#[cfg(test)] mod tests` blocks** at the bottom of source files → port to our scalatest suites. These typically test internal/public behavior.
+   - **Integration tests under `tests/widgets_*.rs`** → port to `tests/src/scala/tui/widgets/*Tests.scala`.
+   - **Skip doctests** (`/// ``` ` examples in comments) — Rust-specific executable doc snippets with no Java equivalent.
+   - For tests that exercise features we deferred (e.g. calendar, `Masked`, inline viewport): defer the tests too. Track in this file.
 5. **Run tests**: `BLEEP_VERSION=0.0.13 bleep test tests` — must be green.
-6. **Commit** with subject `Port ratatui <R>` and body summarising notable changes.
+6. **Commit** with subject `Port ratatui <R>` and body summarising notable changes (and any deferrals).
 
 **Hard rules:**
 - No commit if tests aren't green. Either fix the port or revert the submodule bump.
 - One commit per release tag.
 - No "drive-by" cleanup commits between release commits — keep the history release-aligned.
+- Any feature or test that's deferred from a release must be listed under "Deferred work" below so we can come back to it.
 
 ## Releases (16 total, ~1,028 human code-touching commits)
 
@@ -42,7 +47,7 @@ For each release `<R>`:
 |---|---|---|---:|---|---|
 | 1 | `v0.20.0` | 2023-03-19 | 16 | **0.25 → 0.26** | **done** |
 | 2 | `v0.20.1` | 2023-03-22 | 3 | — | **done** |
-| 3 | `v0.21.0` | 2023-05-29 | 33 | — | pending |
+| 3 | `v0.21.0` | 2023-05-29 | 33 | — | **done** |
 | 4 | `v0.22.0` | 2023-07-17 | 40 | — | pending |
 | 5 | `v0.23.0` | 2023-08-28 | 62 | **0.26 → 0.27** | pending |
 | 6 | `v0.24.0` | 2023-10-23 | 63 | — | pending |
@@ -84,3 +89,20 @@ After this release, ratatui is split into `ratatui-core`, `ratatui-widgets`, `ra
 These were preserved verbatim during the Java rewrite. Watch for upstream fixes:
 
 - `Layout.split` swaps Horizontal↔Vertical width/height in the expand-to-fill last-rect adjustment. Cosmetic — the cassowary solver already pins the last edge correctly when `expandToFill = true`.
+
+## Deferred work
+
+Features or tests that were skipped in a release commit and need to be revisited. When porting later, search this file by ratatui release tag.
+
+| First seen in | What | Why deferred |
+|---|---|---|
+| v0.21.0 | `BlockWidget` padding (#20) | Additive feature; no demo currently uses it. Will batch with other Block work. |
+| v0.21.0 | `BlockWidget` title on bottom (#36) | Additive feature; will batch with other Block work. |
+| v0.21.0 | Sparkline directions (#134) | Additive; defer until needed. |
+| v0.21.0 | Calendar widget (#138) | New widget; not used by demo. |
+| v0.21.0 | Circle canvas shape (#159) | New canvas Shape; not used by demo. |
+| v0.21.0 | `Masked` text (#168) | Additive text type. |
+| v0.21.0 | Inline viewport (#114) | BREAKING terminal change; needs careful porting. |
+| v0.21.0 | `Spans` → `Line` rename (#178) | Touches every widget and test; do as a dedicated commit. |
+| v0.21.0 | Termwiz backend (#5) | Rust-only backend. |
+| v0.21.0 | `border!` macro (#11) | Rust macro — not portable. Equivalent: `Borders.LEFT.or(Borders.TOP)`. |

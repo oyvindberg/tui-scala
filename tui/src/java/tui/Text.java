@@ -78,4 +78,13 @@ public record Text(Spans[] lines) {
   public static Text fromMany(Spans... spans) {
     return new Text(spans);
   }
+
+  /// Returns a new Text with every Span's style reset to Style.RESET.
+  public Text resetStyle() {
+    Spans[] out = new Spans[lines.length];
+    for (int i = 0; i < lines.length; i++) {
+      out[i] = lines[i].resetStyle();
+    }
+    return new Text(out);
+  }
 }

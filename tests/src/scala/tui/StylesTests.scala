@@ -37,4 +37,34 @@ class StylesTests extends TuiTest {
     assert(onlyBold.contains(Modifier.BOLD))
     assert(!onlyBold.contains(Modifier.DIM))
   }
+
+  test("color_fromString_rgb") {
+    val color = Color.fromString("#FF0000")
+    assert(color.isPresent)
+    assertEq(color.get, new Color.Rgb(255, 0, 0))
+  }
+
+  test("color_fromString_indexed") {
+    val color = Color.fromString("10")
+    assert(color.isPresent)
+    assertEq(color.get, new Color.Indexed(10))
+  }
+
+  test("color_fromString_named") {
+    assertEq[Color, Color](Color.fromString("lightblue").get, Color.LightBlue)
+    assertEq[Color, Color](Color.fromString("light blue").get, Color.LightBlue)
+    assertEq[Color, Color](Color.fromString("Reset").get, Color.Reset)
+  }
+
+  test("color_fromString_invalid") {
+    val bad = Array(
+      "invalid_color", // not a color string
+      "abcdef0",       // 7 chars but no '#'
+      " bcdefa",       // leading space
+      "blue ",         // trailing space
+      " blue",         // leading space
+      "#abcdef00"      // too many chars
+    )
+    bad.foreach(s => assert(Color.fromString(s).isEmpty, s"bad color: '$s'"))
+  }
 }

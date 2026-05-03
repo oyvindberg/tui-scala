@@ -58,10 +58,14 @@ public final class Context {
 
   public static Context create(
       int width, int height, Point xBounds, Point yBounds, Symbols.Marker marker) {
+    char dot = '•';
+    char block = Symbols.block.FULL.charAt(0);
+    char bar = Symbols.bar.HALF.charAt(0);
     Grid grid =
         switch (marker) {
-          case Dot -> CharGrid.create(width, height, '•');
-          case Block -> CharGrid.create(width, height, '▄');
+          case Dot -> CharGrid.create(width, height, dot);
+          case Block -> CharGrid.create(width, height, block);
+          case Bar -> CharGrid.create(width, height, bar);
           case Braille -> BrailleGrid.create(width, height);
         };
     return new Context(xBounds, yBounds, grid, false, new ArrayList<>(), new ArrayList<>());

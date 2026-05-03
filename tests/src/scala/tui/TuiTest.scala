@@ -8,9 +8,12 @@ trait TuiTest extends AnyFunSuite with TypeCheckedTripleEquals {
   def assertEq[L, R](actual: L, expected: R, msg: String = "")(implicit constraint: L CanEqual R, prettifier: Prettifier, pos: source.Position): Assertion =
     assert(actual === expected)
 
-  def assertBuffer(actual: TestBackend, expected: Buffer): Unit = {
-    assertEq(expected.area, actual.buffer.area)
-    val diff = expected.diff(actual.buffer)
+  def assertBuffer(actual: TestBackend, expected: Buffer): Unit =
+    assertBufferEq(actual.buffer, expected)
+
+  def assertBufferEq(actual: Buffer, expected: Buffer): Unit = {
+    assertEq(expected.area, actual.area)
+    val diff = expected.diff(actual)
     if (diff.isEmpty) {
       return
     }
@@ -24,7 +27,7 @@ trait TuiTest extends AnyFunSuite with TypeCheckedTripleEquals {
     debug_info.append('\n')
     debug_info.append("Got:")
     debug_info.append('\n')
-    val view = bufferView(actual.buffer)
+    val view = bufferView(actual)
     debug_info.append(view)
     debug_info.append('\n')
 

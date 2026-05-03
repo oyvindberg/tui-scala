@@ -76,4 +76,55 @@ public sealed interface Color
   record Rgb(int r, int g, int b) implements Color {}
 
   record Indexed(int index) implements Color {}
+
+  /// Parses a string representation into a Color.
+  ///
+  /// Supports named colors ("blue", "lightblue", "light blue"), `#RRGGBB` hex RGB
+  /// and 0..255 indexed values. Returns empty Optional if the string does not match
+  /// any known form.
+  static java.util.Optional<Color> fromString(String s) {
+    String lower = s.toLowerCase(java.util.Locale.ROOT);
+    Color named = switch (lower) {
+      case "reset" -> Reset;
+      case "black" -> Black;
+      case "red" -> Red;
+      case "green" -> Green;
+      case "yellow" -> Yellow;
+      case "blue" -> Blue;
+      case "magenta" -> Magenta;
+      case "cyan" -> Cyan;
+      case "gray" -> Gray;
+      case "darkgray", "dark gray" -> DarkGray;
+      case "lightred", "light red" -> LightRed;
+      case "lightgreen", "light green" -> LightGreen;
+      case "lightyellow", "light yellow" -> LightYellow;
+      case "lightblue", "light blue" -> LightBlue;
+      case "lightmagenta", "light magenta" -> LightMagenta;
+      case "lightcyan", "light cyan" -> LightCyan;
+      case "white" -> White;
+      default -> null;
+    };
+    if (named != null) {
+      return java.util.Optional.of(named);
+    }
+    try {
+      int idx = Integer.parseInt(s);
+      if (idx >= 0 && idx <= 255) {
+        return java.util.Optional.of(new Indexed(idx));
+      }
+    } catch (NumberFormatException ignored) {
+      // not an index, try hex
+    }
+    if (s.startsWith("#") && s.length() == 7) {
+      try {
+        int r = Integer.parseInt(s.substring(1, 3), 16);
+        int g = Integer.parseInt(s.substring(3, 5), 16);
+        int b = Integer.parseInt(s.substring(5, 7), 16);
+        return java.util.Optional.of(new Rgb(r, g, b));
+      } catch (NumberFormatException ignored) {
+        // fall through
+      }
+    }
+    return java.util.Optional.empty();
+  }
 }
