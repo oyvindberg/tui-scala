@@ -1,0 +1,86 @@
+$schema: https://raw.githubusercontent.com/oyvindberg/bleep/master/schema.json
+$version: 0.0.13
+jvm:
+  name: graalvm-community:25.0.1
+projects:
+  crossterm:
+    java:
+      options: --release 17
+    platform:
+      name: jvm
+    sourcegen:
+      main: tui.scripts.GenJniLibrary
+      project: scripts
+  jatatui-core:
+    java:
+      options: --release 21
+    platform:
+      name: jvm
+  jatatui-widgets:
+    dependsOn: jatatui-core
+    java:
+      options: --release 21
+    platform:
+      name: jvm
+  jatatui-crossterm:
+    dependsOn:
+    - jatatui-core
+    - crossterm
+    java:
+      options: --release 21
+    platform:
+      name: jvm
+  jatatui-tests:
+    dependencies:
+    - org.junit.jupiter:junit-jupiter:5.11.3
+    - org.junit.jupiter:junit-jupiter-engine:5.11.3
+    dependsOn:
+    - jatatui-core
+    - jatatui-widgets
+    - jatatui-crossterm
+    isTestProject: true
+    java:
+      options: --release 21
+    platform:
+      name: jvm
+  jatatui-demo:
+    dependsOn:
+    - jatatui-core
+    - jatatui-widgets
+    - jatatui-crossterm
+    java:
+      options: --release 21
+    platform:
+      name: jvm
+      mainClass: jatatui.examples.Launcher
+  scripts:
+    dependencies:
+    - build.bleep::bleep-plugin-ci-release:${BLEEP_VERSION}
+    - build.bleep::bleep-plugin-jni:${BLEEP_VERSION}
+    - build.bleep::bleep-plugin-native-image:${BLEEP_VERSION}
+    extends:
+    - template-scala-2
+    - template-scala-common
+scripts:
+  gen-headers:
+    main: tui.scripts.GenHeaders
+    project: scripts
+  gen-native-image:
+    main: tui.scripts.GenNativeImage
+    project: scripts
+  my-publish-local:
+    main: tui.scripts.PublishLocal
+    project: scripts
+  publish:
+    main: tui.scripts.Publish
+    project: scripts
+templates:
+  template-scala-2:
+    scala:
+      version: 2.13.18
+  template-scala-common:
+    platform:
+      name: jvm
+    scala:
+      options: -encoding utf8 -feature -unchecked
+      strict: true

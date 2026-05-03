@@ -1,0 +1,9 @@
+[submodule "submodules/ratatui"]
+	path = submodules/ratatui
+	url = https://github.com/ratatui/ratatui
+[submodule "submodules/crossterm"]
+	path = submodules/crossterm
+	url = https://github.com/crossterm-rs/crossterm
+[submodule "submodules/kasuari"]
+	path = submodules/kasuari
+	url = https://github.com/ratatui/kasuari
