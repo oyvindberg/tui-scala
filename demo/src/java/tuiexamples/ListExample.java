@@ -170,11 +170,14 @@ public final class ListExample {
           tui.crossterm.KeyCode code = key.keyEvent().code();
           if (code instanceof KeyCode.Char c && c.c() == 'q') {
             return;
-          } else if (code instanceof KeyCode.Left) {
+          } else if (code instanceof KeyCode.Left
+              || (code instanceof KeyCode.Char l && l.c() == 'h')) {
             app.items.unselect();
-          } else if (code instanceof KeyCode.Down) {
+          } else if (code instanceof KeyCode.Down
+              || (code instanceof KeyCode.Char d && d.c() == 'j')) {
             app.items.next();
-          } else if (code instanceof KeyCode.Up) {
+          } else if (code instanceof KeyCode.Up
+              || (code instanceof KeyCode.Char u && u.c() == 'k')) {
             app.items.previous();
           }
         }

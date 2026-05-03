@@ -32,4 +32,11 @@ class LayoutTests extends TuiTest {
     assertEq(new Constraint.Min(100).apply(100), 100)
     assertEq(new Constraint.Min(200).apply(100), 200)
   }
+
+  // Ported from ratatui v0.25.0 #678.
+  test("rect_intersection_underflow") {
+    val a = new Rect(1, 1, 2, 2)
+    val b = new Rect(4, 4, 2, 2)
+    assertEq(a.intersection(b), new Rect(4, 4, 0, 0))
+  }
 }

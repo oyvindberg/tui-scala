@@ -56,7 +56,7 @@ For each release `<R>`:
 | 4 | `v0.22.0` | 2023-07-17 | 40 | — | **done** |
 | 5 | `v0.23.0` | 2023-08-28 | 62 | **0.26 → 0.27** | **done** |
 | 6 | `v0.24.0` | 2023-10-23 | 63 | — | **done** |
-| 7 | `v0.25.0` | 2023-12-18 | 50 | — | pending |
+| 7 | `v0.25.0` | 2023-12-18 | 50 | — | **done** |
 
 ### Phase 2 — major API revamp (126 commits)
 
@@ -135,3 +135,17 @@ Features or tests that were skipped in a release commit and need to be revisited
 | v0.24.0 | Stylize impl for String (#466) | Stylize trait still deferred. |
 | v0.24.0 | Better ScrollbarState ergonomics (#456) | Scrollbar widget itself still deferred. |
 | v0.24.0 | demo2 example (#500) | New showcase example; defer. |
+| v0.25.0 | List `start_corner` → `direction` rename (#673) | BREAKING field rename. Defer until we batch BREAKING widget API changes. |
+| v0.25.0 | List `IntoIterator` constructor (#672) | Rust API. |
+| v0.25.0 | Table `widths` parameter on `new()` (#664) | BREAKING signature. |
+| v0.25.0 | Table `segment_size` (#660) | Additive. |
+| v0.25.0 | Constraint helpers like `from_lengths` (#641) | Additive convenience. |
+| v0.25.0 | Rect `offset` method (#533) | Additive. |
+| v0.25.0 | Tabs default `highlight_style` (#635), custom padding (#629) | Tabs widget changes. |
+| v0.25.0 | Block `inner` aware of title positions (#657) | Multi-title (#232) deferred. |
+| v0.25.0 | Layout `new()` parameters (#557), fill config (#633) | Defer with the larger Layout work. |
+| v0.25.0 | List line alignment (#599) | Additive. |
+| v0.25.0 | Chart legend position (#378) | Additive. |
+| v0.25.0 | Span content/style setters (#647) | Additive. |
+| v0.25.0 | `Cell::symbol` field deprecation (#624) | Rust deprecation; we already use accessor. |
+| v0.25.0 | Paragraph `line_count`/`line_width` helpers | Additive (unstable upstream). |

@@ -258,6 +258,11 @@ public final class TableWidget implements Widget, StatefulWidget<TableWidget.Sta
 
   public void renderCell(Buffer buf, Cell cell, Rect area) {
     buf.setStyle(area, cell.style());
+    // v0.25.0 #685: skip writing if the cell starts past the area boundary,
+    // which can happen with empty right-aligned headers or after column-clamping.
+    if (area.x() >= area.right()) {
+      return;
+    }
     Spans[] lines = cell.content().lines();
     int n = Math.min(lines.length, area.height());
     for (int i = 0; i < n; i++) {

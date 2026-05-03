@@ -54,7 +54,11 @@ public record Rect(int x, int y, int width, int height) {
     int y1 = Math.max(y, other.y);
     int x2 = Math.min(x + width, other.x + other.width);
     int y2 = Math.min(y + height, other.y + other.height);
-    return new Rect(x1, y1, x2 - x1, y2 - y1);
+    return new Rect(
+        x1,
+        y1,
+        tui.internal.Saturating.saturatingSubUnsigned(x2, x1),
+        tui.internal.Saturating.saturatingSubUnsigned(y2, y1));
   }
 
   public boolean intersects(Rect other) {

@@ -95,9 +95,11 @@ public final class TableExample {
         tui.crossterm.KeyCode code = key.keyEvent().code();
         if (code instanceof KeyCode.Char c && c.c() == 'q') {
           return;
-        } else if (code instanceof KeyCode.Down) {
+        } else if (code instanceof KeyCode.Down
+            || (code instanceof KeyCode.Char d && d.c() == 'j')) {
           app.next();
-        } else if (code instanceof KeyCode.Up) {
+        } else if (code instanceof KeyCode.Up
+            || (code instanceof KeyCode.Char u && u.c() == 'k')) {
           app.previous();
         }
       }
