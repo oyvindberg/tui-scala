@@ -4,7 +4,10 @@ jvm:
   name: graalvm-community:25.0.1
 projects:
   cassowary:
-    extends: template-cross-scala
+    java:
+      options: --release 21
+    platform:
+      name: jvm
   crossterm:
     java:
       options: --release 17
@@ -14,8 +17,10 @@ projects:
   demo:
     dependencies: org.graalvm.nativeimage:svm:25.0.1
     dependsOn: tui
-    extends: template-cross-scala
+    java:
+      options: --release 21
     platform:
+      name: jvm
       mainClass: tuiexamples.Launcher
   scripts:
     dependencies:
@@ -28,13 +33,18 @@ projects:
   tests:
     dependencies: org.scalatest::scalatest:3.2.19
     dependsOn: tui
-    extends: template-cross-scala
+    extends:
+    - template-scala-3
+    - template-scala-common
     isTestProject: true
   tui:
     dependsOn:
     - cassowary
     - crossterm
-    extends: template-cross-scala
+    java:
+      options: --release 21
+    platform:
+      name: jvm
 scripts:
   gen-headers:
     main: tui.scripts.GenHeaders
@@ -49,13 +59,6 @@ scripts:
     main: tui.scripts.Publish
     project: scripts
 templates:
-  template-cross-scala:
-    cross:
-      jvm213:
-        extends: template-scala-2
-      jvm3:
-        extends: template-scala-3
-    extends: template-scala-common
   template-scala-2:
     scala:
       version: 2.13.18

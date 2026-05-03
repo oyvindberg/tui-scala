@@ -4,38 +4,43 @@ package tui
 case class TestBackend(
     var width: Int,
     var height: Int,
-    var cursor: Boolean = false,
-    var pos: (Int, Int) = (0, 0)
+    var cursor: Boolean,
+    var pos: Position
 ) extends Backend {
-  val buffer: Buffer = Buffer.empty(Rect(0, 0, width, height))
+  val buffer: Buffer = Buffer.empty(new Rect(0, 0, width, height))
 
   def resize(width: Int, height: Int): Unit = {
-    buffer.resize(Rect(0, 0, width, height))
+    buffer.resize(new Rect(0, 0, width, height))
     this.width = width
     this.height = height
   }
 
-  def draw(content: Array[(Int, Int, Cell)]): Unit =
-    content.foreach { case (x, y, c) => buffer.set(x, y, c) }
+  override def draw(content: Array[BufferUpdate]): Unit =
+    content.foreach(u => buffer.set(u.x(), u.y(), u.cell()))
 
-  def hideCursor(): Unit =
+  override def hideCursor(): Unit =
     this.cursor = false
 
-  def showCursor(): Unit =
+  override def showCursor(): Unit =
     this.cursor = true
 
-  def getCursor(): (Int, Int) =
+  override def getCursor(): Position =
     pos
 
-  def setCursor(x: Int, y: Int): Unit =
-    pos = (x, y)
+  override def setCursor(x: Int, y: Int): Unit =
+    pos = new Position(x, y)
 
-  def clear(): Unit =
+  override def clear(): Unit =
     buffer.reset()
 
-  def size(): Rect =
-    Rect(0, 0, width, height)
+  override def size(): Rect =
+    new Rect(0, 0, width, height)
 
-  def flush(): Unit =
+  override def flush(): Unit =
     ()
+}
+
+object TestBackend {
+  def apply(width: Int, height: Int): TestBackend =
+    new TestBackend(width, height, cursor = false, pos = new Position(0, 0))
 }

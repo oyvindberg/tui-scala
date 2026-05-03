@@ -1,6 +1,6 @@
 package tui
 
-import tui.internal.saturating._
+import tui.internal.Saturating
 
 import scala.collection.mutable
 
@@ -8,7 +8,7 @@ import scala.collection.mutable
 object bufferView {
   def apply(buffer: Buffer): String = {
     val view = new StringBuilder(buffer.content.length + buffer.area.height * 3)
-    val value: Iterator[mutable.ArraySeq[Cell]] = buffer.content.grouped(buffer.area.width)
+    val value: Iterator[Array[Cell]] = buffer.content.grouped(buffer.area.width)
     value.foreach { cells =>
       val overwritten = mutable.ArrayBuffer.empty[(Int, String)]
       var skip: Int = 0
@@ -19,7 +19,7 @@ object bufferView {
         } else {
           overwritten += ((x, c.symbol.str))
         }
-        skip = math.max(skip, c.symbol.width).saturating_sub_unsigned(1);
+        skip = Saturating.saturatingSubUnsigned(math.max(skip, c.symbol.width), 1)
       }
       view.append('"')
       if (overwritten.nonEmpty) {

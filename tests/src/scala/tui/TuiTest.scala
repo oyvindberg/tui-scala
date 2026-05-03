@@ -31,7 +31,7 @@ trait TuiTest extends AnyFunSuite with TypeCheckedTripleEquals {
     debug_info.append("Diff:")
     debug_info.append('\n')
     val nice_diff = diff.zipWithIndex
-      .map { case ((x, y, cell), i) => s"$i: at ($x, $y) expected ${expected.get(x, y)} got $cell" }
+      .map { case (u, i) => s"$i: at (${u.x()}, ${u.y()}) expected ${expected.get(u.x(), u.y())} got ${u.cell()}" }
       .mkString("\n")
     debug_info.append(nice_diff)
     sys.error(debug_info.toString())

@@ -1,7 +1,7 @@
 package tui
 package widgets
 
-import tui.internal.ranges
+import tui.internal.Ranges
 
 class GaugeTests extends TuiTest {
 
@@ -9,26 +9,27 @@ class GaugeTests extends TuiTest {
     val backend = TestBackend(40, 10)
     val terminal = Terminal.init(backend)
     terminal.draw { f =>
-      val chunks = Layout(
-        direction = Direction.Vertical,
-        margin = Margin(2),
-        constraints = Array(Constraint.Percentage(50), Constraint.Percentage(50))
+      val chunks = new Layout(
+        Direction.Vertical,
+        Margin.of(2),
+        Array[Constraint](new Constraint.Percentage(50), new Constraint.Percentage(50)),
+        false
       )
         .split(f.size)
 
-      val gauge0 = GaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Percentage")), borders = Borders.ALL)),
-        gaugeStyle = Style(bg = Some(Color.Blue), fg = Some(Color.Red)),
-        useUnicode = true,
-        ratio = GaugeWidget.Ratio.percent(43)
-      )
+      val gauge0 = GaugeWidget
+        .empty()
+        .withBlock(BlockWidget.empty().withTitle(Spans.nostyle("Percentage")).withBorders(Borders.ALL))
+        .withGaugeStyle(Style.empty().withBg(Color.Blue).withFg(Color.Red))
+        .withUseUnicode(true)
+        .withRatio(GaugeWidget.Ratio.percent(43))
       f.renderWidget(gauge0, chunks(0))
-      val gauge = GaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Ratio")), borders = Borders.ALL)),
-        gaugeStyle = Style(bg = Some(Color.Blue), fg = Some(Color.Red)),
-        useUnicode = true,
-        ratio = GaugeWidget.Ratio(0.511_313_934_313_1)
-      )
+      val gauge = GaugeWidget
+        .empty()
+        .withBlock(BlockWidget.empty().withTitle(Spans.nostyle("Ratio")).withBorders(Borders.ALL))
+        .withGaugeStyle(Style.empty().withBg(Color.Blue).withFg(Color.Red))
+        .withUseUnicode(true)
+        .withRatio(new GaugeWidget.Ratio(0.511_313_934_313_1))
       f.renderWidget(gauge, chunks(1));
     }
     val expected = Buffer.withLines(
@@ -44,35 +45,35 @@ class GaugeTests extends TuiTest {
       "                                        "
     )
 
-    ranges.range(3, 17) { i =>
+    Ranges.range(3, 17, (i: Int) => {
       expected
         .get(i, 3)
         .setBg(Color.Red)
         .setFg(Color.Blue)
       ()
-    }
-    ranges.range(17, 37) { i =>
+    })
+    Ranges.range(17, 37, (i: Int) => {
       expected
         .get(i, 3)
         .setBg(Color.Blue)
         .setFg(Color.Red)
       ()
-    }
+    })
 
-    ranges.range(3, 20) { i =>
+    Ranges.range(3, 20, (i: Int) => {
       expected
         .get(i, 6)
         .setBg(Color.Red)
         .setFg(Color.Blue)
       ()
-    }
-    ranges.range(20, 37) { i =>
+    })
+    Ranges.range(20, 37, (i: Int) => {
       expected
         .get(i, 6)
         .setBg(Color.Blue)
         .setFg(Color.Red)
       ()
-    }
+    })
 
     assertBuffer(backend, expected)
   }
@@ -82,18 +83,22 @@ class GaugeTests extends TuiTest {
     val terminal = Terminal.init(backend)
 
     terminal.draw { f =>
-      val chunks = Layout(direction = Direction.Vertical, margin = Margin(2), constraints = Array(Constraint.Percentage(50), Constraint.Percentage(50)))
-        .split(f.size)
+      val chunks = new Layout(
+        Direction.Vertical,
+        Margin.of(2),
+        Array[Constraint](new Constraint.Percentage(50), new Constraint.Percentage(50)),
+        false
+      ).split(f.size)
 
-      val gauge0 = GaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Percentage")), borders = Borders.ALL)),
-        ratio = GaugeWidget.Ratio.percent(43)
-      )
+      val gauge0 = GaugeWidget
+        .empty()
+        .withBlock(BlockWidget.empty().withTitle(Spans.nostyle("Percentage")).withBorders(Borders.ALL))
+        .withRatio(GaugeWidget.Ratio.percent(43))
       f.renderWidget(gauge0, chunks(0))
-      val gauge = GaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Ratio")), borders = Borders.ALL)),
-        ratio = GaugeWidget.Ratio(0.211_313_934_313_1)
-      )
+      val gauge = GaugeWidget
+        .empty()
+        .withBlock(BlockWidget.empty().withTitle(Spans.nostyle("Ratio")).withBorders(Borders.ALL))
+        .withRatio(new GaugeWidget.Ratio(0.211_313_934_313_1))
       f.renderWidget(gauge, chunks(1));
     }
 
@@ -117,12 +122,17 @@ class GaugeTests extends TuiTest {
     val terminal = Terminal.init(backend)
 
     terminal.draw { f =>
-      val gauge = GaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.from(Span.styled("Test", Style.DEFAULT.fg(Color.Red)))), borders = Borders.ALL)),
-        gaugeStyle = Style.DEFAULT.fg(Color.Blue).bg(Color.Red),
-        ratio = GaugeWidget.Ratio.percent(43),
-        label = Some(Span.styled("43%", Style(fg = Some(Color.Green), addModifier = Modifier.BOLD)))
-      )
+      val gauge = GaugeWidget
+        .empty()
+        .withBlock(
+          BlockWidget
+            .empty()
+            .withTitle(Spans.from(Span.styled("Test", Style.DEFAULT.withFg(Color.Red))))
+            .withBorders(Borders.ALL)
+        )
+        .withGaugeStyle(Style.DEFAULT.withFg(Color.Blue).withBg(Color.Red))
+        .withRatio(GaugeWidget.Ratio.percent(43))
+        .withLabel(Span.styled("43%", Style.empty().withFg(Color.Green).withAddModifier(Modifier.BOLD)))
       f.renderWidget(gauge, f.size);
     }
 
@@ -134,38 +144,36 @@ class GaugeTests extends TuiTest {
       "└──────────┘"
     )
     // title
-    expected.setStyle(new Rect(1, 0, 4, 1), Style(fg = Some(Color.Red)))
+    expected.setStyle(new Rect(1, 0, 4, 1), Style.empty().withFg(Color.Red))
     // gauge area
     expected.setStyle(
       new Rect(1, 1, 10, 3),
-      Style(fg = Some(Color.Blue), bg = Some(Color.Red))
+      Style.empty().withFg(Color.Blue).withBg(Color.Red)
     )
     // filled area
-    ranges.range(1, 4) { y =>
+    Ranges.range(1, 4, (y: Int) => {
       expected.setStyle(
         new Rect(1, y, 4, 1),
         // filled style is invert of gauge_style
-        Style(fg = Some(Color.Red), bg = Some(Color.Blue))
+        Style.empty().withFg(Color.Red).withBg(Color.Blue)
       );
-    }
+    })
     // label (foreground and modifier from label style)
     expected.setStyle(
       new Rect(4, 2, 1, 1),
-      Style(
-        fg = Some(Color.Green),
+      Style.empty()
+        .withFg(Color.Green)
         // "4" is in the filled area so background is gauge_style foreground
-        bg = Some(Color.Blue),
-        addModifier = Modifier.BOLD
-      )
+        .withBg(Color.Blue)
+        .withAddModifier(Modifier.BOLD)
     )
     expected.setStyle(
       new Rect(5, 2, 2, 1),
-      Style(
-        fg = Some(Color.Green),
+      Style.empty()
+        .withFg(Color.Green)
         // "3%" is not in the filled area so background is gauge_style background
-        bg = Some(Color.Red),
-        addModifier = Modifier.BOLD
-      )
+        .withBg(Color.Red)
+        .withAddModifier(Modifier.BOLD)
     )
     assertBuffer(backend, expected)
   }
@@ -175,10 +183,10 @@ class GaugeTests extends TuiTest {
     val terminal = Terminal.init(backend)
 
     terminal.draw { f =>
-      val gauge = GaugeWidget(
-        ratio = GaugeWidget.Ratio.percent(43),
-        label = Some(Span.nostyle("43333333333333333333333333333%"))
-      )
+      val gauge = GaugeWidget
+        .empty()
+        .withRatio(GaugeWidget.Ratio.percent(43))
+        .withLabel(Span.nostyle("43333333333333333333333333333%"))
       f.renderWidget(gauge, f.size);
     }
 
@@ -190,15 +198,18 @@ class GaugeTests extends TuiTest {
     val backend = TestBackend(20, 4)
     val terminal = Terminal.init(backend)
     terminal.draw { f =>
-      val gauge0 = LineGaugeWidget(gaugeStyle = Style.DEFAULT.fg(Color.Green).bg(Color.White), ratio = GaugeWidget.Ratio(0.43))
-      f.renderWidget(gauge0, Rect(x = 0, y = 0, width = 20, height = 1))
-      val gauge = LineGaugeWidget(
-        block = Some(BlockWidget(title = Some(Spans.nostyle("Gauge 2")), borders = Borders.ALL)),
-        gaugeStyle = Style(fg = Some(Color.Green)),
-        lineSet = symbols.line.THICK,
-        ratio = GaugeWidget.Ratio(0.211_313_934_313_1)
-      )
-      f.renderWidget(gauge, Rect(x = 0, y = 1, width = 20, height = 3));
+      val gauge0 = LineGaugeWidget
+        .empty()
+        .withGaugeStyle(Style.DEFAULT.withFg(Color.Green).withBg(Color.White))
+        .withRatio(new GaugeWidget.Ratio(0.43))
+      f.renderWidget(gauge0, new Rect(0, 0, 20, 1))
+      val gauge = LineGaugeWidget
+        .empty()
+        .withBlock(BlockWidget.empty().withTitle(Spans.nostyle("Gauge 2")).withBorders(Borders.ALL))
+        .withGaugeStyle(Style.empty().withFg(Color.Green))
+        .withLineSet(Symbols.line.THICK)
+        .withRatio(new GaugeWidget.Ratio(0.211_313_934_313_1))
+      f.renderWidget(gauge, new Rect(0, 1, 20, 3));
     }
     val expected = Buffer.withLines(
       "43% ────────────────",
@@ -206,18 +217,18 @@ class GaugeTests extends TuiTest {
       "│21% ━━━━━━━━━━━━━━│",
       "└──────────────────┘"
     )
-    ranges.range(4, 10) { col =>
+    Ranges.range(4, 10, (col: Int) => {
       expected.get(col, 0).setFg(Color.Green)
       ()
-    }
-    ranges.range(10, 20) { col =>
+    })
+    Ranges.range(10, 20, (col: Int) => {
       expected.get(col, 0).setFg(Color.White)
       ()
-    }
-    ranges.range(5, 7) { col =>
+    })
+    Ranges.range(5, 7, (col: Int) => {
       expected.get(col, 2).setFg(Color.Green)
       ()
-    }
+    })
     assertBuffer(backend, expected)
   }
 }

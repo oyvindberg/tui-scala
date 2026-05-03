@@ -3,8 +3,8 @@ package widgets
 
 class ParagraphTests extends TuiTest {
   test("it_does_not_panic_if_max_is_zero") {
-    val widget = SparklineWidget(data = Array(0, 0, 0))
-    val area = Rect(0, 0, 3, 1)
+    val widget = SparklineWidget.empty().withData(Array(0, 0, 0))
+    val area = new Rect(0, 0, 3, 1)
     val buffer = Buffer.empty(area)
     widget.render(area, buffer)
   }
@@ -19,12 +19,11 @@ class ParagraphTests extends TuiTest {
 
       terminal.draw { f =>
         val text = Text.from(Spans.nostyle(SAMPLE_STRING))
-        val paragraph = ParagraphWidget(
-          text = text,
-          block = Some(BlockWidget(borders = Borders.ALL)),
-          wrap = Some(ParagraphWidget.Wrap(trim = true)),
-          alignment = alignment
-        )
+        val paragraph = ParagraphWidget
+          .empty(text)
+          .withBlock(BlockWidget.empty().withBorders(Borders.ALL))
+          .withWrap(new ParagraphWidget.Wrap(true))
+          .withAlignment(alignment)
         f.renderWidget(paragraph, f.size);
       }
       assertBuffer(backend, expected)
@@ -78,12 +77,15 @@ class ParagraphTests extends TuiTest {
   }
 
   test("widgets_paragraph_renders_double_width_graphemes") {
-    val backend = TestBackend(width = 10, height = 10)
+    val backend = TestBackend(10, 10)
     val terminal = Terminal.init(backend)
 
     val s = "コンピュータ上で文字を扱う場合、典型的には文字による通信を行う場合にその両端点では、"
     terminal.draw { f =>
-      val paragraph = ParagraphWidget(text = Text.nostyle(s), block = Some(BlockWidget(borders = Borders.ALL)), wrap = Some(ParagraphWidget.Wrap(trim = true)))
+      val paragraph = ParagraphWidget
+        .empty(Text.nostyle(s))
+        .withBlock(BlockWidget.empty().withBorders(Borders.ALL))
+        .withWrap(new ParagraphWidget.Wrap(true))
       f.renderWidget(paragraph, f.size);
     }
 
@@ -108,7 +110,10 @@ class ParagraphTests extends TuiTest {
 
     terminal.draw { f =>
       val text = Text.nostyle("aコンピュータ上で文字を扱う場合、")
-      val paragraph = ParagraphWidget(text = text, block = Some(BlockWidget(borders = Borders.ALL)), wrap = Some(ParagraphWidget.Wrap(trim = true)))
+      val paragraph = ParagraphWidget
+        .empty(text)
+        .withBlock(BlockWidget.empty().withBorders(Borders.ALL))
+        .withWrap(new ParagraphWidget.Wrap(true))
       f.renderWidget(paragraph, f.size);
     }
 
@@ -126,30 +131,36 @@ class ParagraphTests extends TuiTest {
   }
 
   test("widgets_paragraph_can_wrap_with_a_trailing_nbsp") {
-    val nbsp = "\u00a0"
-    val line = Text.from(Span.nostyle("NBSP"), Span.nostyle(nbsp))
+    val nbsp = " "
+    val line = Text.fromSpans(Span.nostyle("NBSP"), Span.nostyle(nbsp))
     val backend = TestBackend(20, 3)
     val terminal = Terminal.init(backend)
     val expected = Buffer.withLines(
       "┌──────────────────┐",
-      "│NBSP\u00a0             │",
+      "│NBSP              │",
       "└──────────────────┘"
     )
     terminal.draw { f =>
-      val paragraph = ParagraphWidget(text = line, block = Some(BlockWidget(borders = Borders.ALL)))
+      val paragraph = ParagraphWidget
+        .empty(line)
+        .withBlock(BlockWidget.empty().withBorders(Borders.ALL))
       f.renderWidget(paragraph, f.size);
     }
     assertBuffer(backend, expected)
   }
 
   test("widgets_paragraph_can_scroll_horizontally") {
-    val test_case = (alignment: Alignment, scroll: (Int, Int), expected: Buffer) => {
+    val test_case = (alignment: Alignment, scroll: ParagraphWidget.Scroll, expected: Buffer) => {
       val backend = TestBackend(20, 10)
       val terminal = Terminal.init(backend)
 
       terminal.draw { f =>
         val text = Text.nostyle("段落现在可以水平滚动了！\nParagraph can scroll horizontally!\nShort line")
-        val paragraph = ParagraphWidget(text = text, block = Some(BlockWidget(borders = Borders.ALL)), alignment = alignment, scroll = scroll)
+        val paragraph = ParagraphWidget
+          .empty(text)
+          .withBlock(BlockWidget.empty().withBorders(Borders.ALL))
+          .withAlignment(alignment)
+          .withScroll(scroll)
         f.renderWidget(paragraph, f.size);
       }
       assertBuffer(backend, expected)
@@ -157,7 +168,7 @@ class ParagraphTests extends TuiTest {
 
     test_case(
       Alignment.Left,
-      (0, 7),
+      new ParagraphWidget.Scroll(0, 7),
       Buffer.withLines(
         "┌──────────────────┐",
         "│在可以水平滚动了！│",
@@ -174,7 +185,7 @@ class ParagraphTests extends TuiTest {
     // only support Alignment.Left
     test_case(
       Alignment.Right,
-      (0, 7),
+      new ParagraphWidget.Scroll(0, 7),
       Buffer.withLines(
         "┌──────────────────┐",
         "│段落现在可以水平滚│",

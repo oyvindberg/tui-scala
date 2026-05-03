@@ -1,17 +1,17 @@
 package tui
 package widgets
 
-import tui.internal.{ranges, UnicodeSegmentation}
-import tui.internal.reflow.{LineComposer, LineTruncator, WordWrapper}
+import tui.internal.{Ranges, Reflow, UnicodeSegmentation}
+import tui.internal.Reflow.{LineComposer, LineTruncator, WordWrapper}
 import tui.widgets.ReflowTests.Composer
+
+import scala.jdk.OptionConverters._
 
 object ReflowTests {
   sealed trait Composer
 
   object Composer {
-
     case class WordWrapper(trim: Boolean) extends Composer
-
     case object LineTruncator extends Composer
   }
 }
@@ -20,39 +20,40 @@ class ReflowTests extends TuiTest {
 
   def run_composer(which: Composer, text: String, text_area_width: Int): (Array[String], Array[Int]) = {
     val style = Style.DEFAULT
-    val styled = UnicodeSegmentation.graphemes(text, isExtended = true).map(g => StyledGrapheme(symbol = g, style))
+    val styled = UnicodeSegmentation.graphemes(text, true).map(g => new StyledGrapheme(g, style))
+    val iter = java.util.Arrays.asList(styled: _*).iterator()
     val composer: LineComposer =
       which match {
-        case Composer.WordWrapper(trim) => WordWrapper(styled.iterator, text_area_width, trim)
-        case Composer.LineTruncator     => LineTruncator(styled.iterator, text_area_width)
+        case Composer.WordWrapper(trim) => new WordWrapper(iter, text_area_width, trim)
+        case Composer.LineTruncator     => new LineTruncator(iter, text_area_width, 0)
       }
     val lines = Array.newBuilder[String]
     val widths = Array.newBuilder[Int]
     var continue = true
     while (continue)
-      composer.next_line() match {
+      composer.nextLine().toScala match {
         case None => continue = false
-        case Some((styled, width)) =>
-          val line = styled.map { case StyledGrapheme(symbol, _) => symbol.str }
-          require(width <= text_area_width)
-          lines += line.mkString("")
-          widths += width;
+        case Some(line) =>
+          val rendered = line.graphemes().map(_.symbol().str).mkString("")
+          require(line.width() <= text_area_width)
+          lines += rendered
+          widths += line.width();
       }
     (lines.result(), widths.result())
   }
 
   test("nine_composer_one_line") {
     val width = 40
-    ranges.range(1, width) { i =>
+    Ranges.range(1, width, (i: Int) => {
       val text = "a".repeat(i)
       val (word_wrapper, _) =
-        run_composer(Composer.WordWrapper(trim = true), text, width)
+        run_composer(Composer.WordWrapper(true), text, width)
       val (line_truncator, _) = run_composer(Composer.LineTruncator, text, width)
       val expected = Array(text)
       assertEq(word_wrapper, expected)
       assertEq(line_truncator, expected)
       ()
-    }
+    })
     succeed
   }
 
@@ -60,7 +61,7 @@ class ReflowTests extends TuiTest {
     val width = 20
     val text =
       "abcdefg\nhijklmno\npabcdefg\nhijklmn\nopabcdefghijk\nlmnopabcd\n\n\nefghijklmno"
-    val (word_wrapper, _) = run_composer(Composer.WordWrapper(trim = true), text, width)
+    val (word_wrapper, _) = run_composer(Composer.WordWrapper(true), text, width)
     val (line_truncator, _) = run_composer(Composer.LineTruncator, text, width)
 
     val wrapped = text.split('\n')
@@ -72,7 +73,7 @@ class ReflowTests extends TuiTest {
     val width = 20
     val text = "abcdefghijklmnopabcdefghijklmnopabcdefghijklmnopabcdefghijklmno"
     val (word_wrapper, _) =
-      run_composer(Composer.WordWrapper(trim = true), text, width)
+      run_composer(Composer.WordWrapper(true), text, width)
     val (line_truncator, _) = run_composer(Composer.LineTruncator, text, width)
 
     val wrapped = Array(
@@ -96,9 +97,9 @@ class ReflowTests extends TuiTest {
     val text_multi_space =
       "abcd efghij    klmnopabcd efgh     ijklmnopabcdefg hijkl mnopab c d e f g h i j k l m n o"
     val (word_wrapper_single_space, _) =
-      run_composer(Composer.WordWrapper(trim = true), text, width)
+      run_composer(Composer.WordWrapper(true), text, width)
     val (word_wrapper_multi_space, _) = run_composer(
-      Composer.WordWrapper(trim = true),
+      Composer.WordWrapper(true),
       text_multi_space,
       width
     )
@@ -120,7 +121,7 @@ class ReflowTests extends TuiTest {
   test("line_composer_zero_width") {
     val width = 0
     val text = "abcd efghij klmnopabcd efgh ijklmnopabcdefg hijkl mnopab "
-    val (word_wrapper, _) = run_composer(Composer.WordWrapper(trim = true), text, width)
+    val (word_wrapper, _) = run_composer(Composer.WordWrapper(true), text, width)
     val (line_truncator, _) = run_composer(Composer.LineTruncator, text, width)
 
     val expected: Array[String] = Array.empty
@@ -131,11 +132,11 @@ class ReflowTests extends TuiTest {
   test("line_composer_max_line_width_of_1") {
     val width = 1
     val text = "abcd efghij klmnopabcd efgh ijklmnopabcdefg hijkl mnopab "
-    val (word_wrapper, _) = run_composer(Composer.WordWrapper(trim = true), text, width)
+    val (word_wrapper, _) = run_composer(Composer.WordWrapper(true), text, width)
     val (line_truncator, _) = run_composer(Composer.LineTruncator, text, width)
 
     val expected: Array[String] = UnicodeSegmentation
-      .graphemes(text, isExtended = true)
+      .graphemes(text, true)
       .filter(g => g.str.exists(!_.isWhitespace))
       .map(_.str)
     assertEq(word_wrapper, expected)
@@ -145,7 +146,7 @@ class ReflowTests extends TuiTest {
   test("line_composer_max_line_width_of_1_double_width_characters") {
     val width = 1; // x
     val text = "コンピュータ上で文字を扱う場合、典型的には文字\naaaによる通信を行う場合にその両端点では、"
-    val (word_wrapper, _) = run_composer(Composer.WordWrapper(trim = true), text, width)
+    val (word_wrapper, _) = run_composer(Composer.WordWrapper(true), text, width)
     val (line_truncator, _) = run_composer(Composer.LineTruncator, text, width)
     assertEq(word_wrapper, Array("", "a", "a", "a"))
     assertEq(line_truncator, Array("", "a"))
@@ -156,7 +157,7 @@ class ReflowTests extends TuiTest {
   test("line_composer_word_wrapper_mixed_length") {
     val width = 20
     val text = "abcd efghij klmnopabcdefghijklmnopabcdefghijkl mnopab cdefghi j klmno"
-    val (word_wrapper, _) = run_composer(Composer.WordWrapper(trim = true), text, width)
+    val (word_wrapper, _) = run_composer(Composer.WordWrapper(true), text, width)
     assertEq(
       word_wrapper,
       Array(
@@ -173,7 +174,7 @@ class ReflowTests extends TuiTest {
     val width = 20; // x
     val text = "コンピュータ上で文字を扱う場合、典型的には文字による通信を行う場合にその両端点では、"
     val (word_wrapper, word_wrapper_width) =
-      run_composer(Composer.WordWrapper(trim = true), text, width)
+      run_composer(Composer.WordWrapper(true), text, width)
     val (line_truncator, _) = run_composer(Composer.LineTruncator, text, width)
     assertEq(line_truncator, Array("コンピュータ上で文字"))
     val wrapped = Array(
@@ -190,7 +191,7 @@ class ReflowTests extends TuiTest {
   test("line_composer_leading_whitespace_removal") {
     val width = 20
     val text = "AAAAAAAAAAAAAAAAAAAA    AAA"
-    val (word_wrapper, _) = run_composer(Composer.WordWrapper(trim = true), text, width)
+    val (word_wrapper, _) = run_composer(Composer.WordWrapper(true), text, width)
     val (line_truncator, _) = run_composer(Composer.LineTruncator, text, width)
     assertEq(word_wrapper, Array("AAAAAAAAAAAAAAAAAAAA", "AAA"))
     assertEq(line_truncator, Array("AAAAAAAAAAAAAAAAAAAA"))
@@ -201,7 +202,7 @@ class ReflowTests extends TuiTest {
   test("line_composer_lots_of_spaces") {
     val width = 20
     val text = "                                                                     "
-    val (word_wrapper, _) = run_composer(Composer.WordWrapper(trim = true), text, width)
+    val (word_wrapper, _) = run_composer(Composer.WordWrapper(true), text, width)
     val (line_truncator, _) = run_composer(Composer.LineTruncator, text, width)
     assertEq(word_wrapper, Array(""))
     assertEq(line_truncator, Array("                    "))
@@ -213,7 +214,7 @@ class ReflowTests extends TuiTest {
   test("line_composer_char_plus_lots_of_spaces") {
     val width = 20
     val text = "a                                                                     "
-    val (word_wrapper, _) = run_composer(Composer.WordWrapper(trim = true), text, width)
+    val (word_wrapper, _) = run_composer(Composer.WordWrapper(true), text, width)
     val (line_truncator, _) = run_composer(Composer.LineTruncator, text, width)
     // What's happening below is: the first line gets consumed, trailing spaces discarded,
     // after 20 of which a word break occurs (probably shouldn't). The second line break
@@ -232,7 +233,7 @@ class ReflowTests extends TuiTest {
     // This happens to also be a test case for mixed width because regular spaces are single width.
     val text = "コンピュ ータ上で文字を扱う場合、 典型的には文 字による 通信を行 う場合にその両端点では、"
     val (word_wrapper, word_wrapper_width) =
-      run_composer(Composer.WordWrapper(trim = true), text, width)
+      run_composer(Composer.WordWrapper(true), text, width)
     assertEq(
       word_wrapper,
       Array(
@@ -252,28 +253,28 @@ class ReflowTests extends TuiTest {
 
   test("line_composer_word_wrapper_nbsp") {
     val width = 20
-    val text = "AAAAAAAAAAAAAAA AAAA\u00a0AAA"
-    val (word_wrapper, _) = run_composer(Composer.WordWrapper(trim = true), text, width)
-    assertEq(word_wrapper, Array("AAAAAAAAAAAAAAA", "AAAA\u00a0AAA"))
+    val text = "AAAAAAAAAAAAAAA AAAA AAA"
+    val (word_wrapper, _) = run_composer(Composer.WordWrapper(true), text, width)
+    assertEq(word_wrapper, Array("AAAAAAAAAAAAAAA", "AAAA AAA"))
 
     // Ensure that if the character was a regular space, it would be wrapped differently.
-    val text_space = text.replace("\u00a0", " ")
+    val text_space = text.replace(" ", " ")
     val (word_wrapper_space, _) =
-      run_composer(Composer.WordWrapper(trim = true), text_space, width)
+      run_composer(Composer.WordWrapper(true), text_space, width)
     assertEq(word_wrapper_space, Array("AAAAAAAAAAAAAAA AAAA", "AAA"))
   }
 
   test("line_composer_word_wrapper_preserve_indentation") {
     val width = 20
     val text = "AAAAAAAAAAAAAAAAAAAA    AAA"
-    val (word_wrapper, _) = run_composer(Composer.WordWrapper(trim = false), text, width)
+    val (word_wrapper, _) = run_composer(Composer.WordWrapper(false), text, width)
     assertEq(word_wrapper, Array("AAAAAAAAAAAAAAAAAAAA", "   AAA"))
   }
 
   test("line_composer_word_wrapper_preserve_indentation_with_wrap") {
     val width = 10
     val text = "AAA AAA AAAAA AA AAAAAA\n B\n  C\n   D"
-    val (word_wrapper, _) = run_composer(Composer.WordWrapper(trim = false), text, width)
+    val (word_wrapper, _) = run_composer(Composer.WordWrapper(false), text, width)
     assertEq(
       word_wrapper,
       Array("AAA AAA", "AAAAA AA", "AAAAAA", " B", "  C", "   D")
@@ -283,7 +284,7 @@ class ReflowTests extends TuiTest {
   test("line_composer_word_wrapper_preserve_indentation_lots_of_whitespace") {
     val width = 10
     val text = "               4 Indent\n                 must wrap!"
-    val (word_wrapper, _) = run_composer(Composer.WordWrapper(trim = false), text, width)
+    val (word_wrapper, _) = run_composer(Composer.WordWrapper(false), text, width)
     assertEq(
       word_wrapper,
       Array(

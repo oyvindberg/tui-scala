@@ -1,8 +1,8 @@
 package tui
 package widgets
 
-import tui.internal.ranges
-import tui.widgets.canvas.CanvasWidget
+import tui.internal.Ranges
+import tui.widgets.canvas.{CanvasWidget, Context}
 
 class CanvasTests extends TuiTest {
   test("widgets_canvas_draw_labels") {
@@ -10,23 +10,27 @@ class CanvasTests extends TuiTest {
     val terminal = Terminal.init(backend)
     terminal.draw { f =>
       val label = "test"
-      val canvas = CanvasWidget(backgroundColor = Color.Yellow, xBounds = Point(0.0, 5.0), yBounds = Point(0.0, 5.0)) { ctx =>
-        ctx.print(0.0, 0.0, Spans.from(Span.styled(label, Style(fg = Some(Color.Blue)))))
-      }
+      val canvas = CanvasWidget
+        .empty((ctx: Context) => {
+          ctx.print(0.0, 0.0, Spans.from(Span.styled(label, Style.empty().withFg(Color.Blue))))
+        })
+        .withBackgroundColor(Color.Yellow)
+        .withXBounds(new Point(0.0, 5.0))
+        .withYBounds(new Point(0.0, 5.0))
       f.renderWidget(canvas, f.size);
     }
 
     val expected = Buffer.withLines("    ", "    ", "     ", "     ", "test ")
-    ranges.range(0, 5) { row =>
-      ranges.range(0, 5) { col =>
+    Ranges.range(0, 5, (row: Int) => {
+      Ranges.range(0, 5, (col: Int) => {
         expected.get(col, row).setBg(Color.Yellow)
         ()
-      }
-    }
-    ranges.range(0, 4) { col =>
+      })
+    })
+    Ranges.range(0, 4, (col: Int) => {
       expected.get(col, 4).setFg(Color.Blue)
       ()
-    }
+    })
     assertBuffer(backend, expected)
   }
 }
