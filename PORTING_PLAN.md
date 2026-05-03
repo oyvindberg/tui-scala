@@ -50,7 +50,7 @@ For each release `<R>`:
 | 3 | `v0.21.0` | 2023-05-29 | 33 | — | **done** |
 | 4 | `v0.22.0` | 2023-07-17 | 40 | — | **done** |
 | 5 | `v0.23.0` | 2023-08-28 | 62 | **0.26 → 0.27** | **done** |
-| 6 | `v0.24.0` | 2023-10-23 | 63 | — | pending |
+| 6 | `v0.24.0` | 2023-10-23 | 63 | — | **done** |
 | 7 | `v0.25.0` | 2023-12-18 | 50 | — | pending |
 
 ### Phase 2 — major API revamp (126 commits)
@@ -122,3 +122,11 @@ Features or tests that were skipped in a release commit and need to be revisited
 | v0.23.0 | Weak constraints for similar-size rects (#395) | Defer until layout itself is revisited. |
 | v0.23.0 | Block title_style fix (#349) | Part of multi-title; we deferred multi-title. |
 | v0.23.0 | Common traits Clone/Copy/Debug/Default | Java equivalents already in place via records. |
+| v0.24.0 | Half-block canvas marker (#550) | Additive Marker variant. |
+| v0.24.0 | Custom block border symbols (#529) | Additive — current `BorderType` enum picks from preset sets. |
+| v0.24.0 | Frame.buffer_mut (#548) | Already accessible via Frame.buffer in our port. |
+| v0.24.0 | Backend.window_size + Size struct (#276) | Additive Backend method. |
+| v0.24.0 | LruCache for layout cache (#487) | Rust-specific eviction strategy; HashMap is sufficient for us. |
+| v0.24.0 | Stylize impl for String (#466) | Stylize trait still deferred. |
+| v0.24.0 | Better ScrollbarState ergonomics (#456) | Scrollbar widget itself still deferred. |
+| v0.24.0 | demo2 example (#500) | New showcase example; defer. |

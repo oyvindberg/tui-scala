@@ -19,4 +19,11 @@ public final class Saturating {
     int res = i1 - i2;
     return Math.max(0, res);
   }
+
+  public static int saturatingMul(int a, int b) {
+    long r = (long) a * (long) b;
+    if (r > Integer.MAX_VALUE) return Integer.MAX_VALUE;
+    if (r < Integer.MIN_VALUE) return Integer.MIN_VALUE;
+    return (int) r;
+  }
 }

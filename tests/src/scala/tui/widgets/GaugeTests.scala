@@ -36,44 +36,21 @@ class GaugeTests extends TuiTest {
       "                                        ",
       "                                        ",
       "  ┌Percentage────────────────────────┐  ",
-      "  │              ▋43%                │  ",
+      "  │██████████████▋43%                │  ",
       "  └──────────────────────────────────┘  ",
       "  ┌Ratio─────────────────────────────┐  ",
-      "  │               51%                │  ",
+      "  │███████████████51%                │  ",
       "  └──────────────────────────────────┘  ",
       "                                        ",
       "                                        "
     )
-
-    Ranges.range(3, 17, (i: Int) => {
-      expected
-        .get(i, 3)
-        .setBg(Color.Red)
-        .setFg(Color.Blue)
-      ()
-    })
-    Ranges.range(17, 37, (i: Int) => {
-      expected
-        .get(i, 3)
-        .setBg(Color.Blue)
-        .setFg(Color.Red)
-      ()
-    })
-
-    Ranges.range(3, 20, (i: Int) => {
-      expected
-        .get(i, 6)
-        .setBg(Color.Red)
-        .setFg(Color.Blue)
-      ()
-    })
-    Ranges.range(20, 37, (i: Int) => {
-      expected
-        .get(i, 6)
-        .setBg(Color.Blue)
-        .setFg(Color.Red)
-      ()
-    })
+    // First gauge (43% with unicode): whole row gets gauge_style applied.
+    expected.setStyle(new Rect(3, 3, 34, 1), Style.empty().withFg(Color.Red).withBg(Color.Blue))
+    // Second gauge (51% with unicode): the "5" and "1" of the label happen to fall inside the
+    // filled portion, so they have their fg/bg swapped; the rest of the row is plain gauge style.
+    expected.setStyle(new Rect(3, 6, 15, 1), Style.empty().withFg(Color.Red).withBg(Color.Blue))
+    expected.setStyle(new Rect(18, 6, 2, 1), Style.empty().withFg(Color.Blue).withBg(Color.Red))
+    expected.setStyle(new Rect(20, 6, 17, 1), Style.empty().withFg(Color.Red).withBg(Color.Blue))
 
     assertBuffer(backend, expected)
   }
@@ -106,10 +83,10 @@ class GaugeTests extends TuiTest {
       "                                        ",
       "                                        ",
       "  ┌Percentage────────────────────────┐  ",
-      "  │               43%                │  ",
+      "  │███████████████43%                │  ",
       "  └──────────────────────────────────┘  ",
       "  ┌Ratio─────────────────────────────┐  ",
-      "  │               21%                │  ",
+      "  │███████        21%                │  ",
       "  └──────────────────────────────────┘  ",
       "                                        ",
       "                                        "
@@ -138,9 +115,9 @@ class GaugeTests extends TuiTest {
 
     val expected = Buffer.withLines(
       "┌Test──────┐",
-      "│          │",
-      "│   43%    │",
-      "│          │",
+      "│████      │",
+      "│███43%    │",
+      "│████      │",
       "└──────────┘"
     )
     // title
@@ -150,14 +127,12 @@ class GaugeTests extends TuiTest {
       new Rect(1, 1, 10, 3),
       Style.empty().withFg(Color.Blue).withBg(Color.Red)
     )
-    // filled area
-    Ranges.range(1, 4, (y: Int) => {
-      expected.setStyle(
-        new Rect(1, y, 4, 1),
-        // filled style is invert of gauge_style
-        Style.empty().withFg(Color.Red).withBg(Color.Blue)
-      );
-    })
+    // filled area: with the v0.24.0 fix, the filled cells now use the FULL block character
+    // and keep the gauge_style colors as-is (no fg/bg swap).
+    expected.setStyle(
+      new Rect(1, 1, 4, 3),
+      Style.empty().withFg(Color.Blue).withBg(Color.Red)
+    )
     // label (foreground and modifier from label style)
     expected.setStyle(
       new Rect(4, 2, 1, 1),

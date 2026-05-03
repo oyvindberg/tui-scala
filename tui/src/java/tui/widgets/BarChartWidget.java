@@ -126,6 +126,10 @@ public final class BarChartWidget implements Widget {
     if (chartArea.height() < 2) {
       return;
     }
+    // v0.24.0 #525: avoid divide by zero on zero-width bars or empty data.
+    if (chartArea.area() == 0 || data.length == 0 || barWidth == 0) {
+      return;
+    }
 
     int maxValue;
     if (max.isPresent()) {

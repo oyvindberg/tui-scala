@@ -3,7 +3,12 @@ package tui;
 /// A simple rectangle used in the computation of the layout and to give widgets a hint about the area they are supposed to render to.
 public record Rect(int x, int y, int width, int height) {
   public int area() {
-    return width * height;
+    return tui.internal.Saturating.saturatingMul(width, height);
+  }
+
+  /// Returns true when the rect's width or height is zero, i.e. it covers no area.
+  public boolean isEmpty() {
+    return width == 0 || height == 0;
   }
 
   public int left() {
@@ -11,7 +16,7 @@ public record Rect(int x, int y, int width, int height) {
   }
 
   public int right() {
-    return x + width;
+    return tui.internal.Saturating.saturatingAdd(x, width);
   }
 
   public int top() {
@@ -19,18 +24,20 @@ public record Rect(int x, int y, int width, int height) {
   }
 
   public int bottom() {
-    return y + height;
+    return tui.internal.Saturating.saturatingAdd(y, height);
   }
 
   public Rect inner(Margin margin) {
-    if (width < 2 * margin.horizontal() || height < 2 * margin.vertical()) {
+    int doubledHorizontal = tui.internal.Saturating.saturatingMul(margin.horizontal(), 2);
+    int doubledVertical = tui.internal.Saturating.saturatingMul(margin.vertical(), 2);
+    if (width < doubledHorizontal || height < doubledVertical) {
       return Rect.DEFAULT;
     } else {
       return new Rect(
-          x + margin.horizontal(),
-          y + margin.vertical(),
-          width - 2 * margin.horizontal(),
-          height - 2 * margin.vertical());
+          tui.internal.Saturating.saturatingAdd(x, margin.horizontal()),
+          tui.internal.Saturating.saturatingAdd(y, margin.vertical()),
+          tui.internal.Saturating.saturatingSubUnsigned(width, doubledHorizontal),
+          tui.internal.Saturating.saturatingSubUnsigned(height, doubledVertical));
     }
   }
 

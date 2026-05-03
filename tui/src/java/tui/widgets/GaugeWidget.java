@@ -100,10 +100,22 @@ public final class GaugeWidget implements Widget {
           Ranges.range(
               gaugeArea.left(),
               end,
-              x -> buf.get(x, y)
-                  .setSymbol(" ")
-                  .setFg(gaugeStyle.bg().orElse(Color.Reset))
-                  .setBg(gaugeStyle.fg().orElse(Color.Reset)));
+              x -> {
+                // Use full block for the filled part of the gauge and spaces for the part
+                // that's covered by the label. The bg/fg are swapped for the label part so
+                // the label remains legible against the filled background.
+                if (x < labelCol || x > labelCol + clampedLabelWidth || y != labelRow) {
+                  buf.get(x, y)
+                      .setSymbol(Symbols.block.FULL)
+                      .setFg(gaugeStyle.fg().orElse(Color.Reset))
+                      .setBg(gaugeStyle.bg().orElse(Color.Reset));
+                } else {
+                  buf.get(x, y)
+                      .setSymbol(" ")
+                      .setFg(gaugeStyle.bg().orElse(Color.Reset))
+                      .setBg(gaugeStyle.fg().orElse(Color.Reset));
+                }
+              });
           if (useUnicode && ratio.value < 1.0) {
             buf.get(end, y).setSymbol(getUnicodeBlock(filledWidth % 1.0));
           }

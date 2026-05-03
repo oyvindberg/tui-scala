@@ -368,7 +368,10 @@ public final class ChartWidget implements Widget {
       int x = pos.x();
       int y = pos.y();
       Spans title = xAxis.title.get();
-      int width = Saturating.saturatingSubUnsigned(graphArea.right(), x);
+      // Use the title's own width so the chart's overall style isn't
+      // applied to the rest of the row (which would override the dataset
+      // style of the top graph line).
+      int width = title.width();
       buf.setStyle(new Rect(x, y, width, 1), originalStyle);
       buf.setSpans(x, y, title, width);
     }
@@ -378,7 +381,7 @@ public final class ChartWidget implements Widget {
       int x = pos.x();
       int y = pos.y();
       Spans title = yAxis.title.get();
-      int width = Saturating.saturatingSubUnsigned(graphArea.right(), x);
+      int width = title.width();
       buf.setStyle(new Rect(x, y, width, 1), originalStyle);
       buf.setSpans(x, y, title, width);
     }
