@@ -86,6 +86,16 @@ public final class Components {
   public static Element.Of<Intrinsics.ButtonProps> button(
       String label, Style style, Runnable onClick) {
     return new Element.Of<>(
+        Intrinsics.BUTTON,
+        new Intrinsics.ButtonProps(label, style, e -> onClick.run()),
+        Optional.empty());
+  }
+
+  /// Button overload that delivers the [MouseEvent] — useful for `e.stopPropagation()` or to
+  /// inspect modifiers.
+  public static Element.Of<Intrinsics.ButtonProps> button(
+      String label, Style style, java.util.function.Consumer<MouseEvent> onClick) {
+    return new Element.Of<>(
         Intrinsics.BUTTON, new Intrinsics.ButtonProps(label, style, onClick), Optional.empty());
   }
 

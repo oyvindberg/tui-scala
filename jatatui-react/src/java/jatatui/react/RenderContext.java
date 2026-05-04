@@ -129,6 +129,13 @@ public final class RenderContext {
 
   // ---- Event registration ----
 
+  /// The bounds for this Component's fiber, recorded by the parent's `renderChild` call. Returns
+  /// empty when called before render (which shouldn't happen — every Component runs inside a
+  /// fiber with bounds set).
+  public Optional<Rect> area() {
+    return events.boundsOf(fiber);
+  }
+
   /// Register a click handler. Fires on mouse-down inside `area`. Bubbles up the fiber tree
   /// (deepest registering fiber gets it first, then ancestors). Use [MouseEvent#stopPropagation]
   /// to prevent ancestors from also receiving it.
@@ -136,15 +143,29 @@ public final class RenderContext {
     events.addClick(fiber, area, handler);
   }
 
+  /// Convenience: register a click handler for the whole area of this Component. Equivalent to
+  /// `area().ifPresent(r -> onClick(r, handler))`.
+  public void onClick(Consumer<MouseEvent> handler) {
+    events.boundsOf(fiber).ifPresent(r -> events.addClick(fiber, r, handler));
+  }
+
   /// Convenience overload: handler ignores the [MouseEvent].
   public void onClick(Rect area, Runnable handler) {
     events.addClick(fiber, area, e -> handler.run());
+  }
+
+  public void onClick(Runnable handler) {
+    events.boundsOf(fiber).ifPresent(r -> events.addClick(fiber, r, e -> handler.run()));
   }
 
   /// Register a scroll handler. Fires on mouse-wheel events inside `area`. Distinguish direction
   /// via the [MouseEvent#kind] (`SCROLL_UP` / `SCROLL_DOWN`). Bubbles like click.
   public void onScroll(Rect area, Consumer<MouseEvent> handler) {
     events.addScroll(fiber, area, handler);
+  }
+
+  public void onScroll(Consumer<MouseEvent> handler) {
+    events.boundsOf(fiber).ifPresent(r -> events.addScroll(fiber, r, handler));
   }
 
   /// Register a key handler. Fires when this fiber (or one of its descendants) is focused AND the

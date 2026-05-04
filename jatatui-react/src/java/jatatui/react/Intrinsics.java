@@ -61,7 +61,10 @@ public final class Intrinsics {
 
   // -------------------- Button --------------------
 
-  public record ButtonProps(String label, Style style, Runnable onClick) {}
+  /// Holds a `Consumer<MouseEvent>` so handlers that care can `stopPropagation` or read modifiers.
+  /// The `Runnable`-flavored `Components.button(...)` factory wraps a Runnable into a Consumer
+  /// that ignores the event.
+  public record ButtonProps(String label, Style style, java.util.function.Consumer<MouseEvent> onClick) {}
 
   public static final Component<ButtonProps> BUTTON =
       (props, ctx) ->

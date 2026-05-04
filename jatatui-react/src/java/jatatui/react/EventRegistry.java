@@ -46,6 +46,12 @@ public final class EventRegistry {
     bounds.put(f, r);
   }
 
+  /// The bounds last recorded for `f` this frame, if any. Used by `RenderContext.area()` so
+  /// components can register handlers "for my whole area" without re-threading the Rect.
+  Optional<Rect> boundsOf(Fiber f) {
+    return Optional.ofNullable(bounds.get(f));
+  }
+
   void addClick(Fiber f, Rect area, Consumer<MouseEvent> handler) {
     clickByFiber.computeIfAbsent(f, k -> new ArrayList<>()).add(new AreaHandler(area, handler));
   }
