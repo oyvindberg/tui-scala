@@ -178,16 +178,26 @@ public final class CrosstermBackend implements Backend {
 
   @Override
   public void scrollRegionUp(int regionStart, int regionEnd, int lineCount) throws IOException {
-    throw new IOException(
-        new UnsupportedOperationException(
-            "scrollRegionUp is not supported by the local crossterm JNI binding"));
+    scrollRegion(regionStart, regionEnd, lineCount, 'S');
   }
 
   @Override
   public void scrollRegionDown(int regionStart, int regionEnd, int lineCount) throws IOException {
-    throw new IOException(
-        new UnsupportedOperationException(
-            "scrollRegionDown is not supported by the local crossterm JNI binding"));
+    scrollRegion(regionStart, regionEnd, lineCount, 'T');
+  }
+
+  private void scrollRegion(int regionStart, int regionEnd, int lineCount, char op)
+      throws IOException {
+    if (lineCount == 0) {
+      return;
+    }
+    int top = Math.min(regionStart + 1, 0xFFFF);
+    int bottom = Math.min(regionEnd + 1, 0xFFFF);
+    enqueue(
+        List.of(
+            new Command.Print("[" + top + ";" + bottom + "r"),
+            new Command.Print("[" + lineCount + op),
+            new Command.Print("[r")));
   }
 
   // ---- internal helpers ----
