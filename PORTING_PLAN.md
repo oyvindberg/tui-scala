@@ -26,7 +26,7 @@ Java port of [ratatui](https://github.com/ratatui/ratatui) at the v0.30.0 releas
 | 5 | Port `ratatui-crossterm/src/lib.rs` (the CrosstermBackend impl, ~880 LOC) | done |
 | 6 | Replace `null` with `Optional`; add `Either.unit()` for Void-success; remove the prior `Either.right(null)` exception from CLAUDE.md | done |
 | 7 | Port all `examples/apps/*` to `jatatui-demo` | done |
-| 8 | Manually launch demo, fix any runtime issues | pending |
+| 8 | Manually launch demo, fix any runtime issues | done |
 
 ## Bleep projects
 
