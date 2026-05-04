@@ -35,6 +35,9 @@ public final class RenderContext {
     this.requestRerender = requestRerender;
     this.fiber = Fiber.root();
     this.hookIndex = 0;
+    // Mark root as touched so any hooks declared by the top-level component survive sweep.
+    // Symmetric with `renderChild`, which adds each child fiber to touched.
+    hooks.touched.add(this.fiber);
   }
 
   public Frame frame() {
@@ -80,13 +83,16 @@ public final class RenderContext {
     }
   }
 
-  /// Apply an [Element.Of] — looking up its (component, props) in the apply cache so we skip the
-  /// component body when nothing changed. Called by [Element.Of#render]; not part of the
-  /// user-facing surface.
+  /// Apply an [Element.Of] — runs the component body unconditionally. Memoization is opt-in via
+  /// [Components#memo] / [Components#pureComponent], which use a separate per-Fiber memo cache.
+  ///
+  /// Auto-memoizing every Element.Of would skip the body, but handler registrations
+  /// (`onClick` / `onKey` / `useFocus`) are SIDE EFFECTS of body execution rather than data in
+  /// the returned tree — skipping the body silently drops them. For now, body always runs.
+  /// Intrinsics like text/box/column are cheap; user components opt into memo explicitly.
   @SuppressWarnings({"unchecked", "rawtypes"})
   Element applyAndMemo(Element.Of<?> of) {
-    return hooks.applyOrCompute(
-        fiber, of.type(), of.props(), () -> ((Component) of.type()).apply(of.props(), this));
+    return ((Component) of.type()).apply(of.props(), this);
   }
 
   // ---- Hooks ----

@@ -18,10 +18,10 @@ final class HookStore {
   /// `(deps[], producedElement)`.
   final Map<Fiber, MemoEntry> memoCache = new HashMap<>();
 
-  /// Cache for [Element.Of] auto-memoization: keyed by Fiber, stores `(componentRef, props,
-  /// producedElement)`. Hits when the same component reference + structurally-equal props is
-  /// applied at the same fiber as the previous render.
-  final Map<Fiber, ApplyEntry> applyCache = new HashMap<>();
+  // Note: there used to be an `applyCache` for Element.Of auto-memoization, but it interacted
+  // badly with side-effect handlers (onClick/onKey/useFocus registrations would be dropped on
+  // cache hit). Removed — memoization is opt-in only via memo() / pureComponent(), which use
+  // memoCache above.
 
   /// Per-frame: which fibers were touched. Used by [#sweep] to drop unmounted state + run cleanups.
   final Set<Fiber> touched = new java.util.HashSet<>();
@@ -35,18 +35,6 @@ final class HookStore {
     }
     Element produced = compute.get();
     memoCache.put(fiber, new MemoEntry(newDeps, produced));
-    return produced;
-  }
-
-  // -------------------- applyOrCompute (used by Element.Of auto-memo) --------------------
-
-  Element applyOrCompute(Fiber fiber, Component<?> type, Object props, Supplier<Element> compute) {
-    ApplyEntry cached = applyCache.get(fiber);
-    if (cached != null && cached.type() == type && Objects.equals(cached.props(), props)) {
-      return cached.produced();
-    }
-    Element produced = compute.get();
-    applyCache.put(fiber, new ApplyEntry(type, props, produced));
     return produced;
   }
 
@@ -75,11 +63,8 @@ final class HookStore {
       }
     }
     memoCache.keySet().removeIf(f -> !touched.contains(f));
-    applyCache.keySet().removeIf(f -> !touched.contains(f));
     touched.clear();
   }
 
   record MemoEntry(Object[] deps, Element element) {}
-
-  record ApplyEntry(Component<?> type, Object props, Element produced) {}
 }
