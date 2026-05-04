@@ -3,10 +3,12 @@ package jatatui.react;
 import java.util.Objects;
 import java.util.Optional;
 
-/// Identity for a component instance across renders. Replaces typr-3's `componentStack.mkString("/")`
+/// Identity for a component instance across renders. Replaces typr-3's
+// `componentStack.mkString("/")`
 /// with an explicit `(parent, key)` pair — same shape React's reconciler uses.
 ///
-/// `key` is either an `int` index (when a parent renders children in a list and the order is stable)
+/// `key` is either an `int` index (when a parent renders children in a list and the order is
+// stable)
 /// or a `String` (when the caller wants to keep state stable across reorders, like React's
 /// `key="..."`).
 public final class Fiber {

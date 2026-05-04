@@ -163,7 +163,8 @@ public final class RenderContext {
 
     /// Look up a memoized Element by Fiber + deps. If the cached deps are reference-equal element-
     /// wise to `newDeps`, return the cached Element. Otherwise call `compute`, cache, return.
-    Element memoOrCompute(Fiber fiber, Object[] newDeps, java.util.function.Supplier<Element> compute) {
+    Element memoOrCompute(
+        Fiber fiber, Object[] newDeps, java.util.function.Supplier<Element> compute) {
       MemoEntry cached = memoCache.get(fiber);
       if (cached != null && depsRefEqual(cached.deps, newDeps)) {
         return cached.element;
@@ -185,7 +186,8 @@ public final class RenderContext {
     }
 
     /// Drop hook state and memo cache for fibers that weren't touched in the just-finished render
-    /// — they're "unmounted". Run their pending cleanups. Mirrors React's commit-phase unmount sweep.
+    /// — they're "unmounted". Run their pending cleanups. Mirrors React's commit-phase unmount
+    // sweep.
     void sweep() {
       java.util.Iterator<Map.Entry<HookKey, Object>> it = values.entrySet().iterator();
       while (it.hasNext()) {

@@ -102,9 +102,9 @@ public final class ReactApp {
 
   private static boolean isQuit(KeyCode code, KeyModifiers mods) {
     if (code instanceof KeyCode.Esc) return true;
-    if (code instanceof KeyCode.Char ch && ch.c() == 'c' && (mods.bits() & KeyModifiers.CONTROL) != 0)
-      return true;
+    if (code instanceof KeyCode.Char ch
+        && ch.c() == 'c'
+        && (mods.bits() & KeyModifiers.CONTROL) != 0) return true;
     return false;
   }
-
 }

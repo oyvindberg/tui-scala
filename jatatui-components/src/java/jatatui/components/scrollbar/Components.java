@@ -29,13 +29,17 @@ public final class Components {
   }
 
   /// Scrollbar with explicit orientation. Viewport length defaults to the track size.
-  public static Element scrollbar(int position, int contentLength, ScrollbarOrientation orientation) {
+  public static Element scrollbar(
+      int position, int contentLength, ScrollbarOrientation orientation) {
     return scrollbar(new ScrollbarProps(position, contentLength, Optional.empty(), orientation));
   }
 
   /// Scrollbar with explicit orientation and explicit viewport content length.
   public static Element scrollbar(
-      int position, int contentLength, int viewportContentLength, ScrollbarOrientation orientation) {
+      int position,
+      int contentLength,
+      int viewportContentLength,
+      ScrollbarOrientation orientation) {
     return scrollbar(
         new ScrollbarProps(
             position, contentLength, Optional.of(viewportContentLength), orientation));

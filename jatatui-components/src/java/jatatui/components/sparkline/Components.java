@@ -23,19 +23,16 @@ public final class Components {
 
   /// Convenience: title + data, no fixed max, default style.
   public static Element sparkline(String title, List<Long> data) {
-    return Sparkline.sparkline(
-        new SparklineProps(title, data, Optional.empty(), Style.empty()));
+    return Sparkline.sparkline(new SparklineProps(title, data, Optional.empty(), Style.empty()));
   }
 
   /// Convenience: title + data + fixed max, default style.
   public static Element sparkline(String title, List<Long> data, long max) {
-    return Sparkline.sparkline(
-        new SparklineProps(title, data, Optional.of(max), Style.empty()));
+    return Sparkline.sparkline(new SparklineProps(title, data, Optional.of(max), Style.empty()));
   }
 
   /// Convenience: title + data + style, no fixed max.
   public static Element sparkline(String title, List<Long> data, Style style) {
-    return Sparkline.sparkline(
-        new SparklineProps(title, data, Optional.empty(), style));
+    return Sparkline.sparkline(new SparklineProps(title, data, Optional.empty(), style));
   }
 }

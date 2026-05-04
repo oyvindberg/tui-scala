@@ -50,17 +50,25 @@ public final class SparklineExample {
               () -> data.update(prev -> appendSample(prev, nextSample(rng.get()))));
 
           return column(
-                  length(3, text(
-                      " Press SPACE to push a sample.  Esc or Ctrl-C to quit.",
-                      Style.empty().withFg(Color.GRAY))),
-                  fill(1,
+                  length(
+                      3,
+                      text(
+                          " Press SPACE to push a sample.  Esc or Ctrl-C to quit.",
+                          Style.empty().withFg(Color.GRAY))),
+                  fill(
+                      1,
                       jatatui.components.sparkline.Components.sparkline(
                           new jatatui.components.sparkline.SparklineProps(
-                              " Manual (" + data.get().size() + "/" + CAPACITY + ") — SPACE to add ",
+                              " Manual ("
+                                  + data.get().size()
+                                  + "/"
+                                  + CAPACITY
+                                  + ") — SPACE to add ",
                               data.get(),
                               Optional.of(PRESET_MAX),
                               Style.empty().withFg(Color.CYAN)))),
-                  fill(1,
+                  fill(
+                      1,
                       jatatui.components.sparkline.Components.sparkline(
                           new jatatui.components.sparkline.SparklineProps(
                               " Preset (memoized; never changes) ",

@@ -89,7 +89,8 @@ public final class Table {
       Optional<java.util.function.IntConsumer> onActivate,
       Optional<String> focusId,
       boolean autoFocus) {
-    List<java.util.function.Function<List<String>, String>> extractors = new ArrayList<>(headers.size());
+    List<java.util.function.Function<List<String>, String>> extractors =
+        new ArrayList<>(headers.size());
     for (int i = 0; i < headers.size(); i++) {
       final int idx = i;
       extractors.add(row -> idx < row.size() ? row.get(idx) : "");
@@ -111,8 +112,7 @@ public final class Table {
   // ---- Internal ----
 
   private static <T> jatatui.widgets.table.Table buildWidget(TableProps<T> props, boolean focused) {
-    Style headerStyle =
-        Style.empty().withFg(Color.YELLOW).withAddModifier(Modifier.BOLD);
+    Style headerStyle = Style.empty().withFg(Color.YELLOW).withAddModifier(Modifier.BOLD);
     Style highlightStyle =
         focused
             ? Style.empty().withBg(Color.BLUE).withFg(Color.WHITE).withAddModifier(Modifier.BOLD)

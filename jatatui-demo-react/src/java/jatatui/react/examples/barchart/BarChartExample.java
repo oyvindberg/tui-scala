@@ -48,9 +48,10 @@ public final class BarChartExample {
                 new KeyCode.Char(ch),
                 () ->
                     highlighted.update(
-                        cur -> cur.isPresent() && cur.get() == day
-                            ? Optional.empty()
-                            : Optional.of(day)));
+                        cur ->
+                            cur.isPresent() && cur.get() == day
+                                ? Optional.empty()
+                                : Optional.of(day)));
           }
 
           Optional<Integer> currentHighlight = highlighted.get();
@@ -65,13 +66,14 @@ public final class BarChartExample {
                   : " Press 1-7 to highlight a day, Esc to quit ";
 
           return column(
-              length(1, text(hint, Style.empty().withFg(Color.GRAY))),
-              fill(
-                  1,
-                  row(
-                      fill(1, verticalBarChart(" Vertical ", entries, barStyle)),
-                      fill(1, horizontalBarChart(" Horizontal ", entries, barStyle))))
-          ).withSpacing(1).withMargin(new jatatui.core.layout.Margin(2, 1));
+                  length(1, text(hint, Style.empty().withFg(Color.GRAY))),
+                  fill(
+                      1,
+                      row(
+                          fill(1, verticalBarChart(" Vertical ", entries, barStyle)),
+                          fill(1, horizontalBarChart(" Horizontal ", entries, barStyle)))))
+              .withSpacing(1)
+              .withMargin(new jatatui.core.layout.Margin(2, 1));
         });
   }
 
@@ -79,8 +81,7 @@ public final class BarChartExample {
   /// produces a fresh list — the component memoizes on `props.equals(...)`, which short-circuits
   /// when the highlight is unchanged but recomputes when it changes.
   static List<BarEntry> buildEntries(Optional<Integer> highlighted) {
-    Style highlightStyle =
-        Style.empty().withFg(Color.YELLOW).withBg(Color.BLUE);
+    Style highlightStyle = Style.empty().withFg(Color.YELLOW).withBg(Color.BLUE);
     List<BarEntry> out = new ArrayList<>(LABELS.size());
     for (int i = 0; i < LABELS.size(); i++) {
       String label = LABELS.get(i);

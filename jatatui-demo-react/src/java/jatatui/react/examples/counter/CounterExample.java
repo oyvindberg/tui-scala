@@ -29,11 +29,16 @@ public final class CounterExample {
 
   static Element app() {
     return column(
-        length(9, counter()),                     // counter wants exactly 9 rows
-        fill(1, todoList(List.of("Port ratatui",  // todoList expands
-                                  "Add React layer",
-                                  "Wire memo + sized")))
-    ).withSpacing(1).withMargin(new jatatui.core.layout.Margin(2, 1));
+            length(9, counter()), // counter wants exactly 9 rows
+            fill(
+                1,
+                todoList(
+                    List.of(
+                        "Port ratatui", // todoList expands
+                        "Add React layer",
+                        "Wire memo + sized"))))
+        .withSpacing(1)
+        .withMargin(new jatatui.core.layout.Margin(2, 1));
   }
 
   // ---- Counter (stateful, focusable) ----
@@ -52,19 +57,16 @@ public final class CounterExample {
           return box(
               focused ? " Counter * " : " Counter ",
               Borders.ALL,
-              text("Count: " + count.get(),
-                   Style.empty().withFg(focused ? Color.YELLOW : Color.CYAN)),
+              text(
+                  "Count: " + count.get(),
+                  Style.empty().withFg(focused ? Color.YELLOW : Color.CYAN)),
               row(
                   button(
-                      "[ + ]",
-                      Style.empty().withFg(Color.GREEN),
-                      () -> count.update(n -> n + 1)),
-                  button(
-                      "[ - ]",
-                      Style.empty().withFg(Color.RED),
-                      () -> count.update(n -> n - 1))),
-              text("(Tab to focus, ↑/↓ when focused, click ± buttons, Esc to quit)",
-                   Style.empty().withFg(Color.GRAY)));
+                      "[ + ]", Style.empty().withFg(Color.GREEN), () -> count.update(n -> n + 1)),
+                  button("[ - ]", Style.empty().withFg(Color.RED), () -> count.update(n -> n - 1))),
+              text(
+                  "(Tab to focus, ↑/↓ when focused, click ± buttons, Esc to quit)",
+                  Style.empty().withFg(Color.GRAY)));
         });
   }
 

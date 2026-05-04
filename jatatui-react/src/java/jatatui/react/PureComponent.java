@@ -19,7 +19,8 @@ import java.util.function.Function;
 public record PureComponent<P>(P props, Function<P, Element> body) implements Element {
   @Override
   public void render(RenderContext ctx, Rect area) {
-    Element produced = ctx.hooks.memoOrCompute(ctx.fiber, new Object[] {props}, () -> body.apply(props));
+    Element produced =
+        ctx.hooks.memoOrCompute(ctx.fiber, new Object[] {props}, () -> body.apply(props));
     ctx.renderChild(0, produced, area);
   }
 }

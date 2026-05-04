@@ -10,7 +10,8 @@ import java.util.Optional;
 ///
 ///   - Components register focusables during render via [RenderContext#useFocus].
 ///   - Tab / Shift-Tab cycles through registered focusables in render order.
-///   - The first focusable with `autoFocus=true` claims focus on first frame, if nothing else has it.
+///   - The first focusable with `autoFocus=true` claims focus on first frame, if nothing else has
+// it.
 ///   - Explicit `id` lets you preserve focus across reorders, and lets app code [#focus(String)]
 ///     a specific element imperatively.
 ///
@@ -51,7 +52,8 @@ public final class FocusManager {
       // Pick the first autoFocus, else the first registered.
       Optional<String> auto =
           registered.stream().filter(id -> autoFocusFlags.getOrDefault(id, false)).findFirst();
-      focused = auto.or(() -> registered.isEmpty() ? Optional.empty() : Optional.of(registered.get(0)));
+      focused =
+          auto.or(() -> registered.isEmpty() ? Optional.empty() : Optional.of(registered.get(0)));
     }
     focusClaimedThisFrame = true;
   }

@@ -24,8 +24,7 @@ final class ScrollbarWidget implements Widget {
 
   @Override
   public void render(Rect area, Buffer buf) {
-    ScrollbarState state =
-        ScrollbarState.of(props.contentLength()).withPosition(props.position());
+    ScrollbarState state = ScrollbarState.of(props.contentLength()).withPosition(props.position());
     props.viewportContentLength().ifPresent(state::withViewportContentLength);
     Scrollbar.of(props.orientation()).render(area, buf, state);
   }

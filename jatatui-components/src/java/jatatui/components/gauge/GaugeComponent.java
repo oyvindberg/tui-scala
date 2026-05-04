@@ -36,9 +36,7 @@ public final class GaugeComponent {
       g = g.withLabel(Span.raw(p.label().get()));
     }
     if (p.title().isPresent()) {
-      g =
-          g.withBlock(
-              Block.empty().withTitle(Line.from(p.title().get())).withBorders(Borders.ALL));
+      g = g.withBlock(Block.empty().withTitle(Line.from(p.title().get())).withBorders(Borders.ALL));
     }
     return Components.widget(g);
   }

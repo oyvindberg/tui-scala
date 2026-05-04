@@ -48,8 +48,7 @@ public final class ListComponent {
           boolean focused = ctx.useFocus(props.focusId(), props.autoFocus());
 
           int itemCount = props.items().size();
-          int selected =
-              itemCount == 0 ? -1 : clamp(props.selected(), 0, itemCount - 1);
+          int selected = itemCount == 0 ? -1 : clamp(props.selected(), 0, itemCount - 1);
 
           // Sync controlled selection into the widget state.
           if (selected < 0) {
@@ -150,12 +149,7 @@ public final class ListComponent {
   }
 
   private static <T> void registerRowClickHandlers(
-      RenderContext ctx,
-      ListProps<T> props,
-      Rect inner,
-      int offset,
-      int itemCount,
-      int selected) {
+      RenderContext ctx, ListProps<T> props, Rect inner, int offset, int itemCount, int selected) {
     int rows = inner.height();
     for (int i = 0; i < rows; i++) {
       int itemIndex = offset + i;

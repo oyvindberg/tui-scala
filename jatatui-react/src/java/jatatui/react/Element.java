@@ -137,8 +137,7 @@ public sealed interface Element
   }
 
   /// Horizontal stack. Mirror of [Column].
-  record Row(List<Element> children, Flex flex, Spacing spacing, Margin margin)
-      implements Element {
+  record Row(List<Element> children, Flex flex, Spacing spacing, Margin margin) implements Element {
     public Row withFlex(Flex f) {
       return new Row(children, f, spacing, margin);
     }

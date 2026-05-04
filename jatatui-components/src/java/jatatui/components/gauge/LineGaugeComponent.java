@@ -29,9 +29,7 @@ public final class LineGaugeComponent {
       g = g.withLabel(Line.from(p.label().get()));
     }
     if (p.title().isPresent()) {
-      g =
-          g.withBlock(
-              Block.empty().withTitle(Line.from(p.title().get())).withBorders(Borders.ALL));
+      g = g.withBlock(Block.empty().withTitle(Line.from(p.title().get())).withBorders(Borders.ALL));
     }
     return Components.widget(g);
   }

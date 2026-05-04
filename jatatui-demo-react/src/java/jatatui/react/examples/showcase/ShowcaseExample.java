@@ -58,9 +58,7 @@ public final class ShowcaseExample {
           ctx.onKey(new KeyCode.Char('-'), () -> count.update(n -> n - 1));
           ctx.onKey(new KeyCode.Up(), () -> count.update(n -> n + 1));
           ctx.onKey(new KeyCode.Down(), () -> count.update(n -> n - 1));
-          ctx.onKey(
-              new KeyCode.Char('\t'),
-              () -> tab.set((tab.get() + 1) % TAB_LABELS.size()));
+          ctx.onKey(new KeyCode.Char('\t'), () -> tab.set((tab.get() + 1) % TAB_LABELS.size()));
           ctx.onKey(
               new KeyCode.Enter(),
               () -> {
@@ -84,10 +82,12 @@ public final class ShowcaseExample {
   static Element topBar() {
     String now = LocalTime.now().format(CLOCK_FMT);
     return row(
-        fill(1, text(" jatatui-react / showcase ",
-            Style.empty().withFg(Color.WHITE).withBg(Color.BLUE))),
-        length(now.length() + 2, text(" " + now + " ",
-            Style.empty().withFg(Color.YELLOW))));
+        fill(
+            1,
+            text(
+                " jatatui-react / showcase ",
+                Style.empty().withFg(Color.WHITE).withBg(Color.BLUE))),
+        length(now.length() + 2, text(" " + now + " ", Style.empty().withFg(Color.YELLOW))));
   }
 
   // ---- Tab strip ----
@@ -96,9 +96,7 @@ public final class ShowcaseExample {
   /// demonstrates `memo` keyed on a primitive.
   static Element tabsHeader(int selected) {
     return memo(
-        deps(selected),
-        () -> text(renderTabHeader(selected),
-            Style.empty().withFg(Color.GRAY)));
+        deps(selected), () -> text(renderTabHeader(selected), Style.empty().withFg(Color.GRAY)));
   }
 
   private static String renderTabHeader(int selected) {
@@ -114,9 +112,7 @@ public final class ShowcaseExample {
   // ---- Body ----
 
   static Element body(
-      int selected,
-      int count,
-      jatatui.react.RenderContext.State<List<String>> messages) {
+      int selected, int count, jatatui.react.RenderContext.State<List<String>> messages) {
     return switch (selected) {
       case 0 -> homeTab(count, messages);
       case 1 -> statsTab(count, messages.get().size());
@@ -132,10 +128,8 @@ public final class ShowcaseExample {
         box(
             " Counter ",
             Borders.ALL,
-            text("count = " + count,
-                Style.empty().withFg(Color.CYAN)),
-            text("(use Up/Down or +/-)",
-                Style.empty().withFg(Color.GRAY)),
+            text("count = " + count, Style.empty().withFg(Color.CYAN)),
+            text("(use Up/Down or +/-)", Style.empty().withFg(Color.GRAY)),
             row(
                 button(
                     "[ + ]",
@@ -154,10 +148,11 @@ public final class ShowcaseExample {
             button(
                 "[ Add message ]",
                 Style.empty().withFg(Color.MAGENTA),
-                () -> messages.set(appendMessage(messages.get(), "msg #" + (messages.get().size() + 1)))));
+                () ->
+                    messages.set(
+                        appendMessage(messages.get(), "msg #" + (messages.get().size() + 1)))));
 
-    return row(percent(40, counterBox), fill(1, msgBox))
-        .withSpacing(1);
+    return row(percent(40, counterBox), fill(1, msgBox)).withSpacing(1);
   }
 
   // ---- Stats tab ----
@@ -181,9 +176,9 @@ public final class ShowcaseExample {
             "Showcase composes the built-in jatatui-react primitives — column, row, box, text,"
                 + " paragraph, button, tabs, forEach — into a multi-tab dashboard. The Home tab has"
                 + " a counter and a small message log, the Stats tab summarises state from a"
-                + " sibling, and this About tab is wrapped paragraph text. The whole tree re-renders"
-                + " on input; pureComponent + memo demonstrate how to skip work when nothing"
-                + " changed.",
+                + " sibling, and this About tab is wrapped paragraph text. The whole tree"
+                + " re-renders on input; pureComponent + memo demonstrate how to skip work when"
+                + " nothing changed.",
             Style.empty().withFg(Color.WHITE)));
   }
 
@@ -198,8 +193,7 @@ public final class ShowcaseExample {
         new MessageListProps(messages),
         props -> {
           if (props.messages().isEmpty()) {
-            return text("(no messages yet — press Enter)",
-                Style.empty().withFg(Color.GRAY));
+            return text("(no messages yet — press Enter)", Style.empty().withFg(Color.GRAY));
           }
           return forEach(
               props.messages(),

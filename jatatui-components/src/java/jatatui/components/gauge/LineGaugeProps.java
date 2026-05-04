@@ -26,22 +26,15 @@ public record LineGaugeProps(
   /// Minimal props: just a ratio. No title, no custom label, default styles.
   public static LineGaugeProps of(double ratio) {
     return new LineGaugeProps(
-        Optional.empty(),
-        ratio,
-        Optional.empty(),
-        Style.empty(),
-        Style.empty(),
-        Style.empty());
+        Optional.empty(), ratio, Optional.empty(), Style.empty(), Style.empty(), Style.empty());
   }
 
   public LineGaugeProps withTitle(String title) {
-    return new LineGaugeProps(
-        Optional.of(title), ratio, label, style, filledStyle, unfilledStyle);
+    return new LineGaugeProps(Optional.of(title), ratio, label, style, filledStyle, unfilledStyle);
   }
 
   public LineGaugeProps withLabel(String label) {
-    return new LineGaugeProps(
-        title, ratio, Optional.of(label), style, filledStyle, unfilledStyle);
+    return new LineGaugeProps(title, ratio, Optional.of(label), style, filledStyle, unfilledStyle);
   }
 
   public LineGaugeProps withStyle(Style style) {

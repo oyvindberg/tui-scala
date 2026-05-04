@@ -35,56 +35,63 @@ public final class GaugeExample {
   };
 
   static Element app() {
-    return component(ctx -> {
-      var ratios = ctx.useState(() -> new double[] {0.25, 0.50, 0.75});
+    return component(
+        ctx -> {
+          var ratios = ctx.useState(() -> new double[] {0.25, 0.50, 0.75});
 
-      java.util.function.BiConsumer<Integer, Double> adjust = (idx, delta) -> {
-        double[] arr = ratios.get();
-        double[] next = arr.clone();
-        double v = next[idx] + delta;
-        if (v < 0.0) v = 0.0;
-        if (v > 1.0) v = 1.0;
-        next[idx] = v;
-        ratios.set(next);
-      };
+          java.util.function.BiConsumer<Integer, Double> adjust =
+              (idx, delta) -> {
+                double[] arr = ratios.get();
+                double[] next = arr.clone();
+                double v = next[idx] + delta;
+                if (v < 0.0) v = 0.0;
+                if (v > 1.0) v = 1.0;
+                next[idx] = v;
+                ratios.set(next);
+              };
 
-      Element[] gaugeRow = new Element[GAUGE_COUNT];
-      for (int i = 0; i < GAUGE_COUNT; i++) {
-        gaugeRow[i] = fill(1, focusableGauge(i, ratios.get()[i], adjust));
-      }
+          Element[] gaugeRow = new Element[GAUGE_COUNT];
+          for (int i = 0; i < GAUGE_COUNT; i++) {
+            gaugeRow[i] = fill(1, focusableGauge(i, ratios.get()[i], adjust));
+          }
 
-      return column(
-          length(7, row(gaugeRow).withSpacing(2)),
-          length(1, text(
-              "Tab: cycle focus   <-/->: adjust focused gauge by 5%   Esc: quit",
-              Style.empty().withFg(Color.GRAY)))
-      ).withSpacing(1).withMargin(new Margin(2, 1));
-    });
+          return column(
+                  length(7, row(gaugeRow).withSpacing(2)),
+                  length(
+                      1,
+                      text(
+                          "Tab: cycle focus   <-/->: adjust focused gauge by 5%   Esc: quit",
+                          Style.empty().withFg(Color.GRAY))))
+              .withSpacing(1)
+              .withMargin(new Margin(2, 1));
+        });
   }
 
   /// One focusable gauge tile. The gauge body itself is a [Gauges#gauge] (pure, memoized);
   /// focus and key handling live in this wrapper component so the gauge stays purely visual.
-  static Element focusableGauge(int idx, double ratio,
-                                java.util.function.BiConsumer<Integer, Double> adjust) {
-    return component(ctx -> {
-      boolean focused = ctx.useFocus(Optional.of("gauge-" + idx), idx == 0);
+  static Element focusableGauge(
+      int idx, double ratio, java.util.function.BiConsumer<Integer, Double> adjust) {
+    return component(
+        ctx -> {
+          boolean focused = ctx.useFocus(Optional.of("gauge-" + idx), idx == 0);
 
-      if (focused) {
-        ctx.onKey(new KeyCode.Left(), () -> adjust.accept(idx, -STEP));
-        ctx.onKey(new KeyCode.Right(), () -> adjust.accept(idx, +STEP));
-      }
+          if (focused) {
+            ctx.onKey(new KeyCode.Left(), () -> adjust.accept(idx, -STEP));
+            ctx.onKey(new KeyCode.Right(), () -> adjust.accept(idx, +STEP));
+          }
 
-      String title = (focused ? " * Gauge " : "   Gauge ") + (idx + 1) + " ";
-      String label = String.format("%d%%", Math.round(ratio * 100.0));
-      Style barStyle = BAR_STYLES[idx % BAR_STYLES.length];
+          String title = (focused ? " * Gauge " : "   Gauge ") + (idx + 1) + " ";
+          String label = String.format("%d%%", Math.round(ratio * 100.0));
+          Style barStyle = BAR_STYLES[idx % BAR_STYLES.length];
 
-      GaugeProps props = GaugeProps.of(ratio)
-          .withTitle(title)
-          .withLabel(label)
-          .withGaugeStyle(barStyle)
-          .withUseUnicode(true);
+          GaugeProps props =
+              GaugeProps.of(ratio)
+                  .withTitle(title)
+                  .withLabel(label)
+                  .withGaugeStyle(barStyle)
+                  .withUseUnicode(true);
 
-      return Gauges.gauge(props);
-    });
+          return Gauges.gauge(props);
+        });
   }
 }

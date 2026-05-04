@@ -50,12 +50,14 @@ public final class ScrollbarExample {
           String title = " Scrollable content (line " + (pos + 1) + " / " + CONTENT_LENGTH + ") ";
 
           return column(
-              fill(1, scrollableArea(title, pos)),
-              length(
-                  1,
-                  text(
-                      "Up/Down to scroll, PgUp/PgDn to jump by " + PAGE + ", Home/End, Esc to quit",
-                      Style.empty().withFg(Color.GRAY))))
+                  fill(1, scrollableArea(title, pos)),
+                  length(
+                      1,
+                      text(
+                          "Up/Down to scroll, PgUp/PgDn to jump by "
+                              + PAGE
+                              + ", Home/End, Esc to quit",
+                          Style.empty().withFg(Color.GRAY))))
               .withMargin(new Margin(1, 1));
         });
   }

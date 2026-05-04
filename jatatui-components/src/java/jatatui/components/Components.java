@@ -43,7 +43,15 @@ public final class Components {
       Optional<String> focusId,
       boolean autoFocus) {
     return Table.ofStrings(
-        title, headers, rows, columnWidths, selectedRow, onSelectChange, onActivate, focusId, autoFocus);
+        title,
+        headers,
+        rows,
+        columnWidths,
+        selectedRow,
+        onSelectChange,
+        onActivate,
+        focusId,
+        autoFocus);
   }
 
   // ---------- List ----------

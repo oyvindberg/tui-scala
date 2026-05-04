@@ -70,9 +70,7 @@ public final class ListExample {
                       "(Up/Down or k/j to move - Enter or click to activate - Esc/Ctrl-C to quit)",
                       Style.empty().withFg(Color.GRAY)));
 
-          return column(
-              fill(1, listEl),
-              length(6, status));
+          return column(fill(1, listEl), length(6, status));
         });
   }
 }

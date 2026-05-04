@@ -53,11 +53,7 @@ public final class TableExample {
   static final List<String> HEADERS = List.of("ID", "Name", "Status", "Last Seen");
 
   static final List<Function<Host, String>> EXTRACTORS =
-      List.of(
-          h -> Integer.toString(h.id()),
-          Host::name,
-          Host::status,
-          Host::lastSeen);
+      List.of(h -> Integer.toString(h.id()), Host::name, Host::status, Host::lastSeen);
 
   static final List<Constraint> COLUMN_WIDTHS =
       List.of(
@@ -91,7 +87,8 @@ public final class TableExample {
           return column(
                   fill(1, tableEl),
                   length(1, statusLine(selected.get(), lastActivated.get())),
-                  length(1,
+                  length(
+                      1,
                       text(
                           "  Up/Down to move, Enter to activate, Esc to quit",
                           Style.empty().withFg(Color.DARK_GRAY))))
@@ -102,9 +99,7 @@ public final class TableExample {
   static Element statusLine(int selectedIdx, Optional<Host> activated) {
     Host current = HOSTS.get(selectedIdx);
     String activatedSuffix =
-        activated
-            .map(h -> "  |  last activated: #" + h.id() + " " + h.name())
-            .orElse("");
+        activated.map(h -> "  |  last activated: #" + h.id() + " " + h.name()).orElse("");
     String line =
         "  selected: #"
             + current.id()
@@ -116,8 +111,6 @@ public final class TableExample {
             + current.lastSeen()
             + ")"
             + activatedSuffix;
-    return text(
-        line,
-        Style.empty().withFg(Color.LIGHT_CYAN).withAddModifier(Modifier.BOLD));
+    return text(line, Style.empty().withFg(Color.LIGHT_CYAN).withAddModifier(Modifier.BOLD));
   }
 }
