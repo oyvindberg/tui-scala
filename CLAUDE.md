@@ -66,12 +66,18 @@ For each `.rs` source file in `submodules/ratatui/ratatui-core/src/` or `ratatui
 
 ## Translation conventions
 
+### Hard rules — never violate
+
+- **Nullables are `Optional`, always.** No method returns `null`. No field is `null`. Anywhere upstream uses `Option<T>` → `Optional<T>` in Java. For `Map.get(k)` style lookups: prefer `Optional.ofNullable(map.get(k))` so `null` never escapes the call site.
+- **Tuples get dedicated record types.** No `Map.Entry`, no `Object[]`, no generic `Pair<A, B>`. If upstream returns `(Symbol, Row)`, declare `record SymbolAndRow(Symbol symbol, Row row)` with a domain-meaningful name. Tuples without a domain meaning still get a name — invent one.
+- **`Result<T, E>` is `Either<E, T>`.** Use the `Either` sealed interface (in `jatatui.core.layout.solver.Either`). For `Result<(), E>` (Rust unit success) the type stays `Either<E, Void>`; return `Either.unit()` on success — never `Either.right(null)`. The `Either.UNIT` constant + `Either.unit()` factory exist precisely so `null` never appears at any call site.
+
+### Type translations
+
 - **`case class` (immutable)** → Java `record`. With `var` field → mutable `final class`.
 - **`sealed trait` + case objects** → Java `enum` (no payload) or `sealed interface` + records (mixed payload).
-- **`Option<T>`** → `java.util.Optional<T>`.
-- **`Result<T, E>`** → prefer `Optional<E>` for unit results, custom sealed interface (e.g. `Either<L, R>`) for value+error.
+- **`Option<T>`** → `java.util.Optional<T>` (per the hard rule above).
 - **Pattern matching** → Java 21 switch expressions with `->` arrows.
-- **Tuples `(A, B)`** → records (e.g. `Position`, `BufferUpdate`); never `Map.Entry`.
 - **`.copy(field = newVal)`** on records → `withFoo(x)` builder methods (preferred for widgets) or `new T(...)` enumerating fields.
 - **`Vec<T>`/`vec![]`** → `java.util.ArrayList<T>`. **`HashMap`** → `java.util.HashMap`. **`VecDeque`** → `java.util.ArrayDeque`.
 - **String formatting** → `"foo " + bar` or `String.format(...)`. No string interpolation in Java.

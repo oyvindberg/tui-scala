@@ -29,13 +29,13 @@ public final class Row {
   }
 
   public void insertSymbol(Symbol s, double coefficient) {
-    Double oldCoefficient = cells.get(s);
-    if (oldCoefficient == null) {
+    Optional<Double> oldCoefficient = Optional.ofNullable(cells.get(s));
+    if (oldCoefficient.isEmpty()) {
       if (!NearZero.apply(coefficient)) {
         cells.put(s, coefficient);
       }
     } else {
-      double newCoefficient = coefficient + oldCoefficient;
+      double newCoefficient = coefficient + oldCoefficient.get();
       if (NearZero.apply(newCoefficient)) {
         cells.remove(s);
       } else {
@@ -84,16 +84,15 @@ public final class Row {
   }
 
   public double coefficientFor(Symbol s) {
-    Double v = cells.get(s);
-    return v == null ? 0.0 : v;
+    return Optional.ofNullable(cells.get(s)).orElse(0.0);
   }
 
   public boolean substitute(Symbol s, Row row) {
-    Double coeff = cells.get(s);
-    if (coeff == null) {
+    Optional<Double> coeff = Optional.ofNullable(cells.get(s));
+    if (coeff.isEmpty()) {
       return false;
     }
     cells.remove(s);
-    return insertRow(row, coeff);
+    return insertRow(row, coeff.get());
   }
 }

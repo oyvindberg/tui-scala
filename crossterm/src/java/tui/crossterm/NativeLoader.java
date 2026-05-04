@@ -1,7 +1,9 @@
 package tui.crossterm;
 
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 class NativeLoader {
   public static void load(String nativeLibrary) throws Exception {
@@ -15,8 +17,9 @@ class NativeLoader {
   static void loadPackaged(String nativeLibrary) throws Exception {
     String lib = System.mapLibraryName("native-" + getPlatform() + "-" + nativeLibrary);
     var resourcePath = "/" + lib;
-    var resourceStream = NativeLoader.class.getResourceAsStream(resourcePath);
-    if (resourceStream == null) {
+    Optional<InputStream> resourceStream =
+        Optional.ofNullable(NativeLoader.class.getResourceAsStream(resourcePath));
+    if (resourceStream.isEmpty()) {
       throw new UnsatisfiedLinkError(
           "Native library " + lib + " (" + resourcePath + ") cannot be found on the classpath.");
     }
@@ -25,7 +28,7 @@ class NativeLoader {
     Path extractedPath = tmp.resolve(lib);
 
     try {
-      Files.copy(resourceStream, extractedPath);
+      Files.copy(resourceStream.get(), extractedPath);
     } catch (Exception ex) {
       throw new UnsatisfiedLinkError("Error while extracting native library: " + ex.getMessage());
     }

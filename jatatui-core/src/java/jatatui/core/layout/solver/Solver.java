@@ -37,7 +37,7 @@ public final class Solver {
       }
       i += 1;
     }
-    return Either.right(null);
+    return Either.unit();
   }
 
   public Either<AddConstraintError, Void> addConstraints(List<Constraint> constraints) {
@@ -103,15 +103,16 @@ public final class Solver {
     if (opt instanceof Either.Left<InternalSolverError, Void> l) {
       return Either.left(new AddConstraintError.InternalSolverError(l.value().str()));
     }
-    return Either.right(null);
+    return Either.unit();
   }
 
   /// Remove a constraint from the solver.
   public Either<RemoveConstraintError, Void> removeConstraint(Constraint constraint) {
-    Tag tag = cns.remove(constraint);
-    if (tag == null) {
+    Optional<Tag> tagOpt = Optional.ofNullable(cns.remove(constraint));
+    if (tagOpt.isEmpty()) {
       return Either.left(new RemoveConstraintError.UnknownConstraint());
     }
+    Tag tag = tagOpt.get();
 
     // Remove the error effects from the objective function
     // *before* pivoting, or substitutions into the objective
@@ -120,8 +121,8 @@ public final class Solver {
 
     // If the marker is basic, simply drop the row. Otherwise,
     // pivot the marker into the basis and then drop the row.
-    Row removed = rows.remove(tag.marker());
-    if (removed == null) {
+    Optional<Row> removed = Optional.ofNullable(rows.remove(tag.marker()));
+    if (removed.isEmpty()) {
       Optional<SymbolAndRow> leavingOpt = getMarkerLeavingRow(tag.marker());
       if (leavingOpt.isPresent()) {
         SymbolAndRow sr = leavingOpt.get();
@@ -146,8 +147,9 @@ public final class Solver {
     for (Term term : constraint.expression.terms) {
       if (!NearZero.apply(term.coefficient)) {
         boolean shouldRemove = false;
-        VarData vd = varData.get(term.variable);
-        if (vd != null) {
+        Optional<VarData> vdOpt = Optional.ofNullable(varData.get(term.variable));
+        if (vdOpt.isPresent()) {
+          VarData vd = vdOpt.get();
           vd.count -= 1;
           shouldRemove = vd.count == 0;
         }
@@ -157,7 +159,7 @@ public final class Solver {
         }
       }
     }
-    return Either.right(null);
+    return Either.unit();
   }
 
   /// Test whether a constraint has been added to the solver.
@@ -180,15 +182,16 @@ public final class Solver {
     Constraint cn = new Constraint(Expression.fromTerm(new Term(v, 1.0)), strength, RelationalOperator.Equal);
     addConstraint(cn).unwrap();
     edits.put(v, new EditInfo(cns.get(cn), cn, 0.0));
-    return Either.right(null);
+    return Either.unit();
   }
 
   /// Remove an edit variable from the solver.
   public Either<RemoveEditVariableError, Void> removeEditVariable(Variable v) {
-    EditInfo info = edits.remove(v);
-    if (info == null) {
+    Optional<EditInfo> infoOpt = Optional.ofNullable(edits.remove(v));
+    if (infoOpt.isEmpty()) {
       return Either.left(new RemoveEditVariableError.UnknownEditVariable());
     }
+    EditInfo info = infoOpt.get();
     Either<RemoveConstraintError, Void> r = removeConstraint(info.constraint);
     if (r instanceof Either.Left<RemoveConstraintError, Void> l) {
       return switch (l.value()) {
@@ -198,7 +201,7 @@ public final class Solver {
             Either.left(new RemoveEditVariableError.InternalSolverError(ise.str()));
       };
     }
-    return Either.right(null);
+    return Either.unit();
   }
 
   /// Test whether an edit variable has been added to the solver.
@@ -211,10 +214,11 @@ public final class Solver {
   /// This method should be used after an edit variable has been added to
   /// the solver in order to suggest the value for that variable.
   public Either<SuggestValueError, Void> suggestValue(Variable variable, double value) {
-    EditInfo info = edits.get(variable);
-    if (info == null) {
+    Optional<EditInfo> infoOpt = Optional.ofNullable(edits.get(variable));
+    if (infoOpt.isEmpty()) {
       return Either.left(new SuggestValueError.UnknownEditVariable());
     }
+    EditInfo info = infoOpt.get();
     double delta = value - info.constant;
     info.constant = value;
     Symbol infoTagMarker = info.tag.marker();
@@ -259,7 +263,7 @@ public final class Solver {
     if (r instanceof Either.Left<InternalSolverError, Void> l) {
       return Either.left(new SuggestValueError.InternalSolverError(l.value().str()));
     }
-    return Either.right(null);
+    return Either.unit();
   }
 
   public void varChanged(Variable v) {
@@ -283,10 +287,11 @@ public final class Solver {
     }
     publicChanges.clear();
     for (Variable v : changed) {
-      VarData vd = this.varData.get(v);
-      if (vd != null) {
-        Row r = rows.get(vd.symbol);
-        double newValue = r == null ? 0.0 : r.constant;
+      Optional<VarData> vdOpt = Optional.ofNullable(this.varData.get(v));
+      if (vdOpt.isPresent()) {
+        VarData vd = vdOpt.get();
+        Optional<Row> rOpt = Optional.ofNullable(rows.get(vd.symbol));
+        double newValue = rOpt.map(r -> r.constant).orElse(0.0);
         double oldValue = vd.value;
         if (oldValue != newValue) {
           publicChanges.push(new VariableChange(v, newValue));
@@ -322,13 +327,16 @@ public final class Solver {
   ///
   /// If a symbol does not exist for the variable, one will be created.
   public Symbol getVarSymbol(Variable v) {
-    VarData value = varData.get(v);
-    if (value == null) {
+    Optional<VarData> existing = Optional.ofNullable(varData.get(v));
+    VarData value;
+    if (existing.isEmpty()) {
       Symbol s = new Symbol(idTick, SymbolKind.External);
       varForSymbol.put(s, v);
       idTick += 1;
       value = new VarData(Double.NaN, s, 0);
       varData.put(v, value);
+    } else {
+      value = existing.get();
     }
     value.count += 1;
     return value.symbol;
@@ -358,9 +366,9 @@ public final class Solver {
     for (Term term : expr.terms) {
       if (!NearZero.apply(term.coefficient)) {
         Symbol symbol = getVarSymbol(term.variable);
-        Row otherRow = rows.get(symbol);
-        if (otherRow != null) {
-          row.insertRow(otherRow, term.coefficient);
+        Optional<Row> otherRow = Optional.ofNullable(rows.get(symbol));
+        if (otherRow.isPresent()) {
+          row.insertRow(otherRow.get(), term.coefficient);
         } else {
           row.insertSymbol(symbol, term.coefficient);
         }
@@ -470,8 +478,9 @@ public final class Solver {
 
     // If the artificial variable is basic, pivot the row so that
     // it becomes basic. If the row is constant, exit early.
-    Row removed = rows.remove(art);
-    if (removed != null) {
+    Optional<Row> removedOpt = Optional.ofNullable(rows.remove(art));
+    if (removedOpt.isPresent()) {
+      Row removed = removedOpt.get();
       if (removed.cells.isEmpty()) {
         return Either.right(success);
       }
@@ -526,7 +535,7 @@ public final class Solver {
     while (true) {
       Symbol entering = getEnteringSymbol(objective);
       if (entering.kind() == SymbolKind.Invalid) {
-        return Either.right(null);
+        return Either.unit();
       }
       Optional<SymbolAndRow> leavingOpt = getLeavingRow(entering);
       if (leavingOpt.isEmpty()) {
@@ -553,12 +562,13 @@ public final class Solver {
   public Either<InternalSolverError, Void> dualOptimise() {
     while (!infeasibleRows.isEmpty()) {
       Symbol leaving = infeasibleRows.pop();
-      Row row = null;
-      Row r0 = rows.get(leaving);
-      if (r0 != null && r0.constant < 0.0) {
-        row = rows.remove(leaving);
+      Optional<Row> rowOpt = Optional.empty();
+      Optional<Row> r0 = Optional.ofNullable(rows.get(leaving));
+      if (r0.isPresent() && r0.get().constant < 0.0) {
+        rowOpt = Optional.ofNullable(rows.remove(leaving));
       }
-      if (row != null) {
+      if (rowOpt.isPresent()) {
+        Row row = rowOpt.get();
         Symbol entering = getDualEnteringSymbol(row);
         if (entering.kind() == SymbolKind.Invalid) {
           return Either.left(new InternalSolverError("Dual optimise failed."));
@@ -573,7 +583,7 @@ public final class Solver {
         rows.put(entering, row);
       }
     }
-    return Either.right(null);
+    return Either.unit();
   }
 
   /// Compute the entering variable for a pivot operation.
@@ -644,7 +654,7 @@ public final class Solver {
   /// Never returns a row for an External symbol
   public Optional<SymbolAndRow> getLeavingRow(Symbol entering) {
     double ratio = Double.POSITIVE_INFINITY;
-    Symbol found = null;
+    Optional<Symbol> found = Optional.empty();
     for (Map.Entry<Symbol, Row> e : rows.entrySet()) {
       Symbol symbol = e.getKey();
       Row row = e.getValue();
@@ -654,16 +664,17 @@ public final class Solver {
           double tempRatio = -row.constant / temp;
           if (tempRatio < ratio) {
             ratio = tempRatio;
-            found = symbol;
+            found = Optional.of(symbol);
           }
         }
       }
     }
-    if (found == null) {
+    if (found.isEmpty()) {
       return Optional.empty();
     }
-    Row removed = rows.remove(found);
-    return Optional.of(new SymbolAndRow(found, removed));
+    Symbol foundSymbol = found.get();
+    Row removed = rows.remove(foundSymbol);
+    return Optional.of(new SymbolAndRow(foundSymbol, removed));
   }
 
   /// Compute the leaving row for a marker variable.
@@ -686,9 +697,9 @@ public final class Solver {
   public Optional<SymbolAndRow> getMarkerLeavingRow(Symbol marker) {
     double r1 = Double.POSITIVE_INFINITY;
     double r2 = r1;
-    Symbol first = null;
-    Symbol second = null;
-    Symbol third = null;
+    Optional<Symbol> first = Optional.empty();
+    Optional<Symbol> second = Optional.empty();
+    Optional<Symbol> third = Optional.empty();
 
     for (Map.Entry<Symbol, Row> e : rows.entrySet()) {
       Symbol symbol = e.getKey();
@@ -698,37 +709,43 @@ public final class Solver {
         continue;
       }
       if (symbol.kind() == SymbolKind.External) {
-        third = symbol;
+        third = Optional.of(symbol);
       } else if (c < 0.0) {
         double r = -row.constant / c;
         if (r < r1) {
           r1 = r;
-          first = symbol;
+          first = Optional.of(symbol);
         }
       } else {
         double r = row.constant / c;
         if (r < r2) {
           r2 = r;
-          second = symbol;
+          second = Optional.of(symbol);
         }
       }
     }
 
-    Symbol s = first;
-    if (s == null) s = second;
-    if (s == null) s = third;
-    if (s == null) {
+    Optional<Symbol> chosen;
+    if (first.isPresent()) {
+      chosen = first;
+    } else if (second.isPresent()) {
+      chosen = second;
+    } else {
+      chosen = third;
+    }
+    if (chosen.isEmpty()) {
       return Optional.empty();
     }
+    Symbol s = chosen.get();
     if (s.kind() == SymbolKind.External && this.rows.get(s).constant != 0.0) {
       Variable v = this.varForSymbol.get(s);
       varChanged(v);
     }
-    Row removed = rows.remove(s);
-    if (removed == null) {
+    Optional<Row> removed = Optional.ofNullable(rows.remove(s));
+    if (removed.isEmpty()) {
       return Optional.empty();
     }
-    return Optional.of(new SymbolAndRow(s, removed));
+    return Optional.of(new SymbolAndRow(s, removed.get()));
   }
 
   /// Remove the effects of a constraint on the objective function.
@@ -743,9 +760,9 @@ public final class Solver {
 
   /// Remove the effects of an error marker on the objective function.
   public void removeMarkerEffects(Symbol marker, Strength strength) {
-    Row row = rows.get(marker);
-    if (row != null) {
-      objective.insertRow(row, -strength.value());
+    Optional<Row> row = Optional.ofNullable(rows.get(marker));
+    if (row.isPresent()) {
+      objective.insertRow(row.get(), -strength.value());
     } else {
       objective.insertSymbol(marker, -strength.value());
     }
@@ -764,10 +781,10 @@ public final class Solver {
   /// Normally values should be retrieved and updated using `fetchChanges`, but
   /// this method can be used for debugging or testing.
   public double getValue(Variable v) {
-    VarData s = varData.get(v);
-    if (s == null) return 0.0;
-    Row r = rows.get(s.symbol);
-    if (r == null) return 0.0;
-    return r.constant;
+    Optional<VarData> s = Optional.ofNullable(varData.get(v));
+    if (s.isEmpty()) return 0.0;
+    Optional<Row> r = Optional.ofNullable(rows.get(s.get().symbol));
+    if (r.isEmpty()) return 0.0;
+    return r.get().constant;
   }
 }

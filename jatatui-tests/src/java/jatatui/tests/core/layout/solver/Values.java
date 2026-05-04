@@ -3,6 +3,7 @@ package jatatui.tests.core.layout.solver;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import jatatui.core.layout.solver.Variable;
 import jatatui.core.layout.solver.VariableChange;
@@ -12,8 +13,7 @@ final class Values {
   private final Map<Variable, Double> values = new HashMap<>();
 
   double valueOf(Variable v) {
-    Double d = values.get(v);
-    return d == null ? 0.0 : d;
+    return Optional.ofNullable(values.get(v)).orElse(0.0);
   }
 
   void updateValues(List<VariableChange> changes) {
