@@ -174,15 +174,38 @@ pub fn attributes_list(env: JNIEnv, attributes_list_obj: JObject) -> JniResult<s
     return Ok(attributes);
 }
 
-pub fn cursor_shape(env: JNIEnv, enum_value: JObject) -> JniResult<cursor::CursorShape> {
+/// Map the legacy `CursorShape` Java enum (UnderScore, Line, Block) to the closest
+/// equivalent in `crossterm::cursor::SetCursorStyle`. The 0.25 → 0.29 rename collapsed
+/// the old `CursorShape` enum into the `SetCursorStyle` command enum, with separate
+/// blinking/steady variants. Keep the old Java surface working by picking the steady
+/// non-blinking variants.
+pub fn cursor_shape_as_style(env: JNIEnv, enum_value: JObject) -> JniResult<cursor::SetCursorStyle> {
     let java_str = env.get_string(get_name(env, enum_value)?)?;
 
-    fn from_str(str: &str) -> cursor::CursorShape {
+    fn from_str(str: &str) -> cursor::SetCursorStyle {
         match str {
-            "UnderScore" => cursor::CursorShape::UnderScore,
-            "Line" => cursor::CursorShape::Line,
-            "Block" => cursor::CursorShape::Block,
+            "UnderScore" => cursor::SetCursorStyle::SteadyUnderScore,
+            "Line" => cursor::SetCursorStyle::SteadyBar,
+            "Block" => cursor::SetCursorStyle::SteadyBlock,
             other => panic!("not a valid CursorShape: {}", other),
+        }
+    }
+    return Ok(from_str(&java_str.to_string_lossy()));
+}
+
+pub fn cursor_style(env: JNIEnv, enum_value: JObject) -> JniResult<cursor::SetCursorStyle> {
+    let java_str = env.get_string(get_name(env, enum_value)?)?;
+
+    fn from_str(str: &str) -> cursor::SetCursorStyle {
+        match str {
+            "DefaultUserShape" => cursor::SetCursorStyle::DefaultUserShape,
+            "BlinkingBlock" => cursor::SetCursorStyle::BlinkingBlock,
+            "SteadyBlock" => cursor::SetCursorStyle::SteadyBlock,
+            "BlinkingUnderScore" => cursor::SetCursorStyle::BlinkingUnderScore,
+            "SteadyUnderScore" => cursor::SetCursorStyle::SteadyUnderScore,
+            "BlinkingBar" => cursor::SetCursorStyle::BlinkingBar,
+            "SteadyBar" => cursor::SetCursorStyle::SteadyBar,
+            other => panic!("not a valid CursorStyle: {}", other),
         }
     }
     return Ok(from_str(&java_str.to_string_lossy()));
@@ -270,8 +293,12 @@ pub fn queue_command<W: Write>(w: &mut W, env: JNIEnv, obj: JObject) -> UnifiedR
             w.queue(cursor::DisableBlinking).unify_errors()?
         }
         "SetCursorShape" => {
-            let x = cursor_shape(env, object_field(env, obj, "cursor_shape", "Ltui/crossterm/CursorShape;").unify_errors()?).unify_errors()?;
-            w.queue(cursor::SetCursorShape(x)).unify_errors()?
+            let x = cursor_shape_as_style(env, object_field(env, obj, "cursor_shape", "Ltui/crossterm/CursorShape;").unify_errors()?).unify_errors()?;
+            w.queue(x).unify_errors()?
+        }
+        "SetCursorStyle" => {
+            let x = cursor_style(env, object_field(env, obj, "cursor_style", "Ltui/crossterm/CursorStyle;").unify_errors()?).unify_errors()?;
+            w.queue(x).unify_errors()?
         }
         "EnableMouseCapture" => {
             w.queue(event::EnableMouseCapture).unify_errors()?

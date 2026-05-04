@@ -20,6 +20,7 @@ public sealed interface Command
         Command.EnableBlinking,
         Command.DisableBlinking,
         Command.SetCursorShape,
+        Command.SetCursorStyle,
         Command.EnableMouseCapture,
         Command.DisableMouseCapture,
         Command.PushKeyboardEnhancementFlags,
@@ -112,8 +113,19 @@ public sealed interface Command
   /// - Windows versions lower than Windows 10 do not support this functionality.
   record DisableBlinking() implements Command {}
 
-  /// A command that sets the shape of the cursor
+  /// A command that sets the shape of the cursor.
+  ///
+  /// **Legacy:** crossterm 0.26 deprecated the underlying `SetCursorShape`/`CursorShape` pair
+  /// in favor of `SetCursorStyle`. This variant is preserved for backwards compatibility and
+  /// is internally mapped to the steady (non-blinking) `SetCursorStyle` variants. New code
+  /// should prefer [`SetCursorStyle`].
   record SetCursorShape(CursorShape cursor_shape) implements Command {}
+
+  /// A command that sets the style of the cursor.
+  ///
+  /// Mirrors `crossterm::cursor::SetCursorStyle` and supports both blinking and steady
+  /// variants for block / underscore / bar shapes plus the user's configured default.
+  record SetCursorStyle(CursorStyle cursor_style) implements Command {}
 
   /// A command that enables mouse event capturing.
   ///

@@ -6,7 +6,9 @@ public sealed interface MouseEventKind
         MouseEventKind.Drag,
         MouseEventKind.Moved,
         MouseEventKind.ScrollDown,
-        MouseEventKind.ScrollUp {
+        MouseEventKind.ScrollUp,
+        MouseEventKind.ScrollLeft,
+        MouseEventKind.ScrollRight {
   /// Pressed mouse button. Contains the button that was pressed.
   record Down(MouseButton mouseButton) implements MouseEventKind {}
 
@@ -24,4 +26,10 @@ public sealed interface MouseEventKind
 
   /// Scrolled mouse wheel upwards (away from the user).
   record ScrollUp() implements MouseEventKind {}
+
+  /// Scrolled mouse wheel left (mostly on a laptop touchpad). Added in crossterm 0.27.
+  record ScrollLeft() implements MouseEventKind {}
+
+  /// Scrolled mouse wheel right (mostly on a laptop touchpad). Added in crossterm 0.27.
+  record ScrollRight() implements MouseEventKind {}
 }

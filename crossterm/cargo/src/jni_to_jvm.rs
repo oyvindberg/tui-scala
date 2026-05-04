@@ -50,6 +50,27 @@ pub fn media_key_code(env: JNIEnv, e: event::MediaKeyCode) -> JniResult<JObject>
     };
 }
 
+pub fn modifier_key_code(env: JNIEnv, e: event::ModifierKeyCode) -> JniResult<JObject> {
+    const CLASS_NAME: &'static str = "tui/crossterm/ModifierKeyCode";
+
+    return match e {
+        event::ModifierKeyCode::LeftShift => enum_value(env, CLASS_NAME, "LeftShift"),
+        event::ModifierKeyCode::LeftControl => enum_value(env, CLASS_NAME, "LeftControl"),
+        event::ModifierKeyCode::LeftAlt => enum_value(env, CLASS_NAME, "LeftAlt"),
+        event::ModifierKeyCode::LeftSuper => enum_value(env, CLASS_NAME, "LeftSuper"),
+        event::ModifierKeyCode::LeftHyper => enum_value(env, CLASS_NAME, "LeftHyper"),
+        event::ModifierKeyCode::LeftMeta => enum_value(env, CLASS_NAME, "LeftMeta"),
+        event::ModifierKeyCode::RightShift => enum_value(env, CLASS_NAME, "RightShift"),
+        event::ModifierKeyCode::RightControl => enum_value(env, CLASS_NAME, "RightControl"),
+        event::ModifierKeyCode::RightAlt => enum_value(env, CLASS_NAME, "RightAlt"),
+        event::ModifierKeyCode::RightSuper => enum_value(env, CLASS_NAME, "RightSuper"),
+        event::ModifierKeyCode::RightHyper => enum_value(env, CLASS_NAME, "RightHyper"),
+        event::ModifierKeyCode::RightMeta => enum_value(env, CLASS_NAME, "RightMeta"),
+        event::ModifierKeyCode::IsoLevel3Shift => enum_value(env, CLASS_NAME, "IsoLevel3Shift"),
+        event::ModifierKeyCode::IsoLevel5Shift => enum_value(env, CLASS_NAME, "IsoLevel5Shift"),
+    };
+}
+
 pub fn key_code(env: JNIEnv, e: event::KeyCode) -> JniResult<JObject> {
     fn nullary<'a>(env: JNIEnv<'a>, name: &str) -> JniResult<JObject<'a>> {
         return record(env, &format!("tui/crossterm/KeyCode${}", name), "", &[]);
@@ -79,7 +100,14 @@ pub fn key_code(env: JNIEnv, e: event::KeyCode) -> JniResult<JObject> {
         event::KeyCode::Pause => nullary(env, "Pause"),
         event::KeyCode::Menu => nullary(env, "Menu"),
         event::KeyCode::KeypadBegin => nullary(env, "KeypadBegin"),
-        event::KeyCode::Modifier(_) => nullary(env, "Modifier"),
+        event::KeyCode::Modifier(m) => {
+            return record(
+                env,
+                "tui/crossterm/KeyCode$Modifier",
+                "Ltui/crossterm/ModifierKeyCode;",
+                &[JValue::Object(modifier_key_code(env, m)?)],
+            );
+        }
         event::KeyCode::Char(c) => {
             let utf16 = c as u16; // todo
             return record(
@@ -186,6 +214,12 @@ pub fn mouse_event_kind(env: JNIEnv, e: event::MouseEventKind) -> JniResult<JObj
         }
         event::MouseEventKind::ScrollUp => {
             record(env, "tui/crossterm/MouseEventKind$ScrollUp", "", &[])
+        }
+        event::MouseEventKind::ScrollLeft => {
+            record(env, "tui/crossterm/MouseEventKind$ScrollLeft", "", &[])
+        }
+        event::MouseEventKind::ScrollRight => {
+            record(env, "tui/crossterm/MouseEventKind$ScrollRight", "", &[])
         }
     };
 }
