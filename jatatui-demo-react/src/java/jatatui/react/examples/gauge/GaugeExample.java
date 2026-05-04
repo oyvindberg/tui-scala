@@ -56,14 +56,13 @@ public final class GaugeExample {
           }
 
           return column(
-                  length(7, row(gaugeRow).withSpacing(2)),
+                  length(7, row(gaugeRow).with(p -> p.withSpacing(2))),
                   length(
                       1,
                       text(
                           "Tab: cycle focus   <-/->: adjust focused gauge by 5%   Esc: quit",
                           Style.empty().withFg(Color.GRAY))))
-              .withSpacing(1)
-              .withMargin(new Margin(2, 1));
+              .with(p -> p.withSpacing(1).withMargin(new Margin(2, 1)));
         });
   }
 

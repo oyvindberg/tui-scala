@@ -20,7 +20,7 @@ public final class Components {
 
   /// Scrollbar from a fully-specified [ScrollbarProps] record.
   public static Element scrollbar(ScrollbarProps props) {
-    return new Element.WidgetWrap(new ScrollbarWidget(props));
+    return jatatui.react.Components.widget(new ScrollbarWidget(props));
   }
 
   /// Vertical-right scrollbar (the most common case). Viewport length defaults to the track size.

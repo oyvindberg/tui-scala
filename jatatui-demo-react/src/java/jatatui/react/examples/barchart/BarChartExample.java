@@ -72,8 +72,7 @@ public final class BarChartExample {
                       row(
                           fill(1, verticalBarChart(" Vertical ", entries, barStyle)),
                           fill(1, horizontalBarChart(" Horizontal ", entries, barStyle)))))
-              .withSpacing(1)
-              .withMargin(new jatatui.core.layout.Margin(2, 1));
+              .with(p -> p.withSpacing(1).withMargin(new jatatui.core.layout.Margin(2, 1)));
         });
   }
 

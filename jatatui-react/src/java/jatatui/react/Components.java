@@ -7,88 +7,125 @@ import jatatui.core.layout.Spacing;
 import jatatui.core.style.Style;
 import jatatui.widgets.Borders;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-/// Static factories for [Element]s. Mirrors React's "create elements via type constructors"
-/// (`React.createElement` / JSX) — Java has no JSX so this is the conventional alternative.
+/// Static factories for [Element]s. Mirrors React's `React.createElement` / JSX role.
 ///
 /// Import statically: `import static jatatui.react.Components.*;`
+///
+/// Every factory ultimately produces an [Element.Of] applied to a built-in [Component] from
+/// [Intrinsics]. User components are constructed via [#apply(Component, Object)].
 public final class Components {
   private Components() {}
 
-  // ---- Function components ----
+  // ---- User components ----
 
-  /// User-defined function component. Body runs every render with hooks available.
-  public static Element component(Function<RenderContext, Element> body) {
-    return new Component(body);
+  /// Apply a user-defined Component to its props. Auto-memoized: across renders, if the
+  /// `(component reference, props.equals())` is stable, body is skipped.
+  public static <P> Element.Of<P> apply(Component<P> type, P props) {
+    return new Element.Of<>(type, props, Optional.empty());
   }
 
-  /// `React.memo` — caches `body`'s output keyed by reference-equal `deps`.
-  public static Element memo(Object[] deps, Supplier<Element> body) {
-    return new Memo(deps, body);
+  public static <P> Element.Of<P> apply(Component<P> type, P props, String key) {
+    return new Element.Of<>(type, props, Optional.of(key));
   }
 
-  /// Convenience for the common "memoize on these values" call site.
+  /// Quick-and-dirty function component for ad-hoc closures with `useState` etc. The body lambda
+  /// has a fresh identity each render so auto-memo never hits — for memoized stuff, define a
+  /// `static final Component<MyProps>` and use [#apply(Component, Object)].
+  public static Element.Of<Intrinsics.FunctionProps> component(
+      Function<RenderContext, Element> body) {
+    return new Element.Of<>(
+        Intrinsics.FUNCTION, new Intrinsics.FunctionProps(body), Optional.empty());
+  }
+
+  /// Explicit deps-keyed memoization. `body` is skipped when `deps` are element-wise equal to the
+  /// previous render at this fiber.
+  public static Element.Of<Intrinsics.MemoProps> memo(Object[] deps, Supplier<Element> body) {
+    return new Element.Of<>(
+        Intrinsics.MEMO, new Intrinsics.MemoProps(deps, body), Optional.empty());
+  }
+
+  /// Convenience for `memo` deps lists.
   public static Object[] deps(Object... values) {
     return values;
   }
 
-  /// "Pure" component over an immutable props record. Memoized by `props.equals(...)`.
-  public static <P> Element pureComponent(P props, Function<P, Element> body) {
-    return new PureComponent<>(props, body);
+  /// "Pure" component — props record's `equals()` decides re-render.
+  public static <P> Element.Of<Intrinsics.PureProps<?>> pureComponent(
+      P props, Function<P, Element> body) {
+    return new Element.Of<>(
+        Intrinsics.PURE, new Intrinsics.PureProps<>(props, body), Optional.empty());
   }
 
   // ---- Leaves ----
 
-  public static Element empty() {
-    return new Element.Empty();
+  public static Element.Of<Intrinsics.EmptyProps> empty() {
+    return new Element.Of<>(Intrinsics.EMPTY, new Intrinsics.EmptyProps(), Optional.empty());
   }
 
-  public static Element text(String content) {
-    return new Element.Text(content, Style.empty());
+  public static Element.Of<Intrinsics.TextProps> text(String content) {
+    return new Element.Of<>(
+        Intrinsics.TEXT, new Intrinsics.TextProps(content, Style.empty()), Optional.empty());
   }
 
-  public static Element text(String content, Style style) {
-    return new Element.Text(content, style);
+  public static Element.Of<Intrinsics.TextProps> text(String content, Style style) {
+    return new Element.Of<>(
+        Intrinsics.TEXT, new Intrinsics.TextProps(content, style), Optional.empty());
   }
 
-  public static Element paragraph(String content, Style style) {
-    return new Element.Paragraph_(content, style, true);
+  public static Element.Of<Intrinsics.ParagraphProps> paragraph(String content, Style style) {
+    return new Element.Of<>(
+        Intrinsics.PARAGRAPH,
+        new Intrinsics.ParagraphProps(content, style, true),
+        Optional.empty());
   }
 
-  public static Element button(String label, Style style, Runnable onClick) {
-    return new Element.Button(label, style, onClick);
+  public static Element.Of<Intrinsics.ButtonProps> button(
+      String label, Style style, Runnable onClick) {
+    return new Element.Of<>(
+        Intrinsics.BUTTON, new Intrinsics.ButtonProps(label, style, onClick), Optional.empty());
   }
 
   // ---- Containers ----
 
-  /// Returns the concrete record so callers can chain `.withFlex(...)` / `.withSpacing(n)`.
-  /// Records still implement [Element] so they assign cleanly to `Element` variables.
-  public static Element.Box box(String title, Borders borders, Element... children) {
-    return new Element.Box(title, borders, Flex.Legacy, Spacing.DEFAULT, List.of(children));
+  public static Element.Of<Intrinsics.BoxProps> box(
+      String title, Borders borders, Element... children) {
+    return new Element.Of<>(
+        Intrinsics.BOX,
+        new Intrinsics.BoxProps(title, borders, Flex.Legacy, Spacing.DEFAULT, List.of(children)),
+        Optional.empty());
   }
 
-  public static Element.Column column(Element... children) {
-    return new Element.Column(List.of(children), Flex.Legacy, Spacing.DEFAULT, new Margin(0, 0));
+  public static Element.Of<Intrinsics.ColumnProps> column(Element... children) {
+    return new Element.Of<>(
+        Intrinsics.COLUMN,
+        new Intrinsics.ColumnProps(
+            List.of(children), Flex.Legacy, Spacing.DEFAULT, new Margin(0, 0)),
+        Optional.empty());
   }
 
-  public static Element.Row row(Element... children) {
-    return new Element.Row(List.of(children), Flex.Legacy, Spacing.DEFAULT, new Margin(0, 0));
+  public static Element.Of<Intrinsics.RowProps> row(Element... children) {
+    return new Element.Of<>(
+        Intrinsics.ROW,
+        new Intrinsics.RowProps(
+            List.of(children), Flex.Legacy, Spacing.DEFAULT, new Margin(0, 0)),
+        Optional.empty());
   }
 
-  public static Element tabs(int selected, Element.Tabs.Tab... tabs) {
-    return new Element.Tabs(selected, List.of(tabs));
+  public static Element.Of<Intrinsics.TabsProps> tabs(int selected, Intrinsics.Tab... tabs) {
+    return new Element.Of<>(
+        Intrinsics.TABS, new Intrinsics.TabsProps(selected, List.of(tabs)), Optional.empty());
   }
 
-  public static Element.Tabs.Tab tab(String label, Element body) {
-    return new Element.Tabs.Tab(label, body);
+  public static Intrinsics.Tab tab(String label, Element body) {
+    return new Intrinsics.Tab(label, body);
   }
 
   // ---- Per-child sizing ----
 
-  /// Wrap an element with an explicit [Constraint]. Containers read these to feed the [Layout]
-  /// solver; bare children default to `Constraint.Fill(1)`.
   public static Element sized(Constraint c, Element child) {
     return new Element.Sized(c, child);
   }
@@ -120,26 +157,37 @@ public final class Components {
   // ---- Conditional / list ----
 
   public static Element when(boolean condition, Element then_) {
-    return new Element.When(condition, then_);
+    return new Element.Of<>(
+        Intrinsics.WHEN, new Intrinsics.WhenProps(condition, then_), Optional.empty());
   }
 
   public static Element ifElse(boolean condition, Element then_, Element else_) {
-    return new Element.IfElse(condition, then_, else_);
+    return new Element.Of<>(
+        Intrinsics.IF_ELSE,
+        new Intrinsics.IfElseProps(condition, then_, else_),
+        Optional.empty());
   }
 
+  @SuppressWarnings({"rawtypes", "unchecked"})
   public static <T> Element forEach(
       List<T> items, Function<T, String> keyFn, Function<T, Element> render) {
-    return new Element.ForEach<>(items, keyFn, render, 1);
+    return new Element.Of<>(
+        Intrinsics.FOR_EACH, new Intrinsics.ForEachProps(items, keyFn, render, 1), Optional.empty());
   }
 
+  @SuppressWarnings({"rawtypes", "unchecked"})
   public static <T> Element forEach(
       List<T> items, Function<T, String> keyFn, Function<T, Element> render, int rowHeight) {
-    return new Element.ForEach<>(items, keyFn, render, rowHeight);
+    return new Element.Of<>(
+        Intrinsics.FOR_EACH,
+        new Intrinsics.ForEachProps(items, keyFn, render, rowHeight),
+        Optional.empty());
   }
 
   // ---- Escape hatch ----
 
   public static Element widget(jatatui.core.widgets.Widget widget) {
-    return new Element.WidgetWrap(widget);
+    return new Element.Of<>(
+        Intrinsics.WIDGET_WRAP, new Intrinsics.WidgetWrapProps(widget), Optional.empty());
   }
 }

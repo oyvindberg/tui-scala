@@ -58,7 +58,7 @@ public final class ScrollbarExample {
                               + PAGE
                               + ", Home/End, Esc to quit",
                           Style.empty().withFg(Color.GRAY))))
-              .withMargin(new Margin(1, 1));
+              .with(p -> p.withMargin(new Margin(1, 1)));
         });
   }
 

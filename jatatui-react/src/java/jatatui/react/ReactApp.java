@@ -24,7 +24,7 @@ public final class ReactApp {
 
   private final Element root;
   private final EventRegistry events = new EventRegistry();
-  private final RenderContext.HookStore hooks = new RenderContext.HookStore();
+  private final HookStore hooks = new HookStore();
   private final FocusManager focus = new FocusManager();
   private final AtomicBoolean dirty = new AtomicBoolean(true);
   private final CrosstermJni jni;

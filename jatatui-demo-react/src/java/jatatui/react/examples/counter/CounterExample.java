@@ -37,8 +37,7 @@ public final class CounterExample {
                         "Port ratatui", // todoList expands
                         "Add React layer",
                         "Wire memo + sized"))))
-        .withSpacing(1)
-        .withMargin(new jatatui.core.layout.Margin(2, 1));
+        .with(p -> p.withSpacing(1).withMargin(new jatatui.core.layout.Margin(2, 1)));
   }
 
   // ---- Counter (stateful, focusable) ----

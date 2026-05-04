@@ -72,8 +72,7 @@ public final class ShowcaseExample {
                   length(1, tabsHeader(tab.get())),
                   fill(1, body(tab.get(), count.get(), messages)),
                   length(1, hint()))
-              .withSpacing(0)
-              .withMargin(new Margin(1, 0));
+              .with(p -> p.withSpacing(0).withMargin(new Margin(1, 0)));
         });
   }
 
@@ -112,7 +111,7 @@ public final class ShowcaseExample {
   // ---- Body ----
 
   static Element body(
-      int selected, int count, jatatui.react.RenderContext.State<List<String>> messages) {
+      int selected, int count, jatatui.react.State<List<String>> messages) {
     return switch (selected) {
       case 0 -> homeTab(count, messages);
       case 1 -> statsTab(count, messages.get().size());
@@ -123,7 +122,7 @@ public final class ShowcaseExample {
 
   // ---- Home tab ----
 
-  static Element homeTab(int count, jatatui.react.RenderContext.State<List<String>> messages) {
+  static Element homeTab(int count, jatatui.react.State<List<String>> messages) {
     Element counterBox =
         box(
             " Counter ",
@@ -152,7 +151,7 @@ public final class ShowcaseExample {
                     messages.set(
                         appendMessage(messages.get(), "msg #" + (messages.get().size() + 1)))));
 
-    return row(percent(40, counterBox), fill(1, msgBox)).withSpacing(1);
+    return row(percent(40, counterBox), fill(1, msgBox)).with(p -> p.withSpacing(1));
   }
 
   // ---- Stats tab ----

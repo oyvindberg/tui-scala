@@ -1,21 +1,27 @@
 package jatatui.react;
 
-import jatatui.core.layout.Rect;
-import java.util.function.Function;
-
-/// A "function component" — a function that takes [RenderContext] and returns an [Element].
+/// A Component is a function from `(props, ctx)` to an [Element]. The thing you author.
 ///
-/// Hooks declared inside `body` (useState/useRef/useEffect/useFocus) live in this Component's
-/// fiber slot. The produced Element is rendered in a child fiber so its own hooks/children don't
-/// clash with body's hooks. Mirrors React's fiber tree.
+/// User-defined components are typically `static final Component<MyProps>` constants:
 ///
-/// Construct via [Components#component(Function)]; rarely worth `new Component(...)` directly.
-public record Component(Function<RenderContext, Element> body) implements Element {
-  @Override
-  public void render(RenderContext ctx, Rect area) {
-    Element produced = body.apply(ctx);
-    // Push a child fiber for the produced Element so its hook/child slots are namespaced
-    // separately from this Component's hooks (React's invariant).
-    ctx.renderChild(0, produced, area);
-  }
+/// ```java
+/// record CounterProps(int initial) {}
+///
+/// static final Component<CounterProps> Counter = (props, ctx) -> {
+///   var count = ctx.useState(() -> props.initial());
+///   return box(" Counter ", Borders.ALL,
+///     text("Count: " + count.get()),
+///     button("[+]", style, () -> count.update(n -> n + 1)));
+/// };
+///
+/// // Apply with props:
+/// Element myCounter = apply(Counter, new CounterProps(0));
+/// ```
+///
+/// Built-in factories (`text`, `box`, `column`, `row`, ...) are themselves Components
+/// applied to props records — there is no special "intrinsic" status at the user level.
+/// Hooks declared inside `apply` live in this Component's fiber slot.
+@FunctionalInterface
+public interface Component<P> {
+  Element apply(P props, RenderContext ctx);
 }

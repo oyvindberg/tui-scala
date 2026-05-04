@@ -92,7 +92,7 @@ public final class TableExample {
                       text(
                           "  Up/Down to move, Enter to activate, Esc to quit",
                           Style.empty().withFg(Color.DARK_GRAY))))
-              .withMargin(new Margin(1, 1));
+              .with(p -> p.withMargin(new Margin(1, 1)));
         });
   }
 
