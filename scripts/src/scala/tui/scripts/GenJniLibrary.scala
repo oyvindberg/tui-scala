@@ -28,12 +28,12 @@ object GenJniLibrary extends bleep.BleepCodegenScript("GenJniLibrary") {
     }
 
   override def run(started: Started, commands: Commands, targets: List[GenJniLibrary.Target], args: List[String]): Unit = {
-    val jniNative = crosstermJniNativeLib(started)
-    val jniPackage = new JniPackage(started.buildPaths.buildDir, jniNative) {
+    val jniNative2 = crosstermJniNativeLib(started)
+    val jniPackage = new JniPackage(started.buildPaths.buildDir, jniNative2) {
       // override naming standard to match `NativeLoader.java`
       override lazy val managedNativeLibraries: Seq[(Path, RelPath)] = {
-        val library: Path = jniNative.nativeCompile()
-        val name = System.mapLibraryName(s"native-${jniNative.nativePlatform}-${jniNative.libName}")
+        val library: Path = jniNative2.nativeCompile()
+        val name = System.mapLibraryName(s"native-${jniNative2.nativePlatform}-${jniNative.libName}")
         Seq(library -> RelPath.force(name))
       }
     }
