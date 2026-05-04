@@ -26,14 +26,31 @@ public final class State<T> {
     return value;
   }
 
+  /// Set the current value. Triggers a re-render iff the stored value differs from `next`.
+  ///
+  /// Reads the LATEST stored value from the hook store (not the render-time captured `value`)
+  /// for the equality check — so multiple `set` calls within one event-dispatch cycle compose
+  /// correctly instead of overwriting each other.
+  @SuppressWarnings("unchecked")
   public void set(T next) {
-    if (!Objects.equals(value, next)) {
+    T current = (T) ctx.hooks.values.getOrDefault(key, value);
+    if (!Objects.equals(current, next)) {
       ctx.hooks.values.put(key, next);
       ctx.requestRerender.run();
     }
   }
 
+  /// Read-modify-write. `fn` is applied to the LATEST stored value (not the render-time captured
+  /// `value`), so multiple `update` calls within one event-dispatch cycle compose correctly:
+  ///
+  /// ```java
+  /// log.update(prev -> append(prev, "inner"));
+  /// log.update(prev -> append(prev, "middle"));   // sees "inner" already appended
+  /// log.update(prev -> append(prev, "outer"));    // sees both
+  /// ```
+  @SuppressWarnings("unchecked")
   public void update(UnaryOperator<T> fn) {
-    set(fn.apply(value));
+    T current = (T) ctx.hooks.values.getOrDefault(key, value);
+    set(fn.apply(current));
   }
 }

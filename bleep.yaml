@@ -39,6 +39,7 @@ projects:
     - jatatui-core
     - jatatui-widgets
     - jatatui-crossterm
+    - jatatui-react
     isTestProject: true
     java:
       options: --release 21
