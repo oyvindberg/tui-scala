@@ -22,7 +22,7 @@ Java port of [ratatui](https://github.com/ratatui/ratatui) at the v0.30.0 releas
 | 3g | Port `ratatui-core/backend.rs` + `backend/test.rs` (Backend trait + TestBackend) | pending |
 | 3h | Port `ratatui-core/terminal/` (Frame, Terminal, Viewport) | pending |
 | 3i | Port `ratatui-core/widgets/` (Widget, StatefulWidget traits) | pending |
-| 4 | Port `ratatui-widgets/src/*` (15+ widgets, ~27.5k LOC). Spawn ~6 parallel agents grouped by widget family. | pending |
+| 4 | Port `ratatui-widgets/src/*` (15+ widgets, ~27.5k LOC). Spawn ~6 parallel agents grouped by widget family. | done |
 | 5 | Port `ratatui-crossterm/src/lib.rs` (the CrosstermBackend impl, ~880 LOC) | done |
 | 6 | Replace `null` with `Optional`; add `Either.unit()` for Void-success; remove the prior `Either.right(null)` exception from CLAUDE.md | done |
 | 7 | Port all `examples/apps/*` to `jatatui-demo` | pending |
