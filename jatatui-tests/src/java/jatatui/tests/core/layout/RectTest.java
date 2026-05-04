@@ -4,11 +4,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import jatatui.core.layout.Constraint;
+import jatatui.core.layout.Layout;
 import jatatui.core.layout.Margin;
 import jatatui.core.layout.Offset;
 import jatatui.core.layout.Position;
 import jatatui.core.layout.Rect;
 import jatatui.core.layout.Size;
+import jatatui.core.layout.solver.Either;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class RectTest {
@@ -146,5 +150,73 @@ class RectTest {
   void from_size() {
     Rect r = Rect.fromSize(new Size(3, 4));
     assertEquals(Rect.of(0, 0, 3, 4), r);
+  }
+
+  // --- Layout-dependent methods (ported from rect.rs) ---------------------
+
+  @Test
+  void centered_horizontally() {
+    Rect rect = Rect.of(0, 0, 5, 5);
+    assertEquals(Rect.of(1, 0, 3, 5), rect.centeredHorizontally(new Constraint.Length(3)));
+  }
+
+  @Test
+  void centered_vertically() {
+    Rect rect = Rect.of(0, 0, 5, 5);
+    assertEquals(Rect.of(0, 2, 5, 1), rect.centeredVertically(new Constraint.Length(1)));
+  }
+
+  @Test
+  void centered() {
+    Rect rect = Rect.of(0, 0, 5, 5);
+    assertEquals(
+        Rect.of(1, 2, 3, 1),
+        rect.centered(new Constraint.Length(3), new Constraint.Length(1)));
+  }
+
+  @Test
+  void layout() {
+    Layout layout = Layout.horizontal(new Constraint.Length(3), new Constraint.Min(0));
+
+    Rect[] ab = Rect.of(0, 0, 10, 10).layout(layout);
+    assertEquals(Rect.of(0, 0, 3, 10), ab[0]);
+    assertEquals(Rect.of(3, 0, 7, 10), ab[1]);
+
+    Rect[] areas = Rect.of(0, 0, 10, 10).layout(layout, 2);
+    assertEquals(Rect.of(0, 0, 3, 10), areas[0]);
+    assertEquals(Rect.of(3, 0, 7, 10), areas[1]);
+  }
+
+  @Test
+  void layout_invalid_number_of_rects() {
+    Layout layout = Layout.horizontal(new Constraint.Length(1));
+    Assertions.assertThrows(
+        IllegalArgumentException.class, () -> Rect.of(0, 0, 10, 10).layout(layout, 3));
+  }
+
+  @Test
+  void layout_vec() {
+    Layout layout = Layout.horizontal(new Constraint.Length(3), new Constraint.Min(0));
+    var areas = Rect.of(0, 0, 10, 10).layoutVec(layout);
+    assertEquals(Rect.of(0, 0, 3, 10), areas.get(0));
+    assertEquals(Rect.of(3, 0, 7, 10), areas.get(1));
+  }
+
+  @Test
+  void try_layout() {
+    Layout layout = Layout.horizontal(new Constraint.Length(3), new Constraint.Min(0));
+
+    Either<String, Rect[]> result = Rect.of(0, 0, 10, 10).tryLayout(layout, 2);
+    assertTrue(result instanceof Either.Right<?, ?>);
+    Rect[] ab = ((Either.Right<String, Rect[]>) result).value();
+    assertEquals(Rect.of(0, 0, 3, 10), ab[0]);
+    assertEquals(Rect.of(3, 0, 7, 10), ab[1]);
+  }
+
+  @Test
+  void try_layout_invalid_number_of_rects() {
+    Layout layout = Layout.horizontal(new Constraint.Length(1));
+    Either<String, Rect[]> result = Rect.of(0, 0, 10, 10).tryLayout(layout, 3);
+    assertTrue(result instanceof Either.Left<?, ?>);
   }
 }
