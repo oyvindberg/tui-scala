@@ -137,6 +137,72 @@ class StateUpdateTest {
     assertEquals(List.of("inner", "middle", "outer"), finalLog);
   }
 
+  /// Mirrors the bubble demo's actual layout: column → row → fill(2, nestedBoxes) plus a sibling
+  /// log panel on the right. Click inside the nested-boxes column should bubble all the way up.
+  ///
+  /// (This is the test most directly equivalent to running `bleep run jatatui-demo-react -- bubble`
+  /// and clicking inside the inner box.)
+  @Test
+  void click_in_full_demo_wrapping_with_state_updates_all_take_effect() throws IOException {
+    EventRegistry events = new EventRegistry();
+    HookStore hooks = new HookStore();
+    FocusManager focus = new FocusManager();
+
+    Element app =
+        component(
+            ctx -> {
+              State<List<String>> log = ctx.useState(() -> List.<String>of());
+              return column(
+                      length(1, text(" header ")),
+                      fill(
+                          1,
+                          row(
+                                  fill(2, nestedClickBoxes(log)),
+                                  fill(1, text(" log panel ")))
+                              .with(p -> p.withSpacing(1))),
+                      length(1, text(" hint ")))
+                  .with(p -> p.withMargin(new jatatui.core.layout.Margin(1, 0)));
+            });
+
+    rerender(events, hooks, focus, app, 80, 24);
+
+    // (20, 10) is well inside the nested-boxes column on an 80x24 buffer with 1-cell margin and
+    // borders (left side; the row's first child is fill(2, ...) so it gets ~50 cols of width).
+    MouseEvent ev = new MouseEvent(20, 10, new KeyModifiers(0), MouseEvent.Kind.DOWN);
+    events.dispatchMouse(ev);
+
+    @SuppressWarnings("unchecked")
+    List<String> finalLog =
+        (List<String>) hooks.values.values().stream()
+            .filter(v -> v instanceof List)
+            .findFirst()
+            .orElseThrow();
+
+    assertEquals(List.of("inner", "middle", "outer"), finalLog);
+  }
+
+  static Element nestedClickBoxes(State<List<String>> log) {
+    return component(
+        ctx -> {
+          ctx.onClick(() -> log.update(prev -> append(prev, "outer")));
+          return box(
+              " Outer ",
+              Borders.ALL,
+              component(
+                  mctx -> {
+                    mctx.onClick(() -> log.update(prev -> append(prev, "middle")));
+                    return box(
+                        " Middle ",
+                        Borders.ALL,
+                        component(
+                            ictx -> {
+                              ictx.onClick(() -> log.update(prev -> append(prev, "inner")));
+                              return box(" Inner ", Borders.ALL, text("hi"));
+                            }));
+                  }));
+        });
+  }
+
   static List<String> append(List<String> prev, String s) {
     List<String> next = new ArrayList<>(prev);
     next.add(s);

@@ -37,8 +37,21 @@ public final class ReactApp {
   public static void run(Element root) throws IOException {
     Jatatui.runIo(
         terminal -> {
-          ReactApp app = new ReactApp(root, new CrosstermJni());
-          app.loop(terminal);
+          CrosstermJni jni = new CrosstermJni();
+          // Enable mouse capture so onClick / onScroll handlers receive events. Without this the
+          // terminal never sends mouse events to the app at all. Disabled in finally so the
+          // terminal is restored cleanly on exit (or panic, via Jatatui.runIo's cleanup).
+          jni.execute(new tui.crossterm.Command.EnableMouseCapture());
+          try {
+            ReactApp app = new ReactApp(root, jni);
+            app.loop(terminal);
+          } finally {
+            try {
+              jni.execute(new tui.crossterm.Command.DisableMouseCapture());
+            } catch (RuntimeException e) {
+              // best-effort cleanup; don't mask the original failure
+            }
+          }
         });
   }
 
