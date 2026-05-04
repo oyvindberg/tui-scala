@@ -62,6 +62,8 @@ public final class ReactApp {
     events.clear();
     focus.clearFrame();
     RenderContext ctx = new RenderContext(frame, events, hooks, focus, () -> dirty.set(true));
+    // Record the root fiber's bounds so click hit-tests bubble all the way up to root handlers.
+    events.recordBounds(Fiber.root(), frame.area());
     root.render(ctx, frame.area());
   }
 
@@ -77,22 +79,23 @@ public final class ReactApp {
         dirty.set(true);
         return true;
       }
-      if (events.dispatchKey(code, focus.focusedFiber())) dirty.set(true);
+      KeyEvent kev = new KeyEvent(code, mods);
+      if (events.dispatchKey(kev, focus.focusedFiber())) dirty.set(true);
     } else if (ev instanceof Event.Mouse mouseEv) {
       var me = mouseEv.mouseEvent();
-      switch (me.kind()) {
-        case tui.crossterm.MouseEventKind.Down ignored -> {
-          if (events.dispatchClick(me.column(), me.row())) dirty.set(true);
-        }
-        case tui.crossterm.MouseEventKind.ScrollUp ignored -> {
-          if (events.dispatchScroll(me.column(), me.row(), true)) dirty.set(true);
-        }
-        case tui.crossterm.MouseEventKind.ScrollDown ignored -> {
-          if (events.dispatchScroll(me.column(), me.row(), false)) dirty.set(true);
-        }
-        default -> {
-          // ignore others (Move/Drag/Up) for now
-        }
+      MouseEvent.Kind kind =
+          switch (me.kind()) {
+            case tui.crossterm.MouseEventKind.Down ignored -> MouseEvent.Kind.DOWN;
+            case tui.crossterm.MouseEventKind.Up ignored -> MouseEvent.Kind.UP;
+            case tui.crossterm.MouseEventKind.Drag ignored -> MouseEvent.Kind.DRAG;
+            case tui.crossterm.MouseEventKind.Moved ignored -> MouseEvent.Kind.MOVE;
+            case tui.crossterm.MouseEventKind.ScrollUp ignored -> MouseEvent.Kind.SCROLL_UP;
+            case tui.crossterm.MouseEventKind.ScrollDown ignored -> MouseEvent.Kind.SCROLL_DOWN;
+            default -> null;
+          };
+      if (kind != null) {
+        MouseEvent mev = new MouseEvent(me.column(), me.row(), me.modifiers(), kind);
+        if (events.dispatchMouse(mev)) dirty.set(true);
       }
     } else if (ev instanceof Event.Resize) {
       dirty.set(true);

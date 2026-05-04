@@ -56,6 +56,7 @@ public final class RenderContext {
     fiber = prev.child(index);
     hookIndex = 0;
     hooks.touched.add(fiber);
+    events.recordBounds(fiber, area);
     try {
       child.render(this, area);
     } finally {
@@ -70,6 +71,7 @@ public final class RenderContext {
     fiber = prev.child(key);
     hookIndex = 0;
     hooks.touched.add(fiber);
+    events.recordBounds(fiber, area);
     try {
       child.render(this, area);
     } finally {
@@ -127,17 +129,44 @@ public final class RenderContext {
 
   // ---- Event registration ----
 
+  /// Register a click handler. Fires on mouse-down inside `area`. Bubbles up the fiber tree
+  /// (deepest registering fiber gets it first, then ancestors). Use [MouseEvent#stopPropagation]
+  /// to prevent ancestors from also receiving it.
+  public void onClick(Rect area, Consumer<MouseEvent> handler) {
+    events.addClick(fiber, area, handler);
+  }
+
+  /// Convenience overload: handler ignores the [MouseEvent].
   public void onClick(Rect area, Runnable handler) {
-    events.add(EventKind.CLICK, area, handler);
+    events.addClick(fiber, area, e -> handler.run());
   }
 
-  public void onHover(Rect area, Consumer<Boolean> onChange) {
-    events.addHover(area, onChange);
+  /// Register a scroll handler. Fires on mouse-wheel events inside `area`. Distinguish direction
+  /// via the [MouseEvent#kind] (`SCROLL_UP` / `SCROLL_DOWN`). Bubbles like click.
+  public void onScroll(Rect area, Consumer<MouseEvent> handler) {
+    events.addScroll(fiber, area, handler);
   }
 
-  /// Register a key handler. Fires when this fiber is focused AND the matcher accepts the key.
-  public void onKey(Object keyMatcher, Runnable handler) {
+  /// Register a key handler. Fires when this fiber (or one of its descendants) is focused AND the
+  /// matcher accepts the key. Bubbles up the focus chain to root.
+  public void onKey(Object keyMatcher, Consumer<KeyEvent> handler) {
     events.addKey(fiber, keyMatcher, handler);
+  }
+
+  /// Convenience overload: handler ignores the [KeyEvent].
+  public void onKey(Object keyMatcher, Runnable handler) {
+    events.addKey(fiber, keyMatcher, e -> handler.run());
+  }
+
+  /// Register a global key handler — fires AFTER the focus-chain bubble, regardless of focus.
+  /// Use for app-wide shortcuts like Ctrl-Q. To intercept first, register at the root component
+  /// (which is at the top of every focus chain).
+  public void onGlobalKey(Object keyMatcher, Consumer<KeyEvent> handler) {
+    events.addGlobalKey(keyMatcher, handler);
+  }
+
+  public void onGlobalKey(Object keyMatcher, Runnable handler) {
+    events.addGlobalKey(keyMatcher, e -> handler.run());
   }
 
   // ---- Internals ----

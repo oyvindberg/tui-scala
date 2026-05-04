@@ -28,6 +28,22 @@ public final class Fiber {
     return new Fiber(Optional.of(this), key);
   }
 
+  /// The parent fiber, or empty if this is the root.
+  public Optional<Fiber> parent() {
+    return parent;
+  }
+
+  /// Distance from the root. Root is depth 0.
+  public int depth() {
+    int d = 0;
+    Fiber cur = this;
+    while (cur.parent.isPresent()) {
+      d++;
+      cur = cur.parent.get();
+    }
+    return d;
+  }
+
   private Fiber(Optional<Fiber> parent, Object key) {
     this.parent = parent;
     this.key = key;
