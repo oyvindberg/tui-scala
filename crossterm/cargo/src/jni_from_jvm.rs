@@ -338,8 +338,8 @@ pub fn queue_command<W: Write>(w: &mut W, env: JNIEnv, obj: JObject) -> UnifiedR
             w.queue(style::SetUnderlineColor(x)).unify_errors()?
         }
         "SetColors" => {
-            let foreground = optional_color(env, object_field(env, obj, "foreground", "Ltui/crossterm/Color;").unify_errors()?).unify_errors()?;
-            let background = optional_color(env, object_field(env, obj, "background", "Ltui/crossterm/Color;").unify_errors()?).unify_errors()?;
+            let foreground = optional_color(env, object_field(env, obj, "foreground", "Ljava/util/Optional;").unify_errors()?).unify_errors()?;
+            let background = optional_color(env, object_field(env, obj, "background", "Ljava/util/Optional;").unify_errors()?).unify_errors()?;
             let set_colors = style::SetColors(style::Colors { foreground, background });
             w.queue(set_colors).unify_errors()?
         }
@@ -352,9 +352,9 @@ pub fn queue_command<W: Write>(w: &mut W, env: JNIEnv, obj: JObject) -> UnifiedR
             w.queue(style::SetAttributes(x)).unify_errors()?
         }
         "SetStyle" => {
-            let foreground_color = optional_color(env, object_field(env, obj, "foreground_color", "Ltui/crossterm/Color;").unify_errors()?).unify_errors()?;
-            let background_color = optional_color(env, object_field(env, obj, "background_color", "Ltui/crossterm/Color;").unify_errors()?).unify_errors()?;
-            let underline_color = optional_color(env, object_field(env, obj, "underline_color", "Ltui/crossterm/Color;").unify_errors()?).unify_errors()?;
+            let foreground_color = optional_color(env, object_field(env, obj, "foreground_color", "Ljava/util/Optional;").unify_errors()?).unify_errors()?;
+            let background_color = optional_color(env, object_field(env, obj, "background_color", "Ljava/util/Optional;").unify_errors()?).unify_errors()?;
+            let underline_color = optional_color(env, object_field(env, obj, "underline_color", "Ljava/util/Optional;").unify_errors()?).unify_errors()?;
             let attributes = attributes_list(env, object_field(env, obj, "attributes", "Ljava/util/List;").unify_errors()?).unify_errors()?;
             let content_style = style::ContentStyle { foreground_color, background_color, underline_color, attributes };
             w.queue(style::SetStyle(content_style)).unify_errors()?

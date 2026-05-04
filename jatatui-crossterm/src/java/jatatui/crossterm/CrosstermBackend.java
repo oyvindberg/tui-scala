@@ -78,12 +78,12 @@ public final class CrosstermBackend implements Backend {
         diff.queue(commands);
         modifier = cell.modifier;
       }
-      if (!cell.fg.equals(fg) || !cell.bg.equals(bg)) {
-        commands.add(
-            new Command.SetColors(
-                Optional.of(CrosstermColorConv.toCrossterm(cell.fg)),
-                Optional.of(CrosstermColorConv.toCrossterm(cell.bg))));
+      if (!cell.fg.equals(fg)) {
+        commands.add(new Command.SetForegroundColor(CrosstermColorConv.toCrossterm(cell.fg)));
         fg = cell.fg;
+      }
+      if (!cell.bg.equals(bg)) {
+        commands.add(new Command.SetBackgroundColor(CrosstermColorConv.toCrossterm(cell.bg)));
         bg = cell.bg;
       }
       if (!cell.underlineColor.equals(underlineColor)) {
