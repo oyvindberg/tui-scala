@@ -2,8 +2,6 @@ package jatatui.crossterm;
 
 import jatatui.core.terminal.Terminal;
 import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.util.function.Function;
 import tui.crossterm.Command;
 import tui.crossterm.CrosstermJni;
 
@@ -43,23 +41,9 @@ public final class Jatatui {
     }
   }
 
-  /// Run a function with an initialized terminal, restoring the terminal
-  /// afterwards regardless of whether the function returned normally or threw.
-  public static <R> R run(Function<Terminal<CrosstermBackend>, R> body) throws IOException {
-    Terminal<CrosstermBackend> terminal = init();
-    try {
-      return body.apply(terminal);
-    } finally {
-      try {
-        terminal.close();
-      } finally {
-        restore();
-      }
-    }
-  }
-
-  /// Run a function that may throw IOException. The IOException is rethrown verbatim;
-  /// other checked exceptions must be wrapped by the caller.
+  /// Run a function that may throw IOException with an initialized terminal,
+  /// restoring the terminal afterwards regardless of whether the function
+  /// returned normally or threw.
   public static void runIo(IoConsumer body) throws IOException {
     Terminal<CrosstermBackend> terminal = init();
     try {
@@ -96,22 +80,5 @@ public final class Jatatui {
         });
     Runtime.getRuntime().addShutdownHook(new Thread(Jatatui::restore, "jatatui-restore"));
     panicHookInstalled = true;
-  }
-
-  /// Sneaky-throw helper for code paths that want a `Function` but need to
-  /// surface `IOException`. Wraps `IOException` as `UncheckedIOException`.
-  public static <R> Function<Terminal<CrosstermBackend>, R> ioFn(IoFunction<R> f) {
-    return terminal -> {
-      try {
-        return f.apply(terminal);
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
-      }
-    };
-  }
-
-  @FunctionalInterface
-  public interface IoFunction<R> {
-    R apply(Terminal<CrosstermBackend> terminal) throws IOException;
   }
 }
