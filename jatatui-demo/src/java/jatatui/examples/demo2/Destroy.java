@@ -56,7 +56,8 @@ public final class Destroy {
     Random rng = new Random(10);
     int rampFrames = 450;
     double fractionalSpeed = (double) frameCount / (double) rampFrames;
-    double variableSpeed = (double) DRIP_SPEED * fractionalSpeed * fractionalSpeed * fractionalSpeed;
+    double variableSpeed =
+        (double) DRIP_SPEED * fractionalSpeed * fractionalSpeed * fractionalSpeed;
     int pixelCount = (int) Math.floor((double) frameCount * variableSpeed);
     int width = area.width();
     int innerHeightHigh = Math.max(2, area.height() - 2);

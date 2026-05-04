@@ -61,8 +61,7 @@ public final class DemoExample {
         continue;
       }
       Event event = JNI.read();
-      if (event instanceof Event.Key keyEvt
-          && keyEvt.keyEvent().kind() == KeyEventKind.Press) {
+      if (event instanceof Event.Key keyEvt && keyEvt.keyEvent().kind() == KeyEventKind.Press) {
         KeyCode code = keyEvt.keyEvent().code();
         if (code instanceof KeyCode.Char ch) {
           char c = ch.c();

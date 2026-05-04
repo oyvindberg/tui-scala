@@ -41,8 +41,7 @@ public final class EmailTab {
   public static final java.util.List<Email> EMAILS =
       java.util.List.of(
           new Email("Alice <alice@example.com>", "Hello", "Hi Bob,\nHow are you?\n\nAlice"),
-          new Email(
-              "Bob <bob@example.com>", "Re: Hello", "Hi Alice,\nI'm fine, thanks!\n\nBob"),
+          new Email("Bob <bob@example.com>", "Re: Hello", "Hi Alice,\nI'm fine, thanks!\n\nBob"),
           new Email(
               "Charlie <charlie@example.com>",
               "Re: Hello",

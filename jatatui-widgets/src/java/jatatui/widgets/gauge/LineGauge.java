@@ -5,7 +5,6 @@ import jatatui.core.buffer.Cell;
 import jatatui.core.layout.Position;
 import jatatui.core.layout.Rect;
 import jatatui.core.style.Style;
-import jatatui.core.style.Styled;
 import jatatui.core.style.Stylize;
 import jatatui.core.symbols.Line;
 import jatatui.core.widgets.Widget;
@@ -16,7 +15,8 @@ import java.util.Optional;
 /// Mirrors `ratatui_widgets::gauge::LineGauge` (v0.30).
 ///
 /// Unlike [Gauge], only the width can be defined by the rendering [Rect]. The height is always 1.
-/// The associated label is always left-aligned. If not set with [#withLabel(jatatui.core.text.Line)]
+/// The associated label is always left-aligned. If not set with
+// [#withLabel(jatatui.core.text.Line)]
 /// the label is the percentage of the bar filled.
 public final class LineGauge implements Widget, Stylize<LineGauge> {
 
@@ -179,7 +179,8 @@ public final class LineGauge implements Widget, Stylize<LineGauge> {
     jatatui.core.text.Line defaultLabel =
         jatatui.core.text.Line.from(String.format("%3.0f%%", ratio * 100.0));
     jatatui.core.text.Line effectiveLabel = label.orElse(defaultLabel);
-    Position end = buf.setLine(gaugeArea.left(), gaugeArea.top(), effectiveLabel, gaugeArea.width());
+    Position end =
+        buf.setLine(gaugeArea.left(), gaugeArea.top(), effectiveLabel, gaugeArea.width());
     int col = end.x();
     int row = end.y();
     int start = col + 1;
@@ -187,11 +188,7 @@ public final class LineGauge implements Widget, Stylize<LineGauge> {
       return;
     }
 
-    int filledEnd =
-        start
-            + (int)
-                Math.floor(
-                    Math.max(0, gaugeArea.right() - start) * ratio);
+    int filledEnd = start + (int) Math.floor(Math.max(0, gaugeArea.right() - start) * ratio);
     for (int x = start; x < filledEnd; x++) {
       Cell cell = buf.cellAt(x, row);
       cell.setSymbol(filledSymbol).setStyle(filledStyle);

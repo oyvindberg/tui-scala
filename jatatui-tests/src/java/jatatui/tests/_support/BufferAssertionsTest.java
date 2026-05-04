@@ -26,7 +26,8 @@ public class BufferAssertionsTest {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 5, 1));
     Buffer otherBuffer = Buffer.empty(new Rect(0, 0, 6, 1));
     AssertionError err =
-        assertThrows(AssertionError.class, () -> BufferAssertions.assertBufferEq(buffer, otherBuffer));
+        assertThrows(
+            AssertionError.class, () -> BufferAssertions.assertBufferEq(buffer, otherBuffer));
     assertTrue(err.getMessage().contains("buffer areas not equal"), err.getMessage());
   }
 
@@ -36,7 +37,8 @@ public class BufferAssertionsTest {
     Buffer otherBuffer = Buffer.empty(new Rect(0, 0, 5, 1));
     otherBuffer.setString(0, 0, " ", Style.empty().withFg(Color.RED));
     AssertionError err =
-        assertThrows(AssertionError.class, () -> BufferAssertions.assertBufferEq(buffer, otherBuffer));
+        assertThrows(
+            AssertionError.class, () -> BufferAssertions.assertBufferEq(buffer, otherBuffer));
     assertTrue(err.getMessage().contains("buffer contents not equal"), err.getMessage());
   }
 }

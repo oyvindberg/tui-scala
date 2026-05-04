@@ -5,7 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /// An expression that can be the left hand or right hand side of a constraint equation.
-/// It is a linear combination of variables, i.e. a sum of variables weighted by coefficients, plus an optional constant.
+/// It is a linear combination of variables, i.e. a sum of variables weighted by coefficients, plus
+// an optional constant.
 public final class Expression {
   public final List<Term> terms;
   public double constant;
@@ -44,7 +45,8 @@ public final class Expression {
     return new Expression(ts, 0.0);
   }
 
-  /// General constructor. Each `Term` in `terms` is part of the sum forming the expression, as well as `constant`.
+  /// General constructor. Each `Term` in `terms` is part of the sum forming the expression, as well
+  // as `constant`.
   public static Expression of(Term[] terms, double constant) {
     return new Expression(new ArrayList<>(Arrays.asList(terms)), constant);
   }

@@ -170,8 +170,7 @@ class RectTest {
   void centered() {
     Rect rect = Rect.of(0, 0, 5, 5);
     assertEquals(
-        Rect.of(1, 2, 3, 1),
-        rect.centered(new Constraint.Length(3), new Constraint.Length(1)));
+        Rect.of(1, 2, 3, 1), rect.centered(new Constraint.Length(3), new Constraint.Length(1)));
   }
 
   @Test

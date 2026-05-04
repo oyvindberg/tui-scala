@@ -1,22 +1,32 @@
 package jatatui.core.layout.solver;
 
-/// Contains useful constants and functions for producing strengths for use in the constraint solver.
-/// Each constraint added to the solver has an associated strength specifying the precedence the solver should
-/// impose when choosing which constraints to enforce. It will try to enforce all constraints, but if that
+/// Contains useful constants and functions for producing strengths for use in the constraint
+// solver.
+/// Each constraint added to the solver has an associated strength specifying the precedence the
+// solver should
+/// impose when choosing which constraints to enforce. It will try to enforce all constraints, but
+// if that
 /// is impossible the lowest strength constraints are the first to be violated.
 ///
-/// Strengths are simply real numbers. The strongest legal strength is 1,001,001,000.0. The weakest is 0.0.
-/// For convenience constants are declared for commonly used strengths. These are `REQUIRED`, `STRONG`,
+/// Strengths are simply real numbers. The strongest legal strength is 1,001,001,000.0. The weakest
+// is 0.0.
+/// For convenience constants are declared for commonly used strengths. These are `REQUIRED`,
+// `STRONG`,
 /// `MEDIUM` and `WEAK`. Feel free to multiply these by other values to get intermediate strengths.
 /// Note that the solver will clip given strengths to the legal range.
 ///
-/// `REQUIRED` signifies a constraint that cannot be violated under any circumstance. Use this special strength
-/// sparingly, as the solver will fail completely if it find that not all of the `REQUIRED` constraints
+/// `REQUIRED` signifies a constraint that cannot be violated under any circumstance. Use this
+// special strength
+/// sparingly, as the solver will fail completely if it find that not all of the `REQUIRED`
+// constraints
 /// can be satisfied. The other strengths represent fallible constraints. These should be the most
-/// commonly used strenghts for use cases where violating a constraint is acceptable or even desired.
+/// commonly used strenghts for use cases where violating a constraint is acceptable or even
+// desired.
 ///
-/// The solver will try to get as close to satisfying the constraints it violates as possible, strongest first.
-/// This behaviour can be used (for example) to provide a "default" value for a variable should no other
+/// The solver will try to get as close to satisfying the constraints it violates as possible,
+// strongest first.
+/// This behaviour can be used (for example) to provide a "default" value for a variable should no
+// other
 /// stronger constraints be put upon it.
 public record Strength(double value) implements Comparable<Strength> {
   public Strength times(double rhs) {
@@ -35,7 +45,8 @@ public record Strength(double value) implements Comparable<Strength> {
     return new Strength(value * other.value);
   }
 
-  /// Create a constraint as a linear combination of STRONG, MEDIUM and WEAK strengths, corresponding to `a`
+  /// Create a constraint as a linear combination of STRONG, MEDIUM and WEAK strengths,
+  // corresponding to `a`
   /// `b` and `c` respectively. The result is further multiplied by `w`.
   public static Strength create(double a, double b, double c, double w) {
     return new Strength(

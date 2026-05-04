@@ -174,10 +174,7 @@ public final class WordWrapper implements LineComposer {
     }
 
     // append remaining text parts
-    if (pendingLine.isEmpty()
-        && pendingWord.isEmpty()
-        && !pendingWhitespace.isEmpty()
-        && trim) {
+    if (pendingLine.isEmpty() && pendingWord.isEmpty() && !pendingWhitespace.isEmpty() && trim) {
       wrappedLines.addLast(new ArrayList<>());
     }
     if (!pendingLine.isEmpty() || !trim) {

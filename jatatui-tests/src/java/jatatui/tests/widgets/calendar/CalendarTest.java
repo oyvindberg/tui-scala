@@ -28,7 +28,8 @@ public class CalendarTest {
 
     assertEquals(
         aStyle, s.getStyle(aDate), "Date not added to the styler should look up as Style::empty()");
-    assertEquals(bStyle, s.getStyle(bDate), "Date added to styler should return the provided style");
+    assertEquals(
+        bStyle, s.getStyle(bDate), "Date added to styler should return the provided style");
   }
 
   @Test

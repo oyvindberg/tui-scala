@@ -43,8 +43,10 @@ public class LayoutTest {
     assertTrue(Layout.Strengths.MAX_SIZE_LE.value() > Layout.Strengths.MAX_SIZE_EQ.value());
     assertEquals(Layout.Strengths.MIN_SIZE_GE.value(), Layout.Strengths.MAX_SIZE_LE.value());
     assertTrue(Layout.Strengths.MAX_SIZE_LE.value() > Layout.Strengths.LENGTH_SIZE_EQ.value());
-    assertTrue(Layout.Strengths.LENGTH_SIZE_EQ.value() > Layout.Strengths.PERCENTAGE_SIZE_EQ.value());
-    assertTrue(Layout.Strengths.PERCENTAGE_SIZE_EQ.value() > Layout.Strengths.RATIO_SIZE_EQ.value());
+    assertTrue(
+        Layout.Strengths.LENGTH_SIZE_EQ.value() > Layout.Strengths.PERCENTAGE_SIZE_EQ.value());
+    assertTrue(
+        Layout.Strengths.PERCENTAGE_SIZE_EQ.value() > Layout.Strengths.RATIO_SIZE_EQ.value());
     assertTrue(Layout.Strengths.RATIO_SIZE_EQ.value() > Layout.Strengths.MAX_SIZE_EQ.value());
     assertTrue(Layout.Strengths.MIN_SIZE_GE.value() > Layout.Strengths.FILL_GROW.value());
     assertTrue(Layout.Strengths.FILL_GROW.value() > Layout.Strengths.GROW.value());
@@ -740,17 +742,14 @@ public class LayoutTest {
     return Stream.of(
         Arguments.of("len_min1", List.of(new Length(25), new Min(100)), ranges(0, 0, 0, 100)),
         Arguments.of("len_min2", List.of(new Length(25), new Min(0)), ranges(0, 25, 25, 100)),
-        Arguments.of(
-            "len_max1", List.of(new Length(25), new Max(0)), ranges(0, 100, 100, 100)),
+        Arguments.of("len_max1", List.of(new Length(25), new Max(0)), ranges(0, 100, 100, 100)),
         Arguments.of("len_max2", List.of(new Length(25), new Max(100)), ranges(0, 25, 25, 100)),
         Arguments.of(
             "len_perc", List.of(new Length(25), new Percentage(25)), ranges(0, 25, 25, 100)),
         Arguments.of(
             "perc_len", List.of(new Percentage(25), new Length(25)), ranges(0, 75, 75, 100)),
-        Arguments.of(
-            "len_ratio", List.of(new Length(25), new Ratio(1, 4)), ranges(0, 25, 25, 100)),
-        Arguments.of(
-            "ratio_len", List.of(new Ratio(1, 4), new Length(25)), ranges(0, 75, 75, 100)),
+        Arguments.of("len_ratio", List.of(new Length(25), new Ratio(1, 4)), ranges(0, 25, 25, 100)),
+        Arguments.of("ratio_len", List.of(new Ratio(1, 4), new Length(25)), ranges(0, 75, 75, 100)),
         Arguments.of("len_len", List.of(new Length(25), new Length(25)), ranges(0, 25, 25, 100)),
         Arguments.of(
             "len1",
@@ -784,8 +783,7 @@ public class LayoutTest {
   @MethodSource("table_length_cases")
   public void table_length(int width, List<Constraint> constraints, int[][] expected) {
     Rect rect = Rect.of(0, 0, width, 1);
-    Rect[] split =
-        Layout.horizontal(constraints).withSpacing(1).withFlex(Flex.Start).split(rect);
+    Rect[] split = Layout.horizontal(constraints).withSpacing(1).withFlex(Flex.Start).split(rect);
     assertRanges(expected, split);
   }
 
@@ -1033,12 +1031,9 @@ public class LayoutTest {
             "space_fill2",
             List.of(new Fill(0), new Fill(0), new Percentage(20)),
             ranges(0, 40, 40, 80, 80, 100)),
-        Arguments.of(
-            "space_fill3", List.of(new Fill(0), new Ratio(1, 5)), ranges(0, 80, 80, 100)),
-        Arguments.of(
-            "space_fill4", List.of(new Fill(0), new Fill(max)), ranges(0, 0, 0, 100)),
-        Arguments.of(
-            "space_fill5", List.of(new Fill(max), new Fill(0)), ranges(0, 100, 100, 100)),
+        Arguments.of("space_fill3", List.of(new Fill(0), new Ratio(1, 5)), ranges(0, 80, 80, 100)),
+        Arguments.of("space_fill4", List.of(new Fill(0), new Fill(max)), ranges(0, 0, 0, 100)),
+        Arguments.of("space_fill5", List.of(new Fill(max), new Fill(0)), ranges(0, 100, 100, 100)),
         Arguments.of(
             "space_fill6", List.of(new Fill(0), new Percentage(20)), ranges(0, 80, 80, 100)),
         Arguments.of(
@@ -1108,10 +1103,8 @@ public class LayoutTest {
     return Stream.of(
         Arguments.of("max_min", List.of(new Max(100), new Min(0)), ranges(0, 100, 100, 100)),
         Arguments.of("min_max", List.of(new Min(0), new Max(100)), ranges(0, 0, 0, 100)),
-        Arguments.of(
-            "length_min", List.of(new Length(max), new Min(10)), ranges(0, 90, 90, 100)),
-        Arguments.of(
-            "min_length", List.of(new Min(10), new Length(max)), ranges(0, 10, 10, 100)),
+        Arguments.of("length_min", List.of(new Length(max), new Min(10)), ranges(0, 90, 90, 100)),
+        Arguments.of("min_length", List.of(new Min(10), new Length(max)), ranges(0, 10, 10, 100)),
         Arguments.of("length_max", List.of(new Length(0), new Max(10)), ranges(0, 90, 90, 100)),
         Arguments.of("max_length", List.of(new Max(10), new Length(0)), ranges(0, 10, 10, 100)));
   }
@@ -1232,17 +1225,11 @@ public class LayoutTest {
             ranges(13, 38, 63, 88),
             Flex.SpaceAround),
         Arguments.of(
-            "min_legacy2",
-            List.of(new Min(25), new Min(25)),
-            ranges(0, 25, 25, 100),
-            Flex.Legacy),
+            "min_legacy2", List.of(new Min(25), new Min(25)), ranges(0, 25, 25, 100), Flex.Legacy),
         Arguments.of(
             "min_start2", List.of(new Min(25), new Min(25)), ranges(0, 50, 50, 100), Flex.Start),
         Arguments.of(
-            "min_center2",
-            List.of(new Min(25), new Min(25)),
-            ranges(0, 50, 50, 100),
-            Flex.Center),
+            "min_center2", List.of(new Min(25), new Min(25)), ranges(0, 50, 50, 100), Flex.Center),
         Arguments.of(
             "min_end2", List.of(new Min(25), new Min(25)), ranges(0, 50, 50, 100), Flex.End),
         Arguments.of(
@@ -1261,17 +1248,11 @@ public class LayoutTest {
             ranges(0, 50, 50, 100),
             Flex.SpaceAround),
         Arguments.of(
-            "max_legacy2",
-            List.of(new Max(25), new Max(25)),
-            ranges(0, 25, 25, 100),
-            Flex.Legacy),
+            "max_legacy2", List.of(new Max(25), new Max(25)), ranges(0, 25, 25, 100), Flex.Legacy),
         Arguments.of(
             "max_start2", List.of(new Max(25), new Max(25)), ranges(0, 25, 25, 50), Flex.Start),
         Arguments.of(
-            "max_center2",
-            List.of(new Max(25), new Max(25)),
-            ranges(25, 50, 50, 75),
-            Flex.Center),
+            "max_center2", List.of(new Max(25), new Max(25)), ranges(25, 50, 50, 75), Flex.Center),
         Arguments.of(
             "max_end2", List.of(new Max(25), new Max(25)), ranges(50, 75, 75, 100), Flex.End),
         Arguments.of(
@@ -1294,27 +1275,16 @@ public class LayoutTest {
             List.of(new Length(25), new Length(25), new Length(25)),
             ranges(0, 25, 38, 63, 75, 100),
             Flex.SpaceBetween),
-        Arguments.of(
-            "one_segment_legacy", List.of(new Length(50)), ranges(0, 100), Flex.Legacy),
+        Arguments.of("one_segment_legacy", List.of(new Length(50)), ranges(0, 100), Flex.Legacy),
         Arguments.of("one_segment_start", List.of(new Length(50)), ranges(0, 50), Flex.Start),
         Arguments.of("one_segment_end", List.of(new Length(50)), ranges(50, 100), Flex.End),
+        Arguments.of("one_segment_center", List.of(new Length(50)), ranges(25, 75), Flex.Center),
         Arguments.of(
-            "one_segment_center", List.of(new Length(50)), ranges(25, 75), Flex.Center),
+            "one_segment_spacebetween", List.of(new Length(50)), ranges(0, 100), Flex.SpaceBetween),
         Arguments.of(
-            "one_segment_spacebetween",
-            List.of(new Length(50)),
-            ranges(0, 100),
-            Flex.SpaceBetween),
+            "one_segment_spaceevenly", List.of(new Length(50)), ranges(25, 75), Flex.SpaceEvenly),
         Arguments.of(
-            "one_segment_spaceevenly",
-            List.of(new Length(50)),
-            ranges(25, 75),
-            Flex.SpaceEvenly),
-        Arguments.of(
-            "one_segment_spacearound",
-            List.of(new Length(50)),
-            ranges(25, 75),
-            Flex.SpaceAround));
+            "one_segment_spacearound", List.of(new Length(50)), ranges(25, 75), Flex.SpaceAround));
   }
 
   @ParameterizedTest(name = "{0}")
@@ -1383,8 +1353,7 @@ public class LayoutTest {
   public void flex_overlap(
       String name, int[][] expected, List<Constraint> constraints, Flex flex, int spacing) {
     Rect rect = Rect.of(0, 0, 100, 1);
-    Rect[] split =
-        Layout.horizontal(constraints).withFlex(flex).withSpacing(spacing).split(rect);
+    Rect[] split = Layout.horizontal(constraints).withFlex(flex).withSpacing(spacing).split(rect);
     assertXw(expected, split);
   }
 
@@ -1445,8 +1414,7 @@ public class LayoutTest {
   public void flex_spacing(
       String name, int[][] expected, List<Constraint> constraints, Flex flex, int spacing) {
     Rect rect = Rect.of(0, 0, 100, 1);
-    Rect[] split =
-        Layout.horizontal(constraints).withFlex(flex).withSpacing(spacing).split(rect);
+    Rect[] split = Layout.horizontal(constraints).withFlex(flex).withSpacing(spacing).split(rect);
     assertXw(expected, split);
   }
 
@@ -1531,8 +1499,7 @@ public class LayoutTest {
   public void constraint_specification_tests_for_priority_with_spacing(
       String name, int[][] expected, List<Constraint> constraints, Flex flex, int spacing) {
     Rect rect = Rect.of(0, 0, 100, 1);
-    Rect[] split =
-        Layout.horizontal(constraints).withSpacing(spacing).withFlex(flex).split(rect);
+    Rect[] split = Layout.horizontal(constraints).withSpacing(spacing).withFlex(flex).split(rect);
     assertXw(expected, split);
   }
 
@@ -1551,10 +1518,7 @@ public class LayoutTest {
             List.of(new Fill(1), new Length(10), new Fill(1), new Length(10), new Fill(1)),
             Flex.Legacy),
         Arguments.of(
-            "flex2",
-            xw(27, 10, 63, 10),
-            List.of(new Length(10), new Length(10)),
-            Flex.SpaceEvenly),
+            "flex2", xw(27, 10, 63, 10), List.of(new Length(10), new Length(10)), Flex.SpaceEvenly),
         Arguments.of(
             "prop3",
             xw(0, 10, 10, 10, 20, 80),
@@ -1585,8 +1549,7 @@ public class LayoutTest {
 
   @ParameterizedTest(name = "{0}")
   @MethodSource("fill_vs_flex_cases")
-  public void fill_vs_flex(
-      String name, int[][] expected, List<Constraint> constraints, Flex flex) {
+  public void fill_vs_flex(String name, int[][] expected, List<Constraint> constraints, Flex flex) {
     Rect rect = Rect.of(0, 0, 100, 1);
     Rect[] split = Layout.horizontal(constraints).withFlex(flex).split(rect);
     assertXw(expected, split);
@@ -1621,19 +1584,11 @@ public class LayoutTest {
         Arguments.of(
             "flex0_end", xw(0, 50, 50, 50), List.of(new Fill(1), new Fill(1)), Flex.End, 0),
         Arguments.of(
-            "flex10_legacy",
-            xw(0, 45, 55, 45),
-            List.of(new Fill(1), new Fill(1)),
-            Flex.Legacy,
-            10),
+            "flex10_legacy", xw(0, 45, 55, 45), List.of(new Fill(1), new Fill(1)), Flex.Legacy, 10),
         Arguments.of(
             "flex10_start", xw(0, 45, 55, 45), List.of(new Fill(1), new Fill(1)), Flex.Start, 10),
         Arguments.of(
-            "flex10_center",
-            xw(0, 45, 55, 45),
-            List.of(new Fill(1), new Fill(1)),
-            Flex.Center,
-            10),
+            "flex10_center", xw(0, 45, 55, 45), List.of(new Fill(1), new Fill(1)), Flex.Center, 10),
         Arguments.of(
             "flex10_end", xw(0, 45, 55, 45), List.of(new Fill(1), new Fill(1)), Flex.End, 10),
         Arguments.of(
@@ -1745,8 +1700,7 @@ public class LayoutTest {
   public void fill_spacing(
       String name, int[][] expected, List<Constraint> constraints, Flex flex, int spacing) {
     Rect rect = Rect.of(0, 0, 100, 1);
-    Rect[] split =
-        Layout.horizontal(constraints).withFlex(flex).withSpacing(spacing).split(rect);
+    Rect[] split = Layout.horizontal(constraints).withFlex(flex).withSpacing(spacing).split(rect);
     assertXw(expected, split);
   }
 
@@ -1755,11 +1709,7 @@ public class LayoutTest {
         Arguments.of(
             "flex0_1", xw(0, 55, 45, 55), List.of(new Fill(1), new Fill(1)), Flex.Legacy, -10),
         Arguments.of(
-            "flex0_2",
-            xw(0, 50, 50, 50),
-            List.of(new Fill(1), new Fill(1)),
-            Flex.SpaceAround,
-            -10),
+            "flex0_2", xw(0, 50, 50, 50), List.of(new Fill(1), new Fill(1)), Flex.SpaceAround, -10),
         Arguments.of(
             "flex0_3",
             xw(0, 55, 45, 55),
@@ -1773,11 +1723,7 @@ public class LayoutTest {
         Arguments.of(
             "flex0_6", xw(0, 55, 45, 55), List.of(new Fill(1), new Fill(1)), Flex.End, -10),
         Arguments.of(
-            "flex0_7",
-            xw(0, 50, 50, 50),
-            List.of(new Fill(1), new Fill(1)),
-            Flex.SpaceEvenly,
-            -10),
+            "flex0_7", xw(0, 50, 50, 50), List.of(new Fill(1), new Fill(1)), Flex.SpaceEvenly, -10),
         Arguments.of(
             "flex10_1", xw(0, 51, 50, 50), List.of(new Fill(1), new Fill(1)), Flex.Legacy, -1),
         Arguments.of(
@@ -1787,11 +1733,7 @@ public class LayoutTest {
         Arguments.of(
             "flex10_4", xw(0, 51, 50, 50), List.of(new Fill(1), new Fill(1)), Flex.End, -1),
         Arguments.of(
-            "flex10_5",
-            xw(0, 50, 50, 50),
-            List.of(new Fill(1), new Fill(1)),
-            Flex.SpaceAround,
-            -1),
+            "flex10_5", xw(0, 50, 50, 50), List.of(new Fill(1), new Fill(1)), Flex.SpaceAround, -1),
         Arguments.of(
             "flex10_6",
             xw(0, 51, 50, 50),
@@ -1799,11 +1741,7 @@ public class LayoutTest {
             Flex.SpaceBetween,
             -1),
         Arguments.of(
-            "flex10_7",
-            xw(0, 50, 50, 50),
-            List.of(new Fill(1), new Fill(1)),
-            Flex.SpaceEvenly,
-            -1),
+            "flex10_7", xw(0, 50, 50, 50), List.of(new Fill(1), new Fill(1)), Flex.SpaceEvenly, -1),
         Arguments.of(
             "flex_length0_1",
             xw(0, 55, 45, 10, 45, 55),
@@ -1895,8 +1833,7 @@ public class LayoutTest {
   public void fill_overlap(
       String name, int[][] expected, List<Constraint> constraints, Flex flex, int spacing) {
     Rect rect = Rect.of(0, 0, 100, 1);
-    Rect[] split =
-        Layout.horizontal(constraints).withFlex(flex).withSpacing(spacing).split(rect);
+    Rect[] split = Layout.horizontal(constraints).withFlex(flex).withSpacing(spacing).split(rect);
     assertXw(expected, split);
   }
 
@@ -1916,7 +1853,10 @@ public class LayoutTest {
   static Stream<Arguments> split_with_spacers_no_spacing_cases() {
     return Stream.of(
         Arguments.of(
-            "legacy", xw(0, 0, 10, 0, 100, 0), List.of(new Length(10), new Length(10)), Flex.Legacy),
+            "legacy",
+            xw(0, 0, 10, 0, 100, 0),
+            List.of(new Length(10), new Length(10)),
+            Flex.Legacy),
         Arguments.of(
             "spacebetween",
             xw(0, 0, 10, 80, 100, 0),
@@ -1992,11 +1932,7 @@ public class LayoutTest {
             Flex.Center,
             5),
         Arguments.of(
-            "end",
-            xw(0, 75, 85, 5, 100, 0),
-            List.of(new Length(10), new Length(10)),
-            Flex.End,
-            5));
+            "end", xw(0, 75, 85, 5, 100, 0), List.of(new Length(10), new Length(10)), Flex.End, 5));
   }
 
   @ParameterizedTest(name = "{0}")

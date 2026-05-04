@@ -100,7 +100,8 @@ public final class Colors {
     l = lNew;
 
     double[] rgbScale = oklabToLinearSrgb(lVt, cVt * a_, cVt * b_);
-    double scale = Math.cbrt(1.0 / Math.max(Math.max(rgbScale[0], rgbScale[1]), Math.max(rgbScale[2], 0.0)));
+    double scale =
+        Math.cbrt(1.0 / Math.max(Math.max(rgbScale[0], rgbScale[1]), Math.max(rgbScale[2], 0.0)));
 
     l *= scale;
     c *= scale;

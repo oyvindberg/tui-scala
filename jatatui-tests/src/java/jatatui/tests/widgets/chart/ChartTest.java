@@ -29,9 +29,7 @@ import org.junit.jupiter.api.Test;
 class ChartTest {
 
   private record LegendTestCase(
-      Rect chartArea,
-      HiddenLegendConstraints hiddenLegendConstraints,
-      Optional<Rect> legendArea) {}
+      Rect chartArea, HiddenLegendConstraints hiddenLegendConstraints, Optional<Rect> legendArea) {}
 
   @Test
   void it_should_hide_the_legend() {
@@ -156,7 +154,8 @@ class ChartTest {
     Chart widget =
         Chart.of(List.of(longDatasetName, shortDataset))
             .withHiddenLegendConstraints(
-                new HiddenLegendConstraints(new Constraint.Length(100), new Constraint.Length(100)));
+                new HiddenLegendConstraints(
+                    new Constraint.Length(100), new Constraint.Length(100)));
     Buffer buffer = Buffer.empty(new Rect(0, 0, 20, 5));
     widget.render(buffer.area, buffer);
     Buffer expected =
@@ -302,12 +301,7 @@ class ChartTest {
     assertBufferEq(
         buffer,
         Buffer.withLines(
-            "┌────┐   ",
-            "│Data│   ",
-            "└────┘   ",
-            "         ",
-            "         ",
-            "         "));
+            "┌────┐   ", "│Data│   ", "└────┘   ", "         ", "         ", "         "));
   }
 
   @Test
@@ -325,12 +319,7 @@ class ChartTest {
     assertBufferEq(
         buffer,
         Buffer.withLines(
-            " ┌────┐  ",
-            " │Data│  ",
-            " └────┘  ",
-            "         ",
-            "         ",
-            "         "));
+            " ┌────┐  ", " │Data│  ", " └────┘  ", "         ", "         ", "         "));
   }
 
   @Test
@@ -348,12 +337,7 @@ class ChartTest {
     assertBufferEq(
         buffer,
         Buffer.withLines(
-            "   ┌────┐",
-            "   │Data│",
-            "   └────┘",
-            "         ",
-            "         ",
-            "         "));
+            "   ┌────┐", "   │Data│", "   └────┘", "         ", "         ", "         "));
   }
 
   @Test
@@ -371,12 +355,7 @@ class ChartTest {
     assertBufferEq(
         buffer,
         Buffer.withLines(
-            "         ",
-            "┌────┐   ",
-            "│Data│   ",
-            "└────┘   ",
-            "         ",
-            "         "));
+            "         ", "┌────┐   ", "│Data│   ", "└────┘   ", "         ", "         "));
   }
 
   @Test
@@ -394,12 +373,7 @@ class ChartTest {
     assertBufferEq(
         buffer,
         Buffer.withLines(
-            "         ",
-            "   ┌────┐",
-            "   │Data│",
-            "   └────┘",
-            "         ",
-            "         "));
+            "         ", "   ┌────┐", "   │Data│", "   └────┘", "         ", "         "));
   }
 
   @Test
@@ -417,12 +391,7 @@ class ChartTest {
     assertBufferEq(
         buffer,
         Buffer.withLines(
-            "         ",
-            "         ",
-            "         ",
-            "┌────┐   ",
-            "│Data│   ",
-            "└────┘   "));
+            "         ", "         ", "         ", "┌────┐   ", "│Data│   ", "└────┘   "));
   }
 
   @Test
@@ -440,12 +409,7 @@ class ChartTest {
     assertBufferEq(
         buffer,
         Buffer.withLines(
-            "         ",
-            "         ",
-            "         ",
-            " ┌────┐  ",
-            " │Data│  ",
-            " └────┘  "));
+            "         ", "         ", "         ", " ┌────┐  ", " │Data│  ", " └────┘  "));
   }
 
   @Test
@@ -463,12 +427,7 @@ class ChartTest {
     assertBufferEq(
         buffer,
         Buffer.withLines(
-            "         ",
-            "         ",
-            "         ",
-            "   ┌────┐",
-            "   │Data│",
-            "   └────┘"));
+            "         ", "         ", "         ", "   ┌────┐", "   │Data│", "   └────┘"));
   }
 
   @Test
@@ -486,12 +445,7 @@ class ChartTest {
     assertBufferEq(
         buffer,
         Buffer.withLines(
-            "         ",
-            "         ",
-            "         ",
-            "         ",
-            "         ",
-            "         "));
+            "         ", "         ", "         ", "         ", "         ", "         "));
   }
 
   @Test
@@ -518,7 +472,8 @@ class ChartTest {
 
   /// N/A: `bar_chart` and `overlapping_lines` upstream tests verify Canvas drawing primitives at
   /// pixel granularity (Marker.Dot/Braille/Block). Those are exercised by the canvas widget tests
-  /// in `jatatui.tests.widgets.canvas`. We keep simpler smoke tests here (`render_in_minimal_buffer`,
+  /// in `jatatui.tests.widgets.canvas`. We keep simpler smoke tests here
+  // (`render_in_minimal_buffer`,
   /// `render_in_zero_size_buffer`) since they're sufficient to confirm Chart drives the Canvas
   /// pipeline correctly without duplicating canvas tests.
   @Test

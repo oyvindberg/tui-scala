@@ -145,7 +145,8 @@ public class BufferTest {
   @MethodSource("out_of_bounds_cases")
   public void index_mut_out_of_bounds_panics(String name, int x, int y) {
     Buffer buf = Buffer.empty(new Rect(10, 10, 10, 10));
-    Throwable t = assertThrows(IndexOutOfBoundsException.class, () -> buf.cellAt(x, y).setSymbol("A"));
+    Throwable t =
+        assertThrows(IndexOutOfBoundsException.class, () -> buf.cellAt(x, y).setSymbol("A"));
     assertTrue(
         t.getMessage().contains("index outside of buffer: the area is"),
         "unexpected message: " + t.getMessage());
@@ -264,10 +265,9 @@ public class BufferTest {
     Buffer buffer = Buffer.withLines("aaaaa", "bbbbb", "ccccc");
     buffer.setStyle(new Rect(0, 1, 5, 1), Style.empty().red());
 
-    Buffer expected = Buffer.withLineObjects(
-        Line.raw("aaaaa"),
-        Line.styled("bbbbb", Style.empty().red()),
-        Line.raw("ccccc"));
+    Buffer expected =
+        Buffer.withLineObjects(
+            Line.raw("aaaaa"), Line.styled("bbbbb", Style.empty().red()), Line.raw("ccccc"));
     BufferAssertions.assertBufferEq(buffer, expected);
   }
 
@@ -276,20 +276,17 @@ public class BufferTest {
     Buffer buffer = Buffer.withLines("aaaaa", "bbbbb", "ccccc");
     buffer.setStyle(new Rect(0, 1, 10, 3), Style.empty().red());
 
-    Buffer expected = Buffer.withLineObjects(
-        Line.raw("aaaaa"),
-        Line.styled("bbbbb", Style.empty().red()),
-        Line.styled("ccccc", Style.empty().red()));
+    Buffer expected =
+        Buffer.withLineObjects(
+            Line.raw("aaaaa"),
+            Line.styled("bbbbb", Style.empty().red()),
+            Line.styled("ccccc", Style.empty().red()));
     BufferAssertions.assertBufferEq(buffer, expected);
   }
 
   @Test
   public void with_lines() {
-    Buffer buffer = Buffer.withLines(
-        "┌────────┐",
-        "│コンピュ│",
-        "│ーa 上で│",
-        "└────────┘");
+    Buffer buffer = Buffer.withLines("┌────────┐", "│コンピュ│", "│ーa 上で│", "└────────┘");
     assertEquals(0, buffer.area().x());
     assertEquals(0, buffer.area().y());
     assertEquals(10, buffer.area().width());
@@ -325,18 +322,10 @@ public class BufferTest {
 
   @Test
   public void diff_single_width() {
-    Buffer prev = Buffer.withLines(
-        "          ",
-        "┌Title─┐  ",
-        "│      │  ",
-        "│      │  ",
-        "└──────┘  ");
-    Buffer next = Buffer.withLines(
-        "          ",
-        "┌TITLE─┐  ",
-        "│      │  ",
-        "│      │  ",
-        "└──────┘  ");
+    Buffer prev =
+        Buffer.withLines("          ", "┌Title─┐  ", "│      │  ", "│      │  ", "└──────┘  ");
+    Buffer next =
+        Buffer.withLines("          ", "┌TITLE─┐  ", "│      │  ", "│      │  ", "└──────┘  ");
     List<BufferUpdate> diff = prev.diff(next);
     assertEquals(4, diff.size());
     assertUpdate(diff.get(0), 2, 1, "I");
@@ -347,12 +336,8 @@ public class BufferTest {
 
   @Test
   public void diff_multi_width() {
-    Buffer prev = Buffer.withLines(
-        "┌Title─┐  ",
-        "└──────┘  ");
-    Buffer next = Buffer.withLines(
-        "┌称号──┐  ",
-        "└──────┘  ");
+    Buffer prev = Buffer.withLines("┌Title─┐  ", "└──────┘  ");
+    Buffer next = Buffer.withLines("┌称号──┐  ", "└──────┘  ");
     List<BufferUpdate> diff = prev.diff(next);
     assertEquals(3, diff.size());
     assertUpdate(diff.get(0), 1, 0, "称");
@@ -389,9 +374,7 @@ public class BufferTest {
   static Stream<Arguments> merge_cases() {
     return Stream.of(
         Arguments.of(
-            new Rect(0, 0, 2, 2),
-            new Rect(0, 2, 2, 2),
-            new String[] {"11", "11", "22", "22"}),
+            new Rect(0, 0, 2, 2), new Rect(0, 2, 2, 2), new String[] {"11", "11", "22", "22"}),
         Arguments.of(
             new Rect(2, 2, 2, 2),
             new Rect(0, 0, 2, 2),
@@ -447,9 +430,9 @@ public class BufferTest {
     buf.setString(0, 0, "foo", Style.empty().red());
     buf.setString(0, 1, "bar", Style.empty().blue());
 
-    Buffer expected = Buffer.withLineObjects(
-        Line.styled("foo", Style.empty().red()),
-        Line.styled("bar", Style.empty().blue()));
+    Buffer expected =
+        Buffer.withLineObjects(
+            Line.styled("foo", Style.empty().red()), Line.styled("bar", Style.empty().blue()));
     BufferAssertions.assertBufferEq(buf, expected);
   }
 
@@ -459,10 +442,9 @@ public class BufferTest {
     Buffer buffer = Buffer.filled(new Rect(0, 0, 25, 3), Cell.of("x"));
     buffer.setString(1, 1, text, Style.empty());
 
-    Buffer expected = Buffer.withLines(
-        "xxxxxxxxxxxxxxxxxxxxxxxxx",
-        "xI [0;36mwas[0m here!xxxx",
-        "xxxxxxxxxxxxxxxxxxxxxxxxx");
+    Buffer expected =
+        Buffer.withLines(
+            "xxxxxxxxxxxxxxxxxxxxxxxxx", "xI [0;36mwas[0m here!xxxx", "xxxxxxxxxxxxxxxxxxxxxxxxx");
     BufferAssertions.assertBufferEq(buffer, expected);
   }
 

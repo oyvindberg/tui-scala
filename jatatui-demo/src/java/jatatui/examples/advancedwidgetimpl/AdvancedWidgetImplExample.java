@@ -72,8 +72,7 @@ public final class AdvancedWidgetImplExample {
 
     @Override
     public void render(Rect area, Buffer buf) {
-      Rect[] split =
-          area.layout(Layout.vertical(Constraint.fromLengths(1, 1, 2, 1)), 4);
+      Rect[] split = area.layout(Layout.vertical(Constraint.fromLengths(1, 1, 2, 1)), 4);
       Rect greeting = split[0];
       Rect timerArea = split[1];
       Rect squares = split[2];
@@ -92,8 +91,7 @@ public final class AdvancedWidgetImplExample {
       greenSquare.render(squares, buf);
 
       // Display the dynamically updated position of the green square.
-      Widget.renderString(
-          "Green square is at " + greenSquare.lastPosition, position, buf);
+      Widget.renderString("Green square is at " + greenSquare.lastPosition, position, buf);
     }
   }
 

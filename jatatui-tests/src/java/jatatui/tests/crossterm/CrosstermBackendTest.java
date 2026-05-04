@@ -154,9 +154,7 @@ public class CrosstermBackendTest {
             Style.DEFAULT.withAddModifier(Modifier.BOLD).withAddModifier(Modifier.ITALIC)),
         Arguments.of(
             styleWithAttrs(Attribute.NoBold, Attribute.NoItalic),
-            Style.DEFAULT
-                .withRemoveModifier(Modifier.BOLD)
-                .withRemoveModifier(Modifier.ITALIC)));
+            Style.DEFAULT.withRemoveModifier(Modifier.BOLD).withRemoveModifier(Modifier.ITALIC)));
   }
 
   @ParameterizedTest

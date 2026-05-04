@@ -288,6 +288,5 @@ public final class Border {
   ///
   /// Useful when you want to apply a border style to the title area without actually drawing a
   /// border.
-  public static final Set EMPTY =
-      new Set(" ", " ", " ", " ", " ", " ", " ", " ");
+  public static final Set EMPTY = new Set(" ", " ", " ", " ", " ", " ", " ", " ");
 }

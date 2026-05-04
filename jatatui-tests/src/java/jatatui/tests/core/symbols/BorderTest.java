@@ -17,10 +17,20 @@ public class BorderTest {
   private static String render(Border.Set set) {
     StringBuilder b = new StringBuilder();
     b.append("░░░░░░\n");
-    b.append('░').append(set.topLeft()).append(set.horizontalTop()).append(set.horizontalTop()).append(set.topRight()).append("░\n");
+    b.append('░')
+        .append(set.topLeft())
+        .append(set.horizontalTop())
+        .append(set.horizontalTop())
+        .append(set.topRight())
+        .append("░\n");
     b.append('░').append(set.verticalLeft()).append("░░").append(set.verticalRight()).append("░\n");
     b.append('░').append(set.verticalLeft()).append("░░").append(set.verticalRight()).append("░\n");
-    b.append('░').append(set.bottomLeft()).append(set.horizontalBottom()).append(set.horizontalBottom()).append(set.bottomRight()).append("░\n");
+    b.append('░')
+        .append(set.bottomLeft())
+        .append(set.horizontalBottom())
+        .append(set.horizontalBottom())
+        .append(set.bottomRight())
+        .append("░\n");
     b.append("░░░░░░");
     return b.toString();
   }
@@ -29,9 +39,7 @@ public class BorderTest {
   public void border_set_from_line_set() {
     Line.Set custom = new Line.Set("e", "f", "b", "a", "d", "c", "g", "h", "i", "j", "k");
     Border.Set bs = Border.fromLineSet(custom);
-    assertEquals(
-        new Border.Set("a", "b", "c", "d", "e", "e", "f", "f"),
-        bs);
+    assertEquals(new Border.Set("a", "b", "c", "d", "e", "e", "f", "f"), bs);
   }
 
   @Test
@@ -43,7 +51,8 @@ public class BorderTest {
         ░│░░│░
         ░│░░│░
         ░└──┘░
-        ░░░░░░""",
+        ░░░░░░\
+        """,
         render(Border.PLAIN));
   }
 
@@ -56,7 +65,8 @@ public class BorderTest {
         ░│░░│░
         ░│░░│░
         ░╰──╯░
-        ░░░░░░""",
+        ░░░░░░\
+        """,
         render(Border.ROUNDED));
   }
 
@@ -69,7 +79,8 @@ public class BorderTest {
         ░║░░║░
         ░║░░║░
         ░╚══╝░
-        ░░░░░░""",
+        ░░░░░░\
+        """,
         render(Border.DOUBLE));
   }
 
@@ -82,7 +93,8 @@ public class BorderTest {
         ░┃░░┃░
         ░┃░░┃░
         ░┗━━┛░
-        ░░░░░░""",
+        ░░░░░░\
+        """,
         render(Border.THICK));
   }
 
@@ -95,7 +107,8 @@ public class BorderTest {
         ░╎░░╎░
         ░╎░░╎░
         ░└╌╌┘░
-        ░░░░░░""",
+        ░░░░░░\
+        """,
         render(Border.LIGHT_DOUBLE_DASHED));
   }
 
@@ -108,7 +121,8 @@ public class BorderTest {
         ░╏░░╏░
         ░╏░░╏░
         ░┗╍╍┛░
-        ░░░░░░""",
+        ░░░░░░\
+        """,
         render(Border.HEAVY_DOUBLE_DASHED));
   }
 
@@ -121,7 +135,8 @@ public class BorderTest {
         ░┆░░┆░
         ░┆░░┆░
         ░└┄┄┘░
-        ░░░░░░""",
+        ░░░░░░\
+        """,
         render(Border.LIGHT_TRIPLE_DASHED));
   }
 
@@ -134,7 +149,8 @@ public class BorderTest {
         ░┇░░┇░
         ░┇░░┇░
         ░┗┅┅┛░
-        ░░░░░░""",
+        ░░░░░░\
+        """,
         render(Border.HEAVY_TRIPLE_DASHED));
   }
 
@@ -147,7 +163,8 @@ public class BorderTest {
         ░┊░░┊░
         ░┊░░┊░
         ░└┈┈┘░
-        ░░░░░░""",
+        ░░░░░░\
+        """,
         render(Border.LIGHT_QUADRUPLE_DASHED));
   }
 
@@ -160,7 +177,8 @@ public class BorderTest {
         ░┋░░┋░
         ░┋░░┋░
         ░┗┉┉┛░
-        ░░░░░░""",
+        ░░░░░░\
+        """,
         render(Border.HEAVY_QUADRUPLE_DASHED));
   }
 
@@ -173,7 +191,8 @@ public class BorderTest {
         ░▌░░▐░
         ░▌░░▐░
         ░▙▄▄▟░
-        ░░░░░░""",
+        ░░░░░░\
+        """,
         render(Border.QUADRANT_OUTSIDE));
   }
 
@@ -186,7 +205,8 @@ public class BorderTest {
         ░▐░░▌░
         ░▐░░▌░
         ░▝▀▀▘░
-        ░░░░░░""",
+        ░░░░░░\
+        """,
         render(Border.QUADRANT_INSIDE));
   }
 
@@ -199,7 +219,8 @@ public class BorderTest {
         ░▏░░▕░
         ░▏░░▕░
         ░▔▔▔▔░
-        ░░░░░░""",
+        ░░░░░░\
+        """,
         render(Border.ONE_EIGHTH_WIDE));
   }
 
@@ -212,7 +233,8 @@ public class BorderTest {
         ░▕░░▏░
         ░▕░░▏░
         ░▕▁▁▏░
-        ░░░░░░""",
+        ░░░░░░\
+        """,
         render(Border.ONE_EIGHTH_TALL));
   }
 
@@ -225,7 +247,8 @@ public class BorderTest {
         ░█░░█░
         ░█░░█░
         ░▀▀▀▀░
-        ░░░░░░""",
+        ░░░░░░\
+        """,
         render(Border.PROPORTIONAL_WIDE));
   }
 
@@ -238,7 +261,8 @@ public class BorderTest {
         ░█░░█░
         ░█░░█░
         ░█▄▄█░
-        ░░░░░░""",
+        ░░░░░░\
+        """,
         render(Border.PROPORTIONAL_TALL));
   }
 
@@ -251,7 +275,8 @@ public class BorderTest {
         ░█░░█░
         ░█░░█░
         ░████░
-        ░░░░░░""",
+        ░░░░░░\
+        """,
         render(Border.FULL));
   }
 
@@ -264,7 +289,8 @@ public class BorderTest {
         ░ ░░ ░
         ░ ░░ ░
         ░    ░
-        ░░░░░░""",
+        ░░░░░░\
+        """,
         render(Border.EMPTY));
   }
 }

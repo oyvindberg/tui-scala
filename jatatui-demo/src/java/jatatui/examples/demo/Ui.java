@@ -23,7 +23,6 @@ import jatatui.widgets.canvas.Rectangle;
 import jatatui.widgets.chart.Axis;
 import jatatui.widgets.chart.Chart;
 import jatatui.widgets.chart.Dataset;
-import jatatui.widgets.chart.Point;
 import jatatui.widgets.gauge.Gauge;
 import jatatui.widgets.gauge.LineGauge;
 import jatatui.widgets.list.List;
@@ -75,8 +74,7 @@ public final class Ui {
 
   static void drawFirstTab(Frame frame, App app, Rect area) {
     Rect[] chunks =
-        Layout.vertical(
-                new Constraint.Length(9), new Constraint.Min(8), new Constraint.Length(7))
+        Layout.vertical(new Constraint.Length(9), new Constraint.Min(8), new Constraint.Length(7))
             .split(area);
     drawGauges(frame, app, chunks[0]);
     drawCharts(frame, app, chunks[1]);
@@ -130,8 +128,7 @@ public final class Ui {
   static void drawCharts(Frame frame, App app, Rect area) {
     java.util.List<Constraint> constraints;
     if (app.showChart) {
-      constraints =
-          java.util.List.of(new Constraint.Percentage(50), new Constraint.Percentage(50));
+      constraints = java.util.List.of(new Constraint.Percentage(50), new Constraint.Percentage(50));
     } else {
       constraints = java.util.List.of(new Constraint.Percentage(100));
     }
@@ -173,8 +170,7 @@ public final class Ui {
               };
           jatatui.core.text.Line line =
               jatatui.core.text.Line.from(
-                  Span.styled(String.format("%-9s", entry.level()), s),
-                  Span.raw(entry.event()));
+                  Span.styled(String.format("%-9s", entry.level()), s), Span.raw(entry.event()));
           logItems.add(ListItem.of(line));
         }
         List logs = List.of(logItems).withBlock(Block.bordered().withTitle("List"));
@@ -208,9 +204,7 @@ public final class Ui {
               Span.styled(
                   String.format("%s", app.signals.window.lo),
                   Style.empty().withAddModifier(Modifier.BOLD)),
-              Span.raw(
-                  String.format(
-                      "%s", (app.signals.window.lo + app.signals.window.hi) / 2.0)),
+              Span.raw(String.format("%s", (app.signals.window.lo + app.signals.window.hi) / 2.0)),
               Span.styled(
                   String.format("%s", app.signals.window.hi),
                   Style.empty().withAddModifier(Modifier.BOLD)));
@@ -254,12 +248,10 @@ public final class Ui {
                       .withBounds(-20.0, 20.0)
                       .withLabels(
                           jatatui.core.text.Line.from(
-                              Span.styled(
-                                  "-20", Style.empty().withAddModifier(Modifier.BOLD))),
+                              Span.styled("-20", Style.empty().withAddModifier(Modifier.BOLD))),
                           jatatui.core.text.Line.from(Span.raw("0")),
                           jatatui.core.text.Line.from(
-                              Span.styled(
-                                  "20", Style.empty().withAddModifier(Modifier.BOLD)))));
+                              Span.styled("20", Style.empty().withAddModifier(Modifier.BOLD)))));
       frame.renderWidget(chart, chunks[1]);
     }
   }
@@ -269,7 +261,8 @@ public final class Ui {
         Text.fromLines(
             java.util.List.of(
                 jatatui.core.text.Line.from(
-                    "This is a paragraph with several lines. You can change style your text the way you want"),
+                    "This is a paragraph with several lines. You can change style your text the way"
+                        + " you want"),
                 jatatui.core.text.Line.from(""),
                 jatatui.core.text.Line.from(
                     Span.from("For example: "),
@@ -283,14 +276,11 @@ public final class Ui {
                     Span.raw("Oh and if you didn't "),
                     Span.styled("notice", Style.empty().withAddModifier(Modifier.ITALIC)),
                     Span.raw(" you can "),
-                    Span.styled(
-                        "automatically", Style.empty().withAddModifier(Modifier.BOLD)),
+                    Span.styled("automatically", Style.empty().withAddModifier(Modifier.BOLD)),
                     Span.raw(" "),
-                    Span.styled(
-                        "wrap", Style.empty().withAddModifier(Modifier.REVERSED)),
+                    Span.styled("wrap", Style.empty().withAddModifier(Modifier.REVERSED)),
                     Span.raw(" your "),
-                    Span.styled(
-                        "text", Style.empty().withAddModifier(Modifier.UNDERLINED)),
+                    Span.styled("text", Style.empty().withAddModifier(Modifier.UNDERLINED)),
                     Span.raw(".")),
                 jatatui.core.text.Line.from(
                     "One more thing is that it should display unicode characters: 10€")));
@@ -300,17 +290,14 @@ public final class Ui {
                 jatatui.core.text.Line.from(
                     Span.styled(
                         "Footer",
-                        Style.empty()
-                            .withFg(Color.MAGENTA)
-                            .withAddModifier(Modifier.BOLD))));
+                        Style.empty().withFg(Color.MAGENTA).withAddModifier(Modifier.BOLD))));
     Paragraph paragraph = Paragraph.of(text).withBlock(block).withWrap(new Wrap(true));
     frame.renderWidget(paragraph, area);
   }
 
   static void drawSecondTab(Frame frame, App app, Rect area) {
     Rect[] chunks =
-        Layout.horizontal(new Constraint.Percentage(30), new Constraint.Percentage(70))
-            .split(area);
+        Layout.horizontal(new Constraint.Percentage(30), new Constraint.Percentage(70)).split(area);
     Style upStyle = Style.empty().withFg(Color.GREEN);
     Style failureStyle =
         Style.empty()
@@ -365,8 +352,7 @@ public final class Ui {
                     ctx.print(
                         server.longitude(),
                         server.latitude(),
-                        jatatui.core.text.Line.from(
-                            Span.styled("X", Style.empty().withFg(color))));
+                        jatatui.core.text.Line.from(Span.styled("X", Style.empty().withFg(color))));
                   }
                 })
             .withMarker(mapMarker)
@@ -378,34 +364,33 @@ public final class Ui {
   static void drawThirdTab(Frame frame, App app, Rect area) {
     Rect[] chunks =
         Layout.horizontal(new Constraint.Ratio(1, 2), new Constraint.Ratio(1, 2)).split(area);
-    Color[] colors = new Color[] {
-        Color.RESET,
-        Color.BLACK,
-        Color.RED,
-        Color.GREEN,
-        Color.YELLOW,
-        Color.BLUE,
-        Color.MAGENTA,
-        Color.CYAN,
-        Color.GRAY,
-        Color.DARK_GRAY,
-        Color.LIGHT_RED,
-        Color.LIGHT_GREEN,
-        Color.LIGHT_YELLOW,
-        Color.LIGHT_BLUE,
-        Color.LIGHT_MAGENTA,
-        Color.LIGHT_CYAN,
-        Color.WHITE,
-    };
+    Color[] colors =
+        new Color[] {
+          Color.RESET,
+          Color.BLACK,
+          Color.RED,
+          Color.GREEN,
+          Color.YELLOW,
+          Color.BLUE,
+          Color.MAGENTA,
+          Color.CYAN,
+          Color.GRAY,
+          Color.DARK_GRAY,
+          Color.LIGHT_RED,
+          Color.LIGHT_GREEN,
+          Color.LIGHT_YELLOW,
+          Color.LIGHT_BLUE,
+          Color.LIGHT_MAGENTA,
+          Color.LIGHT_CYAN,
+          Color.WHITE,
+        };
     java.util.List<Row> items = new ArrayList<>(colors.length);
     for (Color c : colors) {
       java.util.List<TableCell> cells =
           java.util.List.of(
               TableCell.of(Text.from(Span.raw(c.toString() + ": "))),
-              TableCell.of(
-                  Text.from(Span.styled("Foreground", Style.empty().withFg(c)))),
-              TableCell.of(
-                  Text.from(Span.styled("Background", Style.empty().withBg(c)))));
+              TableCell.of(Text.from(Span.styled("Foreground", Style.empty().withFg(c)))),
+              TableCell.of(Text.from(Span.styled("Background", Style.empty().withBg(c)))));
       items.add(Row.of(cells));
     }
     Table table =

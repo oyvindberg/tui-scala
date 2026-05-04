@@ -181,9 +181,7 @@ public final class UserInputExample {
     void render(Frame frame) {
       Layout layout =
           Layout.vertical(
-              new Constraint.Length(1),
-              new Constraint.Length(3),
-              new Constraint.Min(1));
+              new Constraint.Length(1), new Constraint.Length(3), new Constraint.Min(1));
       Rect[] split = frame.area().layout(layout, 3);
       Rect helpArea = split[0];
       Rect inputArea = split[1];
@@ -208,12 +206,13 @@ public final class UserInputExample {
         case Normal -> {
           // Hide the cursor. `Frame` does this by default, so we don't need to do anything here.
         }
-        case Editing -> frame.setCursorPosition(
-            new Position(
-                // Draw the cursor at the current position in the input field.
-                inputArea.x() + this.characterIndex + 1,
-                // Move one line down, from the border to the input line.
-                inputArea.y() + 1));
+        case Editing ->
+            frame.setCursorPosition(
+                new Position(
+                    // Draw the cursor at the current position in the input field.
+                    inputArea.x() + this.characterIndex + 1,
+                    // Move one line down, from the border to the input line.
+                    inputArea.y() + 1));
       }
 
       java.util.List<ListItem> items = new ArrayList<>(messages.size());

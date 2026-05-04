@@ -1,8 +1,6 @@
 package jatatui.core.layout.solver;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /// Replacement for the Scala `operators` package object. Provides static helpers for building
 /// expressions and constraints — the equivalents of the `+`, `-`, `*`, `/`, `unary_!` and `|`

@@ -1,7 +1,6 @@
 package jatatui.widgets.chart;
 
 import jatatui.core.buffer.Buffer;
-import jatatui.core.layout.Constraint;
 import jatatui.core.layout.Flex;
 import jatatui.core.layout.HorizontalAlignment;
 import jatatui.core.layout.Layout;
@@ -93,32 +92,27 @@ public final class Chart implements Widget, Stylize<Chart> {
 
   /// Sets the style of the entire chart.
   public Chart withStyle(Style style) {
-    return new Chart(
-        block, xAxis, yAxis, datasets, style, hiddenLegendConstraints, legendPosition);
+    return new Chart(block, xAxis, yAxis, datasets, style, hiddenLegendConstraints, legendPosition);
   }
 
   /// Sets the X [Axis].
   public Chart withXAxis(Axis axis) {
-    return new Chart(
-        block, axis, yAxis, datasets, style, hiddenLegendConstraints, legendPosition);
+    return new Chart(block, axis, yAxis, datasets, style, hiddenLegendConstraints, legendPosition);
   }
 
   /// Sets the Y [Axis].
   public Chart withYAxis(Axis axis) {
-    return new Chart(
-        block, xAxis, axis, datasets, style, hiddenLegendConstraints, legendPosition);
+    return new Chart(block, xAxis, axis, datasets, style, hiddenLegendConstraints, legendPosition);
   }
 
   /// Sets the constraints used to determine whether the legend should be shown.
   public Chart withHiddenLegendConstraints(HiddenLegendConstraints constraints) {
-    return new Chart(
-        block, xAxis, yAxis, datasets, style, constraints, legendPosition);
+    return new Chart(block, xAxis, yAxis, datasets, style, constraints, legendPosition);
   }
 
   /// Sets the position of the legend (or hides it altogether by passing [Optional#empty()]).
   public Chart withLegendPosition(Optional<LegendPosition> position) {
-    return new Chart(
-        block, xAxis, yAxis, datasets, style, hiddenLegendConstraints, position);
+    return new Chart(block, xAxis, yAxis, datasets, style, hiddenLegendConstraints, position);
   }
 
   /// Convenience overload setting the legend position to a non-empty value.
@@ -332,12 +326,7 @@ public final class Chart implements Widget, Stylize<Chart> {
     int widthBetweenTicks = graphArea.width() / labelsLen;
 
     Rect labelArea =
-        firstXLabelArea(
-            y,
-            labels.get(0).width(),
-            widthBetweenTicks,
-            chartArea,
-            graphArea);
+        firstXLabelArea(y, labels.get(0).width(), widthBetweenTicks, chartArea, graphArea);
 
     HorizontalAlignment labelAlignment =
         switch (xAxis.labelsAlignment) {
@@ -417,7 +406,8 @@ public final class Chart implements Widget, Stylize<Chart> {
           };
       buf.setLine(oneRow.x() + indent, oneRow.y(), line, oneRow.width() - indent);
     } else {
-      // Truncate from one side based on alignment. We approximate by simply writing as much as fits.
+      // Truncate from one side based on alignment. We approximate by simply writing as much as
+      // fits.
       buf.setLine(oneRow.x(), oneRow.y(), line, oneRow.width());
     }
   }
@@ -503,7 +493,8 @@ public final class Chart implements Widget, Stylize<Chart> {
                           Point p1 = dataset.data.get(i);
                           Point p2 = dataset.data.get(i + 1);
                           ctx.draw(
-                              new jatatui.widgets.canvas.Line(p1.x(), p1.y(), p2.x(), p2.y(), color));
+                              new jatatui.widgets.canvas.Line(
+                                  p1.x(), p1.y(), p2.x(), p2.y(), color));
                         }
                       }
                       case Bar -> {

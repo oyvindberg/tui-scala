@@ -175,11 +175,7 @@ public final class Cell {
   /// Returns the style of the cell.
   public Style style() {
     return new Style(
-        Optional.of(fg),
-        Optional.of(bg),
-        Optional.of(underlineColor),
-        modifier,
-        Modifier.EMPTY);
+        Optional.of(fg), Optional.of(bg), Optional.of(underlineColor), modifier, Modifier.EMPTY);
   }
 
   /// Sets the cell to be skipped when copying (diffing) the buffer to the screen.

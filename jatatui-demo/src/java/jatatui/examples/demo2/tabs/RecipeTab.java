@@ -121,11 +121,11 @@ public final class RecipeTab {
     Block.empty()
         .withTitle(
             Line.from(
-                    Span.styled(
-                        "Ratatouille Recipe",
-                        Style.empty()
-                            .withAddModifier(Modifier.BOLD)
-                            .withFg(jatatui.core.style.Color.WHITE))))
+                Span.styled(
+                    "Ratatouille Recipe",
+                    Style.empty()
+                        .withAddModifier(Modifier.BOLD)
+                        .withFg(jatatui.core.style.Color.WHITE))))
         .withTitleAlignment(HorizontalAlignment.Center)
         .withStyle(THEME.content)
         .withPadding(new Padding(1, 1, 2, 1))

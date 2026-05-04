@@ -16,7 +16,6 @@ import jatatui.core.text.Text;
 import jatatui.core.widgets.Widget;
 import jatatui.crossterm.CrosstermBackend;
 import jatatui.crossterm.Jatatui;
-import jatatui.widgets.Borders;
 import jatatui.widgets.block.Block;
 import jatatui.widgets.paragraph.Paragraph;
 import jatatui.widgets.paragraph.Wrap;
@@ -140,8 +139,7 @@ public final class ConstraintExplorerExample {
 
     private void handleEvents() {
       Event event = JNI.read();
-      if (!(event instanceof Event.Key key)
-          || key.keyEvent().kind() != KeyEventKind.Press) {
+      if (!(event instanceof Event.Key key) || key.keyEvent().kind() != KeyEventKind.Press) {
         return;
       }
       KeyCode code = key.keyEvent().code();
@@ -185,14 +183,16 @@ public final class ConstraintExplorerExample {
         return;
       }
       Constraint c = constraints.get(selectedIndex);
-      Constraint updated = switch (c) {
-        case Constraint.Length l -> new Constraint.Length(saturatingAdd(l.v(), 1));
-        case Constraint.Min m -> new Constraint.Min(saturatingAdd(m.v(), 1));
-        case Constraint.Max m -> new Constraint.Max(saturatingAdd(m.v(), 1));
-        case Constraint.Fill f -> new Constraint.Fill(saturatingAdd(f.v(), 1));
-        case Constraint.Percentage p -> new Constraint.Percentage(saturatingAdd(p.v(), 1));
-        case Constraint.Ratio r -> new Constraint.Ratio(r.numerator(), saturatingAdd(r.denominator(), 1));
-      };
+      Constraint updated =
+          switch (c) {
+            case Constraint.Length l -> new Constraint.Length(saturatingAdd(l.v(), 1));
+            case Constraint.Min m -> new Constraint.Min(saturatingAdd(m.v(), 1));
+            case Constraint.Max m -> new Constraint.Max(saturatingAdd(m.v(), 1));
+            case Constraint.Fill f -> new Constraint.Fill(saturatingAdd(f.v(), 1));
+            case Constraint.Percentage p -> new Constraint.Percentage(saturatingAdd(p.v(), 1));
+            case Constraint.Ratio r ->
+                new Constraint.Ratio(r.numerator(), saturatingAdd(r.denominator(), 1));
+          };
       constraints.set(selectedIndex, updated);
     }
 
@@ -201,14 +201,16 @@ public final class ConstraintExplorerExample {
         return;
       }
       Constraint c = constraints.get(selectedIndex);
-      Constraint updated = switch (c) {
-        case Constraint.Length l -> new Constraint.Length(saturatingSub(l.v(), 1));
-        case Constraint.Min m -> new Constraint.Min(saturatingSub(m.v(), 1));
-        case Constraint.Max m -> new Constraint.Max(saturatingSub(m.v(), 1));
-        case Constraint.Fill f -> new Constraint.Fill(saturatingSub(f.v(), 1));
-        case Constraint.Percentage p -> new Constraint.Percentage(saturatingSub(p.v(), 1));
-        case Constraint.Ratio r -> new Constraint.Ratio(r.numerator(), saturatingSub(r.denominator(), 1));
-      };
+      Constraint updated =
+          switch (c) {
+            case Constraint.Length l -> new Constraint.Length(saturatingSub(l.v(), 1));
+            case Constraint.Min m -> new Constraint.Min(saturatingSub(m.v(), 1));
+            case Constraint.Max m -> new Constraint.Max(saturatingSub(m.v(), 1));
+            case Constraint.Fill f -> new Constraint.Fill(saturatingSub(f.v(), 1));
+            case Constraint.Percentage p -> new Constraint.Percentage(saturatingSub(p.v(), 1));
+            case Constraint.Ratio r ->
+                new Constraint.Ratio(r.numerator(), saturatingSub(r.denominator(), 1));
+          };
       constraints.set(selectedIndex, updated);
     }
 
@@ -262,14 +264,15 @@ public final class ConstraintExplorerExample {
       if (constraints.isEmpty()) {
         return;
       }
-      Constraint constraint = switch (name) {
-        case Length -> new Constraint.Length(value);
-        case Percentage -> new Constraint.Percentage(value);
-        case Min -> new Constraint.Min(value);
-        case Max -> new Constraint.Max(value);
-        case Fill -> new Constraint.Fill(value);
-        case Ratio -> new Constraint.Ratio(1, value / 4); // for balance
-      };
+      Constraint constraint =
+          switch (name) {
+            case Length -> new Constraint.Length(value);
+            case Percentage -> new Constraint.Percentage(value);
+            case Min -> new Constraint.Min(value);
+            case Max -> new Constraint.Max(value);
+            case Fill -> new Constraint.Fill(value);
+            case Ratio -> new Constraint.Ratio(1, value / 4); // for balance
+          };
       constraints.set(selectedIndex, constraint);
     }
 
@@ -277,13 +280,15 @@ public final class ConstraintExplorerExample {
 
     @Override
     public void render(Rect area, Buffer buf) {
-      Rect[] rows = Layout.vertical(
-          new Constraint.Length(2), // header
-          new Constraint.Length(2), // instructions
-          new Constraint.Length(1), // swap key legend
-          new Constraint.Length(1), // gap
-          new Constraint.Fill(1)    // blocks
-      ).split(area);
+      Rect[] rows =
+          Layout.vertical(
+                  new Constraint.Length(2), // header
+                  new Constraint.Length(2), // instructions
+                  new Constraint.Length(1), // swap key legend
+                  new Constraint.Length(1), // gap
+                  new Constraint.Fill(1) // blocks
+                  )
+              .split(area);
       Rect headerArea = rows[0];
       Rect instructionsArea = rows[1];
       Rect swapLegendArea = rows[2];
@@ -296,14 +301,13 @@ public final class ConstraintExplorerExample {
     }
 
     private static Widget header() {
-      return Paragraph.of(Span.styled(
-              "Constraint Explorer", Style.empty().bold().withFg(HEADER_COLOR))
-          .intoCenteredLine());
+      return Paragraph.of(
+          Span.styled("Constraint Explorer", Style.empty().bold().withFg(HEADER_COLOR))
+              .intoCenteredLine());
     }
 
     private static Widget instructions() {
-      String text =
-          "◄ ►: select, ▲ ▼: edit, 1-6: swap, a: add, x: delete, q: quit, + -: spacing";
+      String text = "◄ ►: select, ▲ ▼: edit, 1-6: swap, a: add, x: delete, q: quit, + -: spacing";
       return Paragraph.of(text)
           .withStyle(Style.empty().withFg(TEXT_COLOR))
           .centered()
@@ -312,12 +316,12 @@ public final class ConstraintExplorerExample {
 
     private static Widget swapLegend() {
       ConstraintName[] names = {
-          ConstraintName.Min,
-          ConstraintName.Max,
-          ConstraintName.Length,
-          ConstraintName.Percentage,
-          ConstraintName.Ratio,
-          ConstraintName.Fill,
+        ConstraintName.Min,
+        ConstraintName.Max,
+        ConstraintName.Length,
+        ConstraintName.Percentage,
+        ConstraintName.Ratio,
+        ConstraintName.Fill,
       };
       List<Span> spans = new ArrayList<>(names.length * 2 - 1);
       for (int i = 0; i < names.length; i++) {
@@ -326,8 +330,8 @@ public final class ConstraintExplorerExample {
         }
         ConstraintName name = names[i];
         String label = "  " + (i + 1) + ": " + name + "  ";
-        spans.add(Span.styled(label,
-            Style.empty().withFg(Tailwind.SLATE.c200()).withBg(name.color())));
+        spans.add(
+            Span.styled(label, Style.empty().withFg(Tailwind.SLATE.c200()).withBg(name.color())));
       }
       jatatui.core.text.Line line = jatatui.core.text.Line.fromSpans(spans).centered();
       return Paragraph.of(line).withWrap(new Wrap(false));
@@ -337,32 +341,30 @@ public final class ConstraintExplorerExample {
     ///
     /// Only shows the gap when spacing is not zero
     private Widget axis(int width) {
-      String label = spacing != 0
-          ? width + " px (gap: " + spacing + " px)"
-          : width + " px";
+      String label = spacing != 0 ? width + " px (gap: " + spacing + " px)" : width + " px";
       int barWidth = Math.max(0, width - 2); // we want `<` and `>` at the ends
       String widthBar = "<" + center(label, barWidth, '-') + ">";
-      return Paragraph.of(widthBar)
-          .withStyle(Style.empty().withFg(AXIS_COLOR))
-          .centered();
+      return Paragraph.of(widthBar).withStyle(Style.empty().withFg(AXIS_COLOR)).centered();
     }
 
     private void renderLayoutBlocks(Rect area, Buffer buf) {
-      Layout mainLayout = Layout.vertical(
-          new Constraint.Length(3), new Constraint.Fill(1)).withSpacing(1);
+      Layout mainLayout =
+          Layout.vertical(new Constraint.Length(3), new Constraint.Fill(1)).withSpacing(1);
       Rect[] split = mainLayout.split(area);
       Rect userConstraints = split[0];
       Rect rest = split[1];
 
       renderUserConstraintsLegend(userConstraints, buf);
 
-      Rect[] rows = Layout.vertical(
-          new Constraint.Length(7),
-          new Constraint.Length(7),
-          new Constraint.Length(7),
-          new Constraint.Length(7),
-          new Constraint.Length(7),
-          new Constraint.Length(7)).split(rest);
+      Rect[] rows =
+          Layout.vertical(
+                  new Constraint.Length(7),
+                  new Constraint.Length(7),
+                  new Constraint.Length(7),
+                  new Constraint.Length(7),
+                  new Constraint.Length(7),
+                  new Constraint.Length(7))
+              .split(rest);
 
       renderLayoutBlock(Flex.Start, rows[0], buf);
       renderLayoutBlock(Flex.Center, rows[1], buf);
@@ -386,8 +388,9 @@ public final class ConstraintExplorerExample {
     }
 
     private void renderLayoutBlock(Flex flex, Rect area, Buffer buf) {
-      Layout layout = Layout.vertical(
-          new Constraint.Length(1), new Constraint.Max(1), new Constraint.Length(4));
+      Layout layout =
+          Layout.vertical(
+              new Constraint.Length(1), new Constraint.Max(1), new Constraint.Length(4));
       Rect[] split = layout.split(area);
       Rect labelArea = split[0];
       Rect axisArea = split[1];
@@ -400,10 +403,11 @@ public final class ConstraintExplorerExample {
 
       axis(area.width()).render(axisArea, buf);
 
-      Layout.SplitResult split2 = Layout.horizontal(constraints)
-          .withFlex(flex)
-          .withSpacing(spacing)
-          .splitWithSpacers(blocksArea);
+      Layout.SplitResult split2 =
+          Layout.horizontal(constraints)
+              .withFlex(flex)
+              .withSpacing(spacing)
+              .splitWithSpacers(blocksArea);
       Rect[] blocks = split2.segments();
       Rect[] spacers = split2.spacers();
 
@@ -483,10 +487,11 @@ public final class ConstraintExplorerExample {
       Color selectedColor = selected ? lighter : main;
       Color color = legend ? selectedColor : main;
       String labelText = label(area.width());
-      Block block = Block.bordered()
-          .withBorderSet(Border.QUADRANT_OUTSIDE)
-          .withBorderStyle(Style.reset().withFg(color).reversed())
-          .withStyle(Style.empty().withFg(TEXT_COLOR).withBg(color));
+      Block block =
+          Block.bordered()
+              .withBorderSet(Border.QUADRANT_OUTSIDE)
+              .withBorderStyle(Style.reset().withFg(color).reversed())
+              .withStyle(Style.empty().withFg(TEXT_COLOR).withBg(color));
       Paragraph.of(labelText)
           .centered()
           .withStyle(Style.empty().withFg(TEXT_COLOR).withBg(color))
@@ -496,7 +501,8 @@ public final class ConstraintExplorerExample {
       if (!legend) {
         Color borderColor = selected ? lighter : main;
         Optional<Rect> lastRow = area.rows().nextBack();
-        lastRow.ifPresent(r -> buf.setStyle(r, Style.empty().withFg(borderColor).withBg(borderColor)));
+        lastRow.ifPresent(
+            r -> buf.setStyle(r, Style.empty().withFg(borderColor).withBg(borderColor)));
       }
     }
   }
@@ -522,12 +528,16 @@ public final class ConstraintExplorerExample {
     /// A block with corner borders (the four corners of the line set, with spaces filling the
     /// sides — mirrors the Rust `border_set` literal).
     private static Widget block() {
-      Border.Set cornersOnly = new Border.Set(
-          Line.NORMAL.topLeft(),
-          Line.NORMAL.topRight(),
-          Line.NORMAL.bottomLeft(),
-          Line.NORMAL.bottomRight(),
-          " ", " ", " ", " ");
+      Border.Set cornersOnly =
+          new Border.Set(
+              Line.NORMAL.topLeft(),
+              Line.NORMAL.topRight(),
+              Line.NORMAL.bottomLeft(),
+              Line.NORMAL.bottomRight(),
+              " ",
+              " ",
+              " ",
+              " ");
       return Block.bordered()
           .withBorderSet(cornersOnly)
           .withBorderStyle(Style.empty().withFg(BORDER_COLOR));
@@ -540,15 +550,13 @@ public final class ConstraintExplorerExample {
       lines.add(jatatui.core.text.Line.from("│"));
       lines.add(jatatui.core.text.Line.from("│"));
       lines.add(jatatui.core.text.Line.from(""));
-      return Paragraph.of(Text.fromLines(lines))
-          .withStyle(Style.empty().withFg(BORDER_COLOR));
+      return Paragraph.of(Text.fromLines(lines)).withStyle(Style.empty().withFg(BORDER_COLOR));
     }
 
     /// A label that says "Spacer" if there is enough space.
     private static Widget spacerLabel(int width) {
       String label = width >= 6 ? "Spacer" : "";
-      return Paragraph.of(
-          Span.styled(label, Style.empty().withFg(TEXT_COLOR)).intoCenteredLine());
+      return Paragraph.of(Span.styled(label, Style.empty().withFg(TEXT_COLOR)).intoCenteredLine());
     }
 
     /// A label that says "8 px" if there is enough space.

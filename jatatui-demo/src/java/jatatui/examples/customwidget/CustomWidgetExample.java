@@ -41,18 +41,19 @@ public final class CustomWidgetExample {
   private CustomWidgetExample() {}
 
   public static void main(String[] args) throws IOException {
-    Jatatui.runIo(terminal -> {
-      JNI.execute(new Command.EnableMouseCapture());
-      try {
-        run(terminal);
-      } finally {
-        try {
-          JNI.execute(new Command.DisableMouseCapture());
-        } catch (RuntimeException e) {
-          System.err.println("Error disabling mouse capture: " + e.getMessage());
-        }
-      }
-    });
+    Jatatui.runIo(
+        terminal -> {
+          JNI.execute(new Command.EnableMouseCapture());
+          try {
+            run(terminal);
+          } finally {
+            try {
+              JNI.execute(new Command.DisableMouseCapture());
+            } catch (RuntimeException e) {
+              System.err.println("Error disabling mouse capture: " + e.getMessage());
+            }
+          }
+        });
   }
 
   /// Possible visual states of a [Button] widget.
@@ -119,9 +120,12 @@ public final class CustomWidgetExample {
     /// Returns the colors used to render this button at its current state.
     ButtonColors colors() {
       return switch (state) {
-        case Normal -> new ButtonColors(theme.background(), theme.text(), theme.shadow(), theme.highlight());
-        case Selected -> new ButtonColors(theme.highlight(), theme.text(), theme.shadow(), theme.highlight());
-        case Active -> new ButtonColors(theme.background(), theme.text(), theme.highlight(), theme.shadow());
+        case Normal ->
+            new ButtonColors(theme.background(), theme.text(), theme.shadow(), theme.highlight());
+        case Selected ->
+            new ButtonColors(theme.highlight(), theme.text(), theme.shadow(), theme.highlight());
+        case Active ->
+            new ButtonColors(theme.background(), theme.text(), theme.highlight(), theme.shadow());
       };
     }
 
@@ -174,7 +178,8 @@ public final class CustomWidgetExample {
             return;
           }
         }
-        case Event.Mouse mouse -> handleMouseEvent(mouse.mouseEvent(), buttonStates, selectedButton);
+        case Event.Mouse mouse ->
+            handleMouseEvent(mouse.mouseEvent(), buttonStates, selectedButton);
         default -> {}
       }
     }
@@ -182,13 +187,15 @@ public final class CustomWidgetExample {
 
   private static void render(Frame frame, State[] states) {
     Rect[] split =
-        frame.area().layout(
-            Layout.vertical(
-                new Constraint.Length(1),
-                new Constraint.Max(3),
-                new Constraint.Length(1),
-                new Constraint.Min(0)),
-            4);
+        frame
+            .area()
+            .layout(
+                Layout.vertical(
+                    new Constraint.Length(1),
+                    new Constraint.Max(3),
+                    new Constraint.Length(1),
+                    new Constraint.Min(0)),
+                4);
     Rect title = split[0];
     Rect buttons = split[1];
     Rect help = split[2];
@@ -202,9 +209,7 @@ public final class CustomWidgetExample {
     Rect[] cols =
         area.layout(
             Layout.horizontal(
-                    new Constraint.Length(15),
-                    new Constraint.Length(15),
-                    new Constraint.Length(15))
+                    new Constraint.Length(15), new Constraint.Length(15), new Constraint.Length(15))
                 .withFlex(Flex.Start),
             3);
 
@@ -226,7 +231,8 @@ public final class CustomWidgetExample {
       buttonStates[selectedButton[0]] = State.Normal;
       selectedButton[0] = Math.max(0, selectedButton[0] - 1);
       buttonStates[selectedButton[0]] = State.Selected;
-    } else if (code instanceof KeyCode.Right || (code instanceof KeyCode.Char ch2 && ch2.c() == 'l')) {
+    } else if (code instanceof KeyCode.Right
+        || (code instanceof KeyCode.Char ch2 && ch2.c() == 'l')) {
       buttonStates[selectedButton[0]] = State.Normal;
       selectedButton[0] = Math.min(2, selectedButton[0] + 1);
       buttonStates[selectedButton[0]] = State.Selected;
@@ -240,7 +246,8 @@ public final class CustomWidgetExample {
     return false;
   }
 
-  private static void handleMouseEvent(MouseEvent mouse, State[] buttonStates, int[] selectedButton) {
+  private static void handleMouseEvent(
+      MouseEvent mouse, State[] buttonStates, int[] selectedButton) {
     MouseEventKind kind = mouse.kind();
     if (kind instanceof MouseEventKind.Moved) {
       int oldSelected = selectedButton[0];
@@ -270,5 +277,4 @@ public final class CustomWidgetExample {
       }
     }
   }
-
 }

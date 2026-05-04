@@ -25,8 +25,7 @@ public class TextTest {
   @Test
   public void raw() {
     Text text = Text.raw("The first line\nThe second line");
-    assertEquals(
-        List.of(Line.from("The first line"), Line.from("The second line")), text.lines);
+    assertEquals(List.of(Line.from("The first line"), Line.from("The second line")), text.lines);
   }
 
   @Test
@@ -74,15 +73,13 @@ public class TextTest {
   @Test
   public void from_string() {
     Text text = Text.from("The first line\nThe second line");
-    assertEquals(
-        List.of(Line.from("The first line"), Line.from("The second line")), text.lines);
+    assertEquals(List.of(Line.from("The first line"), Line.from("The second line")), text.lines);
   }
 
   @Test
   public void from_str() {
     Text text = Text.from("The first line\nThe second line");
-    assertEquals(
-        List.of(Line.from("The first line"), Line.from("The second line")), text.lines);
+    assertEquals(List.of(Line.from("The first line"), Line.from("The second line")), text.lines);
   }
 
   @Test
@@ -101,17 +98,14 @@ public class TextTest {
 
   @Test
   public void from_vec_line() {
-    Text text =
-        Text.fromLines(List.of(Line.from("The first line"), Line.from("The second line")));
-    assertEquals(
-        List.of(Line.from("The first line"), Line.from("The second line")), text.lines);
+    Text text = Text.fromLines(List.of(Line.from("The first line"), Line.from("The second line")));
+    assertEquals(List.of(Line.from("The first line"), Line.from("The second line")), text.lines);
   }
 
   @Test
   public void from_iterator() {
     Text text = Text.fromIter(List.of("The first line", "The second line"));
-    assertEquals(
-        List.of(Line.from("The first line"), Line.from("The second line")), text.lines);
+    assertEquals(List.of(Line.from("The first line"), Line.from("The second line")), text.lines);
   }
 
   @Test
@@ -197,8 +191,7 @@ public class TextTest {
             .withPushedLine(Line.from("B"))
             .withPushedLine(Span.from("C"))
             .withPushedLine("D");
-    assertEquals(
-        List.of(Line.raw("A"), Line.raw("B"), Line.raw("C"), Line.raw("D")), text.lines);
+    assertEquals(List.of(Line.raw("A"), Line.raw("B"), Line.raw("C"), Line.raw("D")), text.lines);
   }
 
   @Test
@@ -211,8 +204,7 @@ public class TextTest {
   public void push_span() {
     Text text = Text.from("A").withPushedSpan(Span.raw("B")).withPushedSpan("C");
     assertEquals(
-        List.of(Line.fromSpans(List.of(Span.raw("A"), Span.raw("B"), Span.raw("C")))),
-        text.lines);
+        List.of(Line.fromSpans(List.of(Span.raw("A"), Span.raw("B"), Span.raw("C")))), text.lines);
   }
 
   @Test

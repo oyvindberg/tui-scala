@@ -260,15 +260,7 @@ public final class Scrollbar implements StatefulWidget<ScrollbarState> {
   /// Sets the style used for the various parts of the scrollbar.
   public Scrollbar withStyle(Style style) {
     return new Scrollbar(
-        orientation,
-        style,
-        thumbSymbol,
-        style,
-        trackSymbol,
-        beginSymbol,
-        style,
-        endSymbol,
-        style);
+        orientation, style, thumbSymbol, style, trackSymbol, beginSymbol, style, endSymbol, style);
   }
 
   // ---- Accessors (test-friendly) ----

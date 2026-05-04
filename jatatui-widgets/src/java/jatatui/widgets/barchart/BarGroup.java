@@ -114,25 +114,26 @@ public final class BarGroup {
   }
 
   void renderLabel(Buffer buf, Rect area, Style defaultLabelStyle) {
-    label.ifPresent(line -> {
-      int width = line.width();
-      Rect adjusted;
-      HorizontalAlignment alignment = line.alignment.orElse(HorizontalAlignment.Left);
-      adjusted =
-          switch (alignment) {
-            case Center -> {
-              int x = area.x() + saturatingSub(area.width(), width) / 2;
-              yield new Rect(x, area.y(), width, area.height());
-            }
-            case Right -> {
-              int x = area.x() + saturatingSub(area.width(), width);
-              yield new Rect(x, area.y(), width, area.height());
-            }
-            case Left -> new Rect(area.x(), area.y(), width, area.height());
-          };
-      buf.setStyle(adjusted, defaultLabelStyle);
-      buf.setLine(adjusted.x(), adjusted.y(), line, adjusted.width());
-    });
+    label.ifPresent(
+        line -> {
+          int width = line.width();
+          Rect adjusted;
+          HorizontalAlignment alignment = line.alignment.orElse(HorizontalAlignment.Left);
+          adjusted =
+              switch (alignment) {
+                case Center -> {
+                  int x = area.x() + saturatingSub(area.width(), width) / 2;
+                  yield new Rect(x, area.y(), width, area.height());
+                }
+                case Right -> {
+                  int x = area.x() + saturatingSub(area.width(), width);
+                  yield new Rect(x, area.y(), width, area.height());
+                }
+                case Left -> new Rect(area.x(), area.y(), width, area.height());
+              };
+          buf.setStyle(adjusted, defaultLabelStyle);
+          buf.setLine(adjusted.x(), adjusted.y(), line, adjusted.width());
+        });
   }
 
   private static int saturatingSub(int a, int b) {

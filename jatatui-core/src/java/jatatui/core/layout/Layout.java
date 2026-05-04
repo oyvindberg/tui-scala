@@ -7,15 +7,6 @@ import static jatatui.core.layout.solver.WeightedRelation.EQ;
 import static jatatui.core.layout.solver.WeightedRelation.GE;
 import static jatatui.core.layout.solver.WeightedRelation.LE;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import jatatui.core.layout.solver.AddConstraintError;
 import jatatui.core.layout.solver.Either;
 import jatatui.core.layout.solver.Expression;
@@ -24,6 +15,13 @@ import jatatui.core.layout.solver.Solver;
 import jatatui.core.layout.solver.Strength;
 import jatatui.core.layout.solver.Variable;
 import jatatui.core.layout.solver.VariableChange;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /// The primary layout engine for dividing terminal space using constraints and direction.
 ///
@@ -82,8 +80,7 @@ public final class Layout {
 
   /// Creates a new layout with the given direction and constraints.
   public static Layout of(Direction direction, List<Constraint> constraints) {
-    return new Layout(
-        direction, constraints, new Margin(0, 0), Flex.Start, Spacing.DEFAULT);
+    return new Layout(direction, constraints, new Margin(0, 0), Flex.Start, Spacing.DEFAULT);
   }
 
   /// Creates a new layout with the given direction and constraints.
@@ -443,11 +440,7 @@ public final class Layout {
   }
 
   private static Either<AddConstraintError, Void> configureConstraints(
-      Solver solver,
-      Element area,
-      Element[] segments,
-      List<Constraint> constraints,
-      Flex flex) {
+      Solver solver, Element area, Element[] segments, List<Constraint> constraints, Flex flex) {
     int n = Math.min(segments.length, constraints.size());
     for (int i = 0; i < n; i++) {
       Constraint constraint = constraints.get(i);
@@ -465,12 +458,10 @@ public final class Layout {
           if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
           if (flex == Flex.Legacy) {
             r = solver.addConstraint(segment.hasIntSize(min.v(), Strengths.MIN_SIZE_EQ));
-            if (r instanceof Either.Left<AddConstraintError, Void> l)
-              return Either.left(l.value());
+            if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
           } else {
             r = solver.addConstraint(segment.hasSize(area, Strengths.FILL_GROW));
-            if (r instanceof Either.Left<AddConstraintError, Void> l)
-              return Either.left(l.value());
+            if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
           }
         }
         case Constraint.Length length -> {
@@ -502,31 +493,79 @@ public final class Layout {
   private static Either<AddConstraintError, Void> configureFlexConstraints(
       Solver solver, Element area, Element[] spacers, Flex flex, int spacing) {
     Element[] middle =
-        spacers.length >= 2
-            ? Arrays.copyOfRange(spacers, 1, spacers.length - 1)
-            : new Element[0];
+        spacers.length >= 2 ? Arrays.copyOfRange(spacers, 1, spacers.length - 1) : new Element[0];
     double spacingF64 = spacing * FLOAT_PRECISION_MULTIPLIER;
 
     Either<AddConstraintError, Void> r;
     switch (flex) {
-      case Legacy: {
-        for (Element sp : middle) {
-          r = solver.addConstraint(sp.hasSize(spacingF64, Strengths.SPACER_SIZE_EQ));
-          if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
+      case Legacy:
+        {
+          for (Element sp : middle) {
+            r = solver.addConstraint(sp.hasSize(spacingF64, Strengths.SPACER_SIZE_EQ));
+            if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
+          }
+          if (spacers.length >= 1) {
+            Element first = spacers[0];
+            Element last = spacers[spacers.length - 1];
+            r = solver.addConstraint(first.isEmpty());
+            if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
+            r = solver.addConstraint(last.isEmpty());
+            if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
+          }
+          break;
         }
-        if (spacers.length >= 1) {
-          Element first = spacers[0];
-          Element last = spacers[spacers.length - 1];
-          r = solver.addConstraint(first.isEmpty());
-          if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
-          r = solver.addConstraint(last.isEmpty());
-          if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
+      case SpaceAround:
+        {
+          if (spacers.length <= 2) {
+            // fallback to SpaceEvenly behavior
+            for (int i = 0; i < spacers.length; i++) {
+              for (int j = i + 1; j < spacers.length; j++) {
+                r = solver.addConstraint(spacers[i].hasSize(spacers[j], Strengths.SPACER_SIZE_EQ));
+                if (r instanceof Either.Left<AddConstraintError, Void> l)
+                  return Either.left(l.value());
+              }
+            }
+            for (Element sp : spacers) {
+              r = solver.addConstraint(sp.hasMinSize(spacing, Strengths.SPACER_SIZE_EQ));
+              if (r instanceof Either.Left<AddConstraintError, Void> l)
+                return Either.left(l.value());
+              r = solver.addConstraint(sp.hasSize(area, Strengths.SPACE_GROW));
+              if (r instanceof Either.Left<AddConstraintError, Void> l)
+                return Either.left(l.value());
+            }
+          } else {
+            Element first = spacers[0];
+            Element last = spacers[spacers.length - 1];
+            // middle already excludes first and last
+            for (int i = 0; i < middle.length; i++) {
+              for (int j = i + 1; j < middle.length; j++) {
+                r = solver.addConstraint(middle[i].hasSize(middle[j], Strengths.SPACER_SIZE_EQ));
+                if (r instanceof Either.Left<AddConstraintError, Void> l)
+                  return Either.left(l.value());
+              }
+            }
+            if (middle.length > 0) {
+              Element firstMiddle = middle[0];
+              r = solver.addConstraint(firstMiddle.hasDoubleSize(first, Strengths.SPACER_SIZE_EQ));
+              if (r instanceof Either.Left<AddConstraintError, Void> l)
+                return Either.left(l.value());
+              r = solver.addConstraint(firstMiddle.hasDoubleSize(last, Strengths.SPACER_SIZE_EQ));
+              if (r instanceof Either.Left<AddConstraintError, Void> l)
+                return Either.left(l.value());
+            }
+            for (Element sp : spacers) {
+              r = solver.addConstraint(sp.hasMinSize(spacing, Strengths.SPACER_SIZE_EQ));
+              if (r instanceof Either.Left<AddConstraintError, Void> l)
+                return Either.left(l.value());
+              r = solver.addConstraint(sp.hasSize(area, Strengths.SPACE_GROW));
+              if (r instanceof Either.Left<AddConstraintError, Void> l)
+                return Either.left(l.value());
+            }
+          }
+          break;
         }
-        break;
-      }
-      case SpaceAround: {
-        if (spacers.length <= 2) {
-          // fallback to SpaceEvenly behavior
+      case SpaceEvenly:
+        {
           for (int i = 0; i < spacers.length; i++) {
             for (int j = i + 1; j < spacers.length; j++) {
               r = solver.addConstraint(spacers[i].hasSize(spacers[j], Strengths.SPACER_SIZE_EQ));
@@ -540,120 +579,85 @@ public final class Layout {
             r = solver.addConstraint(sp.hasSize(area, Strengths.SPACE_GROW));
             if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
           }
-        } else {
-          Element first = spacers[0];
-          Element last = spacers[spacers.length - 1];
-          // middle already excludes first and last
+          break;
+        }
+      case SpaceBetween:
+        {
           for (int i = 0; i < middle.length; i++) {
             for (int j = i + 1; j < middle.length; j++) {
-              r = solver.addConstraint(middle[i].hasSize(middle[j], Strengths.SPACER_SIZE_EQ));
+              r =
+                  solver.addConstraint(
+                      middle[i].hasSize(middle[j].size(), Strengths.SPACER_SIZE_EQ));
               if (r instanceof Either.Left<AddConstraintError, Void> l)
                 return Either.left(l.value());
             }
           }
-          if (middle.length > 0) {
-            Element firstMiddle = middle[0];
-            r = solver.addConstraint(firstMiddle.hasDoubleSize(first, Strengths.SPACER_SIZE_EQ));
-            if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
-            r = solver.addConstraint(firstMiddle.hasDoubleSize(last, Strengths.SPACER_SIZE_EQ));
-            if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
-          }
-          for (Element sp : spacers) {
+          for (Element sp : middle) {
             r = solver.addConstraint(sp.hasMinSize(spacing, Strengths.SPACER_SIZE_EQ));
             if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
             r = solver.addConstraint(sp.hasSize(area, Strengths.SPACE_GROW));
             if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
           }
-        }
-        break;
-      }
-      case SpaceEvenly: {
-        for (int i = 0; i < spacers.length; i++) {
-          for (int j = i + 1; j < spacers.length; j++) {
-            r = solver.addConstraint(spacers[i].hasSize(spacers[j], Strengths.SPACER_SIZE_EQ));
+          if (spacers.length >= 1) {
+            Element first = spacers[0];
+            Element last = spacers[spacers.length - 1];
+            r = solver.addConstraint(first.isEmpty());
+            if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
+            r = solver.addConstraint(last.isEmpty());
             if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
           }
+          break;
         }
-        for (Element sp : spacers) {
-          r = solver.addConstraint(sp.hasMinSize(spacing, Strengths.SPACER_SIZE_EQ));
-          if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
-          r = solver.addConstraint(sp.hasSize(area, Strengths.SPACE_GROW));
-          if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
-        }
-        break;
-      }
-      case SpaceBetween: {
-        for (int i = 0; i < middle.length; i++) {
-          for (int j = i + 1; j < middle.length; j++) {
-            r =
-                solver.addConstraint(
-                    middle[i].hasSize(middle[j].size(), Strengths.SPACER_SIZE_EQ));
+      case Start:
+        {
+          for (Element sp : middle) {
+            r = solver.addConstraint(sp.hasSize(spacingF64, Strengths.SPACER_SIZE_EQ));
             if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
           }
+          if (spacers.length >= 1) {
+            Element first = spacers[0];
+            Element last = spacers[spacers.length - 1];
+            r = solver.addConstraint(first.isEmpty());
+            if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
+            r = solver.addConstraint(last.hasSize(area, Strengths.GROW));
+            if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
+          }
+          break;
         }
-        for (Element sp : middle) {
-          r = solver.addConstraint(sp.hasMinSize(spacing, Strengths.SPACER_SIZE_EQ));
-          if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
-          r = solver.addConstraint(sp.hasSize(area, Strengths.SPACE_GROW));
-          if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
+      case Center:
+        {
+          for (Element sp : middle) {
+            r = solver.addConstraint(sp.hasSize(spacingF64, Strengths.SPACER_SIZE_EQ));
+            if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
+          }
+          if (spacers.length >= 1) {
+            Element first = spacers[0];
+            Element last = spacers[spacers.length - 1];
+            r = solver.addConstraint(first.hasSize(area, Strengths.GROW));
+            if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
+            r = solver.addConstraint(last.hasSize(area, Strengths.GROW));
+            if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
+            r = solver.addConstraint(first.hasSize(last, Strengths.SPACER_SIZE_EQ));
+            if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
+          }
+          break;
         }
-        if (spacers.length >= 1) {
-          Element first = spacers[0];
-          Element last = spacers[spacers.length - 1];
-          r = solver.addConstraint(first.isEmpty());
-          if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
-          r = solver.addConstraint(last.isEmpty());
-          if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
+      case End:
+        {
+          for (Element sp : middle) {
+            r = solver.addConstraint(sp.hasSize(spacingF64, Strengths.SPACER_SIZE_EQ));
+            if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
+          }
+          if (spacers.length >= 1) {
+            Element first = spacers[0];
+            Element last = spacers[spacers.length - 1];
+            r = solver.addConstraint(last.isEmpty());
+            if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
+            r = solver.addConstraint(first.hasSize(area, Strengths.GROW));
+            if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
+          }
+          break;
         }
-        break;
-      }
-      case Start: {
-        for (Element sp : middle) {
-          r = solver.addConstraint(sp.hasSize(spacingF64, Strengths.SPACER_SIZE_EQ));
-          if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
-        }
-        if (spacers.length >= 1) {
-          Element first = spacers[0];
-          Element last = spacers[spacers.length - 1];
-          r = solver.addConstraint(first.isEmpty());
-          if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
-          r = solver.addConstraint(last.hasSize(area, Strengths.GROW));
-          if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
-        }
-        break;
-      }
-      case Center: {
-        for (Element sp : middle) {
-          r = solver.addConstraint(sp.hasSize(spacingF64, Strengths.SPACER_SIZE_EQ));
-          if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
-        }
-        if (spacers.length >= 1) {
-          Element first = spacers[0];
-          Element last = spacers[spacers.length - 1];
-          r = solver.addConstraint(first.hasSize(area, Strengths.GROW));
-          if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
-          r = solver.addConstraint(last.hasSize(area, Strengths.GROW));
-          if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
-          r = solver.addConstraint(first.hasSize(last, Strengths.SPACER_SIZE_EQ));
-          if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
-        }
-        break;
-      }
-      case End: {
-        for (Element sp : middle) {
-          r = solver.addConstraint(sp.hasSize(spacingF64, Strengths.SPACER_SIZE_EQ));
-          if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
-        }
-        if (spacers.length >= 1) {
-          Element first = spacers[0];
-          Element last = spacers[spacers.length - 1];
-          r = solver.addConstraint(last.isEmpty());
-          if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
-          r = solver.addConstraint(first.hasSize(area, Strengths.GROW));
-          if (r instanceof Either.Left<AddConstraintError, Void> l) return Either.left(l.value());
-        }
-        break;
-      }
     }
     return Either.unit();
   }
@@ -700,10 +704,7 @@ public final class Layout {
   }
 
   private static Rect[] changesToRects(
-      Map<Variable, Double> changes,
-      Element[] elements,
-      Rect area,
-      Direction direction) {
+      Map<Variable, Double> changes, Element[] elements, Rect area, Direction direction) {
     Rect[] out = new Rect[elements.length];
     for (int i = 0; i < elements.length; i++) {
       Element e = elements[i];
@@ -778,8 +779,7 @@ public final class Layout {
     private Strengths() {}
 
     /// The strength to apply to Spacers to ensure that their sizes are equal.
-    public static final Strength SPACER_SIZE_EQ =
-        new Strength(Strength.REQUIRED.value() / 10.0);
+    public static final Strength SPACER_SIZE_EQ = new Strength(Strength.REQUIRED.value() / 10.0);
 
     /// The strength to apply to Min inequality constraints.
     public static final Strength MIN_SIZE_GE = Strength.STRONG.times(100.0);
@@ -794,8 +794,7 @@ public final class Layout {
     public static final Strength PERCENTAGE_SIZE_EQ = Strength.STRONG;
 
     /// The strength to apply to Ratio constraints.
-    public static final Strength RATIO_SIZE_EQ =
-        new Strength(Strength.STRONG.value() / 10.0);
+    public static final Strength RATIO_SIZE_EQ = new Strength(Strength.STRONG.value() / 10.0);
 
     /// The strength to apply to Min equality constraints.
     public static final Strength MIN_SIZE_EQ = Strength.MEDIUM.times(10.0);

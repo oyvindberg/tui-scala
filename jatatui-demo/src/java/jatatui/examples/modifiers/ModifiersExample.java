@@ -55,8 +55,7 @@ public final class ModifiersExample {
     while (true) {
       terminal.draw(ModifiersExample::render);
       Event event = JNI.read();
-      if (event instanceof Event.Key key
-          && key.keyEvent().kind() == KeyEventKind.Press) {
+      if (event instanceof Event.Key key && key.keyEvent().kind() == KeyEventKind.Press) {
         return;
       }
     }
@@ -114,8 +113,7 @@ public final class ModifiersExample {
                           modifierName,
                           Style.empty().withFg(fg).withBg(bg).withAddModifier(modifier)),
                       Span.styled(
-                          padding,
-                          Style.empty().withFg(fg).withBg(bg).withAddModifier(modifier)),
+                          padding, Style.empty().withFg(fg).withBg(bg).withAddModifier(modifier)),
                       // This is a hack to work around a bug in VHS which is used for rendering the
                       // examples to gifs. The bug is that the background color of a paragraph
                       // seems to bleed into the next character.

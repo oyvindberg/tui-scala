@@ -8,7 +8,8 @@ import java.util.Optional;
 
 /// Wraps a [ListState] alongside the items currently displayed.
 ///
-/// Mirrors `examples/apps/demo/src/app.rs` — `StatefulList&lt;T&gt;`. The state and items are mutable
+/// Mirrors `examples/apps/demo/src/app.rs` — `StatefulList&lt;T&gt;`. The state and items are
+// mutable
 /// so the demo can move items around (logs cycling) and update selection in place.
 public final class StatefulList<T> {
 

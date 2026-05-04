@@ -23,13 +23,9 @@ public class RectOpsTest {
         Arguments.of("zero", Rect.of(3, 4, 5, 6), Offset.ZERO, Rect.of(3, 4, 5, 6)),
         Arguments.of("positive", Rect.of(3, 4, 5, 6), Offset.of(1, 2), Rect.of(4, 6, 5, 6)),
         Arguments.of("negative", Rect.of(3, 4, 5, 6), Offset.of(-1, -2), Rect.of(2, 2, 5, 6)),
+        Arguments.of("saturate_negative", Rect.of(3, 4, 5, 6), Offset.MIN, Rect.of(0, 0, 5, 6)),
         Arguments.of(
-            "saturate_negative", Rect.of(3, 4, 5, 6), Offset.MIN, Rect.of(0, 0, 5, 6)),
-        Arguments.of(
-            "saturate_positive",
-            Rect.of(3, 4, 5, 6),
-            Offset.MAX,
-            Rect.of(max - 5, max - 6, 5, 6)));
+            "saturate_positive", Rect.of(3, 4, 5, 6), Offset.MAX, Rect.of(max - 5, max - 6, 5, 6)));
   }
 
   @ParameterizedTest(name = "{0}")
@@ -44,8 +40,7 @@ public class RectOpsTest {
         Arguments.of("zero", Rect.of(3, 4, 5, 6), Offset.ZERO, Rect.of(3, 4, 5, 6)),
         Arguments.of("positive", Rect.of(3, 4, 5, 6), Offset.of(1, 2), Rect.of(2, 2, 5, 6)),
         Arguments.of("negative", Rect.of(3, 4, 5, 6), Offset.of(-1, -2), Rect.of(4, 6, 5, 6)),
-        Arguments.of(
-            "saturate_negative", Rect.of(3, 4, 5, 6), Offset.MAX, Rect.of(0, 0, 5, 6)),
+        Arguments.of("saturate_negative", Rect.of(3, 4, 5, 6), Offset.MAX, Rect.of(0, 0, 5, 6)),
         Arguments.of(
             "saturate_positive",
             Rect.of(3, 4, 5, 6),

@@ -2,14 +2,13 @@ package jatatui.tests.core.layout.solver;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import jatatui.core.layout.solver.Expression;
 import jatatui.core.layout.solver.KasuariOps;
 import jatatui.core.layout.solver.Term;
 import jatatui.core.layout.solver.Variable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 /// Java port of the inline `#[cfg(test)] mod tests` block at the bottom of

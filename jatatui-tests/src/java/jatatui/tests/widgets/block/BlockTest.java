@@ -22,10 +22,10 @@ import jatatui.widgets.block.Padding;
 import jatatui.widgets.block.TitlePosition;
 import java.util.List;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.api.Test;
 
 public class BlockTest {
 
@@ -88,10 +88,15 @@ public class BlockTest {
 
   static Stream<Arguments> innerBorderAndTitleCases() {
     return Stream.of(
-        Arguments.of(Block.empty().withTitleTop("Test").withBorders(Borders.TOP), new Rect(0, 1, 0, 1)),
-        Arguments.of(Block.empty().withTitleTop("Test").withBorders(Borders.BOTTOM), new Rect(0, 1, 0, 0)),
-        Arguments.of(Block.empty().withTitleBottom("Test").withBorders(Borders.TOP), new Rect(0, 1, 0, 0)),
-        Arguments.of(Block.empty().withTitleBottom("Test").withBorders(Borders.BOTTOM), new Rect(0, 0, 0, 1)));
+        Arguments.of(
+            Block.empty().withTitleTop("Test").withBorders(Borders.TOP), new Rect(0, 1, 0, 1)),
+        Arguments.of(
+            Block.empty().withTitleTop("Test").withBorders(Borders.BOTTOM), new Rect(0, 1, 0, 0)),
+        Arguments.of(
+            Block.empty().withTitleBottom("Test").withBorders(Borders.TOP), new Rect(0, 1, 0, 0)),
+        Arguments.of(
+            Block.empty().withTitleBottom("Test").withBorders(Borders.BOTTOM),
+            new Rect(0, 0, 0, 1)));
   }
 
   @ParameterizedTest
@@ -283,11 +288,7 @@ public class BlockTest {
         .withTitleBottom(Line.raw("E").centered())
         .withTitleBottom(Line.raw("F").rightAligned())
         .render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "┌A───B───C┐",
-            "│         │",
-            "└D───E───F┘");
+    Buffer expected = Buffer.withLines("┌A───B───C┐", "│         │", "└D───E───F┘");
     BufferAssertions.assertBufferEq(buffer, expected);
   }
 
@@ -332,7 +333,8 @@ public class BlockTest {
         .withTitleAlignment(HorizontalAlignment.Right)
         .withTitle("")
         .render(buffer.area, buffer);
-    BufferAssertions.assertBufferEq(buffer, Buffer.withLines("               ", "               ", "               "));
+    BufferAssertions.assertBufferEq(
+        buffer, Buffer.withLines("               ", "               ", "               "));
   }
 
   @Test
@@ -402,11 +404,7 @@ public class BlockTest {
         .withTitle("test")
         .withBorderStyle(Style.empty().yellow())
         .render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "┌test────┐",
-            "│        │",
-            "└────────┘");
+    Buffer expected = Buffer.withLines("┌test────┐", "│        │", "└────────┘");
     expected.setStyle(new Rect(0, 0, 10, 3), Style.empty().yellow());
     expected.setStyle(new Rect(1, 1, 8, 1), Style.reset());
     BufferAssertions.assertBufferEq(buffer, expected);
@@ -416,11 +414,7 @@ public class BlockTest {
   public void render_plain_border() {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 10, 3));
     Block.bordered().withBorderType(BorderType.Plain).render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "┌────────┐",
-            "│        │",
-            "└────────┘");
+    Buffer expected = Buffer.withLines("┌────────┐", "│        │", "└────────┘");
     BufferAssertions.assertBufferEq(buffer, expected);
   }
 
@@ -428,11 +422,7 @@ public class BlockTest {
   public void render_rounded_border() {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 10, 3));
     Block.bordered().withBorderType(BorderType.Rounded).render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "╭────────╮",
-            "│        │",
-            "╰────────╯");
+    Buffer expected = Buffer.withLines("╭────────╮", "│        │", "╰────────╯");
     BufferAssertions.assertBufferEq(buffer, expected);
   }
 
@@ -440,11 +430,7 @@ public class BlockTest {
   public void render_double_border() {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 10, 3));
     Block.bordered().withBorderType(BorderType.Double).render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "╔════════╗",
-            "║        ║",
-            "╚════════╝");
+    Buffer expected = Buffer.withLines("╔════════╗", "║        ║", "╚════════╝");
     BufferAssertions.assertBufferEq(buffer, expected);
   }
 
@@ -452,11 +438,7 @@ public class BlockTest {
   public void render_quadrant_inside() {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 10, 3));
     Block.bordered().withBorderType(BorderType.QuadrantInside).render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "▗▄▄▄▄▄▄▄▄▖",
-            "▐        ▌",
-            "▝▀▀▀▀▀▀▀▀▘");
+    Buffer expected = Buffer.withLines("▗▄▄▄▄▄▄▄▄▖", "▐        ▌", "▝▀▀▀▀▀▀▀▀▘");
     BufferAssertions.assertBufferEq(buffer, expected);
   }
 
@@ -464,11 +446,7 @@ public class BlockTest {
   public void render_border_quadrant_outside() {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 10, 3));
     Block.bordered().withBorderType(BorderType.QuadrantOutside).render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "▛▀▀▀▀▀▀▀▀▜",
-            "▌        ▐",
-            "▙▄▄▄▄▄▄▄▄▟");
+    Buffer expected = Buffer.withLines("▛▀▀▀▀▀▀▀▀▜", "▌        ▐", "▙▄▄▄▄▄▄▄▄▟");
     BufferAssertions.assertBufferEq(buffer, expected);
   }
 
@@ -476,11 +454,7 @@ public class BlockTest {
   public void render_solid_border() {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 10, 3));
     Block.bordered().withBorderType(BorderType.Thick).render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "┏━━━━━━━━┓",
-            "┃        ┃",
-            "┗━━━━━━━━┛");
+    Buffer expected = Buffer.withLines("┏━━━━━━━━┓", "┃        ┃", "┗━━━━━━━━┛");
     BufferAssertions.assertBufferEq(buffer, expected);
   }
 
@@ -488,11 +462,7 @@ public class BlockTest {
   public void render_light_double_dashed_border() {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 10, 3));
     Block.bordered().withBorderType(BorderType.LightDoubleDashed).render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "┌╌╌╌╌╌╌╌╌┐",
-            "╎        ╎",
-            "└╌╌╌╌╌╌╌╌┘");
+    Buffer expected = Buffer.withLines("┌╌╌╌╌╌╌╌╌┐", "╎        ╎", "└╌╌╌╌╌╌╌╌┘");
     BufferAssertions.assertBufferEq(buffer, expected);
   }
 
@@ -500,11 +470,7 @@ public class BlockTest {
   public void render_heavy_double_dashed_border() {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 10, 3));
     Block.bordered().withBorderType(BorderType.HeavyDoubleDashed).render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "┏╍╍╍╍╍╍╍╍┓",
-            "╏        ╏",
-            "┗╍╍╍╍╍╍╍╍┛");
+    Buffer expected = Buffer.withLines("┏╍╍╍╍╍╍╍╍┓", "╏        ╏", "┗╍╍╍╍╍╍╍╍┛");
     BufferAssertions.assertBufferEq(buffer, expected);
   }
 
@@ -512,11 +478,7 @@ public class BlockTest {
   public void render_light_triple_dashed_border() {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 10, 3));
     Block.bordered().withBorderType(BorderType.LightTripleDashed).render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "┌┄┄┄┄┄┄┄┄┐",
-            "┆        ┆",
-            "└┄┄┄┄┄┄┄┄┘");
+    Buffer expected = Buffer.withLines("┌┄┄┄┄┄┄┄┄┐", "┆        ┆", "└┄┄┄┄┄┄┄┄┘");
     BufferAssertions.assertBufferEq(buffer, expected);
   }
 
@@ -524,11 +486,7 @@ public class BlockTest {
   public void render_heavy_triple_dashed_border() {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 10, 3));
     Block.bordered().withBorderType(BorderType.HeavyTripleDashed).render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "┏┅┅┅┅┅┅┅┅┓",
-            "┇        ┇",
-            "┗┅┅┅┅┅┅┅┅┛");
+    Buffer expected = Buffer.withLines("┏┅┅┅┅┅┅┅┅┓", "┇        ┇", "┗┅┅┅┅┅┅┅┅┛");
     BufferAssertions.assertBufferEq(buffer, expected);
   }
 
@@ -536,11 +494,7 @@ public class BlockTest {
   public void render_light_quadruple_dashed_border() {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 10, 3));
     Block.bordered().withBorderType(BorderType.LightQuadrupleDashed).render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "┌┈┈┈┈┈┈┈┈┐",
-            "┊        ┊",
-            "└┈┈┈┈┈┈┈┈┘");
+    Buffer expected = Buffer.withLines("┌┈┈┈┈┈┈┈┈┐", "┊        ┊", "└┈┈┈┈┈┈┈┈┘");
     BufferAssertions.assertBufferEq(buffer, expected);
   }
 
@@ -548,11 +502,7 @@ public class BlockTest {
   public void render_heavy_quadruple_dashed_border() {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 10, 3));
     Block.bordered().withBorderType(BorderType.HeavyQuadrupleDashed).render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "┏┉┉┉┉┉┉┉┉┓",
-            "┋        ┋",
-            "┗┉┉┉┉┉┉┉┉┛");
+    Buffer expected = Buffer.withLines("┏┉┉┉┉┉┉┉┉┓", "┋        ┋", "┗┉┉┉┉┉┉┉┉┛");
     BufferAssertions.assertBufferEq(buffer, expected);
   }
 
@@ -562,11 +512,7 @@ public class BlockTest {
     Block.bordered()
         .withBorderSet(new Border.Set("1", "2", "3", "4", "L", "R", "T", "B"))
         .render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "1TTTTTTTT2",
-            "L        R",
-            "3BBBBBBBB4");
+    Buffer expected = Buffer.withLines("1TTTTTTTT2", "L        R", "3BBBBBBBB4");
     BufferAssertions.assertBufferEq(buffer, expected);
   }
 
@@ -587,71 +533,55 @@ public class BlockTest {
         .withMergeBorders(strategy)
         .render(buffer.area, buffer);
     BufferAssertions.assertBufferEq(
-        buffer,
-        Buffer.withLines(
-            "┌────────┐",
-            "│        │",
-            "└────────┘"));
+        buffer, Buffer.withLines("┌────────┐", "│        │", "└────────┘"));
 
     buffer = Buffer.empty(new Rect(0, 0, 10, 3));
-    Block.empty().withBorders(Borders.TOP.or(Borders.LEFT)).withMergeBorders(strategy)
+    Block.empty()
+        .withBorders(Borders.TOP.or(Borders.LEFT))
+        .withMergeBorders(strategy)
         .render(buffer.area, buffer);
     BufferAssertions.assertBufferEq(
-        buffer,
-        Buffer.withLines(
-            "┌─────────",
-            "│         ",
-            "│         "));
+        buffer, Buffer.withLines("┌─────────", "│         ", "│         "));
 
     buffer = Buffer.empty(new Rect(0, 0, 10, 3));
-    Block.empty().withBorders(Borders.TOP.or(Borders.RIGHT)).withMergeBorders(strategy)
+    Block.empty()
+        .withBorders(Borders.TOP.or(Borders.RIGHT))
+        .withMergeBorders(strategy)
         .render(buffer.area, buffer);
     BufferAssertions.assertBufferEq(
-        buffer,
-        Buffer.withLines(
-            "─────────┐",
-            "         │",
-            "         │"));
+        buffer, Buffer.withLines("─────────┐", "         │", "         │"));
 
     buffer = Buffer.empty(new Rect(0, 0, 10, 3));
-    Block.empty().withBorders(Borders.BOTTOM.or(Borders.LEFT)).withMergeBorders(strategy)
+    Block.empty()
+        .withBorders(Borders.BOTTOM.or(Borders.LEFT))
+        .withMergeBorders(strategy)
         .render(buffer.area, buffer);
     BufferAssertions.assertBufferEq(
-        buffer,
-        Buffer.withLines(
-            "│         ",
-            "│         ",
-            "└─────────"));
+        buffer, Buffer.withLines("│         ", "│         ", "└─────────"));
 
     buffer = Buffer.empty(new Rect(0, 0, 10, 3));
-    Block.empty().withBorders(Borders.BOTTOM.or(Borders.RIGHT)).withMergeBorders(strategy)
+    Block.empty()
+        .withBorders(Borders.BOTTOM.or(Borders.RIGHT))
+        .withMergeBorders(strategy)
         .render(buffer.area, buffer);
     BufferAssertions.assertBufferEq(
-        buffer,
-        Buffer.withLines(
-            "         │",
-            "         │",
-            "─────────┘"));
+        buffer, Buffer.withLines("         │", "         │", "─────────┘"));
 
     buffer = Buffer.empty(new Rect(0, 0, 10, 3));
-    Block.empty().withBorders(Borders.TOP.or(Borders.BOTTOM)).withMergeBorders(strategy)
+    Block.empty()
+        .withBorders(Borders.TOP.or(Borders.BOTTOM))
+        .withMergeBorders(strategy)
         .render(buffer.area, buffer);
     BufferAssertions.assertBufferEq(
-        buffer,
-        Buffer.withLines(
-            "──────────",
-            "          ",
-            "──────────"));
+        buffer, Buffer.withLines("──────────", "          ", "──────────"));
 
     buffer = Buffer.empty(new Rect(0, 0, 10, 3));
-    Block.empty().withBorders(Borders.LEFT.or(Borders.RIGHT)).withMergeBorders(strategy)
+    Block.empty()
+        .withBorders(Borders.LEFT.or(Borders.RIGHT))
+        .withMergeBorders(strategy)
         .render(buffer.area, buffer);
     BufferAssertions.assertBufferEq(
-        buffer,
-        Buffer.withLines(
-            "│        │",
-            "│        │",
-            "│        │"));
+        buffer, Buffer.withLines("│        │", "│        │", "│        │"));
   }
 
   @Test

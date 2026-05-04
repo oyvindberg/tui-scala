@@ -89,9 +89,14 @@ public class TerminalTest {
     Terminal<TestBackend> terminal =
         Terminal.withOptions(new TestBackend(20, 5), new TerminalOptions(Viewport.inline(1)));
 
-    terminal.insertBefore(2, buf -> renderLines(buf, "------ Line 1 ------", "------ Line 2 ------"));
+    terminal.insertBefore(
+        2, buf -> renderLines(buf, "------ Line 1 ------", "------ Line 2 ------"));
 
-    terminal.draw(f -> f.renderWidget((area, buffer) -> Widget.renderString("[---- Viewport ----]", area, buffer), f.area()));
+    terminal.draw(
+        f ->
+            f.renderWidget(
+                (area, buffer) -> Widget.renderString("[---- Viewport ----]", area, buffer),
+                f.area()));
 
     BufferAssertions.assertBufferEq(
         terminal.backend().buffer(),
@@ -122,7 +127,11 @@ public class TerminalTest {
                 "------ Line 4 ------",
                 "------ Line 5 ------"));
 
-    terminal.draw(f -> f.renderWidget((area, buffer) -> Widget.renderString("[---- Viewport ----]", area, buffer), f.area()));
+    terminal.draw(
+        f ->
+            f.renderWidget(
+                (area, buffer) -> Widget.renderString("[---- Viewport ----]", area, buffer),
+                f.area()));
 
     BufferAssertions.assertBufferEq(
         terminal.backend().buffer(),
@@ -149,7 +158,11 @@ public class TerminalTest {
     terminal.insertBefore(1, buf -> renderLines(buf, "------ Line 4 ------"));
     terminal.insertBefore(1, buf -> renderLines(buf, "------ Line 5 ------"));
 
-    terminal.draw(f -> f.renderWidget((area, buffer) -> Widget.renderString("[---- Viewport ----]", area, buffer), f.area()));
+    terminal.draw(
+        f ->
+            f.renderWidget(
+                (area, buffer) -> Widget.renderString("[---- Viewport ----]", area, buffer),
+                f.area()));
 
     BufferAssertions.assertBufferEq(
         terminal.backend().buffer(),
@@ -174,7 +187,8 @@ public class TerminalTest {
     terminal.insertBefore(
         3,
         buf ->
-            renderLines(buf, "------ Line 2 ------", "------ Line 3 ------", "------ Line 4 ------"));
+            renderLines(
+                buf, "------ Line 2 ------", "------ Line 3 ------", "------ Line 4 ------"));
     terminal.insertBefore(
         7,
         buf ->
@@ -202,8 +216,7 @@ public class TerminalTest {
 
     BufferAssertions.assertBufferEq(
         terminal.backend().buffer(),
-        Buffer.withLines(
-            "Top viewport line   ", "     Viewport       ", "Bot viewport line   "));
+        Buffer.withLines("Top viewport line   ", "     Viewport       ", "Bot viewport line   "));
 
     BufferAssertions.assertBufferEq(
         terminal.backend().scrollback(),

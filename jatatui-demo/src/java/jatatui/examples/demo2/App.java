@@ -221,8 +221,7 @@ public final class App {
   /// Mirrors `impl Widget for &App`.
   private void renderApp(Rect area, Buffer buf) {
     Layout layout =
-        Layout.vertical(
-            new Constraint.Length(1), new Constraint.Min(0), new Constraint.Length(1));
+        Layout.vertical(new Constraint.Length(1), new Constraint.Min(0), new Constraint.Length(1));
     Rect[] split = area.layout(layout, 3);
     Rect titleBar = split[0];
     Rect tabArea = split[1];
@@ -266,14 +265,15 @@ public final class App {
   }
 
   private static void renderBottomBar(Rect area, Buffer buf) {
-    String[][] keys = new String[][] {
-      {"H/←", "Left"},
-      {"L/→", "Right"},
-      {"K/↑", "Up"},
-      {"J/↓", "Down"},
-      {"D/Del", "Destroy"},
-      {"Q/Esc", "Quit"},
-    };
+    String[][] keys =
+        new String[][] {
+          {"H/←", "Left"},
+          {"L/→", "Right"},
+          {"K/↑", "Up"},
+          {"J/↓", "Down"},
+          {"D/Del", "Destroy"},
+          {"Q/Esc", "Quit"},
+        };
     List<Span> spans = new ArrayList<>(keys.length * 2);
     for (String[] entry : keys) {
       spans.add(Span.styled(" " + entry[0] + " ", THEME.keyBinding.key()));

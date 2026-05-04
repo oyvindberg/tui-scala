@@ -9,13 +9,12 @@ import jatatui.widgets.scrollbar.Scrollbar;
 import jatatui.widgets.scrollbar.ScrollbarOrientation;
 import jatatui.widgets.scrollbar.ScrollbarState;
 import java.util.Optional;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
 
 public class ScrollbarTest {
 
@@ -149,8 +148,7 @@ public class ScrollbarTest {
 
   @ParameterizedTest
   @MethodSource("double_cases")
-  public void render_scrollbar_horizontal_bottom(
-      String expected, int position, int contentLength) {
+  public void render_scrollbar_horizontal_bottom(String expected, int position, int contentLength) {
     int size = Wcwidth.width(expected);
     Buffer buf = Buffer.empty(new Rect(0, 0, size, 2));
     ScrollbarState state = ScrollbarState.of(contentLength).withPosition(position);
@@ -257,8 +255,7 @@ public class ScrollbarTest {
 
   @ParameterizedTest
   @MethodSource("small_track_cases")
-  public void thumb_visible_on_very_small_track(
-      String expected, int position, int contentLength) {
+  public void thumb_visible_on_very_small_track(String expected, int position, int contentLength) {
     int size = Wcwidth.width(expected);
     Buffer buf = Buffer.empty(new Rect(0, 0, size, 1));
     ScrollbarState state =

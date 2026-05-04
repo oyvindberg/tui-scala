@@ -86,8 +86,7 @@ public final class ColorsRgbExample {
         return;
       }
       Event event = JNI.read();
-      if (event instanceof Event.Key key
-          && key.keyEvent().kind() == KeyEventKind.Press) {
+      if (event instanceof Event.Key key && key.keyEvent().kind() == KeyEventKind.Press) {
         state = AppState.Quit;
       }
     }
@@ -102,8 +101,7 @@ public final class ColorsRgbExample {
           Layout.horizontal(new Constraint.Min(0), new Constraint.Length(8)).split(top);
       Rect title = horizontal[0];
       Rect fps = horizontal[1];
-      Paragraph.of(Text.from("colors_rgb example. Press q to quit").centered())
-          .render(title, buf);
+      Paragraph.of(Text.from("colors_rgb example. Press q to quit").centered()).render(title, buf);
       fpsWidget.render(fps, buf);
       colorsWidget.render(colors, buf);
     }
@@ -213,17 +211,29 @@ public final class ColorsRgbExample {
     float g1;
     float b1;
     if (h < 60.0f) {
-      r1 = c; g1 = x; b1 = 0.0f;
+      r1 = c;
+      g1 = x;
+      b1 = 0.0f;
     } else if (h < 120.0f) {
-      r1 = x; g1 = c; b1 = 0.0f;
+      r1 = x;
+      g1 = c;
+      b1 = 0.0f;
     } else if (h < 180.0f) {
-      r1 = 0.0f; g1 = c; b1 = x;
+      r1 = 0.0f;
+      g1 = c;
+      b1 = x;
     } else if (h < 240.0f) {
-      r1 = 0.0f; g1 = x; b1 = c;
+      r1 = 0.0f;
+      g1 = x;
+      b1 = c;
     } else if (h < 300.0f) {
-      r1 = x; g1 = 0.0f; b1 = c;
+      r1 = x;
+      g1 = 0.0f;
+      b1 = c;
     } else {
-      r1 = c; g1 = 0.0f; b1 = x;
+      r1 = c;
+      g1 = 0.0f;
+      b1 = x;
     }
     int r = clamp8((int) Math.round((r1 + m) * 255.0f));
     int g = clamp8((int) Math.round((g1 + m) * 255.0f));

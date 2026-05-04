@@ -57,7 +57,7 @@ class NativeLoader {
             + " and os.arch = "
             + arch
             + ". You can set environment variable TUI_SCALA_PLATFORM to x86_64-windows,"
-            + " x86_64-linux, x86_64-darwin, arm64-darwin, arm64-linux to override. Open an issue at"
-            + " https://github.com/oyvindberg/tui-scala/issues .");
+            + " x86_64-linux, x86_64-darwin, arm64-darwin, arm64-linux to override. Open an issue"
+            + " at https://github.com/oyvindberg/tui-scala/issues .");
   }
 }

@@ -6,7 +6,6 @@ import jatatui.core.layout.HorizontalAlignment;
 import jatatui.core.layout.Position;
 import jatatui.core.layout.Rect;
 import jatatui.core.style.Style;
-import jatatui.core.style.Styled;
 import jatatui.core.style.Stylize;
 import jatatui.core.symbols.Border;
 import jatatui.core.symbols.Merge;
@@ -131,8 +130,16 @@ public final class Block implements Widget, Stylize<Block> {
     next.addAll(titles);
     next.add(new BlockTitle(Optional.empty(), title));
     return new Block(
-        next, titlesStyle, titlesAlignment, titlesPosition, borders, borderStyle, borderSet,
-        style, padding, mergeBorders);
+        next,
+        titlesStyle,
+        titlesAlignment,
+        titlesPosition,
+        borders,
+        borderStyle,
+        borderSet,
+        style,
+        padding,
+        mergeBorders);
   }
 
   /// Convenience overload accepting a string.
@@ -146,8 +153,16 @@ public final class Block implements Widget, Stylize<Block> {
     next.addAll(titles);
     next.add(new BlockTitle(Optional.of(TitlePosition.Top), title));
     return new Block(
-        next, titlesStyle, titlesAlignment, titlesPosition, borders, borderStyle, borderSet,
-        style, padding, mergeBorders);
+        next,
+        titlesStyle,
+        titlesAlignment,
+        titlesPosition,
+        borders,
+        borderStyle,
+        borderSet,
+        style,
+        padding,
+        mergeBorders);
   }
 
   /// Convenience overload accepting a string.
@@ -161,8 +176,16 @@ public final class Block implements Widget, Stylize<Block> {
     next.addAll(titles);
     next.add(new BlockTitle(Optional.of(TitlePosition.Bottom), title));
     return new Block(
-        next, titlesStyle, titlesAlignment, titlesPosition, borders, borderStyle, borderSet,
-        style, padding, mergeBorders);
+        next,
+        titlesStyle,
+        titlesAlignment,
+        titlesPosition,
+        borders,
+        borderStyle,
+        borderSet,
+        style,
+        padding,
+        mergeBorders);
   }
 
   /// Convenience overload accepting a string.
@@ -173,24 +196,48 @@ public final class Block implements Widget, Stylize<Block> {
   /// Sets the style applied to every title of the block.
   public Block withTitleStyle(Style style) {
     return new Block(
-        titles, style, titlesAlignment, titlesPosition, borders, borderStyle, borderSet,
-        this.style, padding, mergeBorders);
+        titles,
+        style,
+        titlesAlignment,
+        titlesPosition,
+        borders,
+        borderStyle,
+        borderSet,
+        this.style,
+        padding,
+        mergeBorders);
   }
 
   /// Sets the default [HorizontalAlignment] for all block titles. Titles that explicitly set an
   /// alignment ignore this default.
   public Block withTitleAlignment(HorizontalAlignment alignment) {
     return new Block(
-        titles, titlesStyle, alignment, titlesPosition, borders, borderStyle, borderSet,
-        style, padding, mergeBorders);
+        titles,
+        titlesStyle,
+        alignment,
+        titlesPosition,
+        borders,
+        borderStyle,
+        borderSet,
+        style,
+        padding,
+        mergeBorders);
   }
 
   /// Sets the default [TitlePosition] for all block titles. Titles that explicitly set a position
   /// ignore this default.
   public Block withTitlePosition(TitlePosition position) {
     return new Block(
-        titles, titlesStyle, titlesAlignment, position, borders, borderStyle, borderSet,
-        style, padding, mergeBorders);
+        titles,
+        titlesStyle,
+        titlesAlignment,
+        position,
+        borders,
+        borderStyle,
+        borderSet,
+        style,
+        padding,
+        mergeBorders);
   }
 
   // ---- Border / style configuration ----
@@ -198,22 +245,46 @@ public final class Block implements Widget, Stylize<Block> {
   /// Defines the style of the borders.
   public Block withBorderStyle(Style style) {
     return new Block(
-        titles, titlesStyle, titlesAlignment, titlesPosition, borders, style, borderSet,
-        this.style, padding, mergeBorders);
+        titles,
+        titlesStyle,
+        titlesAlignment,
+        titlesPosition,
+        borders,
+        style,
+        borderSet,
+        this.style,
+        padding,
+        mergeBorders);
   }
 
   /// Defines the style of the entire block.
   public Block withStyle(Style style) {
     return new Block(
-        titles, titlesStyle, titlesAlignment, titlesPosition, borders, borderStyle, borderSet,
-        style, padding, mergeBorders);
+        titles,
+        titlesStyle,
+        titlesAlignment,
+        titlesPosition,
+        borders,
+        borderStyle,
+        borderSet,
+        style,
+        padding,
+        mergeBorders);
   }
 
   /// Defines which borders are displayed.
   public Block withBorders(Borders flag) {
     return new Block(
-        titles, titlesStyle, titlesAlignment, titlesPosition, flag, borderStyle, borderSet,
-        style, padding, mergeBorders);
+        titles,
+        titlesStyle,
+        titlesAlignment,
+        titlesPosition,
+        flag,
+        borderStyle,
+        borderSet,
+        style,
+        padding,
+        mergeBorders);
   }
 
   /// Sets the symbols used to display the border via a [BorderType].
@@ -222,31 +293,63 @@ public final class Block implements Widget, Stylize<Block> {
   /// [#withBorderSet(Border.Set)].
   public Block withBorderType(BorderType borderType) {
     return new Block(
-        titles, titlesStyle, titlesAlignment, titlesPosition, borders, borderStyle,
-        borderType.toBorderSet(), style, padding, mergeBorders);
+        titles,
+        titlesStyle,
+        titlesAlignment,
+        titlesPosition,
+        borders,
+        borderStyle,
+        borderType.toBorderSet(),
+        style,
+        padding,
+        mergeBorders);
   }
 
   /// Sets the symbols used to display the border directly as a [Border.Set]. Setting this
   /// overwrites any [BorderType] previously assigned via [#withBorderType(BorderType)].
   public Block withBorderSet(Border.Set borderSet) {
     return new Block(
-        titles, titlesStyle, titlesAlignment, titlesPosition, borders, borderStyle, borderSet,
-        style, padding, mergeBorders);
+        titles,
+        titlesStyle,
+        titlesAlignment,
+        titlesPosition,
+        borders,
+        borderStyle,
+        borderSet,
+        style,
+        padding,
+        mergeBorders);
   }
 
   /// Sets the [Padding] inside the block.
   public Block withPadding(Padding padding) {
     return new Block(
-        titles, titlesStyle, titlesAlignment, titlesPosition, borders, borderStyle, borderSet,
-        style, padding, mergeBorders);
+        titles,
+        titlesStyle,
+        titlesAlignment,
+        titlesPosition,
+        borders,
+        borderStyle,
+        borderSet,
+        style,
+        padding,
+        mergeBorders);
   }
 
   /// Sets the merge strategy for overlapping border characters (defaults to
   /// [Merge.MergeStrategy#Replace]).
   public Block withMergeBorders(Merge.MergeStrategy strategy) {
     return new Block(
-        titles, titlesStyle, titlesAlignment, titlesPosition, borders, borderStyle, borderSet,
-        style, padding, strategy);
+        titles,
+        titlesStyle,
+        titlesAlignment,
+        titlesPosition,
+        borders,
+        borderStyle,
+        borderSet,
+        style,
+        padding,
+        strategy);
   }
 
   // ---- Geometry ----
@@ -306,7 +409,8 @@ public final class Block implements Widget, Stylize<Block> {
   public SpacePair verticalSpace() {
     boolean hasTop = borders.contains(Borders.TOP) || hasTitleAtPosition(TitlePosition.Top);
     int top = padding.top() + (hasTop ? 1 : 0);
-    boolean hasBottom = borders.contains(Borders.BOTTOM) || hasTitleAtPosition(TitlePosition.Bottom);
+    boolean hasBottom =
+        borders.contains(Borders.BOTTOM) || hasTitleAtPosition(TitlePosition.Bottom);
     int bottom = padding.bottom() + (hasBottom ? 1 : 0);
     return new SpacePair(top, bottom);
   }
@@ -407,7 +511,8 @@ public final class Block implements Widget, Stylize<Block> {
   }
 
   private void renderTitlePosition(TitlePosition position, Rect area, Buffer buf) {
-    // Order matters: it defines overlap behaviour. Left → center → right (later overwrites earlier).
+    // Order matters: it defines overlap behaviour. Left → center → right (later overwrites
+    // earlier).
     renderLeftTitles(position, area, buf);
     renderCenterTitles(position, area, buf);
     renderRightTitles(position, area, buf);
@@ -539,7 +644,8 @@ public final class Block implements Widget, Stylize<Block> {
   /// Renders a [Line] into `area`, using the line's alignment, falling back to
   /// `parentAlignment` when the line itself has none. Mirrors the upstream
   /// `Line::render_with_alignment`.
-  private static void renderLine(Line line, Rect area, Optional<HorizontalAlignment> parentAlignment, Buffer buf) {
+  private static void renderLine(
+      Line line, Rect area, Optional<HorizontalAlignment> parentAlignment, Buffer buf) {
     Rect clipped = area.intersection(buf.area);
     if (clipped.isEmpty()) return;
     Rect oneRow = new Rect(clipped.x(), clipped.y(), clipped.width(), 1);
@@ -559,8 +665,12 @@ public final class Block implements Widget, Stylize<Block> {
             case Right -> Math.max(0, areaWidth - lineWidth);
             case Left -> 0;
           };
-      Rect indented = new Rect(
-          saturatingAdd(oneRow.x(), indent), oneRow.y(), saturatingSub(oneRow.width(), indent), 1);
+      Rect indented =
+          new Rect(
+              saturatingAdd(oneRow.x(), indent),
+              oneRow.y(),
+              saturatingSub(oneRow.width(), indent),
+              1);
       renderSpansAt(line, indented, 0, buf);
     } else {
       int skipWidth =
@@ -593,7 +703,9 @@ public final class Block implements Widget, Stylize<Block> {
         int firstGraphemeOffset = remainingSkip - skipped.actualSkipped();
         if (firstGraphemeOffset > 0) {
           int indent = Math.min(firstGraphemeOffset, cur.width());
-          cur = new Rect(saturatingAdd(cur.x(), indent), cur.y(), saturatingSub(cur.width(), indent), 1);
+          cur =
+              new Rect(
+                  saturatingAdd(cur.x(), indent), cur.y(), saturatingSub(cur.width(), indent), 1);
         }
         Position end = buf.setStringn(cur.x(), cur.y(), skipped.remaining(), cur.width(), style);
         int written = Math.max(0, end.x() - cur.x());

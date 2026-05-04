@@ -16,9 +16,7 @@ public record Points(Coord[] coords, Color color) implements Shape {
   @Override
   public void draw(Painter painter) {
     for (Coord coord : coords) {
-      painter
-          .getPoint(coord.x(), coord.y())
-          .ifPresent(p -> painter.paint(p.x(), p.y(), color));
+      painter.getPoint(coord.x(), coord.y()).ifPresent(p -> painter.paint(p.x(), p.y(), color));
     }
   }
 }

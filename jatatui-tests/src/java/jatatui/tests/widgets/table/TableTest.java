@@ -303,10 +303,7 @@ public class TableTest {
     Block block = Block.bordered().withTitle(Line.from("Block"));
     Table table = Table.of(rows, lengths(5, 5)).withBlock(block);
     table.render(new Rect(0, 0, 15, 3), buf);
-    Buffer expected =
-        Buffer.withLines("┌Block────────┐",
-            "│Cell1 Cell2  │",
-            "└─────────────┘");
+    Buffer expected = Buffer.withLines("┌Block────────┐", "│Cell1 Cell2  │", "└─────────────┘");
     assertBufferEq(buf, expected);
   }
 
@@ -386,9 +383,7 @@ public class TableTest {
     assertBufferEq(
         buf,
         Buffer.withLines(
-            "Cell1       Cell2      ",
-            "Cell3-Line1 Cell4-Line1",
-            "Cell3-Line2 Cell4-Line2"));
+            "Cell1       Cell2      ", "Cell3-Line1 Cell4-Line1", "Cell3-Line2 Cell4-Line2"));
   }
 
   @Test
@@ -396,7 +391,8 @@ public class TableTest {
     Buffer buf = Buffer.empty(new Rect(0, 0, 10, 3));
     List<Row> rows =
         List.of(
-            Row.of(TableCell.of(Text.from(Line.from("Left").withAlignment(HorizontalAlignment.Left)))),
+            Row.of(
+                TableCell.of(Text.from(Line.from("Left").withAlignment(HorizontalAlignment.Left)))),
             Row.of(
                 TableCell.of(
                     Text.from(Line.from("Center").withAlignment(HorizontalAlignment.Center)))),
@@ -428,7 +424,8 @@ public class TableTest {
   public void render_with_selected_column_and_incorrect_width_count_does_not_panic() {
     Buffer buf = Buffer.empty(new Rect(0, 0, 20, 3));
     Table table =
-        Table.of(List.of(Row.ofStrings("Row1", "Row2", "Row3")), List.of(new Constraint.Length(10)));
+        Table.of(
+            List.of(Row.ofStrings("Row1", "Row2", "Row3")), List.of(new Constraint.Length(10)));
     TableState state = new TableState().withSelectedColumn(2);
     table.render(new Rect(0, 0, 20, 3), buf, state);
   }
@@ -464,10 +461,16 @@ public class TableTest {
         Buffer.withLineObjects(
             Line.fromSpans(
                 List.of(
-                    Span.raw("Cell1"), Span.raw(" "), Span.styled("Cell2", blue), Span.raw("    "))),
+                    Span.raw("Cell1"),
+                    Span.raw(" "),
+                    Span.styled("Cell2", blue),
+                    Span.raw("    "))),
             Line.fromSpans(
                 List.of(
-                    Span.raw("Cell3"), Span.raw(" "), Span.styled("Cell4", blue), Span.raw("    "))),
+                    Span.raw("Cell3"),
+                    Span.raw(" "),
+                    Span.styled("Cell4", blue),
+                    Span.raw("    "))),
             Line.fromSpans(
                 List.of(Span.raw("      "), Span.styled("     ", blue), Span.raw("    "))));
     assertBufferEq(buf, expected);
@@ -672,13 +675,16 @@ public class TableTest {
         Table.empty().withWidths(List.of(new Constraint.Ratio(1, 3), new Constraint.Ratio(1, 3)));
     assertEquals(xws(0, 7, 8, 6), table.getColumnWidths(20, 0, 0));
 
-    table = Table.empty().withWidths(List.of(new Constraint.Ratio(1, 3), new Constraint.Ratio(1, 3)));
+    table =
+        Table.empty().withWidths(List.of(new Constraint.Ratio(1, 3), new Constraint.Ratio(1, 3)));
     assertEquals(xws(3, 6, 10, 5), table.getColumnWidths(20, 3, 0));
 
-    table = Table.empty().withWidths(List.of(new Constraint.Ratio(1, 3), new Constraint.Ratio(1, 3)));
+    table =
+        Table.empty().withWidths(List.of(new Constraint.Ratio(1, 3), new Constraint.Ratio(1, 3)));
     assertEquals(xws(0, 2, 3, 3), table.getColumnWidths(7, 0, 0));
 
-    table = Table.empty().withWidths(List.of(new Constraint.Ratio(1, 3), new Constraint.Ratio(1, 3)));
+    table =
+        Table.empty().withWidths(List.of(new Constraint.Ratio(1, 3), new Constraint.Ratio(1, 3)));
     assertEquals(xws(3, 1, 5, 2), table.getColumnWidths(7, 3, 0));
   }
 
@@ -717,20 +723,14 @@ public class TableTest {
   @Test
   public void no_constraint_with_header() {
     Table table =
-        Table.empty()
-            .withRows(List.of())
-            .withHeader(Row.ofStrings("f", "g"))
-            .withColumnSpacing(0);
+        Table.empty().withRows(List.of()).withHeader(Row.ofStrings("f", "g")).withColumnSpacing(0);
     assertEquals(xws(0, 5, 5, 5), table.getColumnWidths(10, 0, 2));
   }
 
   @Test
   public void no_constraint_with_footer() {
     Table table =
-        Table.empty()
-            .withRows(List.of())
-            .withFooter(Row.ofStrings("h", "i"))
-            .withColumnSpacing(0);
+        Table.empty().withRows(List.of()).withFooter(Row.ofStrings("h", "i")).withColumnSpacing(0);
     assertEquals(xws(0, 5, 5, 5), table.getColumnWidths(10, 0, 2));
   }
 
@@ -946,7 +946,10 @@ public class TableTest {
   @ParameterizedTest
   @MethodSource("column_count_cases")
   public void column_count(
-      List<String> headerCells, List<List<String>> rowCells, List<String> footerCells, int expected) {
+      List<String> headerCells,
+      List<List<String>> rowCells,
+      List<String> footerCells,
+      int expected) {
     Row header = Row.ofStrings(headerCells);
     Row footer = Row.ofStrings(footerCells);
     List<Row> rows = new ArrayList<>(rowCells.size());
@@ -964,7 +967,8 @@ public class TableTest {
             List.of(List.of("C1", "C2"), List.of("C1", "C2", "C3")),
             List.<String>of(),
             3),
-        Arguments.of(List.<String>of(), List.<List<String>>of(), List.of("F1", "F2", "F3", "F4"), 4),
+        Arguments.of(
+            List.<String>of(), List.<List<String>>of(), List.of("F1", "F2", "F3", "F4"), 4),
         Arguments.of(
             List.of("H1", "H2", "H3", "H4"),
             List.of(List.of("C1", "C2"), List.of("C1", "C2", "C3")),

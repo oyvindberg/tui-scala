@@ -1,8 +1,10 @@
 package jatatui.core.layout.solver;
 
-/// This is part of the syntactic sugar used for specifying constraints. This enum should be used as part of a
+/// This is part of the syntactic sugar used for specifying constraints. This enum should be used as
+// part of a
 /// constraint expression. See the module documentation for more information.
-public sealed interface WeightedRelation permits WeightedRelation.EQ, WeightedRelation.LE, WeightedRelation.GE {
+public sealed interface WeightedRelation
+    permits WeightedRelation.EQ, WeightedRelation.LE, WeightedRelation.GE {
 
   record OpAndStrength(RelationalOperator op, Strength strength) {}
 

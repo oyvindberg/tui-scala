@@ -15,10 +15,7 @@ public record ContentStyle(
   /// Returns an empty content style — analogue of `ContentStyle::default()`.
   public static ContentStyle empty() {
     return new ContentStyle(
-        Optional.empty(),
-        Optional.empty(),
-        Optional.empty(),
-        new Attributes(java.util.List.of()));
+        Optional.empty(), Optional.empty(), Optional.empty(), new Attributes(java.util.List.of()));
   }
 
   /// Returns a copy with [foregroundColor] set.

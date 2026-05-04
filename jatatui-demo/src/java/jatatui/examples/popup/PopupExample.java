@@ -36,8 +36,7 @@ public final class PopupExample {
     while (true) {
       terminal.draw(frame -> render(frame, showPopup[0]));
       Event event = JNI.read();
-      if (event instanceof Event.Key keyEvt
-          && keyEvt.keyEvent().kind() == KeyEventKind.Press) {
+      if (event instanceof Event.Key keyEvt && keyEvt.keyEvent().kind() == KeyEventKind.Press) {
         KeyCode code = keyEvt.keyEvent().code();
         if (code instanceof KeyCode.Char ch) {
           if (ch.c() == 'q') {
@@ -59,8 +58,7 @@ public final class PopupExample {
     Rect content = split[1];
 
     frame.renderWidget(
-        Paragraph.of(Line.from("Press 'p' to toggle popup, 'q' to quit").centered()),
-        instructions);
+        Paragraph.of(Line.from("Press 'p' to toggle popup, 'q' to quit").centered()), instructions);
 
     frame.renderWidget(Block.bordered().withTitle("Content").onBlue(), content);
 

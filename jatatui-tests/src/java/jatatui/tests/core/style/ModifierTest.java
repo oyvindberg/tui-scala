@@ -67,7 +67,8 @@ public class ModifierTest {
   @Test
   public void modifier_debug_all() {
     assertEquals(
-        "BOLD | DIM | ITALIC | UNDERLINED | SLOW_BLINK | RAPID_BLINK | REVERSED | HIDDEN | CROSSED_OUT",
+        "BOLD | DIM | ITALIC | UNDERLINED | SLOW_BLINK | RAPID_BLINK | REVERSED | HIDDEN |"
+            + " CROSSED_OUT",
         Modifier.ALL.toString());
   }
 

@@ -123,14 +123,18 @@ public final class Theme {
   private static final Color DARK_GRAY = new Color.Rgb(68, 68, 68);
   private static final Color MID_GRAY = new Color.Rgb(128, 128, 128);
   private static final Color LIGHT_GRAY = new Color.Rgb(188, 188, 188);
-  private static final Color WHITE = new Color.Rgb(238, 238, 238); // not really white, often #eeeeee
+  private static final Color WHITE =
+      new Color.Rgb(238, 238, 238); // not really white, often #eeeeee
 
   /// The single global theme used everywhere in demo2. Mirrors `pub const THEME` upstream.
   public static final Theme THEME =
       new Theme(
           /* root */ Style.empty().withBg(DARK_BLUE),
           /* content */ Style.empty().withBg(DARK_BLUE).withFg(LIGHT_GRAY),
-          /* appTitle */ Style.empty().withFg(WHITE).withBg(DARK_BLUE).withAddModifier(Modifier.BOLD),
+          /* appTitle */ Style.empty()
+              .withFg(WHITE)
+              .withBg(DARK_BLUE)
+              .withAddModifier(Modifier.BOLD),
           /* tabs */ Style.empty().withFg(MID_GRAY).withBg(DARK_BLUE),
           /* tabsSelected */ Style.empty()
               .withFg(WHITE)
@@ -169,7 +173,5 @@ public final class Theme {
                   DARK_BLUE)),
           /* recipe */ new Recipe(
               Style.empty().withBg(DARK_BLUE).withFg(LIGHT_GRAY),
-              Style.empty()
-                  .withAddModifier(Modifier.BOLD)
-                  .withAddModifier(Modifier.UNDERLINED)));
+              Style.empty().withAddModifier(Modifier.BOLD).withAddModifier(Modifier.UNDERLINED)));
 }

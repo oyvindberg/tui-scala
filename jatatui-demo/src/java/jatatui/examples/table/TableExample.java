@@ -258,7 +258,8 @@ public final class TableExample {
               .withColumnHighlightStyle(selectedColStyle)
               .withCellHighlightStyle(selectedCellStyle)
               .withHighlightSymbol(
-                  Text.fromLines(List.of(Line.from(""), Line.from(bar), Line.from(bar), Line.from(""))))
+                  Text.fromLines(
+                      List.of(Line.from(""), Line.from(bar), Line.from(bar), Line.from(""))))
               .withStyle(Style.empty().withBg(colors.bufferBg))
               .withHighlightSpacing(HighlightSpacing.Always);
       frame.renderStatefulWidget(t, area, state);
@@ -302,10 +303,7 @@ public final class TableExample {
                     "Emirhan Tala",
                     "Cambridgelaan 6XX\n3584 XX Utrecht",
                     "tala.emirhan@example.com"),
-                new Data(
-                    "Florian Dehau",
-                    "12 rue de la Paix\n75002 Paris",
-                    "florian@example.com"),
+                new Data("Florian Dehau", "12 rue de la Paix\n75002 Paris", "florian@example.com"),
                 new Data(
                     "Ada Lovelace",
                     "1 St James Square\nLondon SW1Y 4LB",
@@ -323,9 +321,7 @@ public final class TableExample {
                     "42 Apollo Ave\nCambridge, MA 02139",
                     "margaret.hamilton@example.com"),
                 new Data(
-                    "Donald Knuth",
-                    "TAOCP Lane 1\nStanford, CA 94305",
-                    "donald.knuth@example.com"),
+                    "Donald Knuth", "TAOCP Lane 1\nStanford, CA 94305", "donald.knuth@example.com"),
                 new Data(
                     "Edsger Dijkstra",
                     "Postvak 13\n5612 AZ Eindhoven",
@@ -338,14 +334,9 @@ public final class TableExample {
                     "Barbara Liskov",
                     "77 Massachusetts Ave\nCambridge, MA 02139",
                     "barbara.liskov@example.com"),
+                new Data("Niklaus Wirth", "ETH Zentrum\n8092 Zürich", "niklaus.wirth@example.com"),
                 new Data(
-                    "Niklaus Wirth",
-                    "ETH Zentrum\n8092 Zürich",
-                    "niklaus.wirth@example.com"),
-                new Data(
-                    "Tony Hoare",
-                    "Wolfson Building\nOxford OX1 3QD",
-                    "tony.hoare@example.com")));
+                    "Tony Hoare", "Wolfson Building\nOxford OX1 3QD", "tony.hoare@example.com")));
     data.sort((a, b) -> a.name().compareTo(b.name()));
     return data;
   }

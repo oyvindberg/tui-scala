@@ -37,8 +37,7 @@ public final class HyperlinkExample {
     while (true) {
       terminal.draw(frame -> hyperlink.render(frame.area(), frame.bufferMut()));
       Event event = JNI.read();
-      if (event instanceof Event.Key key
-          && key.keyEvent().kind() == KeyEventKind.Press) {
+      if (event instanceof Event.Key key && key.keyEvent().kind() == KeyEventKind.Press) {
         return;
       }
     }

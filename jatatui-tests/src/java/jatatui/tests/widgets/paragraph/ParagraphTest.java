@@ -41,10 +41,11 @@ public class ParagraphTest {
   @Test
   public void zero_width_char_at_end_of_line() {
     String line = "foo​";
-    List<Paragraph> paragraphs = List.of(
-        Paragraph.of(line),
-        Paragraph.of(line).withWrap(new Wrap(false)),
-        Paragraph.of(line).withWrap(new Wrap(true)));
+    List<Paragraph> paragraphs =
+        List.of(
+            Paragraph.of(line),
+            Paragraph.of(line).withWrap(new Wrap(false)),
+            Paragraph.of(line).withWrap(new Wrap(true)));
     for (Paragraph p : paragraphs) {
       testCase(p, Buffer.withLines("foo"));
       testCase(p, Buffer.withLines("foo   "));
@@ -55,10 +56,11 @@ public class ParagraphTest {
 
   @Test
   public void test_render_empty_paragraph() {
-    List<Paragraph> paragraphs = List.of(
-        Paragraph.of(""),
-        Paragraph.of("").withWrap(new Wrap(false)),
-        Paragraph.of("").withWrap(new Wrap(true)));
+    List<Paragraph> paragraphs =
+        List.of(
+            Paragraph.of(""),
+            Paragraph.of("").withWrap(new Wrap(false)),
+            Paragraph.of("").withWrap(new Wrap(true)));
     for (Paragraph p : paragraphs) {
       testCase(p, Buffer.withLines(" "));
       testCase(p, Buffer.withLines("          "));
@@ -72,10 +74,11 @@ public class ParagraphTest {
   @Test
   public void test_render_single_line_paragraph() {
     String text = "Hello, world!";
-    List<Paragraph> paragraphs = List.of(
-        Paragraph.of(text),
-        Paragraph.of(text).withWrap(new Wrap(false)),
-        Paragraph.of(text).withWrap(new Wrap(true)));
+    List<Paragraph> paragraphs =
+        List.of(
+            Paragraph.of(text),
+            Paragraph.of(text).withWrap(new Wrap(false)),
+            Paragraph.of(text).withWrap(new Wrap(true)));
     for (Paragraph p : paragraphs) {
       testCase(p, Buffer.withLines("Hello, world!  "));
       testCase(p, Buffer.withLines("Hello, world!"));
@@ -87,15 +90,14 @@ public class ParagraphTest {
   @Test
   public void test_render_multi_line_paragraph() {
     String text = "This is a\nmultiline\nparagraph.";
-    List<Paragraph> paragraphs = List.of(
-        Paragraph.of(text),
-        Paragraph.of(text).withWrap(new Wrap(false)),
-        Paragraph.of(text).withWrap(new Wrap(true)));
+    List<Paragraph> paragraphs =
+        List.of(
+            Paragraph.of(text),
+            Paragraph.of(text).withWrap(new Wrap(false)),
+            Paragraph.of(text).withWrap(new Wrap(true)));
     for (Paragraph p : paragraphs) {
       testCase(p, Buffer.withLines("This is a ", "multiline ", "paragraph."));
-      testCase(
-          p,
-          Buffer.withLines("This is a      ", "multiline      ", "paragraph.     "));
+      testCase(p, Buffer.withLines("This is a      ", "multiline      ", "paragraph.     "));
       testCase(
           p,
           Buffer.withLines(
@@ -115,18 +117,9 @@ public class ParagraphTest {
     Paragraph trimmed = truncated.withWrap(new Wrap(true));
 
     for (Paragraph p : List.of(truncated, wrapped, trimmed)) {
+      testCase(p, Buffer.withLines("┌Title─────────┐", "│Hello, worlds!│", "└──────────────┘"));
       testCase(
-          p,
-          Buffer.withLines(
-              "┌Title─────────┐",
-              "│Hello, worlds!│",
-              "└──────────────┘"));
-      testCase(
-          p,
-          Buffer.withLines(
-              "┌Title───────────┐",
-              "│Hello, worlds!  │",
-              "└────────────────┘"));
+          p, Buffer.withLines("┌Title───────────┐", "│Hello, worlds!  │", "└────────────────┘"));
       testCase(
           p,
           Buffer.withLines(
@@ -138,25 +131,13 @@ public class ParagraphTest {
 
     testCase(
         truncated,
-        Buffer.withLines(
-            "┌Title───────┐",
-            "│Hello, world│",
-            "│            │",
-            "└────────────┘"));
+        Buffer.withLines("┌Title───────┐", "│Hello, world│", "│            │", "└────────────┘"));
     testCase(
         wrapped,
-        Buffer.withLines(
-            "┌Title──────┐",
-            "│Hello,     │",
-            "│worlds!    │",
-            "└───────────┘"));
+        Buffer.withLines("┌Title──────┐", "│Hello,     │", "│worlds!    │", "└───────────┘"));
     testCase(
         trimmed,
-        Buffer.withLines(
-            "┌Title──────┐",
-            "│Hello,     │",
-            "│worlds!    │",
-            "└───────────┘"));
+        Buffer.withLines("┌Title──────┐", "│Hello,     │", "│worlds!    │", "└───────────┘"));
   }
 
   @Test
@@ -167,8 +148,7 @@ public class ParagraphTest {
     Line l3 = Line.styled("dim text", Style.empty().dim());
     Paragraph paragraph = Paragraph.of(List.of(l0, l1, l2, l3));
 
-    Buffer expected =
-        Buffer.withLines("unformatted", "bold text", "cyan text", "dim text");
+    Buffer expected = Buffer.withLines("unformatted", "bold text", "cyan text", "dim text");
     expected.setStyle(new Rect(0, 1, 9, 1), Style.empty().bold());
     expected.setStyle(new Rect(0, 2, 9, 1), Style.empty().cyan());
     expected.setStyle(new Rect(0, 3, 8, 1), Style.empty().dim());
@@ -178,10 +158,11 @@ public class ParagraphTest {
 
   @Test
   public void test_render_line_spans_styled() {
-    Line l0 = Line.from(
-        Span.styled("bold", Style.empty().bold()),
-        Span.raw(" and "),
-        Span.styled("cyan", Style.empty().cyan()));
+    Line l0 =
+        Line.from(
+            Span.styled("bold", Style.empty().bold()),
+            Span.raw(" and "),
+            Span.styled("cyan", Style.empty().cyan()));
     Line l1 = Line.from(Span.raw("unformatted"));
     Paragraph paragraph = Paragraph.of(List.of(l0, l1));
 
@@ -194,10 +175,11 @@ public class ParagraphTest {
 
   @Test
   public void test_render_paragraph_with_block_with_bottom_title_and_border() {
-    Block block = Block.empty()
-        .withBorders(Borders.BOTTOM)
-        .withTitlePosition(TitlePosition.Bottom)
-        .withTitle("Title");
+    Block block =
+        Block.empty()
+            .withBorders(Borders.BOTTOM)
+            .withTitlePosition(TitlePosition.Bottom)
+            .withTitle("Title");
     Paragraph paragraph = Paragraph.of("Hello, world!").withBlock(block);
     testCase(paragraph, Buffer.withLines("Hello, world!  ", "Title──────────"));
   }
@@ -205,7 +187,8 @@ public class ParagraphTest {
   @Test
   public void test_render_paragraph_with_word_wrap() {
     String text =
-        "This is a long line of text that should wrap      and contains a superultramegagigalong word.";
+        "This is a long line of text that should wrap      and contains a superultramegagigalong"
+            + " word.";
     Paragraph wrapped = Paragraph.of(text).withWrap(new Wrap(false));
     Paragraph trimmed = Paragraph.of(text).withWrap(new Wrap(true));
 
@@ -276,9 +259,7 @@ public class ParagraphTest {
     testCase(truncated, Buffer.withLines("This is a long line of"));
     testCase(truncated, Buffer.withLines("This is a long line of te"));
     testCase(truncated, Buffer.withLines("This is a long line of "));
-    testCase(
-        truncated.withScroll(new Scroll(0, 2)),
-        Buffer.withLines("is is a long line of te"));
+    testCase(truncated.withScroll(new Scroll(0, 2)), Buffer.withLines("is is a long line of te"));
   }
 
   @Test
@@ -346,9 +327,7 @@ public class ParagraphTest {
       testCase(p, Buffer.withLines("multiline   "));
     }
 
-    testCase(
-        truncated.withScroll(new Scroll(2, 4)),
-        Buffer.withLines("iline   ", "graph.  "));
+    testCase(truncated.withScroll(new Scroll(2, 4)), Buffer.withLines("iline   ", "graph.  "));
     testCase(wrapped, Buffer.withLines("cool   ", "multili", "ne     "));
   }
 
@@ -384,9 +363,10 @@ public class ParagraphTest {
 
   @Test
   public void test_render_paragraph_with_styled_text() {
-    Line text = Line.from(
-        Span.styled("Hello, ", Style.empty().withFg(Color.RED)),
-        Span.styled("world!", Style.empty().withFg(Color.BLUE)));
+    Line text =
+        Line.from(
+            Span.styled("Hello, ", Style.empty().withFg(Color.RED)),
+            Span.styled("world!", Style.empty().withFg(Color.BLUE)));
 
     Buffer expected = Buffer.withLines("Hello, world!");
     expected.setStyle(new Rect(0, 0, 7, 1), Style.empty().withFg(Color.RED).withBg(Color.GREEN));
@@ -585,10 +565,8 @@ public class ParagraphTest {
     Buffer buf = Buffer.empty(new Rect(0, 0, 20, 3));
     paragraph.render(new Rect(0, 0, 20, 3), buf);
 
-    Buffer expected = Buffer.withLines(
-        "┌──────────────────┐",
-        "│Styled text       │",
-        "└──────────────────┘");
+    Buffer expected =
+        Buffer.withLines("┌──────────────────┐", "│Styled text       │", "└──────────────────┘");
     expected.setStyle(new Rect(1, 1, 11, 1), Style.empty().withFg(Color.GREEN));
     BufferAssertions.assertBufferEq(buf, expected);
   }
@@ -605,7 +583,8 @@ public class ParagraphTest {
   public void test_render_paragraph_out_of_bounds(Rect area) {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 10, 3));
     Paragraph.of("Beyond the pale").render(area, buffer);
-    BufferAssertions.assertBufferEq(buffer, Buffer.withLines("          ", "          ", "          "));
+    BufferAssertions.assertBufferEq(
+        buffer, Buffer.withLines("          ", "          ", "          "));
   }
 
   @Test
@@ -613,8 +592,7 @@ public class ParagraphTest {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 15, 3));
     Paragraph.of("Hello World").render(new Rect(10, 0, 10, 3), buffer);
     BufferAssertions.assertBufferEq(
-        buffer,
-        Buffer.withLines("          Hello", "               ", "               "));
+        buffer, Buffer.withLines("          Hello", "               ", "               "));
   }
 
   @Test

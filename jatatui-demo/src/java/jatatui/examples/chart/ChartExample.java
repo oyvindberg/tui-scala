@@ -133,8 +133,7 @@ public final class ChartExample {
       Rect top = rows[0];
       Rect bottom = rows[1];
 
-      Layout topHorizontal =
-          Layout.horizontal(new Constraint.Fill(1), new Constraint.Length(29));
+      Layout topHorizontal = Layout.horizontal(new Constraint.Fill(1), new Constraint.Length(29));
       Rect[] topCols = top.layout(topHorizontal, 2);
       Rect animatedChart = topCols[0];
       Rect barChart = topCols[1];
@@ -189,10 +188,7 @@ public final class ChartExample {
                   Axis.empty()
                       .withTitle("Y Axis")
                       .withStyle(Style.empty().withFg(Color.GRAY))
-                      .withLabels(
-                          Line.from("-20").bold(),
-                          Line.from("0"),
-                          Line.from("20").bold())
+                      .withLabels(Line.from("-20").bold(), Line.from("0"), Line.from("20").bold())
                       .withBounds(-20.0, 20.0));
 
       frame.renderWidget(chart, area);
@@ -251,8 +247,7 @@ public final class ChartExample {
 
     Chart chart =
         Chart.of(dataset)
-            .withBlock(
-                Block.bordered().withTitle(Line.from("Line chart").cyan().bold().centered()))
+            .withBlock(Block.bordered().withTitle(Line.from("Line chart").cyan().bold().centered()))
             .withXAxis(
                 Axis.empty()
                     .withTitle("X Axis")

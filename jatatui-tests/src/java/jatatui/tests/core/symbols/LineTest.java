@@ -15,10 +15,21 @@ public class LineTest {
   /// Renders a 4x4 grid using each line set, mirroring the upstream `render` helper.
   private static String render(Line.Set set) {
     StringBuilder b = new StringBuilder();
-    b.append(set.topLeft()).append(set.horizontal()).append(set.horizontalDown()).append(set.topRight()).append('\n');
+    b.append(set.topLeft())
+        .append(set.horizontal())
+        .append(set.horizontalDown())
+        .append(set.topRight())
+        .append('\n');
     b.append(set.vertical()).append(' ').append(set.vertical()).append(set.vertical()).append('\n');
-    b.append(set.verticalRight()).append(set.horizontal()).append(set.cross()).append(set.verticalLeft()).append('\n');
-    b.append(set.bottomLeft()).append(set.horizontal()).append(set.horizontalUp()).append(set.bottomRight());
+    b.append(set.verticalRight())
+        .append(set.horizontal())
+        .append(set.cross())
+        .append(set.verticalLeft())
+        .append('\n');
+    b.append(set.bottomLeft())
+        .append(set.horizontal())
+        .append(set.horizontalUp())
+        .append(set.bottomRight());
     return b.toString();
   }
 
@@ -29,7 +40,8 @@ public class LineTest {
         ┌─┬┐
         │ ││
         ├─┼┤
-        └─┴┘""",
+        └─┴┘\
+        """,
         render(Line.NORMAL));
   }
 
@@ -40,7 +52,8 @@ public class LineTest {
         ╭─┬╮
         │ ││
         ├─┼┤
-        ╰─┴╯""",
+        ╰─┴╯\
+        """,
         render(Line.ROUNDED));
   }
 
@@ -51,7 +64,8 @@ public class LineTest {
         ╔═╦╗
         ║ ║║
         ╠═╬╣
-        ╚═╩╝""",
+        ╚═╩╝\
+        """,
         render(Line.DOUBLE));
   }
 
@@ -62,7 +76,8 @@ public class LineTest {
         ┏━┳┓
         ┃ ┃┃
         ┣━╋┫
-        ┗━┻┛""",
+        ┗━┻┛\
+        """,
         render(Line.THICK));
   }
 }

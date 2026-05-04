@@ -31,36 +31,37 @@ public final class ColorExplorerExample {
   private static final CrosstermJni JNI = new CrosstermJni();
 
   private static final Color[] NAMED_COLORS = {
-      Color.BLACK,
-      Color.RED,
-      Color.GREEN,
-      Color.YELLOW,
-      Color.BLUE,
-      Color.MAGENTA,
-      Color.CYAN,
-      Color.GRAY,
-      Color.DARK_GRAY,
-      Color.LIGHT_RED,
-      Color.LIGHT_GREEN,
-      Color.LIGHT_YELLOW,
-      Color.LIGHT_BLUE,
-      Color.LIGHT_MAGENTA,
-      Color.LIGHT_CYAN,
-      Color.WHITE,
+    Color.BLACK,
+    Color.RED,
+    Color.GREEN,
+    Color.YELLOW,
+    Color.BLUE,
+    Color.MAGENTA,
+    Color.CYAN,
+    Color.GRAY,
+    Color.DARK_GRAY,
+    Color.LIGHT_RED,
+    Color.LIGHT_GREEN,
+    Color.LIGHT_YELLOW,
+    Color.LIGHT_BLUE,
+    Color.LIGHT_MAGENTA,
+    Color.LIGHT_CYAN,
+    Color.WHITE,
   };
 
   private ColorExplorerExample() {}
 
   public static void main(String[] args) throws IOException {
-    Jatatui.runIo(terminal -> {
-      while (true) {
-        terminal.draw(ColorExplorerExample::render);
-        Event event = JNI.read();
-        if (isKeyPress(event)) {
-          return;
-        }
-      }
-    });
+    Jatatui.runIo(
+        terminal -> {
+          while (true) {
+            terminal.draw(ColorExplorerExample::render);
+            Event event = JNI.read();
+            if (isKeyPress(event)) {
+              return;
+            }
+          }
+        });
   }
 
   private static boolean isKeyPress(Event event) {
@@ -71,10 +72,10 @@ public final class ColorExplorerExample {
   }
 
   private static void render(Frame frame) {
-    Rect[] rows = Layout.vertical(
-        new Constraint.Length(30),
-        new Constraint.Length(17),
-        new Constraint.Length(2)).split(frame.area());
+    Rect[] rows =
+        Layout.vertical(
+                new Constraint.Length(30), new Constraint.Length(17), new Constraint.Length(2))
+            .split(frame.area());
     renderNamedColors(frame, rows[0]);
     renderIndexedColors(frame, rows[1]);
     renderIndexedGrayscale(frame, rows[2]);
@@ -104,8 +105,7 @@ public final class ColorExplorerExample {
     for (int i = 0; i < NAMED_COLORS.length && i < areas.size(); i++) {
       Color fg = NAMED_COLORS[i];
       String colorName = fg.toString();
-      Paragraph paragraph =
-          Paragraph.of(colorName).withStyle(Style.empty().withFg(fg).withBg(bg));
+      Paragraph paragraph = Paragraph.of(colorName).withStyle(Style.empty().withFg(fg).withBg(bg));
       frame.renderWidget(paragraph, areas.get(i));
     }
   }
@@ -119,8 +119,7 @@ public final class ColorExplorerExample {
     for (int i = 0; i < NAMED_COLORS.length && i < areas.size(); i++) {
       Color bg = NAMED_COLORS[i];
       String colorName = bg.toString();
-      Paragraph paragraph =
-          Paragraph.of(colorName).withStyle(Style.empty().withFg(fg).withBg(bg));
+      Paragraph paragraph = Paragraph.of(colorName).withStyle(Style.empty().withFg(fg).withBg(bg));
       frame.renderWidget(paragraph, areas.get(i));
     }
   }
@@ -151,23 +150,26 @@ public final class ColorExplorerExample {
     Rect inner = block.inner(area);
     frame.renderWidget(block, area);
 
-    Rect[] layout = Layout.vertical(
-        new Constraint.Length(1), // 0 - 15
-        new Constraint.Length(1), // blank
-        new Constraint.Min(6),    // 16 - 123
-        new Constraint.Length(1), // blank
-        new Constraint.Min(6),    // 124 - 231
-        new Constraint.Length(1)  // blank
-    ).split(inner);
+    Rect[] layout =
+        Layout.vertical(
+                new Constraint.Length(1), // 0 - 15
+                new Constraint.Length(1), // blank
+                new Constraint.Min(6), // 16 - 123
+                new Constraint.Length(1), // blank
+                new Constraint.Min(6), // 124 - 231
+                new Constraint.Length(1) // blank
+                )
+            .split(inner);
 
     Rect[] colorLayout = repeatedLengthHorizontal(5, 16).split(layout[0]);
     for (int i = 0; i < 16; i++) {
       Color color = new Color.Indexed(i);
       String colorIndex = String.format("%02d", i);
       Color bg = i < 1 ? Color.DARK_GRAY : Color.BLACK;
-      Line line = Line.from(
-          Span.styled(colorIndex, Style.empty().withFg(color).withBg(bg)),
-          Span.styled("██", Style.empty().withFg(color).withBg(color)));
+      Line line =
+          Line.from(
+              Span.styled(colorIndex, Style.empty().withFg(color).withBg(bg)),
+              Span.styled("██", Style.empty().withFg(color).withBg(color)));
       Paragraph paragraph = Paragraph.of(line);
       frame.renderWidget(paragraph, colorLayout[i]);
     }
@@ -178,9 +180,7 @@ public final class ColorExplorerExample {
     Rect[] sourceRows = new Rect[] {layout[2], layout[4]};
     Layout colCols =
         Layout.horizontal(
-            new Constraint.Length(27),
-            new Constraint.Length(27),
-            new Constraint.Length(27));
+            new Constraint.Length(27), new Constraint.Length(27), new Constraint.Length(27));
     Layout sixRows = repeatedLengthVertical(1, 6);
     Layout sixCols =
         Layout.horizontal(
@@ -205,11 +205,13 @@ public final class ColorExplorerExample {
       if (idx >= indexLayout.size()) {
         break;
       }
-      Line line = Line.from(
-          Span.styled(colorIndex, Style.empty().withFg(color).withBg(Color.RESET)),
-          Span.styled(".", Style.empty().withBg(color).withFg(color)),
-          // VHS background-bleed workaround from upstream.
-          Span.styled("███", Style.empty().withAddModifier(jatatui.core.style.Modifier.REVERSED)));
+      Line line =
+          Line.from(
+              Span.styled(colorIndex, Style.empty().withFg(color).withBg(Color.RESET)),
+              Span.styled(".", Style.empty().withBg(color).withFg(color)),
+              // VHS background-bleed workaround from upstream.
+              Span.styled(
+                  "███", Style.empty().withAddModifier(jatatui.core.style.Modifier.REVERSED)));
       Paragraph paragraph = Paragraph.of(line);
       frame.renderWidget(paragraph, indexLayout.get(idx));
     }
@@ -225,10 +227,12 @@ public final class ColorExplorerExample {
   }
 
   private static void renderIndexedGrayscale(Frame frame, Rect area) {
-    Rect[] rows = Layout.vertical(
-        new Constraint.Length(1), // 232 - 243
-        new Constraint.Length(1)  // 244 - 255
-    ).split(area);
+    Rect[] rows =
+        Layout.vertical(
+                new Constraint.Length(1), // 232 - 243
+                new Constraint.Length(1) // 244 - 255
+                )
+            .split(area);
     Layout twelveCols = repeatedLengthHorizontal(6, 12);
     List<Rect> layout = new ArrayList<>(24);
     for (Rect row : rows) {
@@ -243,12 +247,13 @@ public final class ColorExplorerExample {
       if (idx >= layout.size()) {
         break;
       }
-      Line line = Line.from(
-          Span.styled(colorIndex, Style.empty().withFg(color).withBg(bg)),
-          Span.styled("██", Style.empty().withBg(color).withFg(color)),
-          // VHS background-bleed workaround from upstream.
-          Span.styled("███████",
-              Style.empty().withAddModifier(jatatui.core.style.Modifier.REVERSED)));
+      Line line =
+          Line.from(
+              Span.styled(colorIndex, Style.empty().withFg(color).withBg(bg)),
+              Span.styled("██", Style.empty().withBg(color).withFg(color)),
+              // VHS background-bleed workaround from upstream.
+              Span.styled(
+                  "███████", Style.empty().withAddModifier(jatatui.core.style.Modifier.REVERSED)));
       Paragraph paragraph = Paragraph.of(line);
       frame.renderWidget(paragraph, layout.get(idx));
     }
@@ -271,5 +276,4 @@ public final class ColorExplorerExample {
     }
     return Layout.horizontal(cs);
   }
-
 }

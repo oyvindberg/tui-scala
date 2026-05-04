@@ -26,7 +26,8 @@ public record Style(
 
   /// A `Style` with no fields set (no fg, no bg, no modifiers).
   public static final Style DEFAULT =
-      new Style(Optional.empty(), Optional.empty(), Optional.empty(), Modifier.EMPTY, Modifier.EMPTY);
+      new Style(
+          Optional.empty(), Optional.empty(), Optional.empty(), Modifier.EMPTY, Modifier.EMPTY);
 
   /// A `Style` that resets all properties (sets sub_modifier = ALL).
   public static final Style RESET =
@@ -132,7 +133,8 @@ public record Style(
     return DEFAULT.withFg(fg).withBg(bg).withAddModifier(modifier);
   }
 
-  /// Creates a new `Style` with the given foreground, background colors and modifiers added/removed.
+  /// Creates a new `Style` with the given foreground, background colors and modifiers
+  // added/removed.
   public static Style fromFgBgModifierModifier(Color fg, Color bg, Modifier add, Modifier sub) {
     return DEFAULT.withFg(fg).withBg(bg).withAddModifier(add).withRemoveModifier(sub);
   }

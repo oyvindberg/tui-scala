@@ -83,9 +83,7 @@ public final class PanicExample {
     lines.add(Line.from("to see the difference"));
 
     Paragraph paragraph =
-        Paragraph.of(lines)
-            .withBlock(Block.bordered().withTitle("Panic Handler Demo"))
-            .centered();
+        Paragraph.of(lines).withBlock(Block.bordered().withTitle("Panic Handler Demo")).centered();
     frame.renderWidget(paragraph, frame.area());
   }
 
@@ -100,8 +98,10 @@ public final class PanicExample {
       restoreHook = null;
       return;
     }
-    // Best-effort: the hook is registered with name "jatatui-restore" (see Jatatui#installPanicHook).
-    // We can't enumerate shutdown hooks via the public API, so subsequent presses of 'h' are no-ops.
+    // Best-effort: the hook is registered with name "jatatui-restore" (see
+    // Jatatui#installPanicHook).
+    // We can't enumerate shutdown hooks via the public API, so subsequent presses of 'h' are
+    // no-ops.
     // The behavior matches the upstream demo: pressing 'h' once is enough to disable the handler.
   }
 }

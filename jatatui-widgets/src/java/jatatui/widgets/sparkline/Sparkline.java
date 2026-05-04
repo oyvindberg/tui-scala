@@ -220,10 +220,7 @@ public final class Sparkline implements Widget, Stylize<Sparkline> {
       Optional<Style> itemStyle;
       if (item.value.isPresent()) {
         long value = item.value.get();
-        height =
-            (maxHeight == 0)
-                ? 0L
-                : (value * (long) sparkArea.height() * 8L) / maxHeight;
+        height = (maxHeight == 0) ? 0L : (value * (long) sparkArea.height() * 8L) / maxHeight;
         symbol = Optional.empty();
         itemStyle = item.style;
       } else {

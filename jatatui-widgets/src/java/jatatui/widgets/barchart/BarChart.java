@@ -4,7 +4,6 @@ import jatatui.core.buffer.Buffer;
 import jatatui.core.layout.Direction;
 import jatatui.core.layout.Rect;
 import jatatui.core.style.Style;
-import jatatui.core.style.Styled;
 import jatatui.core.style.Stylize;
 import jatatui.core.symbols.Bar;
 import jatatui.core.widgets.Widget;
@@ -147,8 +146,18 @@ public final class BarChart implements Widget, Stylize<BarChart> {
     next.addAll(data);
     next.add(group);
     return new BarChart(
-        block, barWidth, barGap, groupGap, barSet, barStyle, valueStyle, labelStyle, style,
-        next, max, direction);
+        block,
+        barWidth,
+        barGap,
+        groupGap,
+        barSet,
+        barStyle,
+        valueStyle,
+        labelStyle,
+        style,
+        next,
+        max,
+        direction);
   }
 
   /// Adds a group of bars built from a list of `(label, value)` pairs.
@@ -164,78 +173,188 @@ public final class BarChart implements Widget, Stylize<BarChart> {
   /// Surrounds the [BarChart] with a [Block].
   public BarChart withBlock(Block block) {
     return new BarChart(
-        Optional.of(block), barWidth, barGap, groupGap, barSet, barStyle, valueStyle, labelStyle,
-        style, data, max, direction);
+        Optional.of(block),
+        barWidth,
+        barGap,
+        groupGap,
+        barSet,
+        barStyle,
+        valueStyle,
+        labelStyle,
+        style,
+        data,
+        max,
+        direction);
   }
 
   /// Sets the value necessary for a bar to reach the maximum height.
   public BarChart withMax(long max) {
     return new BarChart(
-        block, barWidth, barGap, groupGap, barSet, barStyle, valueStyle, labelStyle, style,
-        data, Optional.of(max), direction);
+        block,
+        barWidth,
+        barGap,
+        groupGap,
+        barSet,
+        barStyle,
+        valueStyle,
+        labelStyle,
+        style,
+        data,
+        Optional.of(max),
+        direction);
   }
 
   /// Sets the default style of every bar (per-bar styles are layered on top).
   public BarChart withBarStyle(Style style) {
     return new BarChart(
-        block, barWidth, barGap, groupGap, barSet, style, valueStyle, labelStyle, this.style,
-        data, max, direction);
+        block,
+        barWidth,
+        barGap,
+        groupGap,
+        barSet,
+        style,
+        valueStyle,
+        labelStyle,
+        this.style,
+        data,
+        max,
+        direction);
   }
 
   /// Sets the bar width (or height for horizontal bars).
   public BarChart withBarWidth(int width) {
     return new BarChart(
-        block, width, barGap, groupGap, barSet, barStyle, valueStyle, labelStyle, style,
-        data, max, direction);
+        block,
+        width,
+        barGap,
+        groupGap,
+        barSet,
+        barStyle,
+        valueStyle,
+        labelStyle,
+        style,
+        data,
+        max,
+        direction);
   }
 
   /// Sets the gap between each bar.
   public BarChart withBarGap(int gap) {
     return new BarChart(
-        block, barWidth, gap, groupGap, barSet, barStyle, valueStyle, labelStyle, style,
-        data, max, direction);
+        block,
+        barWidth,
+        gap,
+        groupGap,
+        barSet,
+        barStyle,
+        valueStyle,
+        labelStyle,
+        style,
+        data,
+        max,
+        direction);
   }
 
   /// Sets the bar symbol set used for displaying the bars.
   public BarChart withBarSet(Bar.Set barSet) {
     return new BarChart(
-        block, barWidth, barGap, groupGap, barSet, barStyle, valueStyle, labelStyle, style,
-        data, max, direction);
+        block,
+        barWidth,
+        barGap,
+        groupGap,
+        barSet,
+        barStyle,
+        valueStyle,
+        labelStyle,
+        style,
+        data,
+        max,
+        direction);
   }
 
   /// Sets the default style of the values printed on the bars.
   public BarChart withValueStyle(Style style) {
     return new BarChart(
-        block, barWidth, barGap, groupGap, barSet, barStyle, style, labelStyle, this.style,
-        data, max, direction);
+        block,
+        barWidth,
+        barGap,
+        groupGap,
+        barSet,
+        barStyle,
+        style,
+        labelStyle,
+        this.style,
+        data,
+        max,
+        direction);
   }
 
   /// Sets the default style of the labels under the bars and groups.
   public BarChart withLabelStyle(Style style) {
     return new BarChart(
-        block, barWidth, barGap, groupGap, barSet, barStyle, valueStyle, style, this.style,
-        data, max, direction);
+        block,
+        barWidth,
+        barGap,
+        groupGap,
+        barSet,
+        barStyle,
+        valueStyle,
+        style,
+        this.style,
+        data,
+        max,
+        direction);
   }
 
   /// Sets the gap between [BarGroup]s.
   public BarChart withGroupGap(int gap) {
     return new BarChart(
-        block, barWidth, barGap, gap, barSet, barStyle, valueStyle, labelStyle, style,
-        data, max, direction);
+        block,
+        barWidth,
+        barGap,
+        gap,
+        barSet,
+        barStyle,
+        valueStyle,
+        labelStyle,
+        style,
+        data,
+        max,
+        direction);
   }
 
   /// Sets the style of the entire chart.
   public BarChart withStyle(Style style) {
     return new BarChart(
-        block, barWidth, barGap, groupGap, barSet, barStyle, valueStyle, labelStyle, style,
-        data, max, direction);
+        block,
+        barWidth,
+        barGap,
+        groupGap,
+        barSet,
+        barStyle,
+        valueStyle,
+        labelStyle,
+        style,
+        data,
+        max,
+        direction);
   }
 
   /// Sets the direction of the bars (defaults to [Direction#Vertical]).
   public BarChart withDirection(Direction direction) {
     return new BarChart(
-        block, barWidth, barGap, groupGap, barSet, barStyle, valueStyle, labelStyle, style,
-        data, max, direction);
+        block,
+        barWidth,
+        barGap,
+        groupGap,
+        barSet,
+        barStyle,
+        valueStyle,
+        labelStyle,
+        style,
+        data,
+        max,
+        direction);
   }
 
   // ---- Accessors (for tests) ----
@@ -349,8 +468,7 @@ public final class BarChart implements Widget, Stylize<BarChart> {
         int n = nBarsToTake.get();
         List<Long> ticks = new ArrayList<>(n);
         for (int i = 0; i < n && i < group.bars.size(); i++) {
-          long ticksValue =
-              group.bars.get(i).value * (long) barMaxLength * 8L / maxValue;
+          long ticksValue = group.bars.get(i).value * (long) barMaxLength * 8L / maxValue;
           ticks.add(ticksValue);
         }
         result.add(ticks);
@@ -463,7 +581,8 @@ public final class BarChart implements Widget, Stylize<BarChart> {
     LabelInfo labelInfo = labelInfo(saturatingSub(area.height(), 1));
 
     Rect barsArea =
-        new Rect(area.x(), area.y(), area.width(), saturatingSub(area.height(), labelInfo.height()));
+        new Rect(
+            area.x(), area.y(), area.width(), saturatingSub(area.height(), labelInfo.height()));
 
     List<List<Long>> ticks = groupTicks(barsArea.width(), barsArea.height());
     renderVerticalBars(barsArea, buf, ticks);
@@ -572,8 +691,18 @@ public final class BarChart implements Widget, Stylize<BarChart> {
   @Override
   public int hashCode() {
     return Objects.hash(
-        block, barWidth, barGap, groupGap, barSet, barStyle, valueStyle, labelStyle, style, data,
-        max, direction);
+        block,
+        barWidth,
+        barGap,
+        groupGap,
+        barSet,
+        barStyle,
+        valueStyle,
+        labelStyle,
+        style,
+        data,
+        max,
+        direction);
   }
 
   private static int saturatingSub(int a, int b) {

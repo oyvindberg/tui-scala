@@ -141,8 +141,7 @@ public class StyleTest {
   @Test
   public void from_color_color() {
     assertEquals(
-        Style.empty().withFg(Color.RED).withBg(Color.BLUE),
-        Style.fromFgBg(Color.RED, Color.BLUE));
+        Style.empty().withFg(Color.RED).withBg(Color.BLUE), Style.fromFgBg(Color.RED, Color.BLUE));
   }
 
   @Test

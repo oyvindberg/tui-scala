@@ -5,7 +5,6 @@ import jatatui.core.buffer.Cell;
 import jatatui.core.layout.Rect;
 import jatatui.core.style.Color;
 import jatatui.core.style.Style;
-import jatatui.core.style.Styled;
 import jatatui.core.style.Stylize;
 import jatatui.core.symbols.Block;
 import jatatui.core.text.Span;
@@ -47,8 +46,7 @@ public final class Gauge implements Widget, Stylize<Gauge> {
 
   /// Returns a default `Gauge` (ratio=0, no block, no label, no unicode, default styles).
   public static Gauge empty() {
-    return new Gauge(
-        Optional.empty(), 0.0, Optional.empty(), false, Style.empty(), Style.empty());
+    return new Gauge(Optional.empty(), 0.0, Optional.empty(), false, Style.empty(), Style.empty());
   }
 
   // ---- Builder methods ----
@@ -62,8 +60,7 @@ public final class Gauge implements Widget, Stylize<Gauge> {
   /// is not between 0 and 100 inclusively.
   public Gauge withPercent(int percent) {
     if (percent < 0 || percent > 100) {
-      throw new IllegalArgumentException(
-          "Percentage should be between 0 and 100 inclusively.");
+      throw new IllegalArgumentException("Percentage should be between 0 and 100 inclusively.");
     }
     return new Gauge(block, percent / 100.0, label, useUnicode, style, gaugeStyle);
   }

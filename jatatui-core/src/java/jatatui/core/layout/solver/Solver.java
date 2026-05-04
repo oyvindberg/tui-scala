@@ -10,7 +10,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-/// A constraint solver using the Cassowary algorithm. For proper usage please see the top level package documentation.
+/// A constraint solver using the Cassowary algorithm. For proper usage please see the top level
+// package documentation.
 public final class Solver {
   public final Map<Constraint, Tag> cns = new HashMap<>();
   public final Map<Variable, VarData> varData = new HashMap<>();
@@ -129,7 +130,8 @@ public final class Solver {
         sr.row.solveForSymbols(sr.symbol, tag.marker());
         substitute(tag.marker(), sr.row);
       } else {
-        return Either.left(new RemoveConstraintError.InternalSolverError("Failed to find leaving row."));
+        return Either.left(
+            new RemoveConstraintError.InternalSolverError("Failed to find leaving row."));
       }
     }
 
@@ -179,7 +181,8 @@ public final class Solver {
     if (strength.equals(Strength.REQUIRED)) {
       return Either.left(new AddEditVariableError.BadRequiredStrength());
     }
-    Constraint cn = new Constraint(Expression.fromTerm(new Term(v, 1.0)), strength, RelationalOperator.Equal);
+    Constraint cn =
+        new Constraint(Expression.fromTerm(new Term(v, 1.0)), strength, RelationalOperator.Equal);
     addConstraint(cn).unwrap();
     edits.put(v, new EditInfo(cns.get(cn), cn, 0.0));
     return Either.unit();
@@ -196,7 +199,8 @@ public final class Solver {
     if (r instanceof Either.Left<RemoveConstraintError, Void> l) {
       return switch (l.value()) {
         case RemoveConstraintError.UnknownConstraint __ ->
-            Either.left(new RemoveEditVariableError.InternalSolverError("Edit constraint not in system"));
+            Either.left(
+                new RemoveEditVariableError.InternalSolverError("Edit constraint not in system"));
         case RemoveConstraintError.InternalSolverError ise ->
             Either.left(new RemoveEditVariableError.InternalSolverError(ise.str()));
       };
@@ -276,7 +280,8 @@ public final class Solver {
 
   /// Fetches all changes to the values of variables since the last call to this function.
   ///
-  /// The list of changes returned is not in a specific order. Each change comprises the variable changed and
+  /// The list of changes returned is not in a specific order. Each change comprises the variable
+  // changed and
   /// the new value of that variable.
   public List<VariableChange> fetchChanges() {
     if (shouldClearChanges) {
@@ -379,41 +384,43 @@ public final class Solver {
     Tag tag;
     switch (constraint.op) {
       case GreaterOrEqual:
-      case LessOrEqual: {
-        double coeff = constraint.op == RelationalOperator.LessOrEqual ? 1.0 : -1.0;
-        Symbol slack = new Symbol(idTick, SymbolKind.Slack);
-        idTick += 1;
-        row.insertSymbol(slack, coeff);
-        if (constraint.strength.compareTo(Strength.REQUIRED) < 0) {
-          Symbol error = new Symbol(idTick, SymbolKind.Error);
+      case LessOrEqual:
+        {
+          double coeff = constraint.op == RelationalOperator.LessOrEqual ? 1.0 : -1.0;
+          Symbol slack = new Symbol(idTick, SymbolKind.Slack);
           idTick += 1;
-          row.insertSymbol(error, -coeff);
-          objective.insertSymbol(error, constraint.strength.value());
-          tag = new Tag(slack, error);
-        } else {
-          tag = new Tag(slack, Symbol.invalid);
+          row.insertSymbol(slack, coeff);
+          if (constraint.strength.compareTo(Strength.REQUIRED) < 0) {
+            Symbol error = new Symbol(idTick, SymbolKind.Error);
+            idTick += 1;
+            row.insertSymbol(error, -coeff);
+            objective.insertSymbol(error, constraint.strength.value());
+            tag = new Tag(slack, error);
+          } else {
+            tag = new Tag(slack, Symbol.invalid);
+          }
+          break;
         }
-        break;
-      }
-      case Equal: {
-        if (constraint.strength.compareTo(Strength.REQUIRED) < 0) {
-          Symbol errplus = new Symbol(idTick, SymbolKind.Error);
-          idTick += 1;
-          Symbol errminus = new Symbol(idTick, SymbolKind.Error);
-          idTick += 1;
-          row.insertSymbol(errplus, -1.0); // v = eplus - eminus
-          row.insertSymbol(errminus, 1.0); // v - eplus + eminus = 0
-          objective.insertSymbol(errplus, constraint.strength.value());
-          objective.insertSymbol(errminus, constraint.strength.value());
-          tag = new Tag(errplus, errminus);
-        } else {
-          Symbol dummy = new Symbol(idTick, SymbolKind.Dummy);
-          idTick += 1;
-          row.insertSymbol(dummy, 1.0);
-          tag = new Tag(dummy, Symbol.invalid);
+      case Equal:
+        {
+          if (constraint.strength.compareTo(Strength.REQUIRED) < 0) {
+            Symbol errplus = new Symbol(idTick, SymbolKind.Error);
+            idTick += 1;
+            Symbol errminus = new Symbol(idTick, SymbolKind.Error);
+            idTick += 1;
+            row.insertSymbol(errplus, -1.0); // v = eplus - eminus
+            row.insertSymbol(errminus, 1.0); // v - eplus + eminus = 0
+            objective.insertSymbol(errplus, constraint.strength.value());
+            objective.insertSymbol(errminus, constraint.strength.value());
+            tag = new Tag(errplus, errminus);
+          } else {
+            Symbol dummy = new Symbol(idTick, SymbolKind.Dummy);
+            idTick += 1;
+            row.insertSymbol(dummy, 1.0);
+            tag = new Tag(dummy, Symbol.invalid);
+          }
+          break;
         }
-        break;
-      }
       default:
         throw new IllegalStateException("Unhandled operator: " + constraint.op);
     }

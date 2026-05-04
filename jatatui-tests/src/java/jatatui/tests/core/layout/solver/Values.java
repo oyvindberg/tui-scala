@@ -1,12 +1,11 @@
 package jatatui.tests.core.layout.solver;
 
+import jatatui.core.layout.solver.Variable;
+import jatatui.core.layout.solver.VariableChange;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import jatatui.core.layout.solver.Variable;
-import jatatui.core.layout.solver.VariableChange;
 
 /// Test helper that mirrors the `new_values` helper in `submodules/kasuari/tests/common/mod.rs`.
 final class Values {

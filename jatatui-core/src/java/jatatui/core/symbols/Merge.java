@@ -189,7 +189,8 @@ public final class Merge {
   private static final Map<String, BorderSymbol> SYMBOL_TO_BORDER = new HashMap<>();
   private static final Map<BorderSymbol, String> BORDER_TO_SYMBOL = new HashMap<>();
 
-  private static void define(String symbol, LineStyle right, LineStyle up, LineStyle left, LineStyle down) {
+  private static void define(
+      String symbol, LineStyle right, LineStyle up, LineStyle left, LineStyle down) {
     BorderSymbol bs = new BorderSymbol(right, up, left, down);
     SYMBOL_TO_BORDER.put(symbol, bs);
     BORDER_TO_SYMBOL.put(bs, symbol);

@@ -18,59 +18,61 @@ public final class App {
     for (int i = 1; i <= 24; i++) tasks.add("Item" + i);
     TASKS = List.copyOf(tasks);
 
-    LOGS = List.of(
-        new LogEntry("Event1", "INFO"),
-        new LogEntry("Event2", "INFO"),
-        new LogEntry("Event3", "CRITICAL"),
-        new LogEntry("Event4", "ERROR"),
-        new LogEntry("Event5", "INFO"),
-        new LogEntry("Event6", "INFO"),
-        new LogEntry("Event7", "WARNING"),
-        new LogEntry("Event8", "INFO"),
-        new LogEntry("Event9", "INFO"),
-        new LogEntry("Event10", "INFO"),
-        new LogEntry("Event11", "CRITICAL"),
-        new LogEntry("Event12", "INFO"),
-        new LogEntry("Event13", "INFO"),
-        new LogEntry("Event14", "INFO"),
-        new LogEntry("Event15", "INFO"),
-        new LogEntry("Event16", "INFO"),
-        new LogEntry("Event17", "ERROR"),
-        new LogEntry("Event18", "ERROR"),
-        new LogEntry("Event19", "INFO"),
-        new LogEntry("Event20", "INFO"),
-        new LogEntry("Event21", "WARNING"),
-        new LogEntry("Event22", "INFO"),
-        new LogEntry("Event23", "INFO"),
-        new LogEntry("Event24", "WARNING"),
-        new LogEntry("Event25", "INFO"),
-        new LogEntry("Event26", "INFO"));
+    LOGS =
+        List.of(
+            new LogEntry("Event1", "INFO"),
+            new LogEntry("Event2", "INFO"),
+            new LogEntry("Event3", "CRITICAL"),
+            new LogEntry("Event4", "ERROR"),
+            new LogEntry("Event5", "INFO"),
+            new LogEntry("Event6", "INFO"),
+            new LogEntry("Event7", "WARNING"),
+            new LogEntry("Event8", "INFO"),
+            new LogEntry("Event9", "INFO"),
+            new LogEntry("Event10", "INFO"),
+            new LogEntry("Event11", "CRITICAL"),
+            new LogEntry("Event12", "INFO"),
+            new LogEntry("Event13", "INFO"),
+            new LogEntry("Event14", "INFO"),
+            new LogEntry("Event15", "INFO"),
+            new LogEntry("Event16", "INFO"),
+            new LogEntry("Event17", "ERROR"),
+            new LogEntry("Event18", "ERROR"),
+            new LogEntry("Event19", "INFO"),
+            new LogEntry("Event20", "INFO"),
+            new LogEntry("Event21", "WARNING"),
+            new LogEntry("Event22", "INFO"),
+            new LogEntry("Event23", "INFO"),
+            new LogEntry("Event24", "WARNING"),
+            new LogEntry("Event25", "INFO"),
+            new LogEntry("Event26", "INFO"));
 
-    EVENTS = List.of(
-        new BarEntry("B1", 9),
-        new BarEntry("B2", 12),
-        new BarEntry("B3", 5),
-        new BarEntry("B4", 8),
-        new BarEntry("B5", 2),
-        new BarEntry("B6", 4),
-        new BarEntry("B7", 5),
-        new BarEntry("B8", 9),
-        new BarEntry("B9", 14),
-        new BarEntry("B10", 15),
-        new BarEntry("B11", 1),
-        new BarEntry("B12", 0),
-        new BarEntry("B13", 4),
-        new BarEntry("B14", 6),
-        new BarEntry("B15", 4),
-        new BarEntry("B16", 6),
-        new BarEntry("B17", 4),
-        new BarEntry("B18", 7),
-        new BarEntry("B19", 13),
-        new BarEntry("B20", 8),
-        new BarEntry("B21", 11),
-        new BarEntry("B22", 9),
-        new BarEntry("B23", 3),
-        new BarEntry("B24", 5));
+    EVENTS =
+        List.of(
+            new BarEntry("B1", 9),
+            new BarEntry("B2", 12),
+            new BarEntry("B3", 5),
+            new BarEntry("B4", 8),
+            new BarEntry("B5", 2),
+            new BarEntry("B6", 4),
+            new BarEntry("B7", 5),
+            new BarEntry("B8", 9),
+            new BarEntry("B9", 14),
+            new BarEntry("B10", 15),
+            new BarEntry("B11", 1),
+            new BarEntry("B12", 0),
+            new BarEntry("B13", 4),
+            new BarEntry("B14", 6),
+            new BarEntry("B15", 4),
+            new BarEntry("B16", 6),
+            new BarEntry("B17", 4),
+            new BarEntry("B18", 7),
+            new BarEntry("B19", 13),
+            new BarEntry("B20", 8),
+            new BarEntry("B21", 11),
+            new BarEntry("B22", 9),
+            new BarEntry("B23", 3),
+            new BarEntry("B24", 5));
   }
 
   public final String title;
@@ -108,11 +110,12 @@ public final class App {
     this.logs = StatefulList.withItems(LOGS);
     this.barchart = new ArrayList<>(EVENTS);
 
-    this.servers = List.of(
-        new Server("NorthAmerica-1", "New York City", 40.71, -74.00, "Up"),
-        new Server("Europe-1", "Paris", 48.85, 2.35, "Failure"),
-        new Server("SouthAmerica-1", "São Paulo", -23.54, -46.62, "Up"),
-        new Server("Asia-1", "Singapore", 1.35, 103.86, "Up"));
+    this.servers =
+        List.of(
+            new Server("NorthAmerica-1", "New York City", 40.71, -74.00, "Up"),
+            new Server("Europe-1", "Paris", 48.85, 2.35, "Failure"),
+            new Server("SouthAmerica-1", "São Paulo", -23.54, -46.62, "Up"),
+            new Server("Asia-1", "Singapore", 1.35, 103.86, "Up"));
 
     this.enhancedGraphics = enhancedGraphics;
   }

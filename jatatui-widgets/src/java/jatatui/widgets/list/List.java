@@ -409,8 +409,7 @@ public final class List implements Widget, StatefulWidget<ListState>, Stylize<Li
     // Get the selected index and apply scroll_padding to it, but still honor the offset if
     // nothing is selected. This allows the list to stay at a position after select(None)ing.
     int indexToDisplay =
-        applyScrollPaddingToSelectedIndex(
-                selected, maxHeight, firstVisibleIndex, lastVisibleIndex)
+        applyScrollPaddingToSelectedIndex(selected, maxHeight, firstVisibleIndex, lastVisibleIndex)
             .orElse(clampedOffset);
 
     // Recall that lastVisibleIndex is the index of what we can render up to in the given space
@@ -593,8 +592,7 @@ public final class List implements Widget, StatefulWidget<ListState>, Stylize<Li
         cur = indentX(cur, offsetCols + written);
         if (cur.isEmpty()) break;
       } else {
-        Position end =
-            buf.setStringn(cur.x(), cur.y(), span.content, cur.width(), span.style);
+        Position end = buf.setStringn(cur.x(), cur.y(), span.content, cur.width(), span.style);
         int written = Math.max(0, end.x() - cur.x());
         cur = indentX(cur, written);
         if (cur.isEmpty()) break;

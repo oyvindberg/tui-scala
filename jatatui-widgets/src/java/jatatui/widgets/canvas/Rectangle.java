@@ -18,12 +18,13 @@ public record Rectangle(double x, double y, double width, double height, Color c
 
   @Override
   public void draw(Painter painter) {
-    Line[] lines = new Line[] {
-      new Line(x, y, x, y + height, color),
-      new Line(x, y + height, x + width, y + height, color),
-      new Line(x + width, y, x + width, y + height, color),
-      new Line(x, y, x + width, y, color),
-    };
+    Line[] lines =
+        new Line[] {
+          new Line(x, y, x, y + height, color),
+          new Line(x, y + height, x + width, y + height, color),
+          new Line(x + width, y, x + width, y + height, color),
+          new Line(x, y, x + width, y, color),
+        };
     for (Line line : lines) {
       line.draw(painter);
     }

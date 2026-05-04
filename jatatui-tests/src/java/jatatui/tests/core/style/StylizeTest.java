@@ -80,8 +80,7 @@ public class StylizeTest {
   @Test
   public void reset() {
     // Stylize.reset() replaces the entire style with Style.RESET.
-    Style after =
-        Stylize.of(Style.empty()).onCyan().lightRed().bold().underlined().reset().build();
+    Style after = Stylize.of(Style.empty()).onCyan().lightRed().bold().underlined().reset().build();
     assertEquals(Style.RESET, after);
   }
 
@@ -118,8 +117,10 @@ public class StylizeTest {
 
   @Test
   public void all_modifier_shorthands() {
-    assertEquals(Style.empty().withAddModifier(Modifier.BOLD), Stylize.of(Style.empty()).bold().build());
-    assertEquals(Style.empty().withAddModifier(Modifier.DIM), Stylize.of(Style.empty()).dim().build());
+    assertEquals(
+        Style.empty().withAddModifier(Modifier.BOLD), Stylize.of(Style.empty()).bold().build());
+    assertEquals(
+        Style.empty().withAddModifier(Modifier.DIM), Stylize.of(Style.empty()).dim().build());
     assertEquals(
         Style.empty().withAddModifier(Modifier.ITALIC), Stylize.of(Style.empty()).italic().build());
     assertEquals(
@@ -141,7 +142,8 @@ public class StylizeTest {
         Stylize.of(Style.empty()).crossedOut().build());
 
     assertEquals(
-        Style.empty().withRemoveModifier(Modifier.BOLD), Stylize.of(Style.empty()).notBold().build());
+        Style.empty().withRemoveModifier(Modifier.BOLD),
+        Stylize.of(Style.empty()).notBold().build());
     assertEquals(
         Style.empty().withRemoveModifier(Modifier.DIM), Stylize.of(Style.empty()).notDim().build());
     assertEquals(

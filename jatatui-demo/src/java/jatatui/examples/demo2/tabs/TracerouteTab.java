@@ -28,7 +28,6 @@ import jatatui.widgets.scrollbar.ScrollbarOrientation;
 import jatatui.widgets.scrollbar.ScrollbarState;
 import jatatui.widgets.table.Row;
 import jatatui.widgets.table.Table;
-import jatatui.widgets.table.TableCell;
 import jatatui.widgets.table.TableState;
 import java.util.ArrayList;
 import java.util.List;
@@ -119,8 +118,7 @@ public final class TracerouteTab {
     Rect area = outerArea.inner(new Margin(2, 1));
     Clear.instance().render(area, buf);
     Block.empty().withStyle(THEME.content).render(area, buf);
-    Layout horizontal =
-        Layout.horizontal(new Constraint.Ratio(1, 2), new Constraint.Ratio(1, 2));
+    Layout horizontal = Layout.horizontal(new Constraint.Ratio(1, 2), new Constraint.Ratio(1, 2));
     Layout vertical = Layout.vertical(new Constraint.Min(0), new Constraint.Length(3));
     Rect[] horiz = area.layout(horizontal, 2);
     Rect left = horiz[0];
@@ -157,11 +155,7 @@ public final class TracerouteTab {
     ScrollbarState scrollbarState =
         ScrollbarState.empty().withContentLength(HOPS.size()).withPosition(selectedRow);
     Rect scrollArea =
-        new Rect(
-            area.x(),
-            area.y() + 3,
-            area.width() + 1,
-            Math.max(0, area.height() - 4));
+        new Rect(area.x(), area.y() + 3, area.width() + 1, Math.max(0, area.height() - 4));
     Scrollbar.of(ScrollbarOrientation.VerticalLeft)
         .withBeginSymbol(Optional.empty())
         .withEndSymbol(Optional.empty())

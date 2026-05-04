@@ -1,6 +1,7 @@
 package jatatui.core.layout;
 
-/// A simple size struct for representing dimensions in the terminal: `width` columns and `height` rows.
+/// A simple size struct for representing dimensions in the terminal: `width` columns and `height`
+// rows.
 public record Size(int width, int height) {
   public static final Size ZERO = new Size(0, 0);
   public static final Size MIN = ZERO;

@@ -86,8 +86,7 @@ public record Line(double x1, double y1, double x2, double y2, Color color) impl
   }
 
   // Bresenham low-slope line (|dy| < |dx|).
-  private static void drawLineLow(
-      Painter painter, int x1, int y1, int x2, int y2, Color color) {
+  private static void drawLineLow(Painter painter, int x1, int y1, int x2, int y2, Color color) {
     int dx = x2 - x1;
     int dy = Math.abs(y2 - y1);
     int d = 2 * dy - dx;
@@ -107,8 +106,7 @@ public record Line(double x1, double y1, double x2, double y2, Color color) impl
   }
 
   // Bresenham high-slope line (|dy| >= |dx|).
-  private static void drawLineHigh(
-      Painter painter, int x1, int y1, int x2, int y2, Color color) {
+  private static void drawLineHigh(Painter painter, int x1, int y1, int x2, int y2, Color color) {
     int dx = Math.abs(x2 - x1);
     int dy = y2 - y1;
     int d = 2 * dx - dy;
@@ -135,7 +133,8 @@ public record Line(double x1, double y1, double x2, double y2, Color color) impl
   private static final int BOTTOM = 4;
   private static final int TOP = 8;
 
-  private static int outcode(double x, double y, double xmin, double xmax, double ymin, double ymax) {
+  private static int outcode(
+      double x, double y, double xmin, double xmax, double ymin, double ymax) {
     int code = INSIDE;
     if (x < xmin) code |= LEFT;
     else if (x > xmax) code |= RIGHT;

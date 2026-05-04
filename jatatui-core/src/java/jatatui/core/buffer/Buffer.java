@@ -115,13 +115,7 @@ public final class Buffer {
     Optional<Integer> idx = indexOfOpt(new Position(x, y));
     if (idx.isEmpty()) {
       throw new IndexOutOfBoundsException(
-          "index outside of buffer: the area is "
-              + area
-              + " but index is ("
-              + x
-              + ", "
-              + y
-              + ")");
+          "index outside of buffer: the area is " + area + " but index is (" + x + ", " + y + ")");
     }
     return idx.get();
   }
@@ -227,7 +221,8 @@ public final class Buffer {
     int curX = x;
     for (Span span : line) {
       if (remainingWidth == 0) break;
-      Position pos = setStringn(curX, y, span.content, remainingWidth, line.style.patch(span.style));
+      Position pos =
+          setStringn(curX, y, span.content, remainingWidth, line.style.patch(span.style));
       int w = Math.max(0, pos.x() - curX);
       curX = pos.x();
       remainingWidth = Math.max(0, remainingWidth - w);
@@ -365,7 +360,8 @@ public final class Buffer {
         }
       }
       toSkip = Math.max(0, Wcwidth.width(current.symbol()) - 1);
-      int affectedWidth = Math.max(Wcwidth.width(current.symbol()), Wcwidth.width(previous.symbol()));
+      int affectedWidth =
+          Math.max(Wcwidth.width(current.symbol()), Wcwidth.width(previous.symbol()));
       invalidated = Math.max(0, Math.max(affectedWidth, invalidated) - 1);
     }
     return updates;
@@ -436,8 +432,7 @@ public final class Buffer {
           overwrittenSym.add(sym);
         }
         skip = Math.max(0, Math.max(skip, Wcwidth.width(sym)) - 1);
-        List<Object> style =
-            List.of((Object) c.fg, c.bg, c.underlineColor, c.modifier);
+        List<Object> style = List.of((Object) c.fg, c.bg, c.underlineColor, c.modifier);
         if (lastStyle.isEmpty() || !lastStyle.get().equals(style)) {
           lastStyle = Optional.of(style);
           styles.add(new StyleEntry(x, y, c.fg, c.bg, c.underlineColor, c.modifier));
@@ -448,7 +443,11 @@ public final class Buffer {
         sb.append(" // hidden by multi-width symbols: [");
         for (int k = 0; k < overwrittenIdx.size(); k++) {
           if (k > 0) sb.append(", ");
-          sb.append("(").append(overwrittenIdx.get(k)[0]).append(", \"").append(overwrittenSym.get(k)).append("\")");
+          sb.append("(")
+              .append(overwrittenIdx.get(k)[0])
+              .append(", \"")
+              .append(overwrittenSym.get(k))
+              .append("\")");
         }
         sb.append("]");
       }
@@ -475,7 +474,15 @@ public final class Buffer {
   }
 
   private static String formatRect(Rect r) {
-    return "Rect { x: " + r.x() + ", y: " + r.y() + ", width: " + r.width() + ", height: " + r.height() + " }";
+    return "Rect { x: "
+        + r.x()
+        + ", y: "
+        + r.y()
+        + ", width: "
+        + r.width()
+        + ", height: "
+        + r.height()
+        + " }";
   }
 
   // ---- Helpers ----

@@ -62,8 +62,7 @@ final class TextRenderer {
             case Left -> 0;
           };
       Rect indented =
-          new Rect(
-              singleLine.x() + indent, singleLine.y(), Math.max(0, areaWidth - indent), 1);
+          new Rect(singleLine.x() + indent, singleLine.y(), Math.max(0, areaWidth - indent), 1);
       renderSpans(line, indented, buf, 0);
     } else {
       int skip =

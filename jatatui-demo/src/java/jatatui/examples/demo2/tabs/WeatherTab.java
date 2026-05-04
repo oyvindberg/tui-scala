@@ -64,8 +64,7 @@ public final class WeatherTab {
 
     area = area.inner(new Margin(2, 1));
     Layout tabLayout =
-        Layout.vertical(
-            new Constraint.Min(0), new Constraint.Length(1), new Constraint.Length(1));
+        Layout.vertical(new Constraint.Min(0), new Constraint.Length(1), new Constraint.Length(1));
     Rect[] tabSplit = area.layout(tabLayout, 3);
     Rect main = tabSplit[0];
     // tabSplit[1] is a one-row gap (constraint Length(1) with no content).
@@ -112,9 +111,7 @@ public final class WeatherTab {
     List<Bar> bars = new ArrayList<>(data.length);
     for (DayBar d : data) {
       Style barStyle =
-          (d.value() > 70)
-              ? Style.empty().withFg(Color.RED)
-              : Style.empty().withFg(Color.YELLOW);
+          (d.value() > 70) ? Style.empty().withFg(Color.RED) : Style.empty().withFg(Color.YELLOW);
       Style valueStyle =
           (d.value() > 70)
               ? Style.empty().withFg(Color.GRAY).withBg(Color.RED).withAddModifier(Modifier.BOLD)

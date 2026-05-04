@@ -2,7 +2,8 @@ package jatatui.core.layout;
 
 /// Defines how excess space is distributed between layout segments.
 public enum Flex {
-  /// Default — fills available space, putting excess into the last constraint of the lowest priority.
+  /// Default — fills available space, putting excess into the last constraint of the lowest
+  // priority.
   Legacy,
   /// Push all segments to the start; excess at the end.
   Start,

@@ -30,7 +30,8 @@ public final class Dataset implements Stylize<Dataset> {
   /// Style used to plot this dataset.
   public final Style style;
 
-  private Dataset(Optional<Line> name, List<Point> data, Marker marker, GraphType graphType, Style style) {
+  private Dataset(
+      Optional<Line> name, List<Point> data, Marker marker, GraphType graphType, Style style) {
     this.name = name;
     this.data = List.copyOf(data);
     this.marker = marker;

@@ -9,4 +9,5 @@ import java.util.List;
 /// Mirrors `ratatui_widgets::reflow::WrappedLine`. The lifetimes on the upstream struct are
 /// elided in Java; see the doc on [LineComposer] for the borrowing semantics — a `WrappedLine`
 /// returned by a [LineComposer] is only valid until the next call to [LineComposer#nextLine()].
-public record WrappedLine(List<StyledGrapheme> graphemes, int width, HorizontalAlignment alignment) {}
+public record WrappedLine(
+    List<StyledGrapheme> graphemes, int width, HorizontalAlignment alignment) {}

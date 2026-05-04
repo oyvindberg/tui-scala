@@ -30,7 +30,8 @@ public class SparklineTest {
   @Test
   public void it_can_be_created_from_list_of_long() {
     List<SparklineBar> data = Sparkline.empty().withDataLongs(1, 2, 3).data();
-    List<SparklineBar> expected = List.of(SparklineBar.of(1), SparklineBar.of(2), SparklineBar.of(3));
+    List<SparklineBar> expected =
+        List.of(SparklineBar.of(1), SparklineBar.of(2), SparklineBar.of(3));
     assertEquals(expected, data);
   }
 
@@ -158,7 +159,8 @@ public class SparklineTest {
   @Test
   public void render_in_minimal_buffer() {
     Buffer buf = Buffer.empty(new Rect(0, 0, 1, 1));
-    Sparkline sparkline = Sparkline.empty().withDataLongs(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).withMax(10);
+    Sparkline sparkline =
+        Sparkline.empty().withDataLongs(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).withMax(10);
     // Should not throw.
     sparkline.render(buf.area(), buf);
     assertBufferEq(buf, Buffer.withLines(" "));
@@ -167,7 +169,8 @@ public class SparklineTest {
   @Test
   public void render_in_zero_size_buffer() {
     Buffer buf = Buffer.empty(new Rect(0, 0, 0, 0));
-    Sparkline sparkline = Sparkline.empty().withDataLongs(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).withMax(10);
+    Sparkline sparkline =
+        Sparkline.empty().withDataLongs(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).withMax(10);
     // Should not throw.
     sparkline.render(buf.area(), buf);
   }

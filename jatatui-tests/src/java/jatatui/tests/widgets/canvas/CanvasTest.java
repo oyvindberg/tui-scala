@@ -10,12 +10,11 @@ import jatatui.core.symbols.Marker;
 import jatatui.tests._support.BufferAssertions;
 import jatatui.widgets.canvas.Canvas;
 import jatatui.widgets.canvas.Line;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
 
 /// Mirrors upstream tests in `submodules/ratatui/ratatui-widgets/src/canvas.rs`.
 ///
@@ -90,36 +89,50 @@ public class CanvasTest {
         Arguments.of(
             Marker.Bar,
             new String[] {
-              row5(LOWER_HALF), row5(LOWER_HALF), row5(LOWER_HALF), row5(LOWER_HALF),
+              row5(LOWER_HALF),
+              row5(LOWER_HALF),
+              row5(LOWER_HALF),
+              row5(LOWER_HALF),
               LOWER_HALF.repeat(5)
             }),
         Arguments.of(
             Marker.Braille,
             new String[] {
-              row5(BRAILLE_VLINE), row5(BRAILLE_VLINE), row5(BRAILLE_VLINE), row5(BRAILLE_VLINE),
+              row5(BRAILLE_VLINE),
+              row5(BRAILLE_VLINE),
+              row5(BRAILLE_VLINE),
+              row5(BRAILLE_VLINE),
               BRAILLE_LCORNER + BRAILLE_HLINE.repeat(4)
             }),
         Arguments.of(
             Marker.Quadrant,
             new String[] {
-              row5(LEFT_HALF), row5(LEFT_HALF), row5(LEFT_HALF), row5(LEFT_HALF),
+              row5(LEFT_HALF),
+              row5(LEFT_HALF),
+              row5(LEFT_HALF),
+              row5(LEFT_HALF),
               QUADRANT_BL_FULL + LOWER_HALF.repeat(4)
             }),
         Arguments.of(
             Marker.Sextant,
             new String[] {
-              row5(LEFT_HALF), row5(LEFT_HALF), row5(LEFT_HALF), row5(LEFT_HALF),
+              row5(LEFT_HALF),
+              row5(LEFT_HALF),
+              row5(LEFT_HALF),
+              row5(LEFT_HALF),
               SEXTANT_BL + SEXTANT_HLINE.repeat(4)
             }),
         Arguments.of(
             Marker.Octant,
             new String[] {
-              row5(LEFT_HALF), row5(LEFT_HALF), row5(LEFT_HALF), row5(LEFT_HALF),
+              row5(LEFT_HALF),
+              row5(LEFT_HALF),
+              row5(LEFT_HALF),
+              row5(LEFT_HALF),
               OCTANT_BL + LOWER_QUARTER.repeat(4)
             }),
         Arguments.of(
-            Marker.Dot,
-            new String[] {row5(DOT), row5(DOT), row5(DOT), row5(DOT), DOT.repeat(5)}));
+            Marker.Dot, new String[] {row5(DOT), row5(DOT), row5(DOT), row5(DOT), DOT.repeat(5)}));
   }
 
   @ParameterizedTest

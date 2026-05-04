@@ -11,7 +11,8 @@ public record Offset(int x, int y) {
     return new Offset(x, y);
   }
 
-  /// Negate the offset. Throws on Integer.MIN_VALUE inputs (matches Rust upstream's overflow panic).
+  /// Negate the offset. Throws on Integer.MIN_VALUE inputs (matches Rust upstream's overflow
+  // panic).
   public Offset negate() {
     return new Offset(Math.negateExact(x), Math.negateExact(y));
   }

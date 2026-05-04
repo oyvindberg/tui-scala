@@ -14,7 +14,8 @@ public final class CanvasGridProbe {
 
   /// Build a [PatternGrid] of `width` x `height` cells using a 2x4 Braille lookup table and call
   /// `paint(x, y, Color.RED)` on it. Returns silently — the contract is "no exception".
-  public static void paintPatternMax(int width, int height, int patternW, int patternH, int x, int y) {
+  public static void paintPatternMax(
+      int width, int height, int patternW, int patternH, int x, int y) {
     PatternGrid grid;
     if (patternW == 2 && patternH == 4) {
       grid = PatternGrid.fromChars(2, 4, width, height, Braille.BRAILLE);

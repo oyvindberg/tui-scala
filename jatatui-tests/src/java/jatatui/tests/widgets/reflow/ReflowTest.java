@@ -14,7 +14,6 @@ import jatatui.widgets.reflow.WordWrapper;
 import jatatui.widgets.reflow.WrappedLine;
 import java.text.BreakIterator;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -26,12 +25,15 @@ public class ReflowTest {
 
   /// Mirrors upstream's private `Composer` enum used by `run_composer`.
   sealed interface Composer {}
+
   record WordWrapperComposer(boolean trim) implements Composer {}
+
   record LineTruncatorComposer() implements Composer {}
 
   /// Result of [#runComposer], mirroring the `(Vec<String>, Vec<u16>, Vec<Alignment>)` upstream
   /// returns.
-  record ComposerResult(List<String> lines, List<Integer> widths, List<HorizontalAlignment> alignments) {}
+  record ComposerResult(
+      List<String> lines, List<Integer> widths, List<HorizontalAlignment> alignments) {}
 
   static ComposerResult runComposer(Composer which, Text text, int textAreaWidth) {
     List<StyledLineInput> styledLines = new ArrayList<>();
@@ -40,15 +42,16 @@ public class ReflowTest {
       for (var span : line) {
         graphemes.addAll(span.styledGraphemes(Style.empty()));
       }
-      styledLines.add(new StyledLineInput(graphemes.iterator(), line.alignment.orElse(HorizontalAlignment.Left)));
+      styledLines.add(
+          new StyledLineInput(
+              graphemes.iterator(), line.alignment.orElse(HorizontalAlignment.Left)));
     }
 
     LineComposer composer =
         switch (which) {
           case WordWrapperComposer w ->
               new WordWrapper(styledLines.iterator(), textAreaWidth, w.trim());
-          case LineTruncatorComposer t ->
-              new LineTruncator(styledLines.iterator(), textAreaWidth);
+          case LineTruncatorComposer t -> new LineTruncator(styledLines.iterator(), textAreaWidth);
         };
 
     List<String> lines = new ArrayList<>();
@@ -95,8 +98,7 @@ public class ReflowTest {
   @Test
   public void line_composer_short_lines() {
     int width = 20;
-    String text =
-        "abcdefg\nhijklmno\npabcdefg\nhijklmn\nopabcdefghijk\nlmnopabcd\n\n\nefghijklmno";
+    String text = "abcdefg\nhijklmno\npabcdefg\nhijklmn\nopabcdefghijk\nlmnopabcd\n\n\nefghijklmno";
     ComposerResult wordWrapper = runComposer(new WordWrapperComposer(true), text, width);
     ComposerResult lineTruncator = runComposer(new LineTruncatorComposer(), text, width);
 
@@ -112,15 +114,17 @@ public class ReflowTest {
     ComposerResult wordWrapper = runComposer(new WordWrapperComposer(true), text, width);
     ComposerResult lineTruncator = runComposer(new LineTruncatorComposer(), text, width);
 
-    List<String> wrapped = List.of(
-        text.substring(0, width),
-        text.substring(width, width * 2),
-        text.substring(width * 2, width * 3),
-        text.substring(width * 3));
+    List<String> wrapped =
+        List.of(
+            text.substring(0, width),
+            text.substring(width, width * 2),
+            text.substring(width * 2, width * 3),
+            text.substring(width * 3));
     assertEquals(
         wrapped,
         wordWrapper.lines(),
-        "WordWrapper should detect the line cannot be broken on word boundary and break it at line width limit.");
+        "WordWrapper should detect the line cannot be broken on word boundary and break it at line"
+            + " width limit.");
     assertEquals(List.of(text.substring(0, width)), lineTruncator.lines());
   }
 
@@ -131,18 +135,18 @@ public class ReflowTest {
         "abcd efghij klmnopabcd efgh ijklmnopabcdefg hijkl mnopab c d e f g h i j k l m n o";
     String textMultiSpace =
         "abcd efghij    klmnopabcd efgh     ijklmnopabcdefg hijkl mnopab c d e f g h i j k l m n o";
-    ComposerResult wordWrapperSingleSpace =
-        runComposer(new WordWrapperComposer(true), text, width);
+    ComposerResult wordWrapperSingleSpace = runComposer(new WordWrapperComposer(true), text, width);
     ComposerResult wordWrapperMultiSpace =
         runComposer(new WordWrapperComposer(true), textMultiSpace, width);
     ComposerResult lineTruncator = runComposer(new LineTruncatorComposer(), text, width);
 
-    List<String> wordWrapped = List.of(
-        "abcd efghij",
-        "klmnopabcd efgh",
-        "ijklmnopabcdefg",
-        "hijkl mnopab c d e f",
-        "g h i j k l m n o");
+    List<String> wordWrapped =
+        List.of(
+            "abcd efghij",
+            "klmnopabcd efgh",
+            "ijklmnopabcdefg",
+            "hijkl mnopab c d e f",
+            "g h i j k l m n o");
     assertEquals(wordWrapped, wordWrapperSingleSpace.lines());
     assertEquals(wordWrapped, wordWrapperMultiSpace.lines());
     assertEquals(List.of(text.substring(0, width)), lineTruncator.lines());
@@ -193,8 +197,7 @@ public class ReflowTest {
   @Test
   public void line_composer_max_line_width_of_1_double_width_characters() {
     int width = 1;
-    String text =
-        "コンピュータ上で文字を扱う場合、典型的には文字\naaa\naによる通信を行う場合にその両端点では、";
+    String text = "コンピュータ上で文字を扱う場合、典型的には文字\naaa\naによる通信を行う場合にその両端点では、";
     ComposerResult wordWrapper = runComposer(new WordWrapperComposer(true), text, width);
     ComposerResult lineTruncator = runComposer(new LineTruncatorComposer(), text, width);
     assertEquals(List.of("", "a", "a", "a", "a"), wordWrapper.lines());
@@ -208,28 +211,18 @@ public class ReflowTest {
     ComposerResult wordWrapper = runComposer(new WordWrapperComposer(true), text, width);
     assertEquals(
         List.of(
-            "abcd efghij",
-            "klmnopabcdefghijklmn",
-            "opabcdefghijkl",
-            "mnopab cdefghi j",
-            "klmno"),
+            "abcd efghij", "klmnopabcdefghijklmn", "opabcdefghijkl", "mnopab cdefghi j", "klmno"),
         wordWrapper.lines());
   }
 
   @Test
   public void line_composer_double_width_chars() {
     int width = 20;
-    String text =
-        "コンピュータ上で文字を扱う場合、典型的には文字による通信を行う場合にその両端点では、";
+    String text = "コンピュータ上で文字を扱う場合、典型的には文字による通信を行う場合にその両端点では、";
     ComposerResult wordWrapper = runComposer(new WordWrapperComposer(true), text, width);
     ComposerResult lineTruncator = runComposer(new LineTruncatorComposer(), text, width);
     assertEquals(List.of("コンピュータ上で文字"), lineTruncator.lines());
-    List<String> wrapped = List.of(
-        "コンピュータ上で文字",
-        "を扱う場合、典型的に",
-        "は文字による通信を行",
-        "う場合にその両端点で",
-        "は、");
+    List<String> wrapped = List.of("コンピュータ上で文字", "を扱う場合、典型的に", "は文字による通信を行", "う場合にその両端点で", "は、");
     assertEquals(wrapped, wordWrapper.lines());
     assertEquals(List.of(width, width, width, width, 4), wordWrapper.widths());
   }
@@ -267,17 +260,10 @@ public class ReflowTest {
   @Test
   public void line_composer_word_wrapper_double_width_chars_mixed_with_spaces() {
     int width = 20;
-    String text =
-        "コンピュ ータ上で文字を扱う場合、 典型的には文 字による 通信を行 う場合にその両端点では、";
+    String text = "コンピュ ータ上で文字を扱う場合、 典型的には文 字による 通信を行 う場合にその両端点では、";
     ComposerResult wordWrapper = runComposer(new WordWrapperComposer(true), text, width);
     assertEquals(
-        List.of(
-            "コンピュ",
-            "ータ上で文字を扱う場",
-            "合、 典型的には文",
-            "字による 通信を行",
-            "う場合にその両端点で",
-            "は、"),
+        List.of("コンピュ", "ータ上で文字を扱う場", "合、 典型的には文", "字による 通信を行", "う場合にその両端点で", "は、"),
         wordWrapper.lines());
     assertEquals(List.of(8, 20, 17, 17, 20, 4), wordWrapper.widths());
   }
@@ -311,8 +297,7 @@ public class ReflowTest {
     String text = "AAA AAA AAAAA AA AAAAAA\n B\n  C\n   D";
     ComposerResult wordWrapper = runComposer(new WordWrapperComposer(false), text, width);
     assertEquals(
-        List.of("AAA AAA", "AAAAA AA", "AAAAAA", " B", "  C", "   D"),
-        wordWrapper.lines());
+        List.of("AAA AAA", "AAAAA AA", "AAAAAA", " B", "  C", "   D"), wordWrapper.lines());
   }
 
   @Test
@@ -338,10 +323,12 @@ public class ReflowTest {
   @Test
   public void line_composer_preserves_line_alignment() {
     int width = 20;
-    Text textInput = Text.from(
-        Line.from("Something that is left aligned.").withAlignment(HorizontalAlignment.Left),
-        Line.from("This is right aligned and half short.").withAlignment(HorizontalAlignment.Right),
-        Line.from("This should sit in the center.").withAlignment(HorizontalAlignment.Center));
+    Text textInput =
+        Text.from(
+            Line.from("Something that is left aligned.").withAlignment(HorizontalAlignment.Left),
+            Line.from("This is right aligned and half short.")
+                .withAlignment(HorizontalAlignment.Right),
+            Line.from("This should sit in the center.").withAlignment(HorizontalAlignment.Center));
 
     ComposerResult wordWrapper = runComposer(new WordWrapperComposer(true), textInput, width);
     ComposerResult lineTruncator = runComposer(new LineTruncatorComposer(), textInput, width);

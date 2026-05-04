@@ -49,13 +49,10 @@ class BarChartTest {
   void data() {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 10, 3));
     BarChart widget =
-        BarChart.empty().withData(BarGroup.LabelledValue.of("foo", 1), BarGroup.LabelledValue.of("bar", 2));
+        BarChart.empty()
+            .withData(BarGroup.LabelledValue.of("foo", 1), BarGroup.LabelledValue.of("bar", 2));
     widget.render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "  █       ",
-            "1 2       ",
-            "f b       ");
+    Buffer expected = Buffer.withLines("  █       ", "1 2       ", "f b       ");
     assertBufferEq(buffer, expected);
   }
 
@@ -69,12 +66,7 @@ class BarChartTest {
             .withBlock(block);
     widget.render(buffer.area, buffer);
     Buffer expected =
-        Buffer.withLines(
-            "╔Block═══╗",
-            "║  █     ║",
-            "║1 2     ║",
-            "║f b     ║",
-            "╚════════╝");
+        Buffer.withLines("╔Block═══╗", "║  █     ║", "║1 2     ║", "║f b     ║", "╚════════╝");
     assertBufferEq(buffer, expected);
   }
 
@@ -88,11 +80,7 @@ class BarChartTest {
                 BarGroup.LabelledValue.of("bar", 2),
                 BarGroup.LabelledValue.of("baz", 100));
     withoutMax.render(buffer.area, buffer);
-    Buffer expected1 =
-        Buffer.withLines(
-            "    █     ",
-            "    █     ",
-            "f b b     ");
+    Buffer expected1 = Buffer.withLines("    █     ", "    █     ", "f b b     ");
     assertBufferEq(buffer, expected1);
 
     BarChart withMax =
@@ -103,11 +91,7 @@ class BarChartTest {
                 BarGroup.LabelledValue.of("baz", 100))
             .withMax(2);
     withMax.render(buffer.area, buffer);
-    Buffer expected2 =
-        Buffer.withLines(
-            "  █ █     ",
-            "1 2 █     ",
-            "f b b     ");
+    Buffer expected2 = Buffer.withLines("  █ █     ", "1 2 █     ", "f b b     ");
     assertBufferEq(buffer, expected2);
   }
 
@@ -119,11 +103,7 @@ class BarChartTest {
             .withData(BarGroup.LabelledValue.of("foo", 1), BarGroup.LabelledValue.of("bar", 2))
             .withBarStyle(Style.empty().red());
     widget.render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "  █       ",
-            "1 2       ",
-            "f b       ");
+    Buffer expected = Buffer.withLines("  █       ", "1 2       ", "f b       ");
     for (int x : new int[] {0, 2}) {
       for (int y : new int[] {0, 1}) {
         expected.cellAt(x, y).setFg(Color.RED);
@@ -140,11 +120,7 @@ class BarChartTest {
             .withData(BarGroup.LabelledValue.of("foo", 1), BarGroup.LabelledValue.of("bar", 2))
             .withBarWidth(3);
     widget.render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "    ███   ",
-            "█1█ █2█   ",
-            "foo bar   ");
+    Buffer expected = Buffer.withLines("    ███   ", "█1█ █2█   ", "foo bar   ");
     assertBufferEq(buffer, expected);
   }
 
@@ -156,11 +132,7 @@ class BarChartTest {
             .withData(BarGroup.LabelledValue.of("foo", 1), BarGroup.LabelledValue.of("bar", 2))
             .withBarGap(2);
     widget.render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "   █      ",
-            "1  2      ",
-            "f  b      ");
+    Buffer expected = Buffer.withLines("   █      ", "1  2      ", "f  b      ");
     assertBufferEq(buffer, expected);
   }
 
@@ -175,11 +147,7 @@ class BarChartTest {
                 BarGroup.LabelledValue.of("baz", 3))
             .withBarSet(Bar.THREE_LEVELS);
     widget.render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "    █     ",
-            "  ▄ 3     ",
-            "f b b     ");
+    Buffer expected = Buffer.withLines("    █     ", "  ▄ 3     ", "f b b     ");
     assertBufferEq(buffer, expected);
   }
 
@@ -201,10 +169,7 @@ class BarChartTest {
             .withBarSet(Bar.NINE_LEVELS);
     widget.render(new Rect(0, 1, 18, 2), buffer);
     Buffer expected =
-        Buffer.withLines(
-            "                  ",
-            "  ▁ ▂ ▃ ▄ ▅ ▆ ▇ 8 ",
-            "a b c d e f g h i ");
+        Buffer.withLines("                  ", "  ▁ ▂ ▃ ▄ ▅ ▆ ▇ 8 ", "a b c d e f g h i ");
     assertBufferEq(buffer, expected);
   }
 
@@ -217,11 +182,7 @@ class BarChartTest {
             .withBarWidth(3)
             .withValueStyle(Style.empty().red());
     widget.render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "    ███   ",
-            "█1█ █2█   ",
-            "foo bar   ");
+    Buffer expected = Buffer.withLines("    ███   ", "█1█ █2█   ", "foo bar   ");
     expected.cellAt(1, 1).setFg(Color.RED);
     expected.cellAt(5, 1).setFg(Color.RED);
     assertBufferEq(buffer, expected);
@@ -235,11 +196,7 @@ class BarChartTest {
             .withData(BarGroup.LabelledValue.of("foo", 1), BarGroup.LabelledValue.of("bar", 2))
             .withLabelStyle(Style.empty().red());
     widget.render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "  █       ",
-            "1 2       ",
-            "f b       ");
+    Buffer expected = Buffer.withLines("  █       ", "1 2       ", "f b       ");
     expected.cellAt(0, 2).setFg(Color.RED);
     expected.cellAt(2, 2).setFg(Color.RED);
     assertBufferEq(buffer, expected);
@@ -253,11 +210,7 @@ class BarChartTest {
             .withData(BarGroup.LabelledValue.of("foo", 1), BarGroup.LabelledValue.of("bar", 2))
             .withStyle(Style.empty().red());
     widget.render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "  █       ",
-            "1 2       ",
-            "f b       ");
+    Buffer expected = Buffer.withLines("  █       ", "1 2       ", "f b       ");
     for (int x = 0; x < 10; x++) {
       for (int y = 0; y < 3; y++) {
         expected.cellAt(x, y).setFg(Color.RED);
@@ -319,15 +272,7 @@ class BarChartTest {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 5, 8));
     chart.render(buffer.area, buffer);
     Buffer expected =
-        Buffer.withLines(
-            "2█   ",
-            "3██  ",
-            "4███ ",
-            "G1   ",
-            "3██  ",
-            "4███ ",
-            "5████",
-            "G2   ");
+        Buffer.withLines("2█   ", "3██  ", "4███ ", "G1   ", "3██  ", "4███ ", "5████", "G2   ");
     assertBufferEq(buffer, expected);
   }
 
@@ -337,14 +282,7 @@ class BarChartTest {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 5, 7));
     chart.render(buffer.area, buffer);
     Buffer expected =
-        Buffer.withLines(
-            "2█   ",
-            "3██  ",
-            "4███ ",
-            "G1   ",
-            "3██  ",
-            "4███ ",
-            "5████");
+        Buffer.withLines("2█   ", "3██  ", "4███ ", "G1   ", "3██  ", "4███ ", "5████");
     assertBufferEq(buffer, expected);
   }
 
@@ -353,17 +291,12 @@ class BarChartTest {
     BarChart chart = buildTestBarChart();
     Buffer buffer = Buffer.empty(new Rect(0, 0, 5, 5));
     chart.render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "2█   ",
-            "3██  ",
-            "4███ ",
-            "G1   ",
-            "3██  ");
+    Buffer expected = Buffer.withLines("2█   ", "3██  ", "4███ ", "G1   ", "3██  ");
     assertBufferEq(buffer, expected);
   }
 
-  private static void test_horizontal_bars_label_width_greater_than_bar(java.util.Optional<Color> barColor) {
+  private static void test_horizontal_bars_label_width_greater_than_bar(
+      java.util.Optional<Color> barColor) {
     jatatui.widgets.barchart.Bar bar =
         jatatui.widgets.barchart.Bar.empty()
             .withValue(2)
@@ -374,7 +307,8 @@ class BarChartTest {
     }
     BarChart chart =
         BarChart.empty()
-            .withGroup(BarGroup.empty().withBars(bar, jatatui.widgets.barchart.Bar.empty().withValue(5)))
+            .withGroup(
+                BarGroup.empty().withBars(bar, jatatui.widgets.barchart.Bar.empty().withValue(5)))
             .withDirection(Direction.Horizontal)
             .withBarStyle(Style.empty().yellow())
             .withValueStyle(Style.empty().italic())
@@ -425,11 +359,7 @@ class BarChartTest {
 
     Buffer buffer = Buffer.empty(new Rect(0, 0, 10, 3));
     chart.render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "Jan 10█   ",
-            "Feb 20████",
-            "Mar 5     ");
+    Buffer expected = Buffer.withLines("Jan 10█   ", "Feb 20████", "Mar 5     ");
     assertBufferEq(buffer, expected);
   }
 
@@ -474,11 +404,7 @@ class BarChartTest {
     chart.render(buffer.area, buffer);
     Buffer expected =
         Buffer.withLines(
-            "    ▂ █     ▂",
-            "  ▄ █ █   ▄ █",
-            "▆ 2 3 4 ▆ 2 3",
-            "a b c c a b c",
-            "  G1     G2  ");
+            "    ▂ █     ▂", "  ▄ █ █   ▄ █", "▆ 2 3 4 ▆ 2 3", "a b c c a b c", "  G1     G2  ");
     assertBufferEq(buffer, expected);
   }
 
@@ -504,30 +430,31 @@ class BarChartTest {
     BarGroup group =
         BarGroup.empty()
             .withBars(
-                jatatui.widgets.barchart.Bar.empty().withValue(123).withLabel("B1").withTextValue("写"),
-                jatatui.widgets.barchart.Bar.empty().withValue(321).withLabel("B2").withTextValue("写"),
-                jatatui.widgets.barchart.Bar.empty().withValue(333).withLabel("B2").withTextValue("写"));
+                jatatui.widgets.barchart.Bar.empty()
+                    .withValue(123)
+                    .withLabel("B1")
+                    .withTextValue("写"),
+                jatatui.widgets.barchart.Bar.empty()
+                    .withValue(321)
+                    .withLabel("B2")
+                    .withTextValue("写"),
+                jatatui.widgets.barchart.Bar.empty()
+                    .withValue(333)
+                    .withLabel("B2")
+                    .withTextValue("写"));
     BarChart chart = BarChart.empty().withGroup(group).withBarWidth(3).withBarGap(1);
 
     Buffer buffer = Buffer.empty(new Rect(0, 0, 11, 5));
     chart.render(buffer.area, buffer);
     Buffer expected =
-        Buffer.withLines(
-            "    ▆▆▆ ███",
-            "    ███ ███",
-            "▃▃▃ ███ ███",
-            "写█ 写█ 写█",
-            "B1  B2  B2 ");
+        Buffer.withLines("    ▆▆▆ ███", "    ███ ███", "▃▃▃ ███ ███", "写█ 写█ 写█", "B1  B2  B2 ");
     assertBufferEq(buffer, expected);
   }
 
   @Test
   void handles_zero_width() {
     BarChart chart =
-        BarChart.empty()
-            .withData(BarGroup.LabelledValue.of("A", 1))
-            .withBarWidth(0)
-            .withBarGap(0);
+        BarChart.empty().withData(BarGroup.LabelledValue.of("A", 1)).withBarWidth(0).withBarGap(0);
     Buffer buffer = Buffer.empty(new Rect(0, 0, 0, 10));
     chart.render(buffer.area, buffer);
     assertBufferEq(buffer, Buffer.empty(new Rect(0, 0, 0, 10)));
@@ -575,10 +502,7 @@ class BarChartTest {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 17, 3));
     chart.render(new Rect(0, 1, buffer.area.width(), 2), buffer);
     Buffer expected =
-        Buffer.withLines(
-            "                 ",
-            "  ▁ ▂ ▃ ▄ ▅ ▆ ▇ 8",
-            "a b c d e f g h i");
+        Buffer.withLines("                 ", "  ▁ ▂ ▃ ▄ ▅ ▆ ▇ 8", "a b c d e f g h i");
     assertBufferEq(buffer, expected);
   }
 
@@ -602,10 +526,7 @@ class BarChartTest {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 17, 3));
     chart.render(buffer.area, buffer);
     Buffer expected =
-        Buffer.withLines(
-            "  ▁ ▂ ▃ ▄ ▅ ▆ ▇ 8",
-            "a b c d e f g h i",
-            "      Group      ");
+        Buffer.withLines("  ▁ ▂ ▃ ▄ ▅ ▆ ▇ 8", "a b c d e f g h i", "      Group      ");
     assertBufferEq(buffer, expected);
   }
 
@@ -657,10 +578,7 @@ class BarChartTest {
     chart.render(buffer.area, buffer);
     Buffer expected =
         Buffer.withLines(
-            "          ▂ ▄ ▆ █",
-            "  ▂ ▄ ▆ 4 5 6 7 8",
-            "a b c d e f g h i",
-            "      Group      ");
+            "          ▂ ▄ ▆ █", "  ▂ ▄ ▆ 4 5 6 7 8", "a b c d e f g h i", "      Group      ");
     assertBufferEq(buffer, expected);
   }
 
@@ -685,10 +603,7 @@ class BarChartTest {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 17, 3));
     chart.render(new Rect(0, 1, buffer.area.width(), 2), buffer);
     Buffer expected =
-        Buffer.withLines(
-            "                 ",
-            "  ▁ ▂ ▃ ▄ ▅ ▆ ▇ 8",
-            "      Group      ");
+        Buffer.withLines("                 ", "  ▁ ▂ ▃ ▄ ▅ ▆ ▇ 8", "      Group      ");
     assertBufferEq(buffer, expected);
   }
 
@@ -717,13 +632,7 @@ class BarChartTest {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 7, 6));
     chart.render(buffer.area, buffer);
     Buffer expected =
-        Buffer.withLines(
-            "   ██  ",
-            "   ██  ",
-            "▄▄ ██  ",
-            "██ ██  ",
-            "1█ 2█  ",
-            "a  b   ");
+        Buffer.withLines("   ██  ", "   ██  ", "▄▄ ██  ", "██ ██  ", "1█ 2█  ", "a  b   ");
     assertBufferEq(buffer, expected);
   }
 
@@ -762,13 +671,7 @@ class BarChartTest {
             .withDirection(Direction.Horizontal);
     Buffer buffer = Buffer.empty(new Rect(0, 0, 4, 5));
     chart.render(buffer.area, buffer);
-    Buffer expected =
-        Buffer.withLines(
-            "    ",
-            "    ",
-            " █  ",
-            " ██ ",
-            " ███");
+    Buffer expected = Buffer.withLines("    ", "    ", " █  ", " ██ ", " ███");
     assertBufferEq(buffer, expected);
   }
 

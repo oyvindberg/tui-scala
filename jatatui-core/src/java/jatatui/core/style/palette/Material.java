@@ -46,8 +46,7 @@ public final class Material {
     /// Create a new `AccentedPalette` from 14 `0x00RRGGBB` variants.
     public static AccentedPalette fromVariants(int[] variants) {
       if (variants.length != 14) {
-        throw new IllegalArgumentException(
-            "expected 14 variants, got " + variants.length);
+        throw new IllegalArgumentException("expected 14 variants, got " + variants.length);
       }
       return new AccentedPalette(
           Color.fromU32(variants[0]),
@@ -84,8 +83,7 @@ public final class Material {
     /// Create a new `NonAccentedPalette` from 10 `0x00RRGGBB` variants.
     public static NonAccentedPalette fromVariants(int[] variants) {
       if (variants.length != 10) {
-        throw new IllegalArgumentException(
-            "expected 10 variants, got " + variants.length);
+        throw new IllegalArgumentException("expected 10 variants, got " + variants.length);
       }
       return new NonAccentedPalette(
           Color.fromU32(variants[0]),

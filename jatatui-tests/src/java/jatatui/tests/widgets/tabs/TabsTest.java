@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import jatatui.core.buffer.Buffer;
 import jatatui.core.layout.Rect;
-import jatatui.core.style.Color;
 import jatatui.core.style.Style;
 import jatatui.core.text.Line;
 import jatatui.core.text.Span;

@@ -36,53 +36,53 @@ public final class CalendarExplorerExample {
   private CalendarExplorerExample() {}
 
   public static void main(String[] args) throws IOException {
-    Jatatui.runIo(terminal -> {
-      LocalDate selectedDate = LocalDate.now();
-      StyledCalendar calendarStyle = StyledCalendar.Default;
-      while (true) {
-        StyledCalendar finalCalendarStyle = calendarStyle;
-        LocalDate finalSelectedDate = selectedDate;
-        terminal.draw(frame -> render(frame, finalCalendarStyle, finalSelectedDate));
-        Event event = JNI.read();
-        if (!(event instanceof Event.Key key)
-            || key.keyEvent().kind() != KeyEventKind.Press) {
-          continue;
-        }
-        KeyCode code = key.keyEvent().code();
-        if (code instanceof KeyCode.Char ch) {
-          char c = ch.c();
-          if (c == 'q') {
-            return;
-          } else if (c == 's') {
-            calendarStyle = calendarStyle.next();
-          } else if (c == 'n') {
-            selectedDate = nextMonth(selectedDate);
-          } else if (c == 'p') {
-            selectedDate = prevMonth(selectedDate);
-          } else if (c == 'h') {
-            selectedDate = selectedDate.minusDays(1);
-          } else if (c == 'j') {
-            selectedDate = selectedDate.plusWeeks(1);
-          } else if (c == 'k') {
-            selectedDate = selectedDate.minusWeeks(1);
-          } else if (c == 'l') {
-            selectedDate = selectedDate.plusDays(1);
+    Jatatui.runIo(
+        terminal -> {
+          LocalDate selectedDate = LocalDate.now();
+          StyledCalendar calendarStyle = StyledCalendar.Default;
+          while (true) {
+            StyledCalendar finalCalendarStyle = calendarStyle;
+            LocalDate finalSelectedDate = selectedDate;
+            terminal.draw(frame -> render(frame, finalCalendarStyle, finalSelectedDate));
+            Event event = JNI.read();
+            if (!(event instanceof Event.Key key) || key.keyEvent().kind() != KeyEventKind.Press) {
+              continue;
+            }
+            KeyCode code = key.keyEvent().code();
+            if (code instanceof KeyCode.Char ch) {
+              char c = ch.c();
+              if (c == 'q') {
+                return;
+              } else if (c == 's') {
+                calendarStyle = calendarStyle.next();
+              } else if (c == 'n') {
+                selectedDate = nextMonth(selectedDate);
+              } else if (c == 'p') {
+                selectedDate = prevMonth(selectedDate);
+              } else if (c == 'h') {
+                selectedDate = selectedDate.minusDays(1);
+              } else if (c == 'j') {
+                selectedDate = selectedDate.plusWeeks(1);
+              } else if (c == 'k') {
+                selectedDate = selectedDate.minusWeeks(1);
+              } else if (c == 'l') {
+                selectedDate = selectedDate.plusDays(1);
+              }
+            } else if (code instanceof KeyCode.Tab) {
+              selectedDate = nextMonth(selectedDate);
+            } else if (code instanceof KeyCode.BackTab) {
+              selectedDate = prevMonth(selectedDate);
+            } else if (code instanceof KeyCode.Left) {
+              selectedDate = selectedDate.minusDays(1);
+            } else if (code instanceof KeyCode.Down) {
+              selectedDate = selectedDate.plusWeeks(1);
+            } else if (code instanceof KeyCode.Up) {
+              selectedDate = selectedDate.minusWeeks(1);
+            } else if (code instanceof KeyCode.Right) {
+              selectedDate = selectedDate.plusDays(1);
+            }
           }
-        } else if (code instanceof KeyCode.Tab) {
-          selectedDate = nextMonth(selectedDate);
-        } else if (code instanceof KeyCode.BackTab) {
-          selectedDate = prevMonth(selectedDate);
-        } else if (code instanceof KeyCode.Left) {
-          selectedDate = selectedDate.minusDays(1);
-        } else if (code instanceof KeyCode.Down) {
-          selectedDate = selectedDate.plusWeeks(1);
-        } else if (code instanceof KeyCode.Up) {
-          selectedDate = selectedDate.minusWeeks(1);
-        } else if (code instanceof KeyCode.Right) {
-          selectedDate = selectedDate.plusDays(1);
-        }
-      }
-    });
+        });
   }
 
   private static LocalDate nextMonth(LocalDate date) {
@@ -103,15 +103,16 @@ public final class CalendarExplorerExample {
   private static void render(Frame frame, StyledCalendar calendarStyle, LocalDate selectedDate) {
     List<Line> headerLines = new ArrayList<>(3);
     headerLines.add(Line.styled("Calendar Example", Style.empty().bold()));
-    headerLines.add(Line.from(
-        "<q> Quit | <s> Change Style | <n> Next Month | <p> Previous Month, <hjkl> Move"));
-    headerLines.add(Line.from(
-        "Current date: " + selectedDate + " | Current style: " + calendarStyle));
+    headerLines.add(
+        Line.from(
+            "<q> Quit | <s> Change Style | <n> Next Month | <p> Previous Month, <hjkl> Move"));
+    headerLines.add(
+        Line.from("Current date: " + selectedDate + " | Current style: " + calendarStyle));
     Text header = Text.fromLines(headerLines);
 
-    Rect[] rows = Layout.vertical(
-        new Constraint.Length(header.height()),
-        new Constraint.Fill(1)).split(frame.area());
+    Rect[] rows =
+        Layout.vertical(new Constraint.Length(header.height()), new Constraint.Fill(1))
+            .split(frame.area());
     Rect textArea = rows[0];
     Rect area = rows[1];
     frame.renderWidget(Paragraph.of(header.centered()), textArea);
@@ -155,15 +156,15 @@ public final class CalendarExplorerExample {
     void renderYear(Frame frame, Rect area, LocalDate date) {
       CalendarEventStore events = events(date);
 
-      Layout vertical = Layout.vertical(
-          new Constraint.Ratio(1, 3),
-          new Constraint.Ratio(1, 3),
-          new Constraint.Ratio(1, 3));
-      Layout horizontal = Layout.horizontal(
-          new Constraint.Ratio(1, 4),
-          new Constraint.Ratio(1, 4),
-          new Constraint.Ratio(1, 4),
-          new Constraint.Ratio(1, 4));
+      Layout vertical =
+          Layout.vertical(
+              new Constraint.Ratio(1, 3), new Constraint.Ratio(1, 3), new Constraint.Ratio(1, 3));
+      Layout horizontal =
+          Layout.horizontal(
+              new Constraint.Ratio(1, 4),
+              new Constraint.Ratio(1, 4),
+              new Constraint.Ratio(1, 4),
+              new Constraint.Ratio(1, 4));
 
       List<Rect> areas = new ArrayList<>(12);
       for (Rect row : area.inner(new Margin(1, 1)).layoutVec(vertical)) {
@@ -178,44 +179,52 @@ public final class CalendarExplorerExample {
     void renderMonth(Frame frame, Rect area, LocalDate date, CalendarEventStore events) {
       Style defaultStyle = Style.empty().bold().withBg(new Color.Rgb(50, 50, 50));
       Style empty = Style.empty();
-      Calendar calendar = switch (this) {
-        case Default -> Calendar.of(date, events)
-            .withDefaultStyle(defaultStyle)
-            .withShowMonthHeader(empty);
-        case Surrounding -> Calendar.of(date, events)
-            .withDefaultStyle(defaultStyle)
-            .withShowMonthHeader(empty)
-            .withShowSurrounding(Style.empty().dim());
-        case WeekdaysHeader -> Calendar.of(date, events)
-            .withDefaultStyle(defaultStyle)
-            .withShowMonthHeader(empty)
-            .withShowWeekdaysHeader(Style.empty().bold().green());
-        case SurroundingAndWeekdaysHeader -> Calendar.of(date, events)
-            .withDefaultStyle(defaultStyle)
-            .withShowMonthHeader(empty)
-            .withShowSurrounding(Style.empty().dim())
-            .withShowWeekdaysHeader(Style.empty().bold().green());
-        case MonthHeader -> Calendar.of(date, events)
-            .withDefaultStyle(defaultStyle)
-            // Upstream sets show_month_header twice (default then bold green); the second wins.
-            .withShowMonthHeader(Style.empty().bold().green());
-        case MonthAndWeekdaysHeader -> Calendar.of(date, events)
-            .withDefaultStyle(defaultStyle)
-            .withShowMonthHeader(empty)
-            .withShowWeekdaysHeader(Style.empty().bold().dim().lightYellow());
-      };
+      Calendar calendar =
+          switch (this) {
+            case Default ->
+                Calendar.of(date, events).withDefaultStyle(defaultStyle).withShowMonthHeader(empty);
+            case Surrounding ->
+                Calendar.of(date, events)
+                    .withDefaultStyle(defaultStyle)
+                    .withShowMonthHeader(empty)
+                    .withShowSurrounding(Style.empty().dim());
+            case WeekdaysHeader ->
+                Calendar.of(date, events)
+                    .withDefaultStyle(defaultStyle)
+                    .withShowMonthHeader(empty)
+                    .withShowWeekdaysHeader(Style.empty().bold().green());
+            case SurroundingAndWeekdaysHeader ->
+                Calendar.of(date, events)
+                    .withDefaultStyle(defaultStyle)
+                    .withShowMonthHeader(empty)
+                    .withShowSurrounding(Style.empty().dim())
+                    .withShowWeekdaysHeader(Style.empty().bold().green());
+            case MonthHeader ->
+                Calendar.of(date, events)
+                    .withDefaultStyle(defaultStyle)
+                    // Upstream sets show_month_header twice (default then bold green); the second
+                    // wins.
+                    .withShowMonthHeader(Style.empty().bold().green());
+            case MonthAndWeekdaysHeader ->
+                Calendar.of(date, events)
+                    .withDefaultStyle(defaultStyle)
+                    .withShowMonthHeader(empty)
+                    .withShowWeekdaysHeader(Style.empty().bold().dim().lightYellow());
+          };
       frame.renderWidget(calendar, area);
     }
   }
 
   /// Makes a list of dates for the current year.
   private static CalendarEventStore events(LocalDate selectedDate) {
-    Style selected = Style.empty().withFg(Color.WHITE).withBg(Color.RED).withAddModifier(Modifier.BOLD);
+    Style selected =
+        Style.empty().withFg(Color.WHITE).withBg(Color.RED).withAddModifier(Modifier.BOLD);
     Style holiday = Style.empty().withFg(Color.RED).withAddModifier(Modifier.UNDERLINED);
-    Style season = Style.empty().withFg(Color.GREEN).withBg(Color.BLACK).withAddModifier(Modifier.UNDERLINED);
+    Style season =
+        Style.empty().withFg(Color.GREEN).withBg(Color.BLACK).withAddModifier(Modifier.UNDERLINED);
 
-    CalendarEventStore list = CalendarEventStore.today(
-        Style.empty().withAddModifier(Modifier.BOLD).withBg(Color.BLUE));
+    CalendarEventStore list =
+        CalendarEventStore.today(Style.empty().withAddModifier(Modifier.BOLD).withBg(Color.BLUE));
     int y = selectedDate.getYear();
 
     // new year's
@@ -245,5 +254,4 @@ public final class CalendarExplorerExample {
     list.add(selectedDate, selected);
     return list;
   }
-
 }

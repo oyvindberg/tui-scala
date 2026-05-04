@@ -364,7 +364,8 @@ public final class Terminal<B extends Backend> implements AutoCloseable {
     drawLines((int) (drawnHeight - scrollUp), (int) bufferHeight, cells, cellOffset);
     drawnHeight += bufferHeight - scrollUp;
 
-    setViewportArea(new Rect(viewportArea.x(), (int) drawnHeight, viewportArea.width(), viewportArea.height()));
+    setViewportArea(
+        new Rect(viewportArea.x(), (int) drawnHeight, viewportArea.width(), viewportArea.height()));
 
     // Clear the viewport off the screen.
     clear();
@@ -426,8 +427,7 @@ public final class Terminal<B extends Backend> implements AutoCloseable {
 
     int maxHeight = Math.min(size.height(), height);
 
-    int linesAfterCursor =
-        saturatingSub(saturatingSub(height, offsetInPreviousViewport), 1);
+    int linesAfterCursor = saturatingSub(saturatingSub(height, offsetInPreviousViewport), 1);
 
     backend.appendLines(linesAfterCursor);
 

@@ -102,7 +102,8 @@ public final class TodoListExample {
                     TodoItem.of(
                         Status.Todo,
                         "Rewrite everything with Rust!",
-                        "I can't hold my inner voice. He tells me to rewrite the complete universe with Rust"),
+                        "I can't hold my inner voice. He tells me to rewrite the complete universe"
+                            + " with Rust"),
                     TodoItem.of(
                         Status.Completed,
                         "Rewrite all of your tui apps with Ratatui",
@@ -112,13 +113,8 @@ public final class TodoListExample {
                         "Pet your cat",
                         "Minnak loves to be pet by you! Don't forget to pet and give some treats!"),
                     TodoItem.of(
-                        Status.Todo,
-                        "Walk with your dog",
-                        "Max is bored, go walk with him!"),
-                    TodoItem.of(
-                        Status.Completed,
-                        "Pay the bills",
-                        "Pay the train subscription!!!"),
+                        Status.Todo, "Walk with your dog", "Max is bored, go walk with him!"),
+                    TodoItem.of(Status.Completed, "Pay the bills", "Pay the train subscription!!!"),
                     TodoItem.of(
                         Status.Completed,
                         "Refactor list example",
@@ -206,16 +202,13 @@ public final class TodoListExample {
     void render(Rect area, Buffer buf) {
       Layout mainLayout =
           Layout.vertical(
-              new Constraint.Length(2),
-              new Constraint.Fill(1),
-              new Constraint.Length(1));
+              new Constraint.Length(2), new Constraint.Fill(1), new Constraint.Length(1));
       Rect[] mainSplit = area.layout(mainLayout, 3);
       Rect headerArea = mainSplit[0];
       Rect contentArea = mainSplit[1];
       Rect footerArea = mainSplit[2];
 
-      Layout contentLayout =
-          Layout.vertical(new Constraint.Fill(1), new Constraint.Fill(1));
+      Layout contentLayout = Layout.vertical(new Constraint.Fill(1), new Constraint.Fill(1));
       Rect[] contentSplit = contentArea.layout(contentLayout, 2);
       Rect listArea = contentSplit[0];
       Rect itemArea = contentSplit[1];
@@ -231,8 +224,7 @@ public final class TodoListExample {
     }
 
     static void renderFooter(Rect area, Buffer buf) {
-      Paragraph.of(
-              "Use ↓↑ to move, ← to unselect, → to change status, g/G to go top/bottom.")
+      Paragraph.of("Use ↓↑ to move, ← to unselect, → to change status, g/G to go top/bottom.")
           .centered()
           .render(area, buf);
     }

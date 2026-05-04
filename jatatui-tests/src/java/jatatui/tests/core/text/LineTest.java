@@ -100,8 +100,7 @@ public class LineTest {
   public void patch_style() {
     Line raw = Line.styled("foobar", Style.empty().withFg(Color.YELLOW));
     Line styled =
-        Line.styled(
-            "foobar", Style.empty().withFg(Color.YELLOW).withAddModifier(Modifier.ITALIC));
+        Line.styled("foobar", Style.empty().withFg(Color.YELLOW).withAddModifier(Modifier.ITALIC));
 
     assertNotEquals(raw, styled);
 
@@ -111,8 +110,7 @@ public class LineTest {
 
   @Test
   public void reset_style() {
-    Line line =
-        Line.styled("foobar", Style.empty().yellow().onRed().italic()).resetStyle();
+    Line line = Line.styled("foobar", Style.empty().yellow().onRed().italic()).resetStyle();
     assertEquals(Style.reset(), line.style);
   }
 
@@ -254,8 +252,7 @@ public class LineTest {
     Style blueFg = Style.fromFg(Color.BLUE);
     Style greenFg = Style.fromFg(Color.GREEN);
     Line helloWorld =
-        Line.fromSpans(
-            List.of(Span.styled("Hello ", blueFg), Span.styled("world!", greenFg)));
+        Line.fromSpans(List.of(Span.styled("Hello ", blueFg), Span.styled("world!", greenFg)));
     Iterator<Span> iter = helloWorld.iterator();
     assertEquals(Span.styled("Hello ", blueFg), iter.next());
     assertEquals(Span.styled("world!", greenFg), iter.next());
@@ -267,8 +264,7 @@ public class LineTest {
     Style blueFg = Style.fromFg(Color.BLUE);
     Style greenFg = Style.fromFg(Color.GREEN);
     Line helloWorld =
-        Line.fromSpans(
-            List.of(Span.styled("Hello ", blueFg), Span.styled("world!", greenFg)));
+        Line.fromSpans(List.of(Span.styled("Hello ", blueFg), Span.styled("world!", greenFg)));
     StringBuilder result = new StringBuilder();
     for (Span span : helloWorld) {
       result.append(span.content);

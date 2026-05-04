@@ -51,7 +51,11 @@ public final class InlineExample {
   /// All events handled by the main loop. Replaces upstream's `Event` enum (which clashes with
   /// `tui.crossterm.Event`, hence the longer name here).
   sealed interface AppEvent
-      permits AppEvent.Input, AppEvent.Tick, AppEvent.Resize, AppEvent.DownloadUpdate, AppEvent.DownloadDone {
+      permits AppEvent.Input,
+          AppEvent.Tick,
+          AppEvent.Resize,
+          AppEvent.DownloadUpdate,
+          AppEvent.DownloadDone {
     record Input(KeyEvent key) implements AppEvent {}
 
     record Tick() implements AppEvent {}

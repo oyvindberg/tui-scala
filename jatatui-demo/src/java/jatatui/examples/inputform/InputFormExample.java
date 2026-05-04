@@ -11,8 +11,8 @@ import jatatui.core.terminal.Terminal;
 import jatatui.core.text.Line;
 import jatatui.core.widgets.Widget;
 import jatatui.crossterm.CrosstermBackend;
-import jatatui.widgets.paragraph.Paragraph;
 import jatatui.crossterm.Jatatui;
+import jatatui.widgets.paragraph.Paragraph;
 import java.io.IOException;
 import java.util.Optional;
 import tui.crossterm.CrosstermJni;
@@ -36,8 +36,7 @@ public final class InputFormExample {
   public static void main(String[] args) throws IOException {
     Optional<InputForm> result = run();
     result.ifPresentOrElse(
-        form -> System.out.println(form.toJsonPretty()),
-        () -> System.out.println("Canceled"));
+        form -> System.out.println(form.toJsonPretty()), () -> System.out.println("Canceled"));
   }
 
   private static Optional<InputForm> run() throws IOException {
@@ -212,9 +211,7 @@ public final class InputFormExample {
     @Override
     public void render(Rect area, Buffer buf) {
       Layout layout =
-          Layout.horizontal(
-              new Constraint.Length(label.length() + 2),
-              new Constraint.Fill(1));
+          Layout.horizontal(new Constraint.Length(label.length() + 2), new Constraint.Fill(1));
       Rect[] split = area.layout(layout, 2);
       Rect labelArea = split[0];
       Rect valueArea = split[1];
@@ -282,9 +279,7 @@ public final class InputFormExample {
     @Override
     public void render(Rect area, Buffer buf) {
       Layout layout =
-          Layout.horizontal(
-              new Constraint.Length(label.length() + 2),
-              new Constraint.Fill(1));
+          Layout.horizontal(new Constraint.Length(label.length() + 2), new Constraint.Fill(1));
       Rect[] split = area.layout(layout, 2);
       Rect labelArea = split[0];
       Rect valueArea = split[1];
@@ -293,5 +288,4 @@ public final class InputFormExample {
       Paragraph.of(Integer.toString(value)).render(valueArea, buf);
     }
   }
-
 }

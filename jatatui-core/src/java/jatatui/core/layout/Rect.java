@@ -1,10 +1,10 @@
 package jatatui.core.layout;
 
+import jatatui.core.layout.solver.Either;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import jatatui.core.layout.solver.Either;
 
 /// A simple rectangle: a `Position` plus a `Size`. Width and height are clamped at construction
 /// so that `area()` cannot exceed `u16::MAX`, preserving aspect ratio when clipped.

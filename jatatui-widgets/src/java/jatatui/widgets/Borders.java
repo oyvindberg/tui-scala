@@ -1,6 +1,7 @@
 package jatatui.widgets;
 
-/// Bitflags that can be composed to set the visible borders on the [Block](jatatui.widgets.block.Block) widget.
+/// Bitflags that can be composed to set the visible borders on the
+// [Block](jatatui.widgets.block.Block) widget.
 ///
 /// Mirrors the Rust `bitflags!`-generated `Borders` struct in `ratatui_widgets::borders`. The
 /// underlying representation is an `int` carrying the OR of the individual flag bits.
@@ -26,8 +27,7 @@ public record Borders(int bits) {
   public static final Borders LEFT = new Borders(0b1000);
 
   /// Show all borders (top, right, bottom and left).
-  public static final Borders ALL =
-      new Borders(TOP.bits | RIGHT.bits | BOTTOM.bits | LEFT.bits);
+  public static final Borders ALL = new Borders(TOP.bits | RIGHT.bits | BOTTOM.bits | LEFT.bits);
 
   /// Returns `true` if no flags are set.
   public boolean isEmpty() {

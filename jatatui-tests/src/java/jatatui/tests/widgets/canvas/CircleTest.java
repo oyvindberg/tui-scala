@@ -23,12 +23,7 @@ public class CircleTest {
             .withYBounds(new double[] {-10.0, 10.0});
     canvas.render(buffer.area(), buffer);
     Buffer expected =
-        Buffer.withLines(
-            "      ⣀⣀⣀ ",
-            "     ⡞⠁ ⠈⢣",
-            "     ⢇⡀ ⢀⡼",
-            "      ⠉⠉⠉ ",
-            "          ");
+        Buffer.withLines("      ⣀⣀⣀ ", "     ⡞⠁ ⠈⢣", "     ⢇⡀ ⢀⡼", "      ⠉⠉⠉ ", "          ");
     BufferAssertions.assertBufferEq(buffer, expected);
   }
 }

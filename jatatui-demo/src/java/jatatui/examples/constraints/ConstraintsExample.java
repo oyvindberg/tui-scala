@@ -96,14 +96,15 @@ public final class ConstraintsExample {
 
     Line toTabTitle() {
       String text = "  " + name() + "  ";
-      Color color = switch (this) {
-        case Length -> LENGTH_COLOR;
-        case Percentage -> PERCENTAGE_COLOR;
-        case Ratio -> RATIO_COLOR;
-        case Fill -> FILL_COLOR;
-        case Min -> MIN_COLOR;
-        case Max -> MAX_COLOR;
-      };
+      Color color =
+          switch (this) {
+            case Length -> LENGTH_COLOR;
+            case Percentage -> PERCENTAGE_COLOR;
+            case Ratio -> RATIO_COLOR;
+            case Fill -> FILL_COLOR;
+            case Min -> MIN_COLOR;
+            case Max -> MAX_COLOR;
+          };
       return Line.styled(text, Style.empty().withFg(Tailwind.SLATE.c200()).withBg(color));
     }
 
@@ -126,7 +127,8 @@ public final class ConstraintsExample {
               new Constraint.Length(EXAMPLE_HEIGHT),
               new Constraint.Length(EXAMPLE_HEIGHT));
       Rect[] split = area.layout(layout, 4);
-      new Example(List.of(new Constraint.Length(20), new Constraint.Length(20))).render(split[0], buf);
+      new Example(List.of(new Constraint.Length(20), new Constraint.Length(20)))
+          .render(split[0], buf);
       new Example(List.of(new Constraint.Length(20), new Constraint.Min(20))).render(split[1], buf);
       new Example(List.of(new Constraint.Length(20), new Constraint.Max(20))).render(split[2], buf);
     }
@@ -141,11 +143,16 @@ public final class ConstraintsExample {
               new Constraint.Length(EXAMPLE_HEIGHT),
               new Constraint.Length(EXAMPLE_HEIGHT));
       Rect[] split = area.layout(layout, 6);
-      new Example(List.of(new Constraint.Percentage(75), new Constraint.Fill(0))).render(split[0], buf);
-      new Example(List.of(new Constraint.Percentage(25), new Constraint.Fill(0))).render(split[1], buf);
-      new Example(List.of(new Constraint.Percentage(50), new Constraint.Min(20))).render(split[2], buf);
-      new Example(List.of(new Constraint.Percentage(0), new Constraint.Max(0))).render(split[3], buf);
-      new Example(List.of(new Constraint.Percentage(0), new Constraint.Fill(0))).render(split[4], buf);
+      new Example(List.of(new Constraint.Percentage(75), new Constraint.Fill(0)))
+          .render(split[0], buf);
+      new Example(List.of(new Constraint.Percentage(25), new Constraint.Fill(0)))
+          .render(split[1], buf);
+      new Example(List.of(new Constraint.Percentage(50), new Constraint.Min(20)))
+          .render(split[2], buf);
+      new Example(List.of(new Constraint.Percentage(0), new Constraint.Max(0)))
+          .render(split[3], buf);
+      new Example(List.of(new Constraint.Percentage(0), new Constraint.Fill(0)))
+          .render(split[4], buf);
     }
 
     private static void renderRatioExample(Rect area, Buffer buf) {
@@ -157,7 +164,8 @@ public final class ConstraintsExample {
               new Constraint.Length(EXAMPLE_HEIGHT),
               new Constraint.Length(EXAMPLE_HEIGHT));
       Rect[] split = area.layout(layout, 5);
-      new Example(List.of(new Constraint.Ratio(1, 2), new Constraint.Ratio(1, 2))).render(split[0], buf);
+      new Example(List.of(new Constraint.Ratio(1, 2), new Constraint.Ratio(1, 2)))
+          .render(split[0], buf);
       new Example(
               List.of(
                   new Constraint.Ratio(1, 4),
@@ -189,7 +197,9 @@ public final class ConstraintsExample {
               3);
       new Example(List.of(new Constraint.Fill(1), new Constraint.Fill(2), new Constraint.Fill(3)))
           .render(split[0], buf);
-      new Example(List.of(new Constraint.Fill(1), new Constraint.Percentage(50), new Constraint.Fill(1)))
+      new Example(
+              List.of(
+                  new Constraint.Fill(1), new Constraint.Percentage(50), new Constraint.Fill(1)))
           .render(split[1], buf);
     }
 
@@ -203,11 +213,16 @@ public final class ConstraintsExample {
               new Constraint.Length(EXAMPLE_HEIGHT),
               new Constraint.Length(EXAMPLE_HEIGHT));
       Rect[] split = area.layout(layout, 6);
-      new Example(List.of(new Constraint.Percentage(100), new Constraint.Min(0))).render(split[0], buf);
-      new Example(List.of(new Constraint.Percentage(100), new Constraint.Min(20))).render(split[1], buf);
-      new Example(List.of(new Constraint.Percentage(100), new Constraint.Min(40))).render(split[2], buf);
-      new Example(List.of(new Constraint.Percentage(100), new Constraint.Min(60))).render(split[3], buf);
-      new Example(List.of(new Constraint.Percentage(100), new Constraint.Min(80))).render(split[4], buf);
+      new Example(List.of(new Constraint.Percentage(100), new Constraint.Min(0)))
+          .render(split[0], buf);
+      new Example(List.of(new Constraint.Percentage(100), new Constraint.Min(20)))
+          .render(split[1], buf);
+      new Example(List.of(new Constraint.Percentage(100), new Constraint.Min(40)))
+          .render(split[2], buf);
+      new Example(List.of(new Constraint.Percentage(100), new Constraint.Min(60)))
+          .render(split[3], buf);
+      new Example(List.of(new Constraint.Percentage(100), new Constraint.Min(80)))
+          .render(split[4], buf);
     }
 
     private static void renderMaxExample(Rect area, Buffer buf) {
@@ -220,11 +235,16 @@ public final class ConstraintsExample {
               new Constraint.Length(EXAMPLE_HEIGHT),
               new Constraint.Length(EXAMPLE_HEIGHT));
       Rect[] split = area.layout(layout, 6);
-      new Example(List.of(new Constraint.Percentage(0), new Constraint.Max(0))).render(split[0], buf);
-      new Example(List.of(new Constraint.Percentage(0), new Constraint.Max(20))).render(split[1], buf);
-      new Example(List.of(new Constraint.Percentage(0), new Constraint.Max(40))).render(split[2], buf);
-      new Example(List.of(new Constraint.Percentage(0), new Constraint.Max(60))).render(split[3], buf);
-      new Example(List.of(new Constraint.Percentage(0), new Constraint.Max(80))).render(split[4], buf);
+      new Example(List.of(new Constraint.Percentage(0), new Constraint.Max(0)))
+          .render(split[0], buf);
+      new Example(List.of(new Constraint.Percentage(0), new Constraint.Max(20)))
+          .render(split[1], buf);
+      new Example(List.of(new Constraint.Percentage(0), new Constraint.Max(40)))
+          .render(split[2], buf);
+      new Example(List.of(new Constraint.Percentage(0), new Constraint.Max(60)))
+          .render(split[3], buf);
+      new Example(List.of(new Constraint.Percentage(0), new Constraint.Max(80)))
+          .render(split[4], buf);
     }
   }
 
@@ -318,9 +338,7 @@ public final class ConstraintsExample {
       Rect[] split =
           area.layout(
               Layout.vertical(
-                  new Constraint.Length(3),
-                  new Constraint.Length(3),
-                  new Constraint.Fill(0)),
+                  new Constraint.Length(3), new Constraint.Length(3), new Constraint.Fill(0)),
               3);
       Rect tabsArea = split[0];
       Rect axisArea = split[1];
@@ -353,7 +371,8 @@ public final class ConstraintsExample {
       int width = area.width();
       // a bar like `<----- 80 px ----->`
       String widthLabel = width + " px";
-      String widthBar = "<" + center(widthLabel, '-', Math.max(0, width - widthLabel.length() / 2)) + ">";
+      String widthBar =
+          "<" + center(widthLabel, '-', Math.max(0, width - widthLabel.length() / 2)) + ">";
       Paragraph.of(Line.styled(widthBar, Style.empty().darkGray()))
           .centered()
           .withBlock(Block.empty().withPadding(new Padding(0, 0, 1, 0)))
@@ -410,7 +429,8 @@ public final class ConstraintsExample {
     @Override
     public void render(Rect area, Buffer buf) {
       Layout vertical =
-          Layout.vertical(new Constraint.Length(ILLUSTRATION_HEIGHT), new Constraint.Length(SPACER_HEIGHT));
+          Layout.vertical(
+              new Constraint.Length(ILLUSTRATION_HEIGHT), new Constraint.Length(SPACER_HEIGHT));
       Layout horizontal = Layout.horizontal(constraints);
       Rect[] verticalSplit = area.layout(vertical, 2);
       Rect illustration = verticalSplit[0];
@@ -423,14 +443,15 @@ public final class ConstraintsExample {
     }
 
     static Widget illustration(Constraint constraint, int width) {
-      Color color = switch (constraint) {
-        case Constraint.Length l -> LENGTH_COLOR;
-        case Constraint.Percentage p -> PERCENTAGE_COLOR;
-        case Constraint.Ratio r -> RATIO_COLOR;
-        case Constraint.Fill f -> FILL_COLOR;
-        case Constraint.Min m -> MIN_COLOR;
-        case Constraint.Max m -> MAX_COLOR;
-      };
+      Color color =
+          switch (constraint) {
+            case Constraint.Length l -> LENGTH_COLOR;
+            case Constraint.Percentage p -> PERCENTAGE_COLOR;
+            case Constraint.Ratio r -> RATIO_COLOR;
+            case Constraint.Fill f -> FILL_COLOR;
+            case Constraint.Min m -> MIN_COLOR;
+            case Constraint.Max m -> MAX_COLOR;
+          };
       Color fg = Color.WHITE;
       String title = describe(constraint);
       String content = width + " px";
@@ -440,9 +461,7 @@ public final class ConstraintsExample {
               .withBorderSet(Border.QUADRANT_OUTSIDE)
               .withBorderStyle(Style.reset().withFg(color).reversed())
               .withStyle(Style.empty().withFg(fg).withBg(color));
-      return Paragraph.of(text)
-          .withAlignment(HorizontalAlignment.Center)
-          .withBlock(block);
+      return Paragraph.of(text).withAlignment(HorizontalAlignment.Center).withBlock(block);
     }
   }
 

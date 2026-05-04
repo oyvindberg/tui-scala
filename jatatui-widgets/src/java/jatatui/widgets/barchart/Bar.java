@@ -4,7 +4,6 @@ import jatatui.core.buffer.Buffer;
 import jatatui.core.internal.Wcwidth;
 import jatatui.core.layout.Rect;
 import jatatui.core.style.Style;
-import jatatui.core.style.Styled;
 import jatatui.core.style.Stylize;
 import jatatui.core.text.Line;
 import java.nio.charset.StandardCharsets;
@@ -37,7 +36,8 @@ public final class Bar implements Stylize<Bar> {
   /// Optional `textValue` shown on the bar instead of the actual value.
   public final Optional<String> textValue;
 
-  private Bar(long value, Optional<Line> label, Style style, Style valueStyle, Optional<String> textValue) {
+  private Bar(
+      long value, Optional<Line> label, Style style, Style valueStyle, Optional<String> textValue) {
     this.value = value;
     this.label = label;
     this.style = style;
@@ -59,7 +59,8 @@ public final class Bar implements Stylize<Bar> {
 
   /// Creates a new `Bar` with the given label string and value.
   public static Bar withLabel(String label, long value) {
-    return new Bar(value, Optional.of(Line.from(label)), Style.empty(), Style.empty(), Optional.empty());
+    return new Bar(
+        value, Optional.of(Line.from(label)), Style.empty(), Style.empty(), Optional.empty());
   }
 
   /// Creates a new `Bar` with the given [Line] label and value.
@@ -119,11 +120,7 @@ public final class Bar implements Stylize<Bar> {
   /// is greater than the bar length, the first part is rendered using `valueStyle` (over the
   /// bar) and the second part is rendered using the bar background style (outside the bar).
   void renderValueWithDifferentStyles(
-      Buffer buf,
-      Rect area,
-      int barLength,
-      Style defaultValueStyle,
-      Style barStyle) {
+      Buffer buf, Rect area, int barLength, Style defaultValueStyle, Style barStyle) {
     String value = Long.toString(this.value);
     String text = textValue.orElse(value);
 
@@ -163,13 +160,7 @@ public final class Bar implements Stylize<Bar> {
   }
 
   /// Render the value (in the centre, vertical bar mode).
-  void renderValue(
-      Buffer buf,
-      int maxWidth,
-      int x,
-      int y,
-      Style defaultValueStyle,
-      long ticks) {
+  void renderValue(Buffer buf, int maxWidth, int x, int y, Style defaultValueStyle, long ticks) {
     if (this.value != 0) {
       final long ticksPerLine = 8L;
       String value = Long.toString(this.value);
@@ -180,19 +171,13 @@ public final class Bar implements Stylize<Bar> {
         // Mirror upstream which uses `value_label.len()` (UTF-8 byte length) for the offset.
         int byteLen = valueLabel.getBytes(StandardCharsets.UTF_8).length;
         int offset = saturatingSub(maxWidth, byteLen) >> 1;
-        buf.setString(
-            x + offset, y, valueLabel, defaultValueStyle.patch(this.valueStyle));
+        buf.setString(x + offset, y, valueLabel, defaultValueStyle.patch(this.valueStyle));
       }
     }
   }
 
   /// Render the bar label (centred under the bar, vertical bar mode).
-  void renderLabel(
-      Buffer buf,
-      int maxWidth,
-      int x,
-      int y,
-      Style defaultLabelStyle) {
+  void renderLabel(Buffer buf, int maxWidth, int x, int y, Style defaultLabelStyle) {
     int labelWidth = label.map(Line::width).orElse(0);
     int width = Math.min(labelWidth, maxWidth);
     Rect area = new Rect(x + saturatingSub(maxWidth, width) / 2, y, width, 1);

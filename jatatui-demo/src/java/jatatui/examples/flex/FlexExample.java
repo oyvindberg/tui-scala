@@ -126,9 +126,7 @@ public final class FlexExample {
         new ExampleData(
             "Fill can be used to scale proportionally with other Fill blocks",
             List.of(
-                new Constraint.Fill(1),
-                new Constraint.Percentage(20),
-                new Constraint.Fill(2))));
+                new Constraint.Fill(1), new Constraint.Percentage(20), new Constraint.Fill(2))));
     out.add(
         new ExampleData(
             "",
@@ -138,17 +136,20 @@ public final class FlexExample {
                 new Constraint.Ratio(2, 3))));
     out.add(
         new ExampleData(
-            "Legacy will stretch the last lowest priority constraint\nStretch will only stretch equal weighted constraints",
+            "Legacy will stretch the last lowest priority constraint\n"
+                + "Stretch will only stretch equal weighted constraints",
             List.of(new Constraint.Length(20), new Constraint.Length(15))));
     out.add(new ExampleData("", List.of(new Constraint.Percentage(20), new Constraint.Length(15))));
     out.add(
         new ExampleData(
-            "`Fill(u16)` fills up excess space, but is lower priority to spacers.\ni.e. Fill will only have widths in Flex::Stretch and Flex::Legacy",
+            "`Fill(u16)` fills up excess space, but is lower priority to spacers.\n"
+                + "i.e. Fill will only have widths in Flex::Stretch and Flex::Legacy",
             List.of(new Constraint.Fill(1), new Constraint.Fill(1))));
     out.add(new ExampleData("", List.of(new Constraint.Length(20), new Constraint.Length(20))));
     out.add(
         new ExampleData(
-            "When not using `Flex::Stretch` or `Flex::Legacy`,\n`Min(u16)` and `Max(u16)` collapse to their lowest values",
+            "When not using `Flex::Stretch` or `Flex::Legacy`,\n"
+                + "`Min(u16)` and `Max(u16)` collapse to their lowest values",
             List.of(new Constraint.Min(20), new Constraint.Max(20))));
     out.add(new ExampleData("", List.of(new Constraint.Max(20))));
     out.add(
@@ -174,7 +175,8 @@ public final class FlexExample {
                 new Constraint.Fill(2))));
     out.add(
         new ExampleData(
-            "`Fill(0)` collapses if there are other non-zero `Fill(_)`\nconstraints. e.g. `[Fill(0), Fill(0), Fill(1)]`:",
+            "`Fill(0)` collapses if there are other non-zero `Fill(_)`\n"
+                + "constraints. e.g. `[Fill(0), Fill(0), Fill(1)]`:",
             List.of(new Constraint.Fill(0), new Constraint.Fill(0), new Constraint.Fill(1))));
     return List.copyOf(out);
   }
@@ -211,15 +213,16 @@ public final class FlexExample {
     }
 
     jatatui.core.text.Line toTabTitle() {
-      Color color = switch (this) {
-        case Legacy -> Tailwind.ORANGE.c400();
-        case Start -> Tailwind.SKY.c400();
-        case Center -> Tailwind.SKY.c300();
-        case End -> Tailwind.SKY.c200();
-        case SpaceEvenly -> Tailwind.INDIGO.c400();
-        case SpaceBetween -> Tailwind.INDIGO.c300();
-        case SpaceAround -> Tailwind.INDIGO.c500();
-      };
+      Color color =
+          switch (this) {
+            case Legacy -> Tailwind.ORANGE.c400();
+            case Start -> Tailwind.SKY.c400();
+            case Center -> Tailwind.SKY.c300();
+            case End -> Tailwind.SKY.c200();
+            case SpaceEvenly -> Tailwind.INDIGO.c400();
+            case SpaceBetween -> Tailwind.INDIGO.c300();
+            case SpaceAround -> Tailwind.INDIGO.c500();
+          };
       String text = " " + name() + " ";
       return jatatui.core.text.Line.styled(text, Style.empty().withFg(color).withBg(Color.BLACK));
     }
@@ -303,9 +306,7 @@ public final class FlexExample {
       Rect[] split =
           area.layout(
               Layout.vertical(
-                  new Constraint.Length(3),
-                  new Constraint.Length(1),
-                  new Constraint.Fill(0)),
+                  new Constraint.Length(3), new Constraint.Length(1), new Constraint.Fill(0)),
               3);
       Rect tabsArea = split[0];
       Rect axisArea = split[1];
@@ -325,7 +326,9 @@ public final class FlexExample {
       Block block =
           Block.empty()
               .withTitle(jatatui.core.text.Line.styled("Flex Layouts ", Style.empty().bold()))
-              .withTitle(jatatui.core.text.Line.from(" Use ◄ ► to change tab, ▲ ▼  to scroll, - + to change spacing "));
+              .withTitle(
+                  jatatui.core.text.Line.from(
+                      " Use ◄ ► to change tab, ▲ ▼  to scroll, - + to change spacing "));
       return Tabs.of(tabTitles)
           .withBlock(block)
           .withHighlightStyle(Style.fromModifier(Modifier.REVERSED))
@@ -336,12 +339,11 @@ public final class FlexExample {
 
     /// A bar like `<----- 80 px (gap: 2 px)? ----->`.
     private static Widget axis(int width, int spacing) {
-      String label = spacing != 0
-          ? width + " px (gap: " + spacing + " px)"
-          : width + " px";
+      String label = spacing != 0 ? width + " px (gap: " + spacing + " px)" : width + " px";
       int barWidth = Math.max(0, width - 2); // we want `<` and `>` at the ends
       String widthBar = "<" + center(label, '-', barWidth) + ">";
-      return Paragraph.of(jatatui.core.text.Line.styled(widthBar, Style.empty().darkGray())).centered();
+      return Paragraph.of(jatatui.core.text.Line.styled(widthBar, Style.empty().darkGray()))
+          .centered();
     }
 
     /// Render the demo content. Returns `true` iff the scrollbar was rendered.
@@ -377,8 +379,7 @@ public final class FlexExample {
 
       if (scrollbarNeeded) {
         Rect scrollbarArea = area.intersection(buf.area);
-        ScrollbarState state =
-            ScrollbarState.of(maxScrollOffset()).withPosition(scrollOffset);
+        ScrollbarState state = ScrollbarState.of(maxScrollOffset()).withPosition(scrollOffset);
         Scrollbar.of(ScrollbarOrientation.VerticalRight).render(scrollbarArea, buf, state);
       }
       return scrollbarNeeded;
@@ -441,13 +442,15 @@ public final class FlexExample {
       int titleHeight = getDescriptionHeight(description);
       Rect[] split =
           area.layout(
-              Layout.vertical(new Constraint.Length(titleHeight), new Constraint.Fill(0)),
-              2);
+              Layout.vertical(new Constraint.Length(titleHeight), new Constraint.Fill(0)), 2);
       Rect title = split[0];
       Rect illustrations = split[1];
 
       Layout.SplitResult sr =
-          Layout.horizontal(constraints).withFlex(flex).withSpacing(spacing).splitWithSpacers(illustrations);
+          Layout.horizontal(constraints)
+              .withFlex(flex)
+              .withSpacing(spacing)
+              .splitWithSpacers(illustrations);
       Rect[] blocks = sr.segments();
       Rect[] spacers = sr.spacers();
 

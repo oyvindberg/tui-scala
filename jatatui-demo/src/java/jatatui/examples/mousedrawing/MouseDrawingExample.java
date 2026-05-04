@@ -51,8 +51,7 @@ public final class MouseDrawingExample {
       KeyCode code = key.code();
       if (code instanceof KeyCode.Char ch) {
         if (ch.c() == ' ') {
-          currentColor =
-              new Color.Rgb(RNG.nextInt(256), RNG.nextInt(256), RNG.nextInt(256));
+          currentColor = new Color.Rgb(RNG.nextInt(256), RNG.nextInt(256), RNG.nextInt(256));
         } else if (ch.c() == 'q') {
           shouldExit = true;
         }
@@ -180,7 +179,8 @@ public final class MouseDrawingExample {
     if (area.isEmpty()) {
       return;
     }
-    frame.bufferMut()
+    frame
+        .bufferMut()
         .cellAt(area.x(), area.y())
         .setSymbol("╳")
         .setStyle(Style.empty().withBg(app.currentColor));

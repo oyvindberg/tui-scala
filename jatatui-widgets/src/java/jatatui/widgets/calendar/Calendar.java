@@ -86,8 +86,7 @@ public final class Calendar implements Widget {
 
   /// How to render otherwise unstyled dates.
   public Calendar withDefaultStyle(Style style) {
-    return new Calendar(
-        displayDate, events, showSurrounding, showWeekday, showMonth, style, block);
+    return new Calendar(displayDate, events, showSurrounding, showWeekday, showMonth, style, block);
   }
 
   /// Render the calendar within a [Block].
@@ -144,14 +143,12 @@ public final class Calendar implements Widget {
   private Span formatDate(LocalDate date) {
     if (date.getMonth() == displayDate.getMonth() && date.getYear() == displayDate.getYear()) {
       return Span.styled(
-          formatDay(date.getDayOfMonth()),
-          defaultStyle.patch(events.getStyle(date)));
+          formatDay(date.getDayOfMonth()), defaultStyle.patch(events.getStyle(date)));
     }
     if (showSurrounding.isEmpty()) {
       return Span.styled("  ", defaultBg());
     }
-    Style merged =
-        defaultStyle.patch(showSurrounding.get()).patch(events.getStyle(date));
+    Style merged = defaultStyle.patch(showSurrounding.get()).patch(events.getStyle(date));
     return Span.styled(formatDay(date.getDayOfMonth()), merged);
   }
 
@@ -214,8 +211,7 @@ public final class Calendar implements Widget {
     // Draw the month name and year.
     if (showMonth.isPresent()) {
       Line line =
-          Line.styled(
-              monthName(displayDate) + " " + displayDate.getYear(), showMonth.get())
+          Line.styled(monthName(displayDate) + " " + displayDate.getYear(), showMonth.get())
               .withAlignment(HorizontalAlignment.Center);
       // Inline render: build a single-row area, set style, write the line centered.
       renderLineCentered(line, monthHeader, buf);
@@ -267,8 +263,7 @@ public final class Calendar implements Widget {
     int width = line.width();
     int areaWidth = area.width();
     int indent = width <= areaWidth ? Math.max(0, areaWidth - width) / 2 : 0;
-    Rect target =
-        new Rect(area.x() + indent, area.y(), Math.max(0, areaWidth - indent), 1);
+    Rect target = new Rect(area.x() + indent, area.y(), Math.max(0, areaWidth - indent), 1);
     buf.setLine(target.x(), target.y(), line, target.width());
   }
 

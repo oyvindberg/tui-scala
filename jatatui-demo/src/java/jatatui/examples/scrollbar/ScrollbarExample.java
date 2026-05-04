@@ -154,8 +154,7 @@ public final class ScrollbarExample {
       text.add(
           Line.from(
               Span.raw("Masked text: "),
-              Span.styled(
-                  Masked.of("password", '*').value(), Style.empty().withFg(Color.RED))));
+              Span.styled(Masked.of("password", '*').value(), Style.empty().withFg(Color.RED))));
       text.add(Line.from("This is a line "));
       text.add(Line.from("This is a line   ").red());
       text.add(Line.from("This is a line").onDarkGray());
@@ -165,15 +164,13 @@ public final class ScrollbarExample {
       text.add(
           Line.from(
               Span.raw("Masked text: "),
-              Span.styled(
-                  Masked.of("password", '*').value(), Style.empty().withFg(Color.RED))));
+              Span.styled(Masked.of("password", '*').value(), Style.empty().withFg(Color.RED))));
 
       verticalScrollState.withContentLength(text.size());
       horizontalScrollState.withContentLength(longLine.length());
 
       Function<String, Block> createBlock =
-          title ->
-              Block.bordered().gray().withTitle(Line.from(Span.raw(title)).bold());
+          title -> Block.bordered().gray().withTitle(Line.from(Span.raw(title)).bold());
 
       Block titleBlock =
           Block.empty()

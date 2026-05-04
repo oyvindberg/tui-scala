@@ -98,14 +98,7 @@ public final class Tabs implements Widget, Stylize<Tabs> {
       nextSelected = Optional.of(0);
     }
     return new Tabs(
-        block,
-        titles,
-        nextSelected,
-        style,
-        highlightStyle,
-        divider,
-        paddingLeft,
-        paddingRight);
+        block, titles, nextSelected, style, highlightStyle, divider, paddingLeft, paddingRight);
   }
 
   /// Convenience: sets the titles from a varargs of strings.
@@ -146,53 +139,25 @@ public final class Tabs implements Widget, Stylize<Tabs> {
   /// Clears the selected tab (no tab will be highlighted).
   public Tabs withoutSelected() {
     return new Tabs(
-        block,
-        titles,
-        Optional.empty(),
-        style,
-        highlightStyle,
-        divider,
-        paddingLeft,
-        paddingRight);
+        block, titles, Optional.empty(), style, highlightStyle, divider, paddingLeft, paddingRight);
   }
 
   /// Sets the style of the entire widget.
   public Tabs withStyle(Style style) {
     return new Tabs(
-        block,
-        titles,
-        selected,
-        style,
-        highlightStyle,
-        divider,
-        paddingLeft,
-        paddingRight);
+        block, titles, selected, style, highlightStyle, divider, paddingLeft, paddingRight);
   }
 
   /// Sets the style for the highlighted tab.
   public Tabs withHighlightStyle(Style highlightStyle) {
     return new Tabs(
-        block,
-        titles,
-        selected,
-        style,
-        highlightStyle,
-        divider,
-        paddingLeft,
-        paddingRight);
+        block, titles, selected, style, highlightStyle, divider, paddingLeft, paddingRight);
   }
 
   /// Sets the divider span used between tabs.
   public Tabs withDivider(Span divider) {
     return new Tabs(
-        block,
-        titles,
-        selected,
-        style,
-        highlightStyle,
-        divider,
-        paddingLeft,
-        paddingRight);
+        block, titles, selected, style, highlightStyle, divider, paddingLeft, paddingRight);
   }
 
   /// Sets the divider from a string.
@@ -212,8 +177,7 @@ public final class Tabs implements Widget, Stylize<Tabs> {
 
   /// Sets the left side padding between tabs.
   public Tabs withPaddingLeft(jatatui.core.text.Line padding) {
-    return new Tabs(
-        block, titles, selected, style, highlightStyle, divider, padding, paddingRight);
+    return new Tabs(block, titles, selected, style, highlightStyle, divider, padding, paddingRight);
   }
 
   /// Convenience overload accepting a string.
@@ -223,8 +187,7 @@ public final class Tabs implements Widget, Stylize<Tabs> {
 
   /// Sets the right side padding between tabs.
   public Tabs withPaddingRight(jatatui.core.text.Line padding) {
-    return new Tabs(
-        block, titles, selected, style, highlightStyle, divider, paddingLeft, padding);
+    return new Tabs(block, titles, selected, style, highlightStyle, divider, paddingLeft, padding);
   }
 
   /// Convenience overload accepting a string.
@@ -318,8 +281,7 @@ public final class Tabs implements Widget, Stylize<Tabs> {
       // Title
       pos = buf.setLine(x, tabsArea.top(), title, remainingWidth);
       if (selected.isPresent() && selected.get() == i) {
-        buf.setStyle(
-            new Rect(x, tabsArea.top(), Math.max(0, pos.x() - x), 1), highlightStyle);
+        buf.setStyle(new Rect(x, tabsArea.top(), Math.max(0, pos.x() - x), 1), highlightStyle);
       }
       x = pos.x();
       remainingWidth = Math.max(0, tabsArea.right() - x);

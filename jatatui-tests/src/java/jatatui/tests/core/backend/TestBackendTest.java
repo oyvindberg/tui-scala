@@ -75,8 +75,8 @@ public class TestBackendTest {
     String expected =
         "\""
             + multiByteChar
-            + "\" Hidden by multi-width symbols: "
-            + "[(1, \" \"), (2, \" \"), (3, \" \"), (4, \" \"), (5, \" \"), (6, \" \"), (7, \" \")]\n";
+            + "\" Hidden by multi-width symbols: [(1, \" \"), (2, \" \"), (3, \" \"), (4, \" \"),"
+            + " (5, \" \"), (6, \" \"), (7, \" \")]\n";
     assertEquals(expected, TestBackend.bufferView(buffer));
   }
 
@@ -180,8 +180,7 @@ public class TestBackendTest {
   @Test
   public void clear_region_all() throws Exception {
     TestBackend backend =
-        TestBackend.withLines(
-            "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa");
+        TestBackend.withLines("aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa");
     backend.clearRegion(ClearType.All);
     assertBufferLines(
         backend, "          ", "          ", "          ", "          ", "          ");
@@ -190,8 +189,7 @@ public class TestBackendTest {
   @Test
   public void clear_region_after_cursor() throws Exception {
     TestBackend backend =
-        TestBackend.withLines(
-            "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa");
+        TestBackend.withLines("aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa");
     backend.setCursorPosition(new Position(3, 2));
     backend.clearRegion(ClearType.AfterCursor);
     assertBufferLines(
@@ -201,8 +199,7 @@ public class TestBackendTest {
   @Test
   public void clear_region_before_cursor() throws Exception {
     TestBackend backend =
-        TestBackend.withLines(
-            "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa");
+        TestBackend.withLines("aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa");
     backend.setCursorPosition(new Position(5, 3));
     backend.clearRegion(ClearType.BeforeCursor);
     assertBufferLines(
@@ -212,8 +209,7 @@ public class TestBackendTest {
   @Test
   public void clear_region_current_line() throws Exception {
     TestBackend backend =
-        TestBackend.withLines(
-            "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa");
+        TestBackend.withLines("aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa");
     backend.setCursorPosition(new Position(3, 1));
     backend.clearRegion(ClearType.CurrentLine);
     assertBufferLines(
@@ -223,8 +219,7 @@ public class TestBackendTest {
   @Test
   public void clear_region_until_new_line() throws Exception {
     TestBackend backend =
-        TestBackend.withLines(
-            "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa");
+        TestBackend.withLines("aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa");
     backend.setCursorPosition(new Position(3, 0));
     backend.clearRegion(ClearType.UntilNewLine);
     assertBufferLines(
@@ -234,8 +229,7 @@ public class TestBackendTest {
   @Test
   public void append_lines_not_at_last_line() throws Exception {
     TestBackend backend =
-        TestBackend.withLines(
-            "aaaaaaaaaa", "bbbbbbbbbb", "cccccccccc", "dddddddddd", "eeeeeeeeee");
+        TestBackend.withLines("aaaaaaaaaa", "bbbbbbbbbb", "cccccccccc", "dddddddddd", "eeeeeeeeee");
 
     backend.setCursorPosition(Position.ORIGIN);
 
@@ -263,8 +257,7 @@ public class TestBackendTest {
   @Test
   public void append_lines_at_last_line() throws Exception {
     TestBackend backend =
-        TestBackend.withLines(
-            "aaaaaaaaaa", "bbbbbbbbbb", "cccccccccc", "dddddddddd", "eeeeeeeeee");
+        TestBackend.withLines("aaaaaaaaaa", "bbbbbbbbbb", "cccccccccc", "dddddddddd", "eeeeeeeeee");
 
     // If the cursor is at the last line in the terminal the addition of a newline will scroll
     // the contents of the buffer.
@@ -283,8 +276,7 @@ public class TestBackendTest {
   @Test
   public void append_multiple_lines_not_at_last_line() throws Exception {
     TestBackend backend =
-        TestBackend.withLines(
-            "aaaaaaaaaa", "bbbbbbbbbb", "cccccccccc", "dddddddddd", "eeeeeeeeee");
+        TestBackend.withLines("aaaaaaaaaa", "bbbbbbbbbb", "cccccccccc", "dddddddddd", "eeeeeeeeee");
 
     backend.setCursorPosition(Position.ORIGIN);
 
@@ -302,8 +294,7 @@ public class TestBackendTest {
   @Test
   public void append_multiple_lines_past_last_line() throws Exception {
     TestBackend backend =
-        TestBackend.withLines(
-            "aaaaaaaaaa", "bbbbbbbbbb", "cccccccccc", "dddddddddd", "eeeeeeeeee");
+        TestBackend.withLines("aaaaaaaaaa", "bbbbbbbbbb", "cccccccccc", "dddddddddd", "eeeeeeeeee");
 
     backend.setCursorPosition(new Position(0, 3));
 
@@ -318,8 +309,7 @@ public class TestBackendTest {
   @Test
   public void append_multiple_lines_where_cursor_at_end_appends_height_lines() throws Exception {
     TestBackend backend =
-        TestBackend.withLines(
-            "aaaaaaaaaa", "bbbbbbbbbb", "cccccccccc", "dddddddddd", "eeeeeeeeee");
+        TestBackend.withLines("aaaaaaaaaa", "bbbbbbbbbb", "cccccccccc", "dddddddddd", "eeeeeeeeee");
 
     backend.setCursorPosition(new Position(0, 4));
 
@@ -335,8 +325,7 @@ public class TestBackendTest {
   @Test
   public void append_multiple_lines_where_cursor_appends_height_lines() throws Exception {
     TestBackend backend =
-        TestBackend.withLines(
-            "aaaaaaaaaa", "bbbbbbbbbb", "cccccccccc", "dddddddddd", "eeeeeeeeee");
+        TestBackend.withLines("aaaaaaaaaa", "bbbbbbbbbb", "cccccccccc", "dddddddddd", "eeeeeeeeee");
 
     backend.setCursorPosition(Position.ORIGIN);
 
@@ -352,8 +341,7 @@ public class TestBackendTest {
   public void append_multiple_lines_where_cursor_at_end_appends_more_than_height_lines()
       throws Exception {
     TestBackend backend =
-        TestBackend.withLines(
-            "aaaaaaaaaa", "bbbbbbbbbb", "cccccccccc", "dddddddddd", "eeeeeeeeee");
+        TestBackend.withLines("aaaaaaaaaa", "bbbbbbbbbb", "cccccccccc", "dddddddddd", "eeeeeeeeee");
 
     backend.setCursorPosition(new Position(0, 4));
 
@@ -398,12 +386,7 @@ public class TestBackendTest {
 
     // Last 5 lines appended.
     assertBufferLines(
-        backend,
-        "     65541",
-        "     65542",
-        "     65543",
-        "     65544",
-        "     65545");
+        backend, "     65541", "     65542", "     65543", "     65544", "     65545");
 
     // The Rust test slices the scrollback content directly. We do the same by constructing a
     // synthetic Buffer over a slice of the scrollback's content array.
@@ -588,11 +571,7 @@ public class TestBackendTest {
   @ParameterizedTest(name = "[{1}, {2}) by {3}")
   @MethodSource("scroll_region_down_cases")
   public void scroll_region_down(
-      String[] initialScreen,
-      int regionStart,
-      int regionEnd,
-      int scrollBy,
-      String[] expectedBuffer)
+      String[] initialScreen, int regionStart, int regionEnd, int scrollBy, String[] expectedBuffer)
       throws Exception {
     TestBackend backend = TestBackend.withLines(initialScreen);
     backend.scrollRegionDown(regionStart, regionEnd, scrollBy);

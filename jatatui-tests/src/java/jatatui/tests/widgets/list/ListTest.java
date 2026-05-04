@@ -72,7 +72,9 @@ public class ListTest {
 
     Buffer expected =
         Buffer.withLineObjects(
-            Line.from(Span.raw("  "), Span.styled("Item 1  ", Style.empty().withAddModifier(Modifier.BOLD))));
+            Line.from(
+                Span.raw("  "),
+                Span.styled("Item 1  ", Style.empty().withAddModifier(Modifier.BOLD))));
     assertBufferEq(buffer, expected);
   }
 
@@ -89,8 +91,7 @@ public class ListTest {
 
     Buffer expected =
         Buffer.withLineObjects(
-            Line.from(
-                Span.styled("  Item 1  ", Style.empty().withAddModifier(Modifier.ITALIC))));
+            Line.from(Span.styled("  Item 1  ", Style.empty().withAddModifier(Modifier.ITALIC))));
     assertBufferEq(buffer, expected);
   }
 
@@ -124,8 +125,7 @@ public class ListTest {
     Buffer buffer = Buffer.empty(new Rect(0, 0, 10, 1));
     list.render(buffer.area, buffer, state);
 
-    Style italicRed =
-        Style.empty().withAddModifier(Modifier.ITALIC).withFg(Color.RED);
+    Style italicRed = Style.empty().withAddModifier(Modifier.ITALIC).withFg(Color.RED);
     Style boldItalicRed =
         Style.empty()
             .withAddModifier(Modifier.BOLD)
@@ -144,8 +144,10 @@ public class ListTest {
     ListItem[] items =
         new ListItem[] {
           ListItem.of(Text.raw("Item 1")), // no style
-          ListItem.of(Text.styled("Item 2", Style.empty().withAddModifier(bold))), // affects only the text
-          ListItem.of(Text.raw("Item 3")).withStyle(Style.empty().withAddModifier(italic)), // entire line
+          ListItem.of(
+              Text.styled("Item 2", Style.empty().withAddModifier(bold))), // affects only the text
+          ListItem.of(Text.raw("Item 3"))
+              .withStyle(Style.empty().withAddModifier(italic)), // entire line
           ListItem.of(Text.styled("Item 4", Style.empty().withAddModifier(bold)))
               .withStyle(Style.empty().withAddModifier(italic)),
           ListItem.of(Text.styled("Item 5", Style.empty().withAddModifier(bold)))
@@ -180,11 +182,9 @@ public class ListTest {
             Line.from(Span.styled("  Item 1  ", onBlue)),
             Line.from(Span.styled("  ", onBlue), Span.styled("Item 2  ", boldOnBlue)),
             Line.from(Span.styled("  Item 3  ", italicOnBlue)),
+            Line.from(Span.styled("  ", italicOnBlue), Span.styled("Item 4  ", boldItalicOnBlue)),
             Line.from(
-                Span.styled("  ", italicOnBlue), Span.styled("Item 4  ", boldItalicOnBlue)),
-            Line.from(
-                Span.styled(">>", italicRedOnBlue),
-                Span.styled("Item 5  ", boldItalicRedOnBlue)));
+                Span.styled(">>", italicRedOnBlue), Span.styled("Item 5  ", boldItalicRedOnBlue)));
     assertBufferEq(buffer, expected);
   }
 

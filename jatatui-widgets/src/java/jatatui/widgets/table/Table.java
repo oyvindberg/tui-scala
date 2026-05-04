@@ -406,7 +406,9 @@ public record Table(
     int n = Math.min(columnWidths.size(), h.cells().size());
     for (int i = 0; i < n; i++) {
       XAndWidth xw = columnWidths.get(i);
-      h.cells().get(i).render(new Rect(area.x() + xw.x(), area.y(), xw.width(), area.height()), buf);
+      h.cells()
+          .get(i)
+          .render(new Rect(area.x() + xw.x(), area.y(), xw.width(), area.height()), buf);
     }
   }
 
@@ -417,16 +419,14 @@ public record Table(
     int n = Math.min(columnWidths.size(), f.cells().size());
     for (int i = 0; i < n; i++) {
       XAndWidth xw = columnWidths.get(i);
-      f.cells().get(i).render(new Rect(area.x() + xw.x(), area.y(), xw.width(), area.height()), buf);
+      f.cells()
+          .get(i)
+          .render(new Rect(area.x() + xw.x(), area.y(), xw.width(), area.height()), buf);
     }
   }
 
   private void renderRows(
-      Rect area,
-      Buffer buf,
-      TableState state,
-      int selectionWidth,
-      List<XAndWidth> columnsWidths) {
+      Rect area, Buffer buf, TableState state, int selectionWidth, List<XAndWidth> columnsWidths) {
     if (rows.isEmpty()) return;
 
     StartAndEnd visible = visibleRows(state, area);
@@ -455,8 +455,7 @@ public record Table(
         XAndWidth xw = columnsWidths.get(c);
         row.cells()
             .get(c)
-            .render(
-                new Rect(rowArea.x() + xw.x(), rowArea.y(), xw.width(), rowArea.height()), buf);
+            .render(new Rect(rowArea.x() + xw.x(), rowArea.y(), xw.width(), rowArea.height()), buf);
       }
       if (isSelected) {
         selectedRowArea = Optional.of(rowArea);
@@ -471,7 +470,8 @@ public record Table(
                 s -> {
                   if (s < 0 || s >= columnsWidths.size()) return Optional.empty();
                   XAndWidth xw = columnsWidths.get(s);
-                  return Optional.of(new Rect(xw.x() + area.x(), area.y(), xw.width(), area.height()));
+                  return Optional.of(
+                      new Rect(xw.x() + area.x(), area.y(), xw.width(), area.height()));
                 });
 
     if (selectedRowArea.isPresent() && selectedColumnArea.isPresent()) {
@@ -554,7 +554,10 @@ public record Table(
             .areas(new Rect(0, 0, maxWidth, 1), 2);
     Rect columnsArea = selectionAndColumns[1];
     Rect[] rects =
-        Layout.horizontal(effectiveWidths).withFlex(flex).withSpacing(columnSpacing).split(columnsArea);
+        Layout.horizontal(effectiveWidths)
+            .withFlex(flex)
+            .withSpacing(columnSpacing)
+            .split(columnsArea);
     List<XAndWidth> out = new ArrayList<>(rects.length);
     for (Rect r : rects) {
       out.add(new XAndWidth(r.x(), r.width()));

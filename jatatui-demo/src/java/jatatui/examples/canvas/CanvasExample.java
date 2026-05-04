@@ -20,7 +20,6 @@ import jatatui.widgets.canvas.MapResolution;
 import jatatui.widgets.canvas.Points;
 import jatatui.widgets.canvas.Rectangle;
 import java.io.IOException;
-import java.time.Instant;
 import java.util.ArrayList;
 import tui.crossterm.Command;
 import tui.crossterm.CrosstermJni;
@@ -137,8 +136,9 @@ public final class CanvasExample {
               terminal.draw(frame -> render(frame, app));
               long elapsedNanos = System.nanoTime() - lastTickNanos;
               long remainingNanos = Math.max(0L, tickRateNanos - elapsedNanos);
-              Duration timeout = new Duration(remainingNanos / 1_000_000_000L,
-                  (int) (remainingNanos % 1_000_000_000L));
+              Duration timeout =
+                  new Duration(
+                      remainingNanos / 1_000_000_000L, (int) (remainingNanos % 1_000_000_000L));
               if (!JNI.poll(timeout)) {
                 app.onTick();
                 lastTickNanos = System.nanoTime();
@@ -165,9 +165,7 @@ public final class CanvasExample {
 
     Layout vertical =
         Layout.vertical(
-            new Constraint.Length(header.height()),
-            new Constraint.Fill(1),
-            new Constraint.Fill(1));
+            new Constraint.Length(header.height()), new Constraint.Fill(1), new Constraint.Fill(1));
     Rect[] rows = frame.area().layout(vertical, 3);
     Rect textArea = rows[0];
     Rect up = rows[1];
@@ -223,8 +221,7 @@ public final class CanvasExample {
                 Position p = snapshot.get(i);
                 coords[i] =
                     new Coord(
-                        (double) p.x() - (double) areaLeft,
-                        (double) areaBottom - (double) p.y());
+                        (double) p.x() - (double) areaLeft, (double) areaBottom - (double) p.y());
               }
               ctx.draw(new Points(coords, Color.WHITE));
             });

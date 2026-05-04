@@ -10,7 +10,6 @@ import jatatui.core.style.Color;
 import jatatui.core.style.Modifier;
 import jatatui.core.style.Style;
 import jatatui.core.text.Line;
-import jatatui.core.text.Span;
 import jatatui.widgets.block.Block;
 import jatatui.widgets.list.HighlightSpacing;
 import jatatui.widgets.list.List;
@@ -100,12 +99,10 @@ public class ListRenderingTest {
     list.render(new Rect(0, 0, 15, 0), buffer);
     assertBufferEq(buffer, Buffer.empty(buffer.area));
 
-    List listWithBlock =
-        List.of(items).withHighlightSymbol(">>").withBlock(Block.bordered());
+    List listWithBlock = List.of(items).withHighlightSymbol(">>").withBlock(Block.bordered());
     // Render into an area with zero inner height after applying block borders.
     listWithBlock.render(new Rect(0, 0, 15, 2), buffer);
-    Buffer expected =
-        Buffer.withLines("┌─────────────┐", "└─────────────┘", "               ");
+    Buffer expected = Buffer.withLines("┌─────────────┐", "└─────────────┘", "               ");
     assertBufferEq(buffer, expected);
   }
 
@@ -133,9 +130,7 @@ public class ListRenderingTest {
   private static final ListItem[] MULTIPLE_ITEMS =
       new ListItem[] {ListItem.of("Item 0"), ListItem.of("Item 1"), ListItem.of("Item 2")};
   private static final ListItem[] MULTI_LINE_ITEMS =
-      new ListItem[] {
-        ListItem.of("Item 0\nLine 2"), ListItem.of("Item 1"), ListItem.of("Item 2")
-      };
+      new ListItem[] {ListItem.of("Item 0\nLine 2"), ListItem.of("Item 1"), ListItem.of("Item 2")};
 
   @Test
   public void combinations_empty_render() {
@@ -212,12 +207,7 @@ public class ListRenderingTest {
   @Test
   public void combinations_multiple_render() {
     testCaseRender(
-        MULTIPLE_ITEMS,
-        "Item 0    ",
-        "Item 1    ",
-        "Item 2    ",
-        "          ",
-        "          ");
+        MULTIPLE_ITEMS, "Item 0    ", "Item 1    ", "Item 2    ", "          ", "          ");
   }
 
   @Test
@@ -271,12 +261,7 @@ public class ListRenderingTest {
   @Test
   public void combinations_multiline_render() {
     testCaseRender(
-        MULTI_LINE_ITEMS,
-        "Item 0    ",
-        "Line 2    ",
-        "Item 1    ",
-        "Item 2    ",
-        "          ");
+        MULTI_LINE_ITEMS, "Item 0    ", "Line 2    ", "Item 1    ", "Item 2    ", "          ");
   }
 
   @Test
@@ -317,8 +302,11 @@ public class ListRenderingTest {
 
   @Test
   public void items() {
-    List list = List.empty().withItems(java.util.List.of(
-        ListItem.of("Item 0"), ListItem.of("Item 1"), ListItem.of("Item 2")));
+    List list =
+        List.empty()
+            .withItems(
+                java.util.List.of(
+                    ListItem.of("Item 0"), ListItem.of("Item 1"), ListItem.of("Item 2")));
     Buffer buffer = widget(list, 10, 5);
     Buffer expected =
         Buffer.withLines("Item 0    ", "Item 1    ", "Item 2    ", "          ", "          ");
@@ -362,7 +350,8 @@ public class ListRenderingTest {
 
   @Test
   public void style() {
-    List list = List.ofStrings("Item 0", "Item 1", "Item 2").withStyle(Style.empty().withFg(Color.RED));
+    List list =
+        List.ofStrings("Item 0", "Item 1", "Item 2").withStyle(Style.empty().withFg(Color.RED));
     Buffer buffer = widget(list, 10, 5);
     Style red = Style.empty().withFg(Color.RED);
     Buffer expected =
@@ -423,8 +412,7 @@ public class ListRenderingTest {
     ListState state = ListState.empty();
     Buffer buffer = statefulWidget(list, state, 10, 5);
     Buffer expected =
-        Buffer.withLines(
-            "Item 0    ", "Item 1    ", "Item 2    ", "          ", "          ");
+        Buffer.withLines("Item 0    ", "Item 1    ", "Item 2    ", "          ", "          ");
     assertBufferEq(buffer, expected);
   }
 
@@ -435,8 +423,7 @@ public class ListRenderingTest {
     state.select(Optional.of(1));
     Buffer buffer = statefulWidget(list, state, 10, 5);
     Buffer expected =
-        Buffer.withLines(
-            "  Item 0  ", ">>Item 1  ", "  Item 2  ", "          ", "          ");
+        Buffer.withLines("  Item 0  ", ">>Item 1  ", "  Item 2  ", "          ", "          ");
     assertBufferEq(buffer, expected);
   }
 
@@ -449,8 +436,7 @@ public class ListRenderingTest {
     ListState state = ListState.empty();
     Buffer buffer = statefulWidget(list, state, 10, 5);
     Buffer expected =
-        Buffer.withLines(
-            "  Item 0  ", "  Item 1  ", "  Item 2  ", "          ", "          ");
+        Buffer.withLines("  Item 0  ", "  Item 1  ", "  Item 2  ", "          ", "          ");
     assertBufferEq(buffer, expected);
   }
 
@@ -464,8 +450,7 @@ public class ListRenderingTest {
     state.select(Optional.of(1));
     Buffer buffer = statefulWidget(list, state, 10, 5);
     Buffer expected =
-        Buffer.withLines(
-            "  Item 0  ", ">>Item 1  ", "  Item 2  ", "          ", "          ");
+        Buffer.withLines("  Item 0  ", ">>Item 1  ", "  Item 2  ", "          ", "          ");
     assertBufferEq(buffer, expected);
   }
 
@@ -478,8 +463,7 @@ public class ListRenderingTest {
     ListState state = ListState.empty();
     Buffer buffer = statefulWidget(list, state, 10, 5);
     Buffer expected =
-        Buffer.withLines(
-            "Item 0    ", "Item 1    ", "Item 2    ", "          ", "          ");
+        Buffer.withLines("Item 0    ", "Item 1    ", "Item 2    ", "          ", "          ");
     assertBufferEq(buffer, expected);
   }
 
@@ -493,18 +477,14 @@ public class ListRenderingTest {
     state.select(Optional.of(1));
     Buffer buffer = statefulWidget(list, state, 10, 5);
     Buffer expected =
-        Buffer.withLines(
-            "Item 0    ", "Item 1    ", "Item 2    ", "          ", "          ");
+        Buffer.withLines("Item 0    ", "Item 1    ", "Item 2    ", "          ", "          ");
     assertBufferEq(buffer, expected);
   }
 
   @Test
   public void repeat_highlight_symbol() {
     List list =
-        List.of(
-                ListItem.of("Item 0\nLine 2"),
-                ListItem.of("Item 1"),
-                ListItem.of("Item 2"))
+        List.of(ListItem.of("Item 0\nLine 2"), ListItem.of("Item 1"), ListItem.of("Item 2"))
             .withHighlightSymbol(Line.from(">>").red().bold())
             .withHighlightStyle(Style.empty().withFg(Color.YELLOW))
             .withRepeatHighlightSymbol(true);
@@ -578,9 +558,7 @@ public class ListRenderingTest {
   @MethodSource("longLinesCases")
   public void long_lines(Optional<Integer> selected, String[] expected) {
     String[] items =
-        new String[] {
-          "Item 0 with a very long line that will be truncated", "Item 1", "Item 2"
-        };
+        new String[] {"Item 0 with a very long line that will be truncated", "Item 1", "Item 2"};
     List list = List.ofStrings(items).withHighlightSymbol(">>");
     ListState state = ListState.empty().withSelected(selected);
     Buffer buffer = statefulWidget(list, state, 15, 3);
@@ -760,9 +738,7 @@ public class ListRenderingTest {
             2,
             0,
             Optional.of(3),
-            new String[] {
-              "   Item 2 ", ">> Item 3 ", "   Item 4 ", "   Item 5 ", "          "
-            }),
+            new String[] {"   Item 2 ", ">> Item 3 ", "   Item 4 ", "   Item 5 ", "          "}),
         Arguments.of(
             5,
             2,
@@ -854,8 +830,7 @@ public class ListRenderingTest {
     List list = List.of(items).withScrollPadding(2).withHighlightSymbol(">> ");
     list.render(buffer.area, buffer, state);
 
-    Buffer expected =
-        Buffer.withLines("   Item 1 ", ">> Item 2 ", "   Item 3 ", "          ");
+    Buffer expected = Buffer.withLines("   Item 1 ", ">> Item 2 ", "   Item 3 ", "          ");
     assertBufferEq(buffer, expected);
   }
 

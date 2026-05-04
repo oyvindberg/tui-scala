@@ -80,7 +80,12 @@ public final class Paragraph implements Widget, Stylize<Paragraph> {
   /// not wrapped, and left-aligned by default.
   public static Paragraph of(Text text) {
     return new Paragraph(
-        Optional.empty(), Style.empty(), Optional.empty(), text, Scroll.ZERO, HorizontalAlignment.Left);
+        Optional.empty(),
+        Style.empty(),
+        Optional.empty(),
+        text,
+        Scroll.ZERO,
+        HorizontalAlignment.Left);
   }
 
   /// Convenience overload mirroring the upstream `Paragraph::new(Into<Text>)`.
@@ -126,17 +131,20 @@ public final class Paragraph implements Widget, Stylize<Paragraph> {
     return new Paragraph(block, style, wrap, text, scroll, alignment);
   }
 
-  /// Convenience shortcut for [#withAlignment(HorizontalAlignment)] with [HorizontalAlignment#Left].
+  /// Convenience shortcut for [#withAlignment(HorizontalAlignment)] with
+  // [HorizontalAlignment#Left].
   public Paragraph leftAligned() {
     return withAlignment(HorizontalAlignment.Left);
   }
 
-  /// Convenience shortcut for [#withAlignment(HorizontalAlignment)] with [HorizontalAlignment#Center].
+  /// Convenience shortcut for [#withAlignment(HorizontalAlignment)] with
+  // [HorizontalAlignment#Center].
   public Paragraph centered() {
     return withAlignment(HorizontalAlignment.Center);
   }
 
-  /// Convenience shortcut for [#withAlignment(HorizontalAlignment)] with [HorizontalAlignment#Right].
+  /// Convenience shortcut for [#withAlignment(HorizontalAlignment)] with
+  // [HorizontalAlignment#Right].
   public Paragraph rightAligned() {
     return withAlignment(HorizontalAlignment.Right);
   }
@@ -161,7 +169,8 @@ public final class Paragraph implements Widget, Stylize<Paragraph> {
     int count;
     if (wrap.isPresent()) {
       Wrap w = wrap.get();
-      WordWrapper composer = new WordWrapper(toStyledLineInputs(text, style, alignment), width, w.trim());
+      WordWrapper composer =
+          new WordWrapper(toStyledLineInputs(text, style, alignment), width, w.trim());
       count = 0;
       while (composer.nextLine().isPresent()) {
         count += 1;
@@ -207,7 +216,8 @@ public final class Paragraph implements Widget, Stylize<Paragraph> {
     if (wrap.isPresent()) {
       Wrap w = wrap.get();
       WordWrapper composer =
-          new WordWrapper(toStyledLineInputs(text, text.style, alignment), textArea.width(), w.trim());
+          new WordWrapper(
+              toStyledLineInputs(text, text.style, alignment), textArea.width(), w.trim());
       // compute the lines iteratively until we reach the desired scroll offset.
       for (int i = 0; i < scroll.y(); i++) {
         if (composer.nextLine().isEmpty()) {
@@ -272,7 +282,8 @@ public final class Paragraph implements Widget, Stylize<Paragraph> {
     }
   }
 
-  private static int getLineOffset(int lineWidth, int textAreaWidth, HorizontalAlignment alignment) {
+  private static int getLineOffset(
+      int lineWidth, int textAreaWidth, HorizontalAlignment alignment) {
     return switch (alignment) {
       case Center -> Math.max(0, textAreaWidth / 2 - lineWidth / 2);
       case Right -> Math.max(0, textAreaWidth - lineWidth);
