@@ -69,7 +69,8 @@ public final class BubbleExample {
 
   static Element hint() {
     return text(
-        " Esc quits  •  events bubble Inner → Middle → Outer  •  global key 'c' fires last",
+        " Tab/Shift-Tab=cycle focus  •  Enter on focused button stops propagation  •"
+            + "  Esc quits  •  'c' clears (global)",
         Style.empty().withFg(Color.GRAY));
   }
 
@@ -137,14 +138,31 @@ public final class BubbleExample {
               text(""),
               text("  Click anywhere here to see bubbling.", Style.empty().withFg(Color.WHITE)),
               text(""),
-              button(
-                  "  [ Stop click here ]  ",
-                  Style.empty().withFg(Color.RED),
-                  // Take the MouseEvent so we can stopPropagation.
-                  (jatatui.react.MouseEvent e) -> {
-                    log.update(prev -> append(prev, "Inner button (stopped)"));
-                    e.stopPropagation();
-                  }));
+              focusableStopButton(log));
+        });
+  }
+
+  /// Wrap the button in its own focusable component. Tab can land on it; Enter activates it
+  /// (with stopPropagation, like a click).
+  static Element focusableStopButton(State<List<String>> log) {
+    return component(
+        ctx -> {
+          boolean focused = ctx.useFocus(Optional.of("button"), false);
+
+          ctx.onKey(
+              new KeyCode.Enter(),
+              (jatatui.react.KeyEvent e) -> {
+                log.update(prev -> append(prev, "Inner button via Enter (stopped)"));
+                e.stopPropagation();
+              });
+
+          return button(
+              focused ? "  [ Stop click HERE ★ ]  " : "  [ Stop click here ]  ",
+              Style.empty().withFg(focused ? Color.YELLOW : Color.RED),
+              (jatatui.react.MouseEvent e) -> {
+                log.update(prev -> append(prev, "Inner button (stopped)"));
+                e.stopPropagation();
+              });
         });
   }
 

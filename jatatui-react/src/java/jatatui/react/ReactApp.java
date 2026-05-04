@@ -23,13 +23,16 @@ import tui.crossterm.KeyModifiers;
 public final class ReactApp {
 
   private final Element root;
-  private final EventRegistry events = new EventRegistry();
-  private final HookStore hooks = new HookStore();
-  private final FocusManager focus = new FocusManager();
-  private final AtomicBoolean dirty = new AtomicBoolean(true);
+  // Package-private so tests in this package can drive ReactApp without going through the JNI.
+  final EventRegistry events = new EventRegistry();
+  final HookStore hooks = new HookStore();
+  final FocusManager focus = new FocusManager();
+  final AtomicBoolean dirty = new AtomicBoolean(true);
   private final CrosstermJni jni;
 
-  private ReactApp(Element root, CrosstermJni jni) {
+  /// Package-private — tests construct ReactApp directly to drive `handle(...)` without going
+  /// through the JNI poll loop.
+  ReactApp(Element root, CrosstermJni jni) {
     this.root = root;
     this.jni = jni;
   }
@@ -81,7 +84,8 @@ public final class ReactApp {
   }
 
   /// Returns false to quit the loop.
-  private boolean handle(Event ev) {
+  /// Package-private so tests can drive ReactApp without going through the JNI poll loop.
+  boolean handle(Event ev) {
     if (ev instanceof Event.Key keyEv && keyEv.keyEvent().kind() == KeyEventKind.Press) {
       KeyCode code = keyEv.keyEvent().code();
       KeyModifiers mods = keyEv.keyEvent().modifiers();
@@ -89,6 +93,12 @@ public final class ReactApp {
       if (code instanceof KeyCode.Tab) {
         if ((mods.bits() & KeyModifiers.SHIFT) != 0) focus.shiftTab();
         else focus.tab();
+        dirty.set(true);
+        return true;
+      }
+      // Most terminals send Shift-Tab as KeyCode.BackTab rather than Tab+SHIFT modifier.
+      if (code instanceof KeyCode.BackTab) {
+        focus.shiftTab();
         dirty.set(true);
         return true;
       }
