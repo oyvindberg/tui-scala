@@ -11,12 +11,20 @@ Java port of [ratatui](https://github.com/ratatui/ratatui) at the v0.30.0 releas
 | # | Phase | Status |
 |---|---|---|
 | 0 | Initialize repo: copy infra from tui-scala, add submodules, write bleep config | done |
-| 1 | Verify `crossterm` builds (existing JNI binding copied from tui-scala) | pending |
-| 2 | Set up `_support/BufferAssertions` and JUnit 5 wiring; smoke-test with one trivial `jatatui-core` class + test | pending |
-| 3 | Port `ratatui-core` source files + tests, in dependency order | pending |
-| 4 | Port `ratatui-widgets` source files + tests | pending |
-| 5 | Port `ratatui-crossterm` (the high-level Backend) | pending |
-| 6 | Verify: `bleep test jatatui-tests` green for all ~766 ported tests | pending |
+| 1 | Bump crossterm JNI to 0.29; bump bleep to 1.0.0-M9 (JUnit 5 works from this version) | done |
+| 2 | Port kasuari (cassowary fork) to `jatatui.core.layout.solver` | done |
+| 3a | Port `ratatui-core/layout/` primitives (Direction, Alignment, Corner, Flex, Margin, Offset, Constraint, Position, Size, Rect) | done |
+| 3b | Port `ratatui-core/style/` (Color, Modifier, Style, Stylize, palettes) | done |
+| 3c | Port `ratatui-core/symbols/` (Bar, Block, Border, Braille, HalfBlock, Line, Marker, Merge, Pixel, Scrollbar, Shade) | done |
+| 3d | Port `ratatui-core/layout/Layout`, Spacing; complete Rect (iter, ops, layout-dependent methods) | done |
+| 3e | Port `ratatui-core/text/` (StyledGrapheme, Span, Line, Text, Masked) | in progress |
+| 3f | Port `ratatui-core/buffer/` (Cell, Buffer, assert helpers) | pending |
+| 3g | Port `ratatui-core/backend.rs` + `backend/test.rs` (Backend trait + TestBackend) | pending |
+| 3h | Port `ratatui-core/terminal/` (Frame, Terminal, Viewport) | pending |
+| 3i | Port `ratatui-core/widgets/` (Widget, StatefulWidget traits) | pending |
+| 4 | Port `ratatui-widgets/src/*` (15+ widgets, ~27.5k LOC). Spawn ~6 parallel agents grouped by widget family. | pending |
+| 5 | Port `ratatui-crossterm/src/lib.rs` (the CrosstermBackend impl, ~880 LOC) | pending |
+| 6 | Replace `null` with `Optional`; add `Either.unit()` for Void-success; remove the prior `Either.right(null)` exception from CLAUDE.md | done |
 | 7 | Port all `examples/apps/*` to `jatatui-demo` | pending |
 | 8 | Manually launch demo, fix any runtime issues | pending |
 
