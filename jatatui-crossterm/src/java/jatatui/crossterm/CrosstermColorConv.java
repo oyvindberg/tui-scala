@@ -2,8 +2,9 @@ package jatatui.crossterm;
 
 import jatatui.core.style.Color;
 
-/// Bidirectional conversion between [jatatui.core.style.Color] (ratatui's color enum) and
-/// [tui.crossterm.Color] (the local JNI binding's color enum).
+/// Bidirectional conversion between [jatatui.core.style.Color] (jatatui's color sealed interface,
+/// modeled on ratatui's `Color` enum) and [tui.crossterm.Color] (the local JNI binding's color
+/// enum).
 ///
 /// Mirrors the `IntoCrossterm<CrosstermColor> for Color` and `FromCrossterm<CrosstermColor> for
 /// Color` impls in upstream `ratatui-crossterm/src/lib.rs`.
@@ -11,7 +12,7 @@ public final class CrosstermColorConv {
 
   private CrosstermColorConv() {}
 
-  /// Convert a ratatui [Color] to a [tui.crossterm.Color]. Mirrors upstream
+  /// Convert a jatatui [Color] to a [tui.crossterm.Color]. Mirrors upstream
   /// `IntoCrossterm<CrosstermColor> for Color`.
   public static tui.crossterm.Color toCrossterm(Color color) {
     return switch (color) {
@@ -37,7 +38,7 @@ public final class CrosstermColorConv {
     };
   }
 
-  /// Convert a [tui.crossterm.Color] to a ratatui [Color]. Mirrors upstream
+  /// Convert a [tui.crossterm.Color] to a jatatui [Color]. Mirrors upstream
   /// `FromCrossterm<CrosstermColor> for Color`.
   public static Color fromCrossterm(tui.crossterm.Color value) {
     return switch (value) {

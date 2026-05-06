@@ -91,8 +91,8 @@ public class CrosstermBackendTest {
 
   @ParameterizedTest
   @MethodSource("from_crossterm_attribute_cases")
-  public void from_crossterm_attribute(Attribute crosstermAttribute, Modifier ratatuiModifier) {
-    assertEquals(ratatuiModifier, CrosstermModifierConv.fromCrossterm(crosstermAttribute));
+  public void from_crossterm_attribute(Attribute crosstermAttribute, Modifier jatatuiModifier) {
+    assertEquals(jatatuiModifier, CrosstermModifierConv.fromCrossterm(crosstermAttribute));
   }
 
   // ---- modifier::from_crossterm_attributes ----
@@ -122,9 +122,9 @@ public class CrosstermBackendTest {
   @ParameterizedTest
   @MethodSource("from_crossterm_attributes_cases")
   public void from_crossterm_attributes(
-      List<Attribute> crosstermAttributes, Modifier ratatuiModifier) {
+      List<Attribute> crosstermAttributes, Modifier jatatuiModifier) {
     assertEquals(
-        ratatuiModifier, CrosstermModifierConv.fromCrossterm(new Attributes(crosstermAttributes)));
+        jatatuiModifier, CrosstermModifierConv.fromCrossterm(new Attributes(crosstermAttributes)));
   }
 
   // ---- from_crossterm_content_style ----

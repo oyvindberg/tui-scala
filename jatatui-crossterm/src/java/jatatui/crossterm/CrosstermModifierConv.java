@@ -5,7 +5,7 @@ import java.util.List;
 import tui.crossterm.Attribute;
 import tui.crossterm.Attributes;
 
-/// Conversion from the JNI binding's [Attribute]/[Attributes] to ratatui's [Modifier] bitflags.
+/// Conversion from the JNI binding's [Attribute]/[Attributes] to jatatui's [Modifier] bitflags.
 ///
 /// Mirrors the `FromCrossterm<CrosstermAttribute> for Modifier` and
 /// `FromCrossterm<CrosstermAttributes> for Modifier` impls in upstream

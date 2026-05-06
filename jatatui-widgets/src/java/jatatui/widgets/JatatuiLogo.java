@@ -5,13 +5,12 @@ import jatatui.core.layout.Rect;
 import jatatui.core.style.Style;
 import jatatui.core.widgets.Widget;
 
-/// A widget that renders the Ratatui logo.
+/// A widget that renders the jatatui logo (the text "JATATUI" rendered with Unicode block
+/// characters).
 ///
-/// Mirrors `ratatui_widgets::logo::RatatuiLogo` (v0.30).
-///
-/// The Ratatui logo takes up two lines of text and comes in two sizes: [Size#Tiny] and
-/// [Size#Small].
-public final class RatatuiLogo implements Widget {
+/// Stands in for the upstream `ratatui_widgets::logo::RatatuiLogo` (which spells "RATATUI") on
+/// the Java side. Comes in two sizes: [Size#Tiny] and [Size#Small], each two lines tall.
+public final class JatatuiLogo implements Widget {
 
   /// The size of the logo.
   public enum Size {
@@ -29,36 +28,36 @@ public final class RatatuiLogo implements Widget {
     }
   }
 
-  private static final String TINY_LOGO = "▛▚▗▀▖▜▘▞▚▝▛▐ ▌▌\n" + "▛▚▐▀▌▐ ▛▜ ▌▝▄▘▌\n";
+  private static final String TINY_LOGO = "▀█▗▀▖▜▘▞▚▝▛▐ ▌▌\n" + "▄▛▐▀▌▐ ▛▜ ▌▝▄▘▌\n";
 
   private static final String SMALL_LOGO =
-      "█▀▀▄ ▄▀▀▄▝▜▛▘▄▀▀▄▝▜▛▘█  █ █\n" + "█▀▀▄ █▀▀█ ▐▌ █▀▀█ ▐▌ ▀▄▄▀ █\n";
+      "▀▀▀█ ▄▀▀▄▝▜▛▘▄▀▀▄▝▜▛▘█  █ █\n" + "▄▄▄▀ █▀▀█ ▐▌ █▀▀█ ▐▌ ▀▄▄▀ █\n";
 
   /// The size of this logo.
   public final Size size;
 
-  private RatatuiLogo(Size size) {
+  private JatatuiLogo(Size size) {
     this.size = size;
   }
 
-  /// Creates a new Ratatui logo widget with the given [Size].
-  public static RatatuiLogo of(Size size) {
-    return new RatatuiLogo(size);
+  /// Creates a new jatatui logo widget with the given [Size].
+  public static JatatuiLogo of(Size size) {
+    return new JatatuiLogo(size);
   }
 
   /// Returns a copy with the [Size] replaced.
-  public RatatuiLogo withSize(Size size) {
-    return new RatatuiLogo(size);
+  public JatatuiLogo withSize(Size size) {
+    return new JatatuiLogo(size);
   }
 
-  /// Creates a new Ratatui logo widget with the [Size#Tiny] size.
-  public static RatatuiLogo tiny() {
-    return new RatatuiLogo(Size.Tiny);
+  /// Creates a new jatatui logo widget with the [Size#Tiny] size.
+  public static JatatuiLogo tiny() {
+    return new JatatuiLogo(Size.Tiny);
   }
 
-  /// Creates a new Ratatui logo widget with the [Size#Small] size.
-  public static RatatuiLogo small() {
-    return new RatatuiLogo(Size.Small);
+  /// Creates a new jatatui logo widget with the [Size#Small] size.
+  public static JatatuiLogo small() {
+    return new JatatuiLogo(Size.Small);
   }
 
   @Override
@@ -80,7 +79,7 @@ public final class RatatuiLogo implements Widget {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof RatatuiLogo other)) return false;
+    if (!(o instanceof JatatuiLogo other)) return false;
     return size == other.size;
   }
 
@@ -91,6 +90,6 @@ public final class RatatuiLogo implements Widget {
 
   @Override
   public String toString() {
-    return "RatatuiLogo[size=" + size + "]";
+    return "JatatuiLogo[size=" + size + "]";
   }
 }

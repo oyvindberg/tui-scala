@@ -6,7 +6,7 @@ import jatatui.core.style.Style;
 import java.util.Optional;
 import tui.crossterm.Attribute;
 
-/// Conversion from the JNI binding's [ContentStyle] to ratatui's [Style].
+/// Conversion from the JNI binding's [ContentStyle] to jatatui's [Style].
 ///
 /// Mirrors the `FromCrossterm<ContentStyle> for Style` impl in upstream
 /// `ratatui-crossterm/src/lib.rs`. The `underline_color` field is included unconditionally —
@@ -15,7 +15,7 @@ public final class CrosstermStyleConv {
 
   private CrosstermStyleConv() {}
 
-  /// Convert a [ContentStyle] to a ratatui [Style].
+  /// Convert a [ContentStyle] to a jatatui [Style].
   public static Style fromCrossterm(ContentStyle value) {
     Modifier subModifier = Modifier.EMPTY;
     if (CrosstermModifierConv.has(value.attributes(), Attribute.NoBold)) {
