@@ -255,4 +255,20 @@ public final class Components {
             .withFocusId(focusId)
             .withAutoFocus(true));
   }
+
+  /// Quick-path with a focus-aware bordered title — the field shows a yellow border when focused,
+  /// dark gray otherwise. Use this when a labeled bordered field is what you want (most forms).
+  public static Element titledTextInput(
+      String title,
+      String value,
+      java.util.function.Consumer<String> onChange,
+      String placeholder,
+      String focusId) {
+    return TextInputComponent.of(
+        TextInputProps.of(value, onChange)
+            .withTitle(title)
+            .withPlaceholder(placeholder)
+            .withFocusId(focusId)
+            .withAutoFocus(true));
+  }
 }

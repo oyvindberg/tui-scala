@@ -1,7 +1,7 @@
 package jatatui.react.examples.form;
 
 import static jatatui.components.Components.formProvider;
-import static jatatui.components.Components.textInput;
+import static jatatui.components.Components.titledTextInput;
 import static jatatui.react.Components.*;
 
 import jatatui.components.form.FieldApi;
@@ -77,15 +77,17 @@ public final class FormExample {
                   length(1, text(" form demo  —  Tab to cycle, Ctrl-S submit, Ctrl-R reset, Esc to quit ",
                       Style.empty().withFg(Color.WHITE).withBg(Color.BLUE))),
                   length(3,
-                      box(" Name " + (name.hasError() ? "(!)" : ""),
-                          jatatui.widgets.Borders.ALL,
-                          textInput(name.value(), name.setValue(), "your name", "name"))),
+                      titledTextInput(
+                          "Name" + (name.hasError() ? " (!)" : ""),
+                          name.value(), name.setValue(),
+                          "your name", "name")),
                   length(1, text(name.error().orElse(""),
                       Style.empty().withFg(Color.RED))),
                   length(3,
-                      box(" Email " + (email.hasError() ? "(!)" : ""),
-                          jatatui.widgets.Borders.ALL,
-                          textInput(email.value(), email.setValue(), "you@example.com", "email"))),
+                      titledTextInput(
+                          "Email" + (email.hasError() ? " (!)" : ""),
+                          email.value(), email.setValue(),
+                          "you@example.com", "email")),
                   length(1, text(email.error().orElse(""),
                       Style.empty().withFg(Color.RED))),
                   length(2, text(

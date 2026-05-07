@@ -1,6 +1,6 @@
 package jatatui.components.textinput;
 
-import static jatatui.react.Components.ANY_KEY;
+import static jatatui.react.Components.ANY_CHAR;
 import static jatatui.react.Components.component;
 
 import jatatui.react.Element;
@@ -15,15 +15,10 @@ import tui.crossterm.KeyCode;
 /// Controlled — parent owns `value`, supplies `onChange`. Cursor position is internal
 /// (`useState`); resets only when the component unmounts.
 ///
-/// Focus: opt-in via `focusId` / `autoFocus`. When focused, registers a single `ctx.onKey(ANY_KEY,
-/// ...)` handler that dispatches based on the key code:
-///   - printable char → insert at cursor
-///   - Backspace → delete char before cursor
-///   - Delete → delete char at cursor
-///   - Left/Right → move cursor
-///   - Home/End → jump to start/end
-///   - Enter → onSubmit (if present), no insert
-///   - Esc → onCancel (if present)
+/// Key handling: when focused, registers handlers for printable chars (insert), Backspace,
+/// Delete, Left/Right, Home/End. Enter and Esc are only registered if `onSubmit`/`onCancel` are
+/// present — otherwise they bubble (so app-level shortcuts and the Esc-to-quit fallback still
+/// work). Ctrl/Alt-modified chars also bubble: they're shortcuts, not input.
 ///
 /// Each handled key calls `e.stopPropagation()` so editing doesn't bubble up to parents.
 public final class TextInputComponent {
@@ -45,18 +40,32 @@ public final class TextInputComponent {
           }
 
           int finalCursor = cursor;
+          boolean finalFocused = focused;
           jatatui.core.widgets.Widget adapter =
               (area, buf) -> {
+                jatatui.core.layout.Rect inputArea = area;
+                if (!props.title().isEmpty()) {
+                  jatatui.core.style.Style borderStyle =
+                      finalFocused ? props.focusedBorderStyle() : props.borderStyle();
+                  jatatui.widgets.block.Block block =
+                      jatatui.widgets.block.Block.empty()
+                          .withTitle(jatatui.core.text.Line.from(" " + props.title() + " "))
+                          .withTitleStyle(borderStyle)
+                          .withBorders(jatatui.widgets.Borders.ALL)
+                          .withBorderStyle(borderStyle);
+                  block.render(area, buf);
+                  inputArea = block.inner(area);
+                }
                 TextInput widget =
                     TextInput.of(props.value())
                         .withCursorPos(finalCursor)
-                        .withFocused(focused)
+                        .withFocused(finalFocused)
                         .withPlaceholder(props.placeholder())
                         .withStyle(props.style())
                         .withFocusedStyle(props.focusedStyle())
                         .withPlaceholderStyle(props.placeholderStyle())
                         .withCursorStyle(props.cursorStyle());
-                widget.render(area, buf);
+                widget.render(inputArea, buf);
               };
           return jatatui.react.Components.widget(adapter);
         });
@@ -64,49 +73,94 @@ public final class TextInputComponent {
 
   private static void registerKeyHandlers(
       RenderContext ctx, TextInputProps props, State<Integer> cursorState) {
+    // Printable char insertion. Ctrl/Alt-modified chars bubble — they're shortcuts, not input.
     ctx.onKey(
-        ANY_KEY,
+        ANY_CHAR,
         e -> {
-          KeyCode code = e.code();
-          int cursor = cursorState.get();
-          String value = props.value();
-
-          if (code instanceof KeyCode.Char ch) {
-            TextResult r = TextInput.insertAt(value, cursor, ch.c());
-            props.onChange().accept(r.value());
-            cursorState.set(r.cursorPos());
-            e.stopPropagation();
-          } else if (code instanceof KeyCode.Backspace) {
-            TextResult r = TextInput.backspaceAt(value, cursor);
-            props.onChange().accept(r.value());
-            cursorState.set(r.cursorPos());
-            e.stopPropagation();
-          } else if (code instanceof KeyCode.Delete) {
-            TextResult r = TextInput.deleteAt(value, cursor);
-            props.onChange().accept(r.value());
-            cursorState.set(r.cursorPos());
-            e.stopPropagation();
-          } else if (code instanceof KeyCode.Left) {
-            cursorState.set(TextInput.moveLeft(value, cursor).cursorPos());
-            e.stopPropagation();
-          } else if (code instanceof KeyCode.Right) {
-            cursorState.set(TextInput.moveRight(value, cursor).cursorPos());
-            e.stopPropagation();
-          } else if (code instanceof KeyCode.Home) {
-            cursorState.set(0);
-            e.stopPropagation();
-          } else if (code instanceof KeyCode.End) {
-            cursorState.set(value.length());
-            e.stopPropagation();
-          } else if (code instanceof KeyCode.Enter) {
-            props.onSubmit().ifPresent(Runnable::run);
-            e.stopPropagation();
-          } else if (code instanceof KeyCode.Esc) {
-            props.onCancel().ifPresent(Runnable::run);
-            // Esc isn't stopPropagation'd: ReactApp uses Esc to quit. If the parent wants Esc to
-            // stay local (e.g. modal dismiss), they can intercept earlier.
+          int mods = e.modifiers().bits();
+          if ((mods & tui.crossterm.KeyModifiers.CONTROL) != 0
+              || (mods & tui.crossterm.KeyModifiers.ALT) != 0) {
+            return;
           }
-          // Tab / Shift-Tab / BackTab are handled by ReactApp directly, never reach here.
+          KeyCode.Char ch = (KeyCode.Char) e.code();
+          int cursor = cursorState.get();
+          TextResult r = TextInput.insertAt(props.value(), cursor, ch.c());
+          props.onChange().accept(r.value());
+          cursorState.set(r.cursorPos());
+          e.stopPropagation();
         });
+
+    ctx.onKey(
+        new KeyCode.Backspace(),
+        e -> {
+          int cursor = cursorState.get();
+          TextResult r = TextInput.backspaceAt(props.value(), cursor);
+          props.onChange().accept(r.value());
+          cursorState.set(r.cursorPos());
+          e.stopPropagation();
+        });
+
+    ctx.onKey(
+        new KeyCode.Delete(),
+        e -> {
+          int cursor = cursorState.get();
+          TextResult r = TextInput.deleteAt(props.value(), cursor);
+          props.onChange().accept(r.value());
+          cursorState.set(r.cursorPos());
+          e.stopPropagation();
+        });
+
+    ctx.onKey(
+        new KeyCode.Left(),
+        e -> {
+          cursorState.set(TextInput.moveLeft(props.value(), cursorState.get()).cursorPos());
+          e.stopPropagation();
+        });
+
+    ctx.onKey(
+        new KeyCode.Right(),
+        e -> {
+          cursorState.set(TextInput.moveRight(props.value(), cursorState.get()).cursorPos());
+          e.stopPropagation();
+        });
+
+    ctx.onKey(
+        new KeyCode.Home(),
+        e -> {
+          cursorState.set(0);
+          e.stopPropagation();
+        });
+
+    ctx.onKey(
+        new KeyCode.End(),
+        e -> {
+          cursorState.set(props.value().length());
+          e.stopPropagation();
+        });
+
+    // Enter / Esc only register if there's a handler — otherwise they bubble (app-level Enter
+    // shortcuts, Esc-to-quit fallback in ReactApp).
+    props
+        .onSubmit()
+        .ifPresent(
+            cb ->
+                ctx.onKey(
+                    new KeyCode.Enter(),
+                    e -> {
+                      cb.run();
+                      e.stopPropagation();
+                    }));
+
+    props
+        .onCancel()
+        .ifPresent(
+            cb ->
+                ctx.onKey(
+                    new KeyCode.Esc(),
+                    e -> {
+                      cb.run();
+                      e.stopPropagation();
+                    }));
+    // Tab / Shift-Tab / BackTab are handled by ReactApp directly, never reach here.
   }
 }

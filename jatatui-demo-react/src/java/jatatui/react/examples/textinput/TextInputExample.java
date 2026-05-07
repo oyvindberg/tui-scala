@@ -1,6 +1,6 @@
 package jatatui.react.examples.textinput;
 
-import static jatatui.components.Components.textInput;
+import static jatatui.components.Components.titledTextInput;
 import static jatatui.react.Components.*;
 
 import jatatui.core.layout.Margin;
@@ -8,7 +8,6 @@ import jatatui.core.style.Color;
 import jatatui.core.style.Style;
 import jatatui.react.Element;
 import jatatui.react.ReactApp;
-import jatatui.widgets.Borders;
 import java.io.IOException;
 
 /// Demonstrates the textInput Component.
@@ -30,14 +29,8 @@ public final class TextInputExample {
           return column(
                   length(1, text(" textInput demo  —  Tab to cycle, Esc to quit ",
                       Style.empty().withFg(Color.WHITE).withBg(Color.BLUE))),
-                  length(3,
-                      box(" Name ",
-                          Borders.ALL,
-                          textInput(name.get(), name::set, "first name", "name"))),
-                  length(3,
-                      box(" Email ",
-                          Borders.ALL,
-                          textInput(email.get(), email::set, "you@example.com", "email"))),
+                  length(3, titledTextInput("Name",  name.get(),  name::set,  "first name",      "name")),
+                  length(3, titledTextInput("Email", email.get(), email::set, "you@example.com", "email")),
                   length(2,
                       text(
                           "Echo: name=\"" + name.get() + "\"  email=\"" + email.get() + "\"",

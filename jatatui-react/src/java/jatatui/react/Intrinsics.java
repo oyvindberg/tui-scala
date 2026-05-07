@@ -218,6 +218,21 @@ public final class Intrinsics {
   public static final Component<IfElseProps> IF_ELSE =
       (props, ctx) -> props.condition() ? props.thenChild() : props.elseChild();
 
+  // -------------------- Stack (children layered in same area) --------------------
+
+  /// Children render in declaration order, all into the SAME area. Last paints over earlier.
+  /// Useful for overlays (modal box on top of a Clear; tooltip on top of content).
+  public record StackProps(List<Element> children) {}
+
+  public static final Component<StackProps> STACK =
+      (props, ctx) ->
+          new Element.Host(
+              (c, area) -> {
+                for (int i = 0; i < props.children().size(); i++) {
+                  c.renderChild(i, props.children().get(i), area);
+                }
+              });
+
   // -------------------- Provider (Context) --------------------
 
   public record ProviderProps<T>(Context<T> context, T value, Element child) {}

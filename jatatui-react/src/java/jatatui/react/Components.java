@@ -126,6 +126,14 @@ public final class Components {
         Optional.empty());
   }
 
+  /// Layer children in the same area. Children render in declaration order; later children paint
+  /// over earlier ones. Use for overlays — e.g. `stack(widget(Clear.instance()), box(...))` to
+  /// make the box opaque over whatever was painted under it.
+  public static Element.Of<Intrinsics.StackProps> stack(Element... children) {
+    return new Element.Of<>(
+        Intrinsics.STACK, new Intrinsics.StackProps(List.of(children)), Optional.empty());
+  }
+
   public static Element.Of<Intrinsics.TabsProps> tabs(int selected, Intrinsics.Tab... tabs) {
     return new Element.Of<>(
         Intrinsics.TABS, new Intrinsics.TabsProps(selected, List.of(tabs)), Optional.empty());

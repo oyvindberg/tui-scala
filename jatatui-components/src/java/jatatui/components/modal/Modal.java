@@ -51,7 +51,11 @@ public final class Modal {
                           props.onDismiss().run();
                           e.stopPropagation();
                         });
-                    return box(props.title(), Borders.ALL, props.body());
+                    // Stack: Clear first so the box covers whatever was painted underneath, then
+                    // the bordered box on top.
+                    return stack(
+                        widget(jatatui.widgets.Clear.instance()),
+                        box(props.title(), Borders.ALL, props.body()));
                   });
 
           // Two siblings under one component → both portals share Modal's fiber as parent for
