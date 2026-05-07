@@ -3,6 +3,10 @@ package jatatui.react;
 import jatatui.core.buffer.Buffer;
 import jatatui.core.layout.Rect;
 import jatatui.core.terminal.Frame;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -19,8 +23,18 @@ public final class RenderContext {
   final HookStore hooks;
   final FocusManager focus;
   final Runnable requestRerender;
+  /// Per-frame context stacks. A [Context] maps to a stack of values; the top of the stack is
+  /// what [#useContext] returns. Push/pop is balanced by the Provider intrinsic — see
+  /// [Intrinsics#PROVIDER].
+  final Map<Context<?>, Deque<Object>> contextStacks = new HashMap<>();
+  /// Per-frame portal queue. Each entry captures the declaring fiber + child Element + absolute
+  /// area; entries are drained AFTER the main render pass so portals paint on top of everything
+  /// else. See [#queuePortal] and [#drainPortals].
+  final java.util.List<PortalEntry> portals = new java.util.ArrayList<>();
   Fiber fiber;
   int hookIndex;
+
+  record PortalEntry(Fiber declaringFiber, int seq, Element child, Rect area) {}
 
   RenderContext(
       Frame frame,
@@ -46,6 +60,14 @@ public final class RenderContext {
 
   public Buffer buffer() {
     return frame.bufferMut();
+  }
+
+  /// Trigger a re-render on the next loop tick. Threadsafe — can be called from background
+  /// timers / callbacks. The actual re-render runs on the main loop thread, so component code
+  /// remains single-threaded. Components like [jatatui.components.toast.ToastsProvider] use this
+  /// to dismiss expired entries even when the user isn't interacting.
+  public Runnable requestRerender() {
+    return requestRerender;
   }
 
   // ---- Composition ----
@@ -124,6 +146,59 @@ public final class RenderContext {
       effect.run();
       hooks.deps.put(key, deps);
     }
+  }
+
+  // ---- Portal ----
+
+  /// Queue a portal for deferred rendering after the main pass. Called by the Portal intrinsic;
+  /// user code uses [Components#portal]. The portal will render as a child of the declaring
+  /// fiber (so events bubble through that parent chain), at the given absolute area.
+  public void queuePortal(Element child, Rect area) {
+    portals.add(new PortalEntry(fiber, portals.size(), child, area));
+  }
+
+  /// Render all queued portals in declaration order. Each portal renders as a `renderChild` of
+  /// its declaring fiber, with a stable sequential key so its hooks survive across renders.
+  /// Recursively drains portals queued by portal children (last-wins z-order). Called by
+  /// [ReactApp] after the main render pass.
+  void drainPortals() {
+    while (!portals.isEmpty()) {
+      java.util.List<PortalEntry> batch = new java.util.ArrayList<>(portals);
+      portals.clear();
+      for (PortalEntry pe : batch) {
+        Fiber prev = fiber;
+        int prevHook = hookIndex;
+        fiber = pe.declaringFiber();
+        try {
+          renderChild("portal:" + pe.seq(), pe.child(), pe.area());
+        } finally {
+          fiber = prev;
+          hookIndex = prevHook;
+        }
+      }
+    }
+  }
+
+  /// Read the value of `context` from the nearest enclosing provider in the Element tree, or
+  /// [Context#defaultValue] if no provider is in scope. See [Components#provide].
+  @SuppressWarnings("unchecked")
+  public <T> T useContext(Context<T> context) {
+    Deque<Object> stack = contextStacks.get(context);
+    if (stack == null || stack.isEmpty()) return context.defaultValue;
+    return (T) stack.peek();
+  }
+
+  /// Push a context value. Called by the Provider intrinsic — user code should use
+  /// [Components#provide] instead.
+  <T> void pushContext(Context<T> context, T value) {
+    contextStacks.computeIfAbsent(context, c -> new ArrayDeque<>()).push(value);
+  }
+
+  /// Pop the top context value. Called by the Provider intrinsic on its render-end. Must be
+  /// balanced with [#pushContext].
+  void popContext(Context<?> context) {
+    Deque<Object> stack = contextStacks.get(context);
+    if (stack != null && !stack.isEmpty()) stack.pop();
   }
 
   /// Ink-style focus. Returns true when this fiber currently holds focus.

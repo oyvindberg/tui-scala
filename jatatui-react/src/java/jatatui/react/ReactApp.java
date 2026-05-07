@@ -66,8 +66,9 @@ public final class ReactApp {
         hooks.sweep();
         focus.commit();
       }
-      // Block on input — pure event-driven.
-      if (jni.poll(new Duration(60L, 0))) {
+      // Poll with 100ms timeout so timer-driven re-renders (toasts, animations) wake the loop
+      // promptly. Pure event-driven for app correctness — the loop body just re-checks `dirty`.
+      if (jni.poll(new Duration(0L, 100_000_000))) {
         Event ev = jni.read();
         running = handle(ev);
       }
@@ -81,6 +82,9 @@ public final class ReactApp {
     // Record the root fiber's bounds so click hit-tests bubble all the way up to root handlers.
     events.recordBounds(Fiber.root(), frame.area());
     root.render(ctx, frame.area());
+    // Portals render last so they paint over the main UI; drainPortals also re-runs to handle
+    // portals queued by other portals.
+    ctx.drainPortals();
   }
 
   /// Returns false to quit the loop.
@@ -89,7 +93,10 @@ public final class ReactApp {
     if (ev instanceof Event.Key keyEv && keyEv.keyEvent().kind() == KeyEventKind.Press) {
       KeyCode code = keyEv.keyEvent().code();
       KeyModifiers mods = keyEv.keyEvent().modifiers();
-      if (isQuit(code, mods)) return false;
+      // Ctrl-C is unconditional (OS-style abort).
+      if (code instanceof KeyCode.Char ch
+          && ch.c() == 'c'
+          && (mods.bits() & KeyModifiers.CONTROL) != 0) return false;
       if (code instanceof KeyCode.Tab) {
         if ((mods.bits() & KeyModifiers.SHIFT) != 0) focus.shiftTab();
         else focus.tab();
@@ -103,7 +110,11 @@ public final class ReactApp {
         return true;
       }
       KeyEvent kev = new KeyEvent(code, mods);
-      if (events.dispatchKey(kev, focus.focusedFiber())) dirty.set(true);
+      boolean handled = events.dispatchKey(kev, focus.focusedFiber());
+      if (handled) dirty.set(true);
+      // Esc-to-quit is a debug fallback: if nothing in the app handled Esc, quit. Apps that want
+      // Esc to mean something (modal dismiss, form cancel) just register an Esc handler.
+      if (!handled && code instanceof KeyCode.Esc) return false;
     } else if (ev instanceof Event.Mouse mouseEv) {
       var me = mouseEv.mouseEvent();
       MouseEvent.Kind kind =
@@ -126,11 +137,4 @@ public final class ReactApp {
     return true;
   }
 
-  private static boolean isQuit(KeyCode code, KeyModifiers mods) {
-    if (code instanceof KeyCode.Esc) return true;
-    if (code instanceof KeyCode.Char ch
-        && ch.c() == 'c'
-        && (mods.bits() & KeyModifiers.CONTROL) != 0) return true;
-    return false;
-  }
 }

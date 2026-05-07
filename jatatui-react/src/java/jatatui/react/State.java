@@ -26,6 +26,18 @@ public final class State<T> {
     return value;
   }
 
+  /// Read the LATEST stored value, ignoring the render-time snapshot. Useful when a State handle
+  /// is captured outside the render that produced it (e.g. in a Context-provided API like
+  /// [jatatui.components.router.RouterApi#current] or [jatatui.components.form.FormApi#values]):
+  /// callers from later renders need to see fresh data, not a stale snapshot.
+  ///
+  /// Within a render, prefer [#get] — it gives you a stable snapshot consistent with the rest of
+  /// that render pass.
+  @SuppressWarnings("unchecked")
+  public T latest() {
+    return (T) ctx.hooks.values.getOrDefault(key, value);
+  }
+
   /// Set the current value. Triggers a re-render iff the stored value differs from `next`.
   ///
   /// Reads the LATEST stored value from the hook store (not the render-time captured `value`)

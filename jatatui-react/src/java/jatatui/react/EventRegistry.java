@@ -114,7 +114,7 @@ public final class EventRegistry {
       List<KeyHandler> handlers = keysByFiber.get(cur);
       if (handlers != null) {
         for (KeyHandler h : handlers) {
-          if (h.matcher.equals(ev.code())) {
+          if (matches(h.matcher, ev.code())) {
             h.handler.accept(ev);
             fired = true;
             if (ev.isPropagationStopped()) break;
@@ -158,6 +158,17 @@ public final class EventRegistry {
 
   private static boolean contains(Rect r, int x, int y) {
     return x >= r.x() && x < r.x() + r.width() && y >= r.y() && y < r.y() + r.height();
+  }
+
+  /// Does the matcher accept this code? Two flavors:
+  ///   - a [java.util.function.Predicate] of [tui.crossterm.KeyCode]: tested against `code`
+  ///   - anything else: compared via `equals(code)`
+  /// The Predicate path lets handlers match families of keys ("any printable char", "any digit")
+  /// without registering N handlers.
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  private static boolean matches(Object matcher, tui.crossterm.KeyCode code) {
+    if (matcher instanceof java.util.function.Predicate p) return p.test(code);
+    return matcher.equals(code);
   }
 
   private record AreaHandler(Rect area, Consumer<MouseEvent> handler) {}

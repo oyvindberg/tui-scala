@@ -6,8 +6,20 @@ import jatatui.components.gauge.LineGaugeComponent;
 import jatatui.components.gauge.LineGaugeProps;
 import jatatui.components.list.ListComponent;
 import jatatui.components.list.ListProps;
+import jatatui.components.dropdown.Dropdown;
+import jatatui.components.dropdown.DropdownProps;
+import jatatui.components.form.FormProvider;
+import jatatui.components.modal.Modal;
+import jatatui.components.modal.ModalProps;
+import jatatui.components.router.Router;
+import jatatui.components.router.Screen;
+import jatatui.components.theme.Theme;
+import jatatui.components.theme.ThemeProvider;
+import jatatui.components.toast.ToastsProvider;
 import jatatui.components.table.Table;
 import jatatui.components.table.TableProps;
+import jatatui.components.textinput.TextInputComponent;
+import jatatui.components.textinput.TextInputProps;
 import jatatui.core.layout.Constraint;
 import jatatui.core.style.Style;
 import jatatui.react.Element;
@@ -129,5 +141,118 @@ public final class Components {
   public static Element lineGauge(String title, double ratio, Style filledStyle) {
     return LineGaugeComponent.of(
         LineGaugeProps.of(ratio).withTitle(title).withFilledStyle(filledStyle));
+  }
+
+  // ---------- Router ----------
+
+  /// Mount a stack-based navigation router with a base [Screen]. Descendants get a
+  /// `RouterApi.useRouter(ctx)` for `push` / `pop` / `replace`.
+  public static Element router(Screen baseScreen) {
+    return Router.of(baseScreen);
+  }
+
+  /// Quick-path: mount router with a labeled base.
+  public static Element router(String baseLabel, Element baseBody) {
+    return Router.of(Screen.of(baseLabel, baseBody));
+  }
+
+  // ---------- Form ----------
+
+  /// Mount a form-state provider. Descendants read field state via `FormApi.useField(ctx, name,
+  /// default)`. `validate` runs after every change; `onSubmit` only runs when there are no errors.
+  public static Element formProvider(
+      java.util.Map<String, ?> initialValues,
+      java.util.function.Function<java.util.Map<String, Object>, java.util.Map<String, String>>
+          validate,
+      java.util.function.Consumer<java.util.Map<String, Object>> onSubmit,
+      Element child) {
+    return FormProvider.of(toObjectMap(initialValues), validate, onSubmit, child);
+  }
+
+  /// Quick-path: form provider with no validation.
+  public static Element formProvider(
+      java.util.Map<String, ?> initialValues,
+      java.util.function.Consumer<java.util.Map<String, Object>> onSubmit,
+      Element child) {
+    return FormProvider.of(toObjectMap(initialValues), FormProvider.NO_VALIDATION, onSubmit, child);
+  }
+
+  private static java.util.Map<String, Object> toObjectMap(java.util.Map<String, ?> m) {
+    java.util.Map<String, Object> out = new java.util.HashMap<>(m.size());
+    m.forEach(out::put);
+    return java.util.Map.copyOf(out);
+  }
+
+  // ---------- Theme ----------
+
+  /// Provide the given [Theme] to descendants. Read it inside any component with
+  /// `Theme.useTheme(ctx)`.
+  public static Element themeProvider(Theme theme, Element child) {
+    return ThemeProvider.of(theme, child);
+  }
+
+  // ---------- Toasts ----------
+
+  /// Mount near the app root. Provides a [jatatui.components.toast.ToastApi] via Context to
+  /// children, and renders active toasts in the bottom-right corner via a Portal.
+  public static Element toastsProvider(Element child) {
+    return ToastsProvider.of(child);
+  }
+
+  // ---------- Modal ----------
+
+  /// Full-control factory. See [ModalProps].
+  public static Element modal(ModalProps props) {
+    return Modal.of(props);
+  }
+
+  /// Quick-path: open + title + body + onDismiss. 40x12 default size.
+  public static Element modal(boolean open, String title, Element body, Runnable onDismiss) {
+    return Modal.of(ModalProps.of(open, title, body, onDismiss));
+  }
+
+  // ---------- Dropdown ----------
+
+  /// Full-control dropdown / select. See [DropdownProps].
+  public static Element dropdown(DropdownProps props) {
+    return Dropdown.of(props);
+  }
+
+  /// Quick-path: label + items + selected + onChange + focusId.
+  public static Element dropdown(
+      String label,
+      List<String> items,
+      int selectedIndex,
+      java.util.function.IntConsumer onChange,
+      String focusId) {
+    return Dropdown.of(
+        DropdownProps.of(label, items, selectedIndex, onChange).withFocusId(focusId).withAutoFocus(true));
+  }
+
+  // ---------- TextInput ----------
+
+  /// Full-control factory for the single-line text input. See [TextInputProps].
+  public static Element textInput(TextInputProps props) {
+    return TextInputComponent.of(props);
+  }
+
+  /// Quick-path: controlled value + onChange. Auto-focused with the given id.
+  public static Element textInput(
+      String value, java.util.function.Consumer<String> onChange, String focusId) {
+    return TextInputComponent.of(
+        TextInputProps.of(value, onChange).withFocusId(focusId).withAutoFocus(true));
+  }
+
+  /// Quick-path: controlled value + onChange + placeholder. Auto-focused with the given id.
+  public static Element textInput(
+      String value,
+      java.util.function.Consumer<String> onChange,
+      String placeholder,
+      String focusId) {
+    return TextInputComponent.of(
+        TextInputProps.of(value, onChange)
+            .withPlaceholder(placeholder)
+            .withFocusId(focusId)
+            .withAutoFocus(true));
   }
 }

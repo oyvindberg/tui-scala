@@ -3,6 +3,7 @@ package jatatui.react;
 import jatatui.core.layout.Constraint;
 import jatatui.core.layout.Flex;
 import jatatui.core.layout.Margin;
+import jatatui.core.layout.Rect;
 import jatatui.core.layout.Spacing;
 import jatatui.core.style.Style;
 import jatatui.widgets.Borders;
@@ -192,6 +193,39 @@ public final class Components {
         Intrinsics.FOR_EACH,
         new Intrinsics.ForEachProps(items, keyFn, render, rowHeight),
         Optional.empty());
+  }
+
+  // ---- Key matchers ----
+
+  /// Matcher for `ctx.onKey` that fires on every key press. Useful for text inputs that need to
+  /// observe all keys (printable chars, backspace, arrows, etc.).
+  public static final java.util.function.Predicate<tui.crossterm.KeyCode> ANY_KEY = code -> true;
+
+  /// Matcher: any printable single character (`KeyCode.Char` regardless of which char).
+  public static final java.util.function.Predicate<tui.crossterm.KeyCode> ANY_CHAR =
+      code -> code instanceof tui.crossterm.KeyCode.Char;
+
+  // ---- Context ----
+
+  /// Provide `value` for `context` to all components rendered under `child`. Calls to
+  /// `ctx.useContext(context)` inside `child` will see this value (or, if nested deeper, the
+  /// closest enclosing provider's value).
+  public static <T> Element provide(Context<T> context, T value, Element child) {
+    return new Element.Of<>(
+        Intrinsics.PROVIDER,
+        new Intrinsics.ProviderProps<>(context, value, child),
+        Optional.empty());
+  }
+
+  // ---- Portal ----
+
+  /// Render `child` into `area` (in absolute screen coordinates), AFTER the main pass completes.
+  /// Used for modals, tooltips, dropdowns, toasts — anything that needs to escape the parent's
+  /// layout and paint over the rest of the UI. Events still bubble through the declaring fiber's
+  /// parent chain (not the visual parent at `area`).
+  public static Element portal(Element child, Rect area) {
+    return new Element.Of<>(
+        Intrinsics.PORTAL, new Intrinsics.PortalProps(child, area), Optional.empty());
   }
 
   // ---- Escape hatch ----

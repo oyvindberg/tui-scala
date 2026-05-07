@@ -218,6 +218,33 @@ public final class Intrinsics {
   public static final Component<IfElseProps> IF_ELSE =
       (props, ctx) -> props.condition() ? props.thenChild() : props.elseChild();
 
+  // -------------------- Provider (Context) --------------------
+
+  public record ProviderProps<T>(Context<T> context, T value, Element child) {}
+
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  public static final Component<ProviderProps<?>> PROVIDER =
+      (props, ctx) ->
+          new Element.Host(
+              (c, area) -> {
+                ProviderProps p = (ProviderProps) props;
+                c.pushContext(p.context(), p.value());
+                try {
+                  c.renderChild("provider", p.child(), area);
+                } finally {
+                  c.popContext(p.context());
+                }
+              });
+
+  // -------------------- Portal (deferred render to absolute area) --------------------
+
+  public record PortalProps(Element child, Rect area) {}
+
+  public static final Component<PortalProps> PORTAL =
+      (props, ctx) ->
+          new Element.Host(
+              (c, area) -> c.queuePortal(props.child(), props.area()));
+
   // -------------------- Widget wrap --------------------
 
   public record WidgetWrapProps(jatatui.core.widgets.Widget widget) {}
