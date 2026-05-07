@@ -26,6 +26,13 @@ public final class Launcher {
     EXAMPLES.put("scrollbar", "jatatui.react.examples.scrollbar.ScrollbarExample");
     EXAMPLES.put("barchart", "jatatui.react.examples.barchart.BarChartExample");
     EXAMPLES.put("showcase", "jatatui.react.examples.showcase.ShowcaseExample");
+    EXAMPLES.put("textinput", "jatatui.react.examples.textinput.TextInputExample");
+    EXAMPLES.put("modal", "jatatui.react.examples.modal.ModalExample");
+    EXAMPLES.put("toast", "jatatui.react.examples.toast.ToastExample");
+    EXAMPLES.put("dropdown", "jatatui.react.examples.dropdown.DropdownExample");
+    EXAMPLES.put("theme", "jatatui.react.examples.theme.ThemeExample");
+    EXAMPLES.put("form", "jatatui.react.examples.form.FormExample");
+    EXAMPLES.put("router", "jatatui.react.examples.router.RouterExample");
   }
 
   private Launcher() {}
