@@ -1,11 +1,12 @@
 > [!NOTE]
 > **jatatui** is a Java port of [ratatui](https://github.com/ratatui/ratatui) v0.30.0.
-> It is the successor to [`tui-scala`](../readme.md), which ported the much older
-> 2022-era `tui-rs`. `tui-scala` will be archived once jatatui is feature-complete.
+> It is the successor to [`tui-scala`](https://github.com/oyvindberg/tui-scala),
+> which ported the much older 2022-era `tui-rs`. `tui-scala` will be archived once
+> jatatui is feature-complete.
 
 # jatatui
 
-[![Build Status](https://github.com/oyvindberg/tui-scala/actions/workflows/build.yml/badge.svg?branch=main&event=push)](https://github.com/oyvindberg/tui-scala/actions/workflows/build.yml?query=branch%3Amain)
+[![Build Status](https://github.com/oyvindberg/jatatui/actions/workflows/build.yml/badge.svg?branch=main&event=push)](https://github.com/oyvindberg/jatatui/actions/workflows/build.yml?query=branch%3Amain)
 
 Build rich terminal UIs from Java. jatatui is a faithful port of ratatui — same
 widgets, same buffer model, same Crossterm backend — translated to idiomatic

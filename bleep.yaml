@@ -122,7 +122,7 @@ templates:
   template-jatatui-publish:
     publish:
       groupId: com.olvind.jatatui
-      url: https://github.com/oyvindberg/tui-scala/
+      url: https://github.com/oyvindberg/jatatui/
       developers:
       - id: oyvindberg
         name: Øyvind Raddum Berg
