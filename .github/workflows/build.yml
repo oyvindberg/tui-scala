@@ -98,16 +98,16 @@ jobs:
       # generated-resources. Running the JNI smoke test verifies the lib loads correctly.
       - name: Build native lib + smoke-test JNI
         if: runner.os != 'Windows' && !matrix.bootstrap_coursier
-        run: bleep test jatatui-tests jatatui.tests.crossterm.CrosstermBackendTest
+        run: bleep test jatatui-tests --only jatatui.tests.crossterm.CrosstermBackendTest
 
       - name: Build native lib + smoke-test JNI (arm64)
         if: ${{ matrix.bootstrap_coursier }}
-        run: bleep --dev test jatatui-tests jatatui.tests.crossterm.CrosstermBackendTest
+        run: bleep --dev test jatatui-tests --only jatatui.tests.crossterm.CrosstermBackendTest
 
       - name: Build native lib + smoke-test JNI (windows)
         if: runner.os == 'Windows'
         shell: cmd
-        run: bleep test jatatui-tests jatatui.tests.crossterm.CrosstermBackendTest
+        run: bleep test jatatui-tests --only jatatui.tests.crossterm.CrosstermBackendTest
 
       - name: Upload native lib artifact
         uses: actions/upload-artifact@v4
