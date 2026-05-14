@@ -4,32 +4,68 @@ jvm:
   name: graalvm-community:25.0.1
 projects:
   crossterm:
+    extends: template-jatatui-publish
     java:
       options: --release 17
     platform:
       name: jvm
+    publish:
+      description: JNI binding to the Rust crossterm crate, with prebuilt native libraries.
     sourcegen:
       main: tui.scripts.GenJniLibrary
       project: scripts
   jatatui-core:
+    extends: template-jatatui-publish
     java:
       options: --release 21
     platform:
       name: jvm
+    publish:
+      description: jatatui core (Buffer, Layout, Style, Text, Terminal). Java port of ratatui-core.
   jatatui-widgets:
     dependsOn: jatatui-core
+    extends: template-jatatui-publish
     java:
       options: --release 21
     platform:
       name: jvm
+    publish:
+      description: jatatui widgets (Block, Paragraph, List, Table, Chart, ...). Java port of ratatui-widgets.
   jatatui-crossterm:
     dependsOn:
     - jatatui-core
     - crossterm
+    extends: template-jatatui-publish
     java:
       options: --release 21
     platform:
       name: jvm
+    publish:
+      description: jatatui CrosstermBackend. Java port of ratatui-crossterm.
+  jatatui-react:
+    dependsOn:
+    - jatatui-core
+    - jatatui-widgets
+    - jatatui-crossterm
+    extends: template-jatatui-publish
+    java:
+      options: --release 21
+    platform:
+      name: jvm
+    publish:
+      description: React-style component layer for jatatui — components, hooks, event bubbling, portals.
+  jatatui-components:
+    dependsOn:
+    - jatatui-core
+    - jatatui-widgets
+    - jatatui-react
+    extends: template-jatatui-publish
+    java:
+      options: --release 21
+    platform:
+      name: jvm
+    publish:
+      description: Higher-level jatatui-react components — TextInput, Modal, Dropdown, Toast, Form, Router, Theme.
   jatatui-tests:
     dependencies:
     - org.junit.jupiter:junit-jupiter:5.11.3
@@ -42,24 +78,6 @@ projects:
     - jatatui-react
     - jatatui-components
     isTestProject: true
-    java:
-      options: --release 21
-    platform:
-      name: jvm
-  jatatui-react:
-    dependsOn:
-    - jatatui-core
-    - jatatui-widgets
-    - jatatui-crossterm
-    java:
-      options: --release 21
-    platform:
-      name: jvm
-  jatatui-components:
-    dependsOn:
-    - jatatui-core
-    - jatatui-widgets
-    - jatatui-react
     java:
       options: --release 21
     platform:
@@ -88,9 +106,8 @@ projects:
       mainClass: jatatui.react.examples.Launcher
   scripts:
     dependencies:
-    - build.bleep::bleep-plugin-ci-release:${BLEEP_VERSION}
-    - build.bleep::bleep-plugin-jni:${BLEEP_VERSION}
-    - build.bleep::bleep-plugin-native-image:${BLEEP_VERSION}
+    - build.bleep::bleep-plugin-jni:1.0.0-M9
+    - build.bleep::bleep-plugin-native-image:1.0.0-M3
     extends:
     - template-scala-2
     - template-scala-common
@@ -101,13 +118,21 @@ scripts:
   gen-native-image:
     main: tui.scripts.GenNativeImage
     project: scripts
-  my-publish-local:
-    main: tui.scripts.PublishLocal
-    project: scripts
-  publish:
-    main: tui.scripts.Publish
-    project: scripts
 templates:
+  template-jatatui-publish:
+    publish:
+      groupId: com.olvind.jatatui
+      url: https://github.com/oyvindberg/tui-scala/
+      developers:
+      - id: oyvindberg
+        name: Øyvind Raddum Berg
+        url: https://github.com/oyvindberg
+      licenses:
+      - name: MIT
+        url: http://opensource.org/licenses/MIT
+        distribution: repo
+      sonatypeProfileName: com.olvind
+      sonatypeCredentialHost: central.sonatype.com
   template-scala-2:
     scala:
       version: 3.8.3

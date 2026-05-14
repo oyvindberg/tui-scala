@@ -10,11 +10,13 @@ This repo is the successor to `tui-scala` (a Java port of the much older 2022-er
 
 ## Build
 
-- Build tool: bleep. Always set `BLEEP_VERSION=0.0.13` (the `scripts` project depends on bleep plugins at that version).
+- Build tool: bleep `1.0.0-M9` (pinned in `bleep.yaml`'s `$version`). The bleep launcher reads that and uses the right version automatically — no `BLEEP_VERSION` env var needed.
 - JVM target for Java code: `--release 21`. The `crossterm` JNI binding stays at `--release 17` (consumer-facing JNI surface).
 - Test framework: **JUnit 5** (`org.junit.jupiter:junit-jupiter:5.x`).
-- Compile: `BLEEP_VERSION=0.0.13 bleep compile <project>`.
-- Test: `BLEEP_VERSION=0.0.13 bleep test jatatui-tests`.
+- Compile: `bleep compile <project>`.
+- Test: `bleep test jatatui-tests`.
+- Local snapshot publish: `bleep publish local-ivy --version "0.30.0_$(date +%Y-%m-%d)-SNAPSHOT"`.
+- Sonatype release: tag `jatatui-vX.Y.Z`, push — CI runs `bleep publish sonatype --version X.Y.Z --assert-release`.
 
 ## Submodules and what they track
 
