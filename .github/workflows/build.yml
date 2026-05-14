@@ -37,46 +37,19 @@ jobs:
         include:
           - os: ubuntu-24.04
             jni-folder: .bleep/generated-resources/crossterm/tui.scripts.GenJniLibrary
-            bootstrap_coursier: false
           - os: ubuntu-22.04-arm
             jni-folder: .bleep/generated-resources/crossterm/tui.scripts.GenJniLibrary
-            bootstrap_coursier: true
           - os: macos-15-intel
             jni-folder: .bleep/generated-resources/crossterm/tui.scripts.GenJniLibrary
-            bootstrap_coursier: false
           - os: macos-latest
             jni-folder: .bleep/generated-resources/crossterm/tui.scripts.GenJniLibrary
-            bootstrap_coursier: false
           - os: windows-latest
             jni-folder: .bleep\generated-resources\crossterm\tui.scripts.GenJniLibrary
-            bootstrap_coursier: false
     steps:
       - uses: actions/checkout@v6
         with:
           submodules: recursive
-
-      # ARM64 Linux needs JDK 21+ for UnixDomainSocketAddress in the BSP server
-      - uses: actions/setup-java@v5
-        if: ${{ matrix.bootstrap_coursier }}
-        with:
-          distribution: 'temurin'
-          java-version: '21'
-
-      # Standard bootstrap via setup action (platforms with existing native binaries)
       - uses: bleep-build/bleep-setup-action@0.0.2
-        if: ${{ !matrix.bootstrap_coursier }}
-
-      # ARM64 Linux: bootstrap bleep via Coursier (no pre-built native binary yet)
-      - name: Bootstrap bleep via Coursier
-        if: ${{ matrix.bootstrap_coursier }}
-        run: |
-          BLEEP_VERSION=$(grep '^\$version:' bleep.yaml | cut -d' ' -f2)
-          echo "Bootstrapping bleep $BLEEP_VERSION via Coursier"
-          curl -fL "https://github.com/coursier/launchers/raw/master/cs-aarch64-pc-linux.gz" | gzip -d > cs
-          chmod +x cs
-          ./cs install --channel https://raw.githubusercontent.com/oyvindberg/bleep/master/coursier-channel.json "bleep:$BLEEP_VERSION" --install-dir /usr/local/bin
-          rm cs
-
       - uses: coursier/cache-action@v7
         with:
           extraFiles: bleep.yaml
@@ -97,12 +70,8 @@ jobs:
       # Sourcegen on the crossterm project triggers cargo to build the native lib and copy it to
       # generated-resources. Running the JNI smoke test verifies the lib loads correctly.
       - name: Build native lib + smoke-test JNI
-        if: runner.os != 'Windows' && !matrix.bootstrap_coursier
+        if: runner.os != 'Windows'
         run: bleep test jatatui-tests --only jatatui.tests.crossterm.CrosstermBackendTest
-
-      - name: Build native lib + smoke-test JNI (arm64)
-        if: ${{ matrix.bootstrap_coursier }}
-        run: bleep --dev test jatatui-tests --only jatatui.tests.crossterm.CrosstermBackendTest
 
       - name: Build native lib + smoke-test JNI (windows)
         if: runner.os == 'Windows'
