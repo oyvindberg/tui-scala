@@ -119,7 +119,11 @@ public final class Dropdown {
                     // Eat clicks on the list background (gaps between rows). Per-row clicks are
                     // attached to each row inside optionsList.
                     c.onClick(e -> e.stopPropagation());
-                    return optionsList(props.items(), hi, props.onChange(), openState);
+                    // Stack Clear under the option list so the overlay is opaque — without
+                    // this, underlying widgets' borders / text bleed through gaps in our rows.
+                    return stack(
+                        widget(jatatui.widgets.Clear.instance()),
+                        optionsList(props.items(), hi, props.onChange(), openState));
                   });
 
           Element backdrop =
