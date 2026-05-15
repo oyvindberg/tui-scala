@@ -18,6 +18,13 @@ final class HookStore {
   /// `(deps[], producedElement)`.
   final Map<Fiber, MemoEntry> memoCache = new HashMap<>();
 
+  /// What "type" was last rendered at each fiber position. Used by [RenderContext]'s
+  /// reconciliation step — when the type at a fiber changes between frames (e.g. a stack-based
+  /// router swaps SourceEditor for OutputEditor at the same fiber slot), the previous subtree
+  /// is unmounted (state dropped, cleanups run) before the new one renders. Mirrors React's
+  /// "different element type at same fiber → unmount + remount" rule.
+  final Map<Fiber, Object> elementTypes = new HashMap<>();
+
   // Note: there used to be an `applyCache` for Element.Of auto-memoization, but it interacted
   // badly with side-effect handlers (onClick/onKey/useFocus registrations would be dropped on
   // cache hit). Removed — memoization is opt-in only via memo() / pureComponent(), which use
@@ -46,6 +53,36 @@ final class HookStore {
     return true;
   }
 
+  // -------------------- unmount (reconciliation) --------------------
+
+  /// Drop all hook state for `root` and every descendant fiber, running cleanups. Used by
+  /// [RenderContext]'s reconciliation when the Element type at a fiber position changes between
+  /// frames — the old subtree is "unmounted" before the new one renders.
+  void unmount(Fiber root) {
+    Iterator<Map.Entry<HookKey, Runnable>> ci = cleanups.entrySet().iterator();
+    while (ci.hasNext()) {
+      Map.Entry<HookKey, Runnable> e = ci.next();
+      if (isInSubtree(root, e.getKey().fiber())) {
+        e.getValue().run();
+        ci.remove();
+      }
+    }
+    values.keySet().removeIf(k -> isInSubtree(root, k.fiber()));
+    deps.keySet().removeIf(k -> isInSubtree(root, k.fiber()));
+    memoCache.keySet().removeIf(f -> isInSubtree(root, f));
+    elementTypes.keySet().removeIf(f -> isInSubtree(root, f));
+  }
+
+  /// True if `f` is `root` or descended from it.
+  private static boolean isInSubtree(Fiber root, Fiber f) {
+    Fiber cur = f;
+    while (cur != null) {
+      if (cur.equals(root)) return true;
+      cur = cur.parent().orElse(null);
+    }
+    return false;
+  }
+
   // -------------------- sweep --------------------
 
   /// Drop hook state, memo cache, apply cache for fibers that weren't touched in the just-finished
@@ -63,6 +100,7 @@ final class HookStore {
       }
     }
     memoCache.keySet().removeIf(f -> !touched.contains(f));
+    elementTypes.keySet().removeIf(f -> !touched.contains(f));
     touched.clear();
   }
 
