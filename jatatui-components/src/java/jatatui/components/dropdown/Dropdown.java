@@ -32,8 +32,16 @@ public final class Dropdown {
           boolean open = openState.get();
 
           // Auto-close when focus moves elsewhere — Tab to next field, programmatic focus
-          // change, etc. The backdrop closes on outside click; this catches every other path.
+          // change, etc. Commits the current highlight as the selection: keyboard navigation
+          // ending in Tab is "I picked this, move on". Mouse-outside-click goes through the
+          // backdrop's onClick which clears openState directly (bypassing this branch), so
+          // cancel-by-click-outside still works without committing. Esc is similar: its onKey
+          // handler clears openState before this branch can run.
           if (open && !focused) {
+            int hi = clamp(highlightState.get(), 0, Math.max(0, props.items().size() - 1));
+            if (hi != props.selectedIndex()) {
+              props.onChange().accept(hi);
+            }
             openState.set(false);
             open = false;
           }
