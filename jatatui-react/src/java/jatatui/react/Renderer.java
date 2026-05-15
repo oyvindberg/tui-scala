@@ -70,12 +70,21 @@ public final class Renderer {
   public void render(Frame frame, Element root) {
     events.clear();
     focus.clearFrame();
+    java.util.Optional<String> focusedBefore = focus.currentlyFocused();
     RenderContext ctx = new RenderContext(frame, events, hooks, focus, this::requestRerender);
     events.recordBounds(Fiber.root(), frame.area());
     root.render(ctx, frame.area());
     ctx.drainPortals();
     hooks.sweep();
     focus.commit();
+    // Screen-change case: the previously focused id wasn't re-registered this frame so commit
+    // chose a new winner (or the previously focused element unmounted). Request a re-render so
+    // the new winner is visible — this frame painted as if nothing were focused there.
+    // First-render and post-blur cases are handled eagerly inside FocusManager.register, so this
+    // re-request only fires when we genuinely need a second pass.
+    if (!focus.currentlyFocused().equals(focusedBefore)) {
+      requestRerender();
+    }
   }
 
   // ---- Event dispatch ----
