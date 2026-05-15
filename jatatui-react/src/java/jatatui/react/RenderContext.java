@@ -208,6 +208,24 @@ public final class RenderContext {
     return focus.isFocused(fid);
   }
 
+  /// Imperatively move focus to the focusable with this `id`. Use from event handlers (click,
+  /// validation-failed callbacks, list-row selection — anywhere you need to focus a specific
+  /// component without going through Tab cycling). Pairs with [#useFocus]'s explicit `id`.
+  ///
+  /// Effective on the next render: focus state is read by `useFocus` during render, and this
+  /// just stages the new focused id.
+  public void focus(String id) {
+    focus.focus(id);
+    requestRerender.run();
+  }
+
+  /// Imperatively clear focus. Next render's `useFocus` calls all return false until something
+  /// claims focus again (Tab cycling, autoFocus, or [#focus(String)]).
+  public void blur() {
+    focus.blur();
+    requestRerender.run();
+  }
+
   // ---- Event registration ----
 
   /// The bounds for this Component's fiber, recorded by the parent's `renderChild` call. Returns
