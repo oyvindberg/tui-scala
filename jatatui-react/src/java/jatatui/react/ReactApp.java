@@ -4,7 +4,6 @@ import jatatui.core.terminal.Terminal;
 import jatatui.crossterm.CrosstermBackend;
 import jatatui.crossterm.Jatatui;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
 import tui.crossterm.CrosstermJni;
 import tui.crossterm.Duration;
 import tui.crossterm.Event;
@@ -12,28 +11,37 @@ import tui.crossterm.KeyCode;
 import tui.crossterm.KeyEventKind;
 import tui.crossterm.KeyModifiers;
 
-/// Runs an [Element] tree on the terminal.
+/// Opinionated event-loop runner for an [Element] tree on the terminal. Wraps a [Renderer] with:
+///   - Crossterm input polling (100ms timeout — promptly wakes timer-driven re-renders)
+///   - Tab / Shift-Tab / BackTab cycle focus
+///   - Ctrl-C always quits; Esc quits when no handler intercepts it
+///   - Mouse capture enabled while the loop runs
 ///
 /// Re-render is **strictly event-driven**: the loop only redraws when:
 ///   - a `useState.set(...)` reports a change → flips dirty
 ///   - a Crossterm event arrives → may dispatch a handler that flips dirty
 ///   - the terminal is resized
 ///
-/// (No frame timer for now — animations would need a `useFrame`-style hook, see DESIGN.md.)
+/// If the host has its own loop, its own focus / Esc / quit semantics, or doesn't want mouse
+/// capture, embed [Renderer] directly instead of using this.
 public final class ReactApp {
 
   private final Element root;
+  private final Renderer renderer;
   // Package-private so tests in this package can drive ReactApp without going through the JNI.
-  final EventRegistry events = new EventRegistry();
-  final HookStore hooks = new HookStore();
-  final FocusManager focus = new FocusManager();
-  final AtomicBoolean dirty = new AtomicBoolean(true);
+  final EventRegistry events;
+  final HookStore hooks;
+  final FocusManager focus;
   private final CrosstermJni jni;
 
   /// Package-private — tests construct ReactApp directly to drive `handle(...)` without going
   /// through the JNI poll loop.
   ReactApp(Element root, CrosstermJni jni) {
     this.root = root;
+    this.renderer = new Renderer();
+    this.events = renderer.events();
+    this.hooks = renderer.hooks();
+    this.focus = renderer.focus();
     this.jni = jni;
   }
 
@@ -61,10 +69,8 @@ public final class ReactApp {
   private void loop(Terminal<CrosstermBackend> terminal) throws IOException {
     boolean running = true;
     while (running) {
-      if (dirty.getAndSet(false)) {
-        terminal.draw(this::renderFrame);
-        hooks.sweep();
-        focus.commit();
+      if (renderer.takeDirty()) {
+        terminal.draw(frame -> renderer.render(frame, root));
       }
       // Poll with 100ms timeout so timer-driven re-renders (toasts, animations) wake the loop
       // promptly. Pure event-driven for app correctness — the loop body just re-checks `dirty`.
@@ -73,18 +79,6 @@ public final class ReactApp {
         running = handle(ev);
       }
     }
-  }
-
-  private void renderFrame(jatatui.core.terminal.Frame frame) {
-    events.clear();
-    focus.clearFrame();
-    RenderContext ctx = new RenderContext(frame, events, hooks, focus, () -> dirty.set(true));
-    // Record the root fiber's bounds so click hit-tests bubble all the way up to root handlers.
-    events.recordBounds(Fiber.root(), frame.area());
-    root.render(ctx, frame.area());
-    // Portals render last so they paint over the main UI; drainPortals also re-runs to handle
-    // portals queued by other portals.
-    ctx.drainPortals();
   }
 
   /// Returns false to quit the loop.
@@ -98,20 +92,17 @@ public final class ReactApp {
           && ch.c() == 'c'
           && (mods.bits() & KeyModifiers.CONTROL) != 0) return false;
       if (code instanceof KeyCode.Tab) {
-        if ((mods.bits() & KeyModifiers.SHIFT) != 0) focus.shiftTab();
-        else focus.tab();
-        dirty.set(true);
+        if ((mods.bits() & KeyModifiers.SHIFT) != 0) renderer.shiftTab();
+        else renderer.tab();
         return true;
       }
       // Most terminals send Shift-Tab as KeyCode.BackTab rather than Tab+SHIFT modifier.
       if (code instanceof KeyCode.BackTab) {
-        focus.shiftTab();
-        dirty.set(true);
+        renderer.shiftTab();
         return true;
       }
       KeyEvent kev = new KeyEvent(code, mods);
-      boolean handled = events.dispatchKey(kev, focus.focusedFiber());
-      if (handled) dirty.set(true);
+      boolean handled = renderer.dispatchKey(kev);
       // Esc-to-quit is a debug fallback: if nothing in the app handled Esc, quit. Apps that want
       // Esc to mean something (modal dismiss, form cancel) just register an Esc handler.
       if (!handled && code instanceof KeyCode.Esc) return false;
@@ -129,12 +120,11 @@ public final class ReactApp {
           };
       if (kind != null) {
         MouseEvent mev = new MouseEvent(me.column(), me.row(), me.modifiers(), kind);
-        if (events.dispatchMouse(mev)) dirty.set(true);
+        renderer.dispatchMouse(mev);
       }
     } else if (ev instanceof Event.Resize) {
-      dirty.set(true);
+      renderer.requestRerender();
     }
     return true;
   }
-
 }

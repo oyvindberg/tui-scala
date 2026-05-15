@@ -4,38 +4,37 @@ import jatatui.core.backend.TestBackend;
 import jatatui.core.terminal.Terminal;
 import java.io.IOException;
 
-/// Test-only helper for off-loop rendering of an Element tree against a [TestBackend]. Lets
-/// tests in any package drive renders without depending on package-private internals
-/// (`HookStore`, `EventRegistry`, `FocusManager`, `Fiber`, the package-private `RenderContext`
-/// constructor).
+/// Test-only convenience around [Renderer] + a [TestBackend] / [Terminal]. Lets tests in any
+/// package drive renders without managing the terminal plumbing themselves. Tests that need
+/// fine-grained control (a real Frame from a different source, a custom event sequence) should
+/// build a [Renderer] directly.
 ///
 /// Holds persistent state across `render` calls — useful for testing useState persistence,
 /// keyed-list reordering, etc. Construct one per test method.
 public final class TestHarness {
 
-  public final EventRegistry events = new EventRegistry();
-  public final HookStore hooks = new HookStore();
-  public final FocusManager focus = new FocusManager();
+  /// The underlying renderer. Use this for `dispatchMouse` / `dispatchKey` / focus operations.
+  public final Renderer renderer;
+
+  // Same instances as the renderer, exposed for tests that interact directly.
+  public final EventRegistry events;
+  public final FocusManager focus;
+  final HookStore hooks; // package-private — same as renderer.hooks()
+
   public final TestBackend backend;
   public final Terminal<TestBackend> terminal;
 
   public TestHarness(int width, int height) throws IOException {
+    this.renderer = new Renderer();
+    this.events = renderer.events();
+    this.focus = renderer.focus();
+    this.hooks = renderer.hooks();
     this.backend = new TestBackend(width, height);
     this.terminal = Terminal.create(backend);
   }
 
-  /// Render `root` once, drain portals, sweep hooks, commit focus.
+  /// Render `root` once via the renderer.
   public void render(Element root) throws IOException {
-    terminal.draw(
-        frame -> {
-          events.clear();
-          focus.clearFrame();
-          RenderContext ctx = new RenderContext(frame, events, hooks, focus, () -> {});
-          events.recordBounds(Fiber.root(), frame.area());
-          root.render(ctx, frame.area());
-          ctx.drainPortals();
-        });
-    hooks.sweep();
-    focus.commit();
+    terminal.draw(frame -> renderer.render(frame, root));
   }
 }
