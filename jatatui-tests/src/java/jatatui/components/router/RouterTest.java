@@ -104,6 +104,53 @@ class RouterTest {
     assertEquals(2, apiRef.get().depth());
   }
 
+  /// Router transitions clear focus before the new screen renders, so the new screen's
+  /// `useFocus(autoFocus=true)` claims SAME-frame via the eager-claim path. Without this, the
+  /// previous screen's focused id would still be set, blocking eager-claim, and the new
+  /// screen's first frame would paint as nothing-focused (one-frame flicker).
+  @Test
+  void push_clears_focus_so_new_screen_focuses_first_frame() throws IOException {
+    AtomicReference<RouterApi> apiRef = new AtomicReference<>();
+    java.util.List<Boolean> screenAFlags = new java.util.ArrayList<>();
+    java.util.List<Boolean> screenBFlags = new java.util.ArrayList<>();
+
+    Element screenA =
+        component(
+            ctx -> {
+              apiRef.set(RouterApi.useRouter(ctx));
+              screenAFlags.add(ctx.useFocus(java.util.Optional.of("a-field"), true));
+              return text("a");
+            });
+    Element screenB =
+        component(
+            ctx -> {
+              apiRef.set(RouterApi.useRouter(ctx));
+              screenBFlags.add(ctx.useFocus(java.util.Optional.of("b-field"), true));
+              return text("b");
+            });
+
+    Element app = router(Screen.of("a", screenA));
+    TestHarness h = new TestHarness(40, 12);
+
+    h.render(app);
+    assertEquals(java.util.List.of(true), screenAFlags, "screen A's autoFocus visible same-frame");
+
+    apiRef.get().push("b", screenB);
+    h.render(app);
+    assertEquals(
+        java.util.List.of(true),
+        screenBFlags,
+        "screen B's autoFocus visible same-frame (router cleared stale focus from A)");
+
+    screenAFlags.clear();
+    apiRef.get().pop();
+    h.render(app);
+    assertEquals(
+        java.util.List.of(true),
+        screenAFlags,
+        "back to screen A: autoFocus visible same-frame again");
+  }
+
   @Test
   void reset_back_to_base() throws IOException {
     AtomicReference<RouterApi> apiRef = new AtomicReference<>();
