@@ -1,8 +1,10 @@
 > [!NOTE]
 > **jatatui** is a Java port of [ratatui](https://github.com/ratatui/ratatui) v0.30.0.
-> It is the successor to [`tui-scala`](https://github.com/oyvindberg/tui-scala),
-> which ported the much older 2022-era `tui-rs`. `tui-scala` will be archived once
-> jatatui is feature-complete.
+> It is the successor to `tui-scala`, which ported the much older 2022-era `tui-rs`.
+> The original `tui-scala` code lives on the
+> [`main-tui-scala`](https://github.com/oyvindberg/jatatui/tree/main-tui-scala)
+> branch of this repo (with the further Java-rewrite + v0.20–v0.25 ports preserved
+> on [`legacy-port`](https://github.com/oyvindberg/jatatui/tree/legacy-port)).
 
 # jatatui
 
