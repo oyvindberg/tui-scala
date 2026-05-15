@@ -108,6 +108,83 @@ class DropdownTest {
     assertEquals(2, selected.get(), "highlight moved 0 → 1 → 2 (blue)");
   }
 
+  /// Cursor-then-Tab commits: navigating with Up/Down and then Tab'ing away takes the current
+  /// highlight as the selection (rather than discarding it). Cancel paths — Esc, backdrop
+  /// click — go through different branches and stay non-committing.
+  @Test
+  void tab_with_moved_highlight_commits_selection() throws IOException {
+    AtomicInteger selected = new AtomicInteger(0);
+    AtomicInteger changeCount = new AtomicInteger(0);
+
+    Element app =
+        column(
+                length(3, dropdown("A", List.of("red", "green", "blue"),
+                    selected.get(),
+                    i -> {
+                      selected.set(i);
+                      changeCount.incrementAndGet();
+                    },
+                    "a")),
+                length(3, dropdown("B", List.of("p", "q"), 0, i -> {}, "b")),
+                fill(1, text("")))
+            .with(p -> p.withSpacing(0).withMargin(new Margin(0, 0)));
+
+    TestHarness h = new TestHarness(40, 20);
+    h.render(app);
+
+    // Open A.
+    h.events.dispatchMouse(
+        new MouseEvent(5, 1, new KeyModifiers(0), MouseEvent.Kind.DOWN));
+    h.render(app);
+
+    // Move highlight 0 → 1 → 2 (blue).
+    h.renderer.dispatchKey(
+        new jatatui.react.KeyEvent(new tui.crossterm.KeyCode.Down(), new KeyModifiers(0)));
+    h.render(app);
+    h.renderer.dispatchKey(
+        new jatatui.react.KeyEvent(new tui.crossterm.KeyCode.Down(), new KeyModifiers(0)));
+    h.render(app);
+
+    // Tab to B (in real app, ReactApp does focus.tab; here we call it directly). The auto-
+    // close branch should commit the current highlight (blue, index 2).
+    h.renderer.tab();
+    h.render(app);
+
+    assertEquals(1, changeCount.get(), "Tab away with moved highlight commits exactly once");
+    assertEquals(2, selected.get(), "blue is the selection (index 2)");
+  }
+
+  /// Opening then Tab'ing away without moving the highlight does NOT fire onChange (no real
+  /// change to commit).
+  @Test
+  void tab_without_moving_highlight_does_not_fire_onchange() throws IOException {
+    AtomicInteger changeCount = new AtomicInteger(0);
+
+    Element app =
+        column(
+                length(3, dropdown("A", List.of("red", "green", "blue"),
+                    1, // start with green selected
+                    i -> changeCount.incrementAndGet(),
+                    "a")),
+                length(3, dropdown("B", List.of("p", "q"), 0, i -> {}, "b")),
+                fill(1, text("")))
+            .with(p -> p.withSpacing(0).withMargin(new Margin(0, 0)));
+
+    TestHarness h = new TestHarness(40, 20);
+    h.render(app);
+
+    // Open A (highlight initialized to selectedIndex = 1).
+    h.events.dispatchMouse(
+        new MouseEvent(5, 1, new KeyModifiers(0), MouseEvent.Kind.DOWN));
+    h.render(app);
+
+    // Tab away — same highlight as selection, no onChange.
+    h.renderer.tab();
+    h.render(app);
+
+    assertEquals(0, changeCount.get(), "no movement, no commit");
+  }
+
   /// Tab while the dropdown is open: ReactApp's loop moves focus to the next focusable. The
   /// dropdown's auto-close-on-focus-loss closes the open list. (Focus arrives at the next
   /// dropdown via FocusManager.tab in a real loop; here we exercise the auto-close branch.)
