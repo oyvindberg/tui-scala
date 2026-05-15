@@ -127,7 +127,7 @@ public final class EventRegistry {
     // Global handlers fire last (after the whole bubble chain), if still propagating.
     if (!ev.isPropagationStopped()) {
       for (KeyHandler h : globalKeys) {
-        if (h.matcher.equals(ev.code())) {
+        if (matches(h.matcher, ev.code())) {
           h.handler.accept(ev);
           fired = true;
           if (ev.isPropagationStopped()) break;

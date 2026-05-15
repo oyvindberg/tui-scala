@@ -237,6 +237,36 @@ class EventRegistryDispatchTest {
     assertFalse(fired);
   }
 
+  // Regression: globalKeys path used `h.matcher.equals(ev.code())` directly instead of going
+  // through `matches(...)`, so Predicate-based matchers (ANY_KEY, ANY_CHAR, ad-hoc preds) would
+  // silently never fire as global handlers — Predicate.equals(KeyCode) is always false.
+  @Test
+  void global_handler_with_predicate_matcher_fires() {
+    EventRegistry r = new EventRegistry();
+    List<String> log = new ArrayList<>();
+    java.util.function.Predicate<KeyCode> anyKey = code -> true;
+    r.addGlobalKey(anyKey, e -> log.add("global"));
+
+    KeyEvent ev = new KeyEvent(new KeyCode.Char('z'), new KeyModifiers(0));
+    boolean fired = r.dispatchKey(ev, Optional.empty());
+
+    assertTrue(fired, "global Predicate matcher must fire");
+    assertEquals(List.of("global"), log);
+  }
+
+  @Test
+  void global_handler_with_keycode_matcher_still_fires() {
+    EventRegistry r = new EventRegistry();
+    List<String> log = new ArrayList<>();
+    r.addGlobalKey(new KeyCode.Char('q'), e -> log.add("q"));
+
+    KeyEvent ev = new KeyEvent(new KeyCode.Char('q'), new KeyModifiers(0));
+    boolean fired = r.dispatchKey(ev, Optional.empty());
+
+    assertTrue(fired);
+    assertEquals(List.of("q"), log);
+  }
+
   @Test
   void clear_drops_all_state() {
     EventRegistry r = new EventRegistry();
