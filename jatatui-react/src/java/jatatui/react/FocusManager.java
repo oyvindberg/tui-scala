@@ -33,6 +33,13 @@ public final class FocusManager {
     registered.add(id);
     autoFocusFlags.put(id, autoFocus);
     idToFiber.put(id, fiber);
+    // Eager autoFocus claim: when nothing is focused, the first autoFocus registration this
+    // frame claims focus immediately so `useFocus` returns true on the SAME frame. Without
+    // this, the autoFocus winner is only chosen in [#commit] (after render), so the first
+    // frame paints as if nothing were focused.
+    if (autoFocus && focused.isEmpty()) {
+      focused = Optional.of(id);
+    }
   }
 
   /// The Fiber that owns `id`, if it registered this frame.
