@@ -82,6 +82,7 @@ public final class RenderContext {
     hookIndex = 0;
     hooks.touched.add(fiber);
     events.recordBounds(fiber, area);
+    reconcile(fiber, child);
     try {
       child.render(this, area);
     } finally {
@@ -97,12 +98,47 @@ public final class RenderContext {
     hookIndex = 0;
     hooks.touched.add(fiber);
     events.recordBounds(fiber, area);
+    reconcile(fiber, child);
     try {
       child.render(this, area);
     } finally {
       fiber = prev;
       hookIndex = prevHook;
     }
+  }
+
+  /// Reconciliation: when the type at `fiber` changes between frames (e.g. a Router swaps
+  /// SourceEditor for OutputEditor at the same fiber slot), the old subtree is unmounted —
+  /// state dropped, cleanups run — before the new one renders. Mirrors React's "different
+  /// element type at same fiber → unmount + remount" rule.
+  ///
+  /// "Type" means the [Component] reference for [Element.Of], the `Element.Host` class for
+  /// host leaves, and recursively the child's type for the transparent [Element.Sized].
+  /// `component(...)`-wrapped functions all share the FUNCTION Component reference, so we
+  /// special-case them and use the body lambda's class identity (different `component(...)`
+  /// call sites produce different anonymous-lambda classes; same call site produces the same
+  /// class even across renders).
+  private void reconcile(Fiber f, Element child) {
+    Object newType = typeOf(child);
+    Object oldType = hooks.elementTypes.get(f);
+    if (oldType != null && !oldType.equals(newType)) {
+      hooks.unmount(f);
+    }
+    hooks.elementTypes.put(f, newType);
+  }
+
+  private static Object typeOf(Element e) {
+    if (e instanceof Element.Of<?> of) {
+      if (of.type() == Intrinsics.FUNCTION) {
+        Intrinsics.FunctionProps fp = (Intrinsics.FunctionProps) of.props();
+        return fp.body().getClass();
+      }
+      return of.type();
+    }
+    if (e instanceof Element.Sized s) {
+      return typeOf(s.child());
+    }
+    return e.getClass();
   }
 
   /// Apply an [Element.Of] — runs the component body unconditionally. Memoization is opt-in via
