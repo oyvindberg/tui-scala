@@ -39,6 +39,13 @@ public final class TextInputComponent {
             registerKeyHandlers(ctx, props, cursorState);
           }
 
+          // Click-to-focus: clicking anywhere in the input's area imperatively focuses it.
+          // Only when focusId is set (otherwise there's no id to focus by) and the click would
+          // actually change focus (no-op when already focused).
+          if (props.focusOnClick() && !focused) {
+            props.focusId().ifPresent(id -> ctx.onClick(e -> ctx.focus(id)));
+          }
+
           int finalCursor = cursor;
           boolean finalFocused = focused;
           jatatui.core.widgets.Widget adapter =
