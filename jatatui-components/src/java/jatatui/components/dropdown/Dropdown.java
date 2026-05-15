@@ -29,9 +29,17 @@ public final class Dropdown {
           State<Integer> highlightState = ctx.useState(props::selectedIndex);
 
           boolean focused = ctx.useFocus(props.focusId(), props.autoFocus());
+          boolean open = openState.get();
 
-          // Trigger key handlers.
-          if (focused && !openState.get()) {
+          // Auto-close when focus moves elsewhere — Tab to next field, programmatic focus
+          // change, etc. The backdrop closes on outside click; this catches every other path.
+          if (open && !focused) {
+            openState.set(false);
+            open = false;
+          }
+
+          // Trigger key handlers (focused + closed → Enter/Space/Down opens).
+          if (focused && !open) {
             Runnable openIt =
                 () -> {
                   highlightState.set(props.selectedIndex());
@@ -42,12 +50,44 @@ public final class Dropdown {
             ctx.onKey(new KeyCode.Down(), openIt);
           }
 
-          // Trigger click handler — clicking the trigger opens it.
-          if (!openState.get()) {
+          // Trigger click — opens the dropdown AND focuses self so subsequent keys land here.
+          if (!open) {
             ctx.onClick(
                 e -> {
                   highlightState.set(props.selectedIndex());
                   openState.set(true);
+                  props.focusId().ifPresent(ctx::focus);
+                  e.stopPropagation();
+                });
+          }
+
+          // Open-list key handlers — registered on the DROPDOWN'S fiber (not on the overlay's
+          // portal subtree) so they sit in the focused bubble chain and actually fire.
+          if (focused && open) {
+            int hi = clamp(highlightState.get(), 0, Math.max(0, props.items().size() - 1));
+            ctx.onKey(
+                new KeyCode.Up(),
+                e -> {
+                  highlightState.set(Math.max(0, hi - 1));
+                  e.stopPropagation();
+                });
+            ctx.onKey(
+                new KeyCode.Down(),
+                e -> {
+                  highlightState.set(Math.min(props.items().size() - 1, hi + 1));
+                  e.stopPropagation();
+                });
+            ctx.onKey(
+                new KeyCode.Enter(),
+                e -> {
+                  props.onChange().accept(hi);
+                  openState.set(false);
+                  e.stopPropagation();
+                });
+            ctx.onKey(
+                new KeyCode.Esc(),
+                e -> {
+                  openState.set(false);
                   e.stopPropagation();
                 });
           }
@@ -60,17 +100,13 @@ public final class Dropdown {
           String triggerText = "  " + props.label() + ": " + selected + "  v";
           Style triggerStyle = focused ? props.focusedStyle() : props.style();
 
-          Element trigger =
-              box(
-                  "",
-                  Borders.ALL,
-                  text(triggerText, triggerStyle));
+          Element trigger = box("", Borders.ALL, text(triggerText, triggerStyle));
 
-          if (!openState.get()) {
+          if (!open) {
             return trigger;
           }
 
-          // Open: also render an overlay. Anchor to this fiber's area.
+          // Open: render the option list as a portal anchored just below the trigger.
           Rect screen = ctx.frame().area();
           Rect anchor = ctx.area().orElse(screen);
           Rect listArea = listAreaBelow(anchor, props.items().size(), screen);
@@ -80,33 +116,10 @@ public final class Dropdown {
           Element overlay =
               component(
                   c -> {
-                    c.onClick(e -> e.stopPropagation()); // eat clicks on the list itself
-                    c.onKey(
-                        new KeyCode.Up(),
-                        e -> {
-                          highlightState.set(Math.max(0, hi - 1));
-                          e.stopPropagation();
-                        });
-                    c.onKey(
-                        new KeyCode.Down(),
-                        e -> {
-                          highlightState.set(Math.min(props.items().size() - 1, hi + 1));
-                          e.stopPropagation();
-                        });
-                    c.onKey(
-                        new KeyCode.Enter(),
-                        e -> {
-                          props.onChange().accept(hi);
-                          openState.set(false);
-                          e.stopPropagation();
-                        });
-                    c.onKey(
-                        new KeyCode.Esc(),
-                        e -> {
-                          openState.set(false);
-                          e.stopPropagation();
-                        });
-                    return optionsList(props.items(), hi);
+                    // Eat clicks on the list background (gaps between rows). Per-row clicks are
+                    // attached to each row inside optionsList.
+                    c.onClick(e -> e.stopPropagation());
+                    return optionsList(props.items(), hi, props.onChange(), openState);
                   });
 
           Element backdrop =
@@ -124,7 +137,11 @@ public final class Dropdown {
         });
   }
 
-  private static Element optionsList(List<String> items, int highlightedIndex) {
+  private static Element optionsList(
+      List<String> items,
+      int highlightedIndex,
+      java.util.function.IntConsumer onChange,
+      State<Boolean> openState) {
     List<Element> rows = new ArrayList<>(items.size());
     for (int i = 0; i < items.size(); i++) {
       String item = items.get(i);
@@ -134,7 +151,19 @@ public final class Dropdown {
               ? Style.empty().withBg(new Color.Blue()).withFg(new Color.White()).withAddModifier(Modifier.BOLD)
               : Style.empty();
       String prefix = hi ? "> " : "  ";
-      rows.add(length(1, text(prefix + item, rowStyle)));
+      int idx = i;
+      Element row =
+          component(
+              c -> {
+                c.onClick(
+                    e -> {
+                      onChange.accept(idx);
+                      openState.set(false);
+                      e.stopPropagation();
+                    });
+                return text(prefix + item, rowStyle);
+              });
+      rows.add(length(1, row));
     }
     return box("", Borders.ALL, column(rows.toArray(new Element[0])));
   }
