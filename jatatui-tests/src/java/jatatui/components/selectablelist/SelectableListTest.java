@@ -133,8 +133,44 @@ class SelectableListTest {
     assertEquals("a1", activated.get());
   }
 
+  /// Legacy single-click semantics, opted into via withActivateOnDoubleClick(false):
+  /// click on an unselected row selects it; click on the already-selected row activates.
   @Test
-  void click_on_unselected_row_selects_it_first() throws IOException {
+  void single_click_activate_legacy_behavior() throws IOException {
+    AtomicInteger activations = new AtomicInteger();
+    AtomicInteger selectedIdx = new AtomicInteger(0);
+    List<Row> rows = List.of(new Row.Item("a"), new Row.Item("b"), new Row.Item("c"));
+
+    Element app =
+        component(
+            ctx ->
+                jatatui.components.Components.selectableList(
+                    SelectableListProps.of(
+                            rows, r -> true, renderer(), selectedIdx.get(), selectedIdx::set)
+                        .withOnActivate(r -> activations.incrementAndGet())
+                        .withActivateOnDoubleClick(false)
+                        .withFocusId("list")
+                        .withAutoFocus(true)));
+
+    TestHarness h = new TestHarness(40, 20);
+    h.render(app);
+    h.render(app);
+
+    // Click on row 2 (idx 2). Not currently selected → selects, no activation.
+    h.renderer.dispatchMouse(new MouseEvent(2, 2, new KeyModifiers(0), MouseEvent.Kind.DOWN));
+    h.render(app);
+    assertEquals(2, selectedIdx.get());
+    assertEquals(0, activations.get(), "click on unselected row selects, doesn't activate");
+
+    // Click again on the now-selected row → activates.
+    h.renderer.dispatchMouse(new MouseEvent(2, 2, new KeyModifiers(0), MouseEvent.Kind.DOWN));
+    h.render(app);
+    assertEquals(1, activations.get(), "click on already-selected row activates");
+  }
+
+  /// Default behavior: single-click selects only, double-click within 500ms activates.
+  @Test
+  void single_click_selects_double_click_activates() throws IOException {
     AtomicInteger activations = new AtomicInteger();
     AtomicInteger selectedIdx = new AtomicInteger(0);
     List<Row> rows = List.of(new Row.Item("a"), new Row.Item("b"), new Row.Item("c"));
@@ -153,16 +189,76 @@ class SelectableListTest {
     h.render(app);
     h.render(app);
 
-    // Click on row 2 (idx 2, "c"). Not currently selected → selects, no activation.
+    // Click on row 2 — selects only, no activation.
     h.renderer.dispatchMouse(new MouseEvent(2, 2, new KeyModifiers(0), MouseEvent.Kind.DOWN));
     h.render(app);
-    assertEquals(2, selectedIdx.get());
-    assertEquals(0, activations.get(), "click on unselected row selects, doesn't activate");
+    assertEquals(2, selectedIdx.get(), "click selects");
+    assertEquals(0, activations.get(), "no activation on single click");
 
-    // Click again on the now-selected row (still y=2) → activates.
+    // Click again on the same row within the double-click window → activates.
     h.renderer.dispatchMouse(new MouseEvent(2, 2, new KeyModifiers(0), MouseEvent.Kind.DOWN));
     h.render(app);
-    assertEquals(1, activations.get(), "click on already-selected row activates");
+    assertEquals(1, activations.get(), "double-click activates");
+  }
+
+  /// Two clicks on DIFFERENT rows don't constitute a double-click — second click selects only.
+  @Test
+  void clicks_on_different_rows_do_not_double_activate() throws IOException {
+    AtomicInteger activations = new AtomicInteger();
+    AtomicInteger selectedIdx = new AtomicInteger(0);
+    List<Row> rows = List.of(new Row.Item("a"), new Row.Item("b"), new Row.Item("c"));
+
+    Element app =
+        component(
+            ctx ->
+                jatatui.components.Components.selectableList(
+                    SelectableListProps.of(
+                            rows, r -> true, renderer(), selectedIdx.get(), selectedIdx::set)
+                        .withOnActivate(r -> activations.incrementAndGet())
+                        .withFocusId("list")
+                        .withAutoFocus(true)));
+
+    TestHarness h = new TestHarness(40, 20);
+    h.render(app);
+    h.render(app);
+
+    h.renderer.dispatchMouse(new MouseEvent(2, 1, new KeyModifiers(0), MouseEvent.Kind.DOWN));
+    h.render(app);
+    h.renderer.dispatchMouse(new MouseEvent(2, 2, new KeyModifiers(0), MouseEvent.Kind.DOWN));
+    h.render(app);
+
+    assertEquals(2, selectedIdx.get(), "selection moved to last clicked row");
+    assertEquals(0, activations.get(), "no activation — clicks were on different rows");
+  }
+
+  /// Two clicks too far apart in time don't constitute a double-click.
+  @Test
+  void second_click_after_double_click_window_does_not_activate() throws Exception {
+    AtomicInteger activations = new AtomicInteger();
+    AtomicInteger selectedIdx = new AtomicInteger(0);
+    List<Row> rows = List.of(new Row.Item("a"), new Row.Item("b"), new Row.Item("c"));
+
+    Element app =
+        component(
+            ctx ->
+                jatatui.components.Components.selectableList(
+                    SelectableListProps.of(
+                            rows, r -> true, renderer(), selectedIdx.get(), selectedIdx::set)
+                        .withOnActivate(r -> activations.incrementAndGet())
+                        .withFocusId("list")
+                        .withAutoFocus(true)));
+
+    TestHarness h = new TestHarness(40, 20);
+    h.render(app);
+    h.render(app);
+
+    h.renderer.dispatchMouse(new MouseEvent(2, 2, new KeyModifiers(0), MouseEvent.Kind.DOWN));
+    h.render(app);
+    Thread.sleep(600); // > DOUBLE_CLICK_MS (500)
+    h.renderer.dispatchMouse(new MouseEvent(2, 2, new KeyModifiers(0), MouseEvent.Kind.DOWN));
+    h.render(app);
+
+    assertEquals(0, activations.get(), "second click outside double-click window does not activate");
   }
 
   @Test

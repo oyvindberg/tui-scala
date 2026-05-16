@@ -46,6 +46,11 @@ import java.util.function.Predicate;
 /// disappears automatically when everything fits, so it costs nothing for short lists. Set it to
 /// `false` for embedded lists where reserving a right column would be visually awkward (a
 /// one-column-wide list, a list inside a tight modal, etc.).
+///
+/// **`activateOnDoubleClick`** controls click semantics. When `true` (default): single-click
+/// selects a row, double-click selects and activates. When `false`: single-click selects an
+/// unselected row, single-click on the already-selected row activates (the legacy behavior).
+/// Enter on the focused list activates the selected row regardless of this flag.
 public record SelectableListProps<T>(
     List<T> items,
     Predicate<T> isActivatable,
@@ -55,13 +60,14 @@ public record SelectableListProps<T>(
     Optional<Consumer<T>> onActivate,
     Optional<String> focusId,
     boolean autoFocus,
-    boolean showScrollbar) {
+    boolean showScrollbar,
+    boolean activateOnDoubleClick) {
 
   public SelectableListProps {
     items = List.copyOf(items);
   }
 
-  /// Minimal-args factory. Scrollbar is on by default.
+  /// Minimal-args factory. Scrollbar on, double-click activation on.
   public static <T> SelectableListProps<T> of(
       List<T> items,
       Predicate<T> isActivatable,
@@ -77,6 +83,7 @@ public record SelectableListProps<T>(
         Optional.empty(),
         Optional.empty(),
         true,
+        true,
         true);
   }
 
@@ -90,7 +97,8 @@ public record SelectableListProps<T>(
         Optional.of(onActivate),
         focusId,
         autoFocus,
-        showScrollbar);
+        showScrollbar,
+        activateOnDoubleClick);
   }
 
   public SelectableListProps<T> withFocusId(String id) {
@@ -103,7 +111,8 @@ public record SelectableListProps<T>(
         onActivate,
         Optional.of(id),
         autoFocus,
-        showScrollbar);
+        showScrollbar,
+        activateOnDoubleClick);
   }
 
   public SelectableListProps<T> withAutoFocus(boolean autoFocus) {
@@ -116,7 +125,8 @@ public record SelectableListProps<T>(
         onActivate,
         focusId,
         autoFocus,
-        showScrollbar);
+        showScrollbar,
+        activateOnDoubleClick);
   }
 
   public SelectableListProps<T> withShowScrollbar(boolean showScrollbar) {
@@ -129,7 +139,22 @@ public record SelectableListProps<T>(
         onActivate,
         focusId,
         autoFocus,
-        showScrollbar);
+        showScrollbar,
+        activateOnDoubleClick);
+  }
+
+  public SelectableListProps<T> withActivateOnDoubleClick(boolean activateOnDoubleClick) {
+    return new SelectableListProps<>(
+        items,
+        isActivatable,
+        rowRenderer,
+        selected,
+        onSelectChange,
+        onActivate,
+        focusId,
+        autoFocus,
+        showScrollbar,
+        activateOnDoubleClick);
   }
 
   // ---- Type-safe lambda surrogates ----
