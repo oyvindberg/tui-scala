@@ -11,6 +11,10 @@ import jatatui.components.dropdown.DropdownProps;
 import jatatui.components.form.FormProvider;
 import jatatui.components.modal.Modal;
 import jatatui.components.modal.ModalProps;
+import jatatui.components.picker.Picker;
+import jatatui.components.picker.PickerProps;
+import jatatui.components.selectablelist.SelectableList;
+import jatatui.components.selectablelist.SelectableListProps;
 import jatatui.components.router.Router;
 import jatatui.components.router.Screen;
 import jatatui.components.theme.Theme;
@@ -209,6 +213,26 @@ public final class Components {
   /// Quick-path: open + title + body + onDismiss. 40x12 default size.
   public static Element modal(boolean open, String title, Element body, Runnable onDismiss) {
     return Modal.of(ModalProps.of(open, title, body, onDismiss));
+  }
+
+  // ---------- Picker ----------
+
+  /// Search-input + ranked-list modal. See [PickerProps]. Host renders this conditionally
+  /// (when their search hotkey fires); the picker owns query / cursor state and the modal
+  /// chrome but doesn't auto-close — the host decides whether `onSelect` / `onCancel` should
+  /// hide it.
+  public static <T> Element picker(PickerProps<T> props) {
+    return Picker.of(props);
+  }
+
+  // ---------- SelectableList ----------
+
+  /// Heterogeneous-row list with skip-non-activatable Up/Down navigation. See
+  /// [SelectableListProps]. Sibling of [#list] (which takes labelled strings); this one takes
+  /// arbitrary Elements per row plus a predicate that controls which rows participate in
+  /// keyboard / click navigation.
+  public static <T> Element selectableList(SelectableListProps<T> props) {
+    return SelectableList.of(props);
   }
 
   // ---------- Dropdown ----------
