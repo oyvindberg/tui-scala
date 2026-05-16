@@ -22,7 +22,7 @@ import tui.crossterm.KeyCode;
 public final class Dropdown {
   private Dropdown() {}
 
-  public static Element of(DropdownProps props) {
+  public static <T> Element of(DropdownProps<T> props) {
     return component(
         ctx -> {
           State<Boolean> openState = ctx.useState(() -> false);
@@ -101,11 +101,11 @@ public final class Dropdown {
           }
 
           // Build the trigger element + maybe an open-overlay.
-          String selected =
+          String selectedLabel =
               (props.selectedIndex() >= 0 && props.selectedIndex() < props.items().size())
-                  ? props.items().get(props.selectedIndex())
+                  ? props.labelFn().apply(props.items().get(props.selectedIndex()))
                   : "";
-          String triggerText = "  " + props.label() + ": " + selected + "  v";
+          String triggerText = "  " + props.label() + ": " + selectedLabel + "  v";
           Style triggerStyle = focused ? props.focusedStyle() : props.style();
 
           Element trigger = box("", Borders.ALL, text(triggerText, triggerStyle));
@@ -131,7 +131,7 @@ public final class Dropdown {
                     // this, underlying widgets' borders / text bleed through gaps in our rows.
                     return stack(
                         widget(jatatui.widgets.Clear.instance()),
-                        optionsList(props.items(), hi, props.onChange(), openState));
+                        optionsList(props.items(), props.labelFn(), hi, props.onChange(), openState));
                   });
 
           Element backdrop =
@@ -149,14 +149,16 @@ public final class Dropdown {
         });
   }
 
-  private static Element optionsList(
-      List<String> items,
+  private static <T> Element optionsList(
+      List<T> items,
+      java.util.function.Function<T, String> labelFn,
       int highlightedIndex,
       java.util.function.IntConsumer onChange,
       State<Boolean> openState) {
     List<Element> rows = new ArrayList<>(items.size());
     for (int i = 0; i < items.size(); i++) {
-      String item = items.get(i);
+      T item = items.get(i);
+      String label = labelFn.apply(item);
       boolean hi = i == highlightedIndex;
       Style rowStyle =
           hi
@@ -173,7 +175,7 @@ public final class Dropdown {
                       openState.set(false);
                       e.stopPropagation();
                     });
-                return text(prefix + item, rowStyle);
+                return text(prefix + label, rowStyle);
               });
       rows.add(length(1, row));
     }

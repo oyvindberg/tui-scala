@@ -27,7 +27,7 @@ public final class Modal {
     return component(
         ctx -> {
           Rect screen = ctx.frame().area();
-          Rect boxArea = centerInside(screen, props.width(), props.height());
+          Rect boxArea = centerInside(screen, props.size().width(), props.size().height());
 
           Element backdrop =
               component(

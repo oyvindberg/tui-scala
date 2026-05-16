@@ -238,11 +238,13 @@ public final class Components {
   // ---------- Dropdown ----------
 
   /// Full-control dropdown / select. See [DropdownProps].
-  public static Element dropdown(DropdownProps props) {
+  public static <T> Element dropdown(DropdownProps<T> props) {
     return Dropdown.of(props);
   }
 
-  /// Quick-path: label + items + selected + onChange + focusId.
+  /// Quick-path for the common `List<String>` case: label + items + selected + onChange +
+  /// focusId. Auto-focused. For typed options (enums, records), build a [DropdownProps] via
+  /// [DropdownProps#of] with a `labelFn` and pass it to [#dropdown(DropdownProps)].
   public static Element dropdown(
       String label,
       List<String> items,
@@ -250,7 +252,9 @@ public final class Components {
       java.util.function.IntConsumer onChange,
       String focusId) {
     return Dropdown.of(
-        DropdownProps.of(label, items, selectedIndex, onChange).withFocusId(focusId).withAutoFocus(true));
+        DropdownProps.ofStrings(label, items, selectedIndex, onChange)
+            .withFocusId(focusId)
+            .withAutoFocus(true));
   }
 
   // ---------- TextInput ----------
