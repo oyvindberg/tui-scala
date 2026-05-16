@@ -34,11 +34,23 @@ import tui.crossterm.KeyCode;
 public final class Picker {
   private Picker() {}
 
+  /// Focus id for the internal text input. Stable across renders so that a host that wants to
+  /// imperatively focus or blur the picker's input can target it directly.
+  public static final String QUERY_FOCUS_ID = "picker:query";
+
   public static <T> Element of(PickerProps<T> props) {
     return component(
         ctx -> {
           State<String> query       = ctx.useState(() -> "");
           State<Integer> selectedIdx = ctx.useState(() -> 0);
+
+          // Forcibly claim focus for the query field on mount. The text input registers with
+          // autoFocus=true, but FocusManager's eager-claim only fires when nothing else is
+          // focused — if the host has another autoFocus'd element rendered first (e.g. a list
+          // underneath the modal), the input never gets focus and keystrokes leak to host
+          // handlers. useEffect with empty deps runs once per mount (and again after any
+          // unmount/remount — reconciliation handles both).
+          ctx.useEffect(() -> ctx.focus(QUERY_FOCUS_ID));
 
           List<T> results = props.filter().apply(query.get());
           int cap         = Math.min(props.maxVisible(), results.size());
@@ -82,7 +94,7 @@ public final class Picker {
                                 selectedIdx.set(0); // reset cursor when the query changes
                               })
                           .withTitle("")
-                          .withFocusId("picker:query")
+                          .withFocusId(QUERY_FOCUS_ID)
                           .withAutoFocus(true)));
 
           Element resultsPane = capped.isEmpty()
