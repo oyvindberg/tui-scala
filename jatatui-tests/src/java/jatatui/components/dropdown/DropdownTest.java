@@ -108,6 +108,45 @@ class DropdownTest {
     assertEquals(2, selected.get(), "highlight moved 0 → 1 → 2 (blue)");
   }
 
+  /// Dropdown is generic over `T` — typed options (here an enum) work with a labelFn.
+  enum Color { RED, GREEN, BLUE }
+
+  @Test
+  void typed_options_via_labelfn() throws IOException {
+    AtomicInteger selected = new AtomicInteger(0);
+    AtomicInteger changeCount = new AtomicInteger(0);
+
+    Element app =
+        column(
+                length(3,
+                    jatatui.components.Components.dropdown(
+                        DropdownProps.of(
+                                "Color",
+                                java.util.Arrays.asList(Color.RED, Color.GREEN, Color.BLUE),
+                                c -> c.name().toLowerCase(),
+                                selected.get(),
+                                i -> {
+                                  selected.set(i);
+                                  changeCount.incrementAndGet();
+                                })
+                            .withFocusId("color")
+                            .withAutoFocus(true))),
+                fill(1, text("")))
+            .with(p -> p.withSpacing(0).withMargin(new Margin(0, 0)));
+
+    TestHarness h = new TestHarness(40, 20);
+    h.render(app);
+
+    // Open with click, then click the second option (GREEN at y=5).
+    h.events.dispatchMouse(new MouseEvent(5, 1, new KeyModifiers(0), MouseEvent.Kind.DOWN));
+    h.render(app);
+    h.events.dispatchMouse(new MouseEvent(5, 5, new KeyModifiers(0), MouseEvent.Kind.DOWN));
+    h.render(app);
+
+    assertEquals(1, changeCount.get());
+    assertEquals(1, selected.get(), "GREEN = index 1");
+  }
+
   /// Cursor-then-Tab commits: navigating with Up/Down and then Tab'ing away takes the current
   /// highlight as the selection (rather than discarding it). Cancel paths — Esc, backdrop
   /// click — go through different branches and stay non-committing.
