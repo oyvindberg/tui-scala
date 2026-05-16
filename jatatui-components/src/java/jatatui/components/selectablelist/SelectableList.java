@@ -136,9 +136,14 @@ public final class SelectableList {
           Element rowsColumn = column(visible.toArray(new Element[0]));
 
           // Render a vertical-right scrollbar when content overflows and the caller wants it.
-          // We use the scrollbar component layered on top via stack so it doesn't steal a column
-          // from the row renderer — rows can use the full width up to the rightmost cell, and
-          // the scrollbar overpaints that last cell when present.
+          // We reserve the rightmost column for the scrollbar via row(fill, length) rather than
+          // stacking it on top of the rows. Stacking causes a colour-bleed bug: paragraphs
+          // (`text(content, style)`) call `buf.setStyle(area, style)`, painting the row's fg
+          // onto every cell — including the rightmost. The scrollbar's thumb writes its glyph
+          // with `Style.empty()`, and `Cell.setStyle` only patches what the style has set, so
+          // the thumb inherits the row's fg. Reserving the column avoids the overpaint, and
+          // the trade-off — content reflows by 1 column when overflow toggles — matches what
+          // every GUI scrollbar does.
           //
           // Content overflows when n > visibleH; otherwise we render nothing (no scrollbar is
           // visually noise for short lists) so callers get the same behaviour as before.
@@ -147,7 +152,7 @@ public final class SelectableList {
             Element bar =
                 jatatui.components.scrollbar.Components.scrollbar(
                     offset, n, visibleH, ScrollbarOrientation.VerticalRight);
-            return stack(rowsColumn, bar);
+            return row(fill(1, rowsColumn), length(1, bar));
           }
           return rowsColumn;
         });

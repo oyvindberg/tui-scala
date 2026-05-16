@@ -3,6 +3,7 @@ package jatatui.components.selectablelist;
 import static jatatui.react.Components.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import jatatui.core.style.Color;
 import jatatui.core.style.Style;
 import jatatui.react.Element;
 import jatatui.react.KeyEvent;
@@ -374,5 +375,71 @@ class SelectableListTest {
     assertTrue(
         topRow.toString().contains("i16"),
         "viewport auto-scrolled so sel 25 is visible; top row should be i16, got '" + topRow + "'");
+  }
+
+  /// Regression: rows rendered via `text(content, style-with-magenta-fg)` used to bleed their fg
+  /// onto scrollbar cells because [jatatui.widgets.paragraph.Paragraph] calls
+  /// `buf.setStyle(area, style)` over the row's full width — including the rightmost cell. The
+  /// scrollbar's thumb writes its glyph with `Style.empty()`, which `Cell.setStyle` leaves the
+  /// existing fg in place for, so the thumb inherited the row's magenta and rendered as pink
+  /// dots in the scrollbar gutter.
+  ///
+  /// Fixed by reserving the rightmost column for the scrollbar via `row(fill, length)` so the
+  /// row layer never paints into the scrollbar's cells.
+  @Test
+  void scrollbar_does_not_inherit_row_fg_when_rows_are_styled() throws IOException {
+    AtomicInteger selectedIdx = new AtomicInteger(0);
+    List<Row> rows = new java.util.ArrayList<>();
+    for (int i = 0; i < 30; i++) rows.add(new Row.Item("i" + i));
+
+    Style magenta = Style.empty().withFg(new Color.Magenta());
+
+    SelectableListProps.RowRenderer<Row> magentaRenderer =
+        (row, sel) ->
+            switch (row) {
+              case Row.Header h -> text("== " + h.title() + " ==", magenta);
+              case Row.Item it -> text((sel ? "> " : "  ") + it.name(), magenta);
+            };
+
+    Element app =
+        component(
+            ctx ->
+                jatatui.components.Components.selectableList(
+                    SelectableListProps.of(
+                            rows,
+                            r -> true,
+                            magentaRenderer,
+                            selectedIdx.get(),
+                            selectedIdx::set)
+                        .withFocusId("list")
+                        .withAutoFocus(true)));
+
+    int w = 40;
+    int h = 10;
+    TestHarness harness = new TestHarness(w, h);
+    harness.render(app);
+    harness.render(app);
+
+    var buf = harness.backend.buffer();
+
+    String trackOrThumbOrArrow = "║█▲▼";
+    int scrollbarCellsChecked = 0;
+    for (int y = 0; y < h; y++) {
+      var cell = buf.cellAt(w - 1, y);
+      String sym = cell.symbol();
+      if (sym.isEmpty() || trackOrThumbOrArrow.indexOf(sym.charAt(0)) < 0) continue;
+      scrollbarCellsChecked++;
+      assertNotEquals(
+          new Color.Magenta(),
+          cell.fg,
+          "scrollbar cell at y="
+              + y
+              + " (symbol '"
+              + sym
+              + "') inherited row fg magenta — row layer is bleeding into the scrollbar column");
+    }
+    assertTrue(
+        scrollbarCellsChecked > 0,
+        "expected at least one scrollbar glyph in the rightmost column to assert fg against");
   }
 }
