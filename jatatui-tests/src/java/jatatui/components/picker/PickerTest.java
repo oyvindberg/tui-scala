@@ -210,6 +210,49 @@ class PickerTest {
     assertEquals("  no matches", line.toString());
   }
 
+  /// When the host has another focusable rendered alongside (or before) the picker — typical
+  /// pattern: a list underneath, picker overlaid on top via conditional render — the picker
+  /// must still grab focus so keystrokes go to its query field instead of leaking to the host.
+  /// Without the on-mount useEffect, FocusManager's eager-claim wouldn't fire (focus already
+  /// held by the list) and the user's typing would route to the list's onKey handlers.
+  @Test
+  void picker_steals_focus_on_mount_even_with_competing_focusable() throws IOException {
+    java.util.concurrent.atomic.AtomicBoolean showPicker =
+        new java.util.concurrent.atomic.AtomicBoolean(false);
+
+    PickerProps<String> props =
+        PickerProps.of(
+            " Pick ",
+            substring(List.of("a", "b", "c")),
+            textRow(),
+            s -> {},
+            () -> {});
+
+    Element app =
+        component(
+            ctx -> {
+              // Host's focusable, registered first → claims focus on first frame.
+              ctx.useFocus(java.util.Optional.of("host-list"), true);
+              return showPicker.get() ? Picker.of(props) : text("(closed)");
+            });
+
+    TestHarness h = new TestHarness(120, 30);
+    h.render(app);
+    h.render(app);
+    assertEquals(
+        java.util.Optional.of("host-list"),
+        h.focus.currentlyFocused(),
+        "host's autoFocus claims focus while picker is closed");
+
+    showPicker.set(true);
+    h.render(app);
+
+    assertEquals(
+        java.util.Optional.of(Picker.QUERY_FOCUS_ID),
+        h.focus.currentlyFocused(),
+        "picker's on-mount useEffect steals focus from the host's list");
+  }
+
   @Test
   void hint_can_be_dropped() throws IOException {
     PickerProps<String> withHint =
