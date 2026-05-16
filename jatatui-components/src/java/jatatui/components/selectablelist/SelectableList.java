@@ -6,6 +6,7 @@ import jatatui.core.layout.Rect;
 import jatatui.react.Element;
 import jatatui.react.KeyEvent;
 import jatatui.react.MouseEvent;
+import jatatui.react.Ref;
 import jatatui.react.State;
 import jatatui.widgets.scrollbar.ScrollbarOrientation;
 import java.util.ArrayList;
@@ -40,6 +41,16 @@ public final class SelectableList {
 
   private static final int SCROLL_STEP = 3;
 
+  /// How long after a single click a click on the same row counts as a double-click. 500ms
+  /// matches the OS double-click default on macOS / Windows / GTK at their stock settings.
+  private static final long DOUBLE_CLICK_MS = 500;
+
+  /// Internal: most-recently-clicked row and its timestamp. Shared across all row components
+  /// of one list so clicking row A then row B doesn't trigger a "double-click" on B.
+  record LastClick(int row, long timeMs) {
+    static final LastClick NONE = new LastClick(-1, 0L);
+  }
+
   public static <T> Element of(SelectableListProps<T> props) {
     return component(
         ctx -> {
@@ -53,6 +64,9 @@ public final class SelectableList {
           }
 
           State<Integer> offsetState = ctx.useState(() -> 0);
+          // Shared across all row components — see LastClick. Captured into renderRow so each
+          // row's onClick can consult/update the same mutable state.
+          Ref<LastClick> lastClickRef = ctx.useRef(() -> LastClick.NONE);
           int sel = n == 0 ? 0 : Math.max(0, Math.min(props.selected(), n - 1));
 
           int areaHeight = ctx.area().map(Rect::height).orElse(20);
@@ -128,7 +142,7 @@ public final class SelectableList {
           for (int i = offset; i < upper; i++) {
             final int idx = i;
             final T item = items.get(i);
-            visible.add(length(1, renderRow(props, item, idx, sel)));
+            visible.add(length(1, renderRow(props, item, idx, sel, lastClickRef)));
           }
 
           if (visible.isEmpty()) return empty();
@@ -193,7 +207,7 @@ public final class SelectableList {
   }
 
   private static <T> Element renderRow(
-      SelectableListProps<T> props, T item, int idx, int selected) {
+      SelectableListProps<T> props, T item, int idx, int selected, Ref<LastClick> lastClickRef) {
     final boolean isSel = idx == selected;
     final boolean activatable = props.isActivatable().test(item);
     return component(
@@ -201,10 +215,27 @@ public final class SelectableList {
           if (activatable) {
             ctx.onClick(
                 (MouseEvent e) -> {
-                  if (isSel) {
-                    props.onActivate().ifPresent(cb -> cb.accept(item));
+                  if (props.activateOnDoubleClick()) {
+                    LastClick last = lastClickRef.get();
+                    long now = System.currentTimeMillis();
+                    if (idx == last.row() && (now - last.timeMs()) < DOUBLE_CLICK_MS) {
+                      // Double-click: activate. Reset the click-tracking so a third quick
+                      // click doesn't fire a second activation.
+                      props.onActivate().ifPresent(cb -> cb.accept(item));
+                      lastClickRef.set(LastClick.NONE);
+                    } else {
+                      // Single-click: select only. Note the row + time so a subsequent click
+                      // can be detected as a double-click.
+                      if (!isSel) props.onSelectChange().accept(idx);
+                      lastClickRef.set(new LastClick(idx, now));
+                    }
                   } else {
-                    props.onSelectChange().accept(idx);
+                    // Legacy: click on the already-selected row activates; else just select.
+                    if (isSel) {
+                      props.onActivate().ifPresent(cb -> cb.accept(item));
+                    } else {
+                      props.onSelectChange().accept(idx);
+                    }
                   }
                   e.stopPropagation();
                 });

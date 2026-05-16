@@ -184,6 +184,68 @@ public final class RenderContext {
     }
   }
 
+  /// Fire `callback` once on the render thread, `delayMs` after the component mounts (or after
+  /// `deps` change, if supplied). Cleaned up automatically on unmount — if the component is
+  /// unmounted before the timer fires, the callback never runs.
+  ///
+  /// Implementation: a shared daemon `ScheduledExecutorService` triggers
+  /// [#requestRerender] at the right time; the callback itself runs synchronously inside this
+  /// `useTimeout` call on the next render. So `state.set` / `router.push` / etc. from inside
+  /// the callback are safe — they execute on the loop thread, not on the executor thread.
+  ///
+  /// `deps`: same convention as [#useEffect]. Omitted or empty = "once on mount". Changed deps
+  /// cancel the in-flight timer and re-arm with a fresh delay.
+  public void useTimeout(long delayMs, Runnable callback, Object... deps) {
+    HookKey key = new HookKey(fiber, hookIndex++);
+    Object[] prev = hooks.deps.get(key);
+    boolean changed = prev == null || !arraysEqual(prev, deps);
+
+    TimeoutHookState state;
+    if (changed) {
+      Runnable cleanup = hooks.cleanups.remove(key);
+      if (cleanup != null) cleanup.run();
+      state = new TimeoutHookState();
+      state.fireAt = System.currentTimeMillis() + delayMs;
+      state.fired = false;
+      state.future =
+          TIMEOUT_SCHEDULER.schedule(
+              requestRerender, delayMs, java.util.concurrent.TimeUnit.MILLISECONDS);
+      hooks.values.put(key, state);
+      final TimeoutHookState captured = state;
+      hooks.cleanups.put(
+          key,
+          () -> {
+            if (captured.future != null) captured.future.cancel(false);
+          });
+      hooks.deps.put(key, deps);
+    } else {
+      state = (TimeoutHookState) hooks.values.get(key);
+    }
+
+    if (!state.fired && System.currentTimeMillis() >= state.fireAt) {
+      state.fired = true;
+      callback.run();
+    }
+  }
+
+  /// Mutable hook-store entry for [#useTimeout].
+  static final class TimeoutHookState {
+    long fireAt;
+    boolean fired;
+    java.util.concurrent.ScheduledFuture<?> future;
+  }
+
+  /// Shared daemon executor for [#useTimeout]. One thread per process, regardless of how many
+  /// hooks are armed. Spawning a thread per timer would not scale; this matches what
+  /// [jatatui.components.toast.ToastsProvider] already does for its own timer needs.
+  private static final java.util.concurrent.ScheduledExecutorService TIMEOUT_SCHEDULER =
+      java.util.concurrent.Executors.newSingleThreadScheduledExecutor(
+          r -> {
+            Thread t = new Thread(r, "jatatui-react-timeouts");
+            t.setDaemon(true);
+            return t;
+          });
+
   // ---- Portal ----
 
   /// Queue a portal for deferred rendering after the main pass. Called by the Portal intrinsic;
