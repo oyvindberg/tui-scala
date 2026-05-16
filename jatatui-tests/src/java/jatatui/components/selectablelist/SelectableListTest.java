@@ -21,6 +21,7 @@ class SelectableListTest {
   /// Heterogeneous-row payload: Header for non-activatable decoration, Item for activatable rows.
   sealed interface Row {
     record Header(String title) implements Row {}
+
     record Item(String name) implements Row {}
   }
 
@@ -107,11 +108,7 @@ class SelectableListTest {
   void enter_activates_only_when_selected_is_activatable() throws IOException {
     AtomicReference<String> activated = new AtomicReference<>();
     AtomicInteger selectedIdx = new AtomicInteger(1); // Item
-    List<Row> rows =
-        List.of(
-            new Row.Header("Group"),
-            new Row.Item("a1"),
-            new Row.Item("a2"));
+    List<Row> rows = List.of(new Row.Header("Group"), new Row.Item("a1"), new Row.Item("a2"));
 
     Element app =
         component(
@@ -123,8 +120,7 @@ class SelectableListTest {
                             renderer(),
                             selectedIdx.get(),
                             selectedIdx::set)
-                        .withOnActivate(
-                            r -> activated.set(((Row.Item) r).name()))
+                        .withOnActivate(r -> activated.set(((Row.Item) r).name()))
                         .withFocusId("list")
                         .withAutoFocus(true)));
 
@@ -147,11 +143,7 @@ class SelectableListTest {
             ctx ->
                 jatatui.components.Components.selectableList(
                     SelectableListProps.of(
-                            rows,
-                            r -> true,
-                            renderer(),
-                            selectedIdx.get(),
-                            selectedIdx::set)
+                            rows, r -> true, renderer(), selectedIdx.get(), selectedIdx::set)
                         .withOnActivate(r -> activations.incrementAndGet())
                         .withFocusId("list")
                         .withAutoFocus(true)));
@@ -161,15 +153,13 @@ class SelectableListTest {
     h.render(app);
 
     // Click on row 2 (idx 2, "c"). Not currently selected → selects, no activation.
-    h.renderer.dispatchMouse(
-        new MouseEvent(2, 2, new KeyModifiers(0), MouseEvent.Kind.DOWN));
+    h.renderer.dispatchMouse(new MouseEvent(2, 2, new KeyModifiers(0), MouseEvent.Kind.DOWN));
     h.render(app);
     assertEquals(2, selectedIdx.get());
     assertEquals(0, activations.get(), "click on unselected row selects, doesn't activate");
 
     // Click again on the now-selected row (still y=2) → activates.
-    h.renderer.dispatchMouse(
-        new MouseEvent(2, 2, new KeyModifiers(0), MouseEvent.Kind.DOWN));
+    h.renderer.dispatchMouse(new MouseEvent(2, 2, new KeyModifiers(0), MouseEvent.Kind.DOWN));
     h.render(app);
     assertEquals(1, activations.get(), "click on already-selected row activates");
   }
@@ -199,8 +189,7 @@ class SelectableListTest {
     h.render(app);
 
     // Click on the header row (y=0).
-    h.renderer.dispatchMouse(
-        new MouseEvent(2, 0, new KeyModifiers(0), MouseEvent.Kind.DOWN));
+    h.renderer.dispatchMouse(new MouseEvent(2, 0, new KeyModifiers(0), MouseEvent.Kind.DOWN));
     h.render(app);
     assertEquals(1, selectedIdx.get(), "selection unchanged");
     assertEquals(0, activations.get(), "no activation");
@@ -217,11 +206,7 @@ class SelectableListTest {
             ctx ->
                 jatatui.components.Components.selectableList(
                     SelectableListProps.of(
-                            rows,
-                            r -> true,
-                            renderer(),
-                            selectedIdx.get(),
-                            selectedIdx::set)
+                            rows, r -> true, renderer(), selectedIdx.get(), selectedIdx::set)
                         .withFocusId("list")
                         .withAutoFocus(true)));
 
@@ -249,8 +234,113 @@ class SelectableListTest {
     StringBuilder topRowAfter = new StringBuilder();
     for (int x = 0; x < 12; x++) topRowAfter.append(buf.cellAt(x, 0).symbol());
     assertFalse(
-        topRowAfter.toString().startsWith("> item-0") || topRowAfter.toString().startsWith("  item-0"),
+        topRowAfter.toString().startsWith("> item-0")
+            || topRowAfter.toString().startsWith("  item-0"),
         "viewport scrolled past item-0; got '" + topRowAfter + "'");
+  }
+
+  @Test
+  void scrollbar_renders_in_rightmost_column_when_content_overflows() throws IOException {
+    AtomicInteger selectedIdx = new AtomicInteger(0);
+    List<Row> rows = new java.util.ArrayList<>();
+    for (int i = 0; i < 30; i++) rows.add(new Row.Item("i" + i));
+
+    Element app =
+        component(
+            ctx ->
+                jatatui.components.Components.selectableList(
+                    SelectableListProps.of(
+                            rows, r -> true, renderer(), selectedIdx.get(), selectedIdx::set)
+                        .withFocusId("list")
+                        .withAutoFocus(true)));
+
+    int w = 40;
+    int h = 10;
+    TestHarness harness = new TestHarness(w, h);
+    harness.render(app);
+    harness.render(app);
+
+    var buf = harness.backend.buffer();
+
+    // Rightmost column should contain scrollbar glyphs (track ║, thumb █, or arrows ▲ / ▼).
+    // We don't pin exact symbols-per-row — that's the scrollbar widget's responsibility — we
+    // just verify at least one scrollbar-shaped cell appears at x=w-1 across the viewport.
+    StringBuilder rightCol = new StringBuilder();
+    for (int y = 0; y < h; y++) rightCol.append(buf.cellAt(w - 1, y).symbol());
+
+    String trackOrThumbOrArrow = "║█▲▼";
+    boolean anyScrollbarCell = rightCol.chars().anyMatch(c -> trackOrThumbOrArrow.indexOf(c) >= 0);
+    assertTrue(
+        anyScrollbarCell,
+        "expected scrollbar glyph in rightmost column when content overflows; got '"
+            + rightCol
+            + "'");
+  }
+
+  @Test
+  void scrollbar_absent_when_show_scrollbar_disabled() throws IOException {
+    AtomicInteger selectedIdx = new AtomicInteger(0);
+    List<Row> rows = new java.util.ArrayList<>();
+    for (int i = 0; i < 30; i++) rows.add(new Row.Item("i" + i));
+
+    Element app =
+        component(
+            ctx ->
+                jatatui.components.Components.selectableList(
+                    SelectableListProps.of(
+                            rows, r -> true, renderer(), selectedIdx.get(), selectedIdx::set)
+                        .withFocusId("list")
+                        .withAutoFocus(true)
+                        .withShowScrollbar(false)));
+
+    int w = 40;
+    int h = 10;
+    TestHarness harness = new TestHarness(w, h);
+    harness.render(app);
+    harness.render(app);
+
+    var buf = harness.backend.buffer();
+    StringBuilder rightCol = new StringBuilder();
+    for (int y = 0; y < h; y++) rightCol.append(buf.cellAt(w - 1, y).symbol());
+
+    String trackOrThumbOrArrow = "║█▲▼";
+    boolean anyScrollbarCell = rightCol.chars().anyMatch(c -> trackOrThumbOrArrow.indexOf(c) >= 0);
+    assertFalse(
+        anyScrollbarCell,
+        "scrollbar should be absent when withShowScrollbar(false); got '" + rightCol + "'");
+  }
+
+  @Test
+  void scrollbar_absent_when_content_fits_viewport() throws IOException {
+    AtomicInteger selectedIdx = new AtomicInteger(0);
+    // 5 rows in a 10-row viewport — no overflow.
+    List<Row> rows = new java.util.ArrayList<>();
+    for (int i = 0; i < 5; i++) rows.add(new Row.Item("i" + i));
+
+    Element app =
+        component(
+            ctx ->
+                jatatui.components.Components.selectableList(
+                    SelectableListProps.of(
+                            rows, r -> true, renderer(), selectedIdx.get(), selectedIdx::set)
+                        .withFocusId("list")
+                        .withAutoFocus(true)));
+
+    int w = 40;
+    int h = 10;
+    TestHarness harness = new TestHarness(w, h);
+    harness.render(app);
+    harness.render(app);
+
+    var buf = harness.backend.buffer();
+    StringBuilder rightCol = new StringBuilder();
+    for (int y = 0; y < h; y++) rightCol.append(buf.cellAt(w - 1, y).symbol());
+
+    String trackOrThumbOrArrow = "║█▲▼";
+    boolean anyScrollbarCell = rightCol.chars().anyMatch(c -> trackOrThumbOrArrow.indexOf(c) >= 0);
+    assertFalse(
+        anyScrollbarCell,
+        "scrollbar should be hidden when content fits viewport; got '" + rightCol + "'");
   }
 
   @Test
@@ -264,11 +354,7 @@ class SelectableListTest {
             ctx ->
                 jatatui.components.Components.selectableList(
                     SelectableListProps.of(
-                            rows,
-                            r -> true,
-                            renderer(),
-                            selectedIdx.get(),
-                            selectedIdx::set)
+                            rows, r -> true, renderer(), selectedIdx.get(), selectedIdx::set)
                         .withFocusId("list")
                         .withAutoFocus(true)));
 

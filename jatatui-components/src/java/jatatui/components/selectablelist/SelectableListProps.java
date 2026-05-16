@@ -4,8 +4,8 @@ import jatatui.react.Element;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.function.IntConsumer;
+import java.util.function.Predicate;
 
 /// Props for [SelectableList].
 ///
@@ -40,6 +40,12 @@ import java.util.function.IntConsumer;
 ///   newIdx -> ...,
 ///   onActivate)
 /// ```
+///
+/// **`showScrollbar`** controls whether a vertical-right scrollbar is rendered next to the rows
+/// when content overflows the viewport. Defaults to `true` — the visible state of the scrollbar
+/// disappears automatically when everything fits, so it costs nothing for short lists. Set it to
+/// `false` for embedded lists where reserving a right column would be visually awkward (a
+/// one-column-wide list, a list inside a tight modal, etc.).
 public record SelectableListProps<T>(
     List<T> items,
     Predicate<T> isActivatable,
@@ -48,13 +54,14 @@ public record SelectableListProps<T>(
     IntConsumer onSelectChange,
     Optional<Consumer<T>> onActivate,
     Optional<String> focusId,
-    boolean autoFocus) {
+    boolean autoFocus,
+    boolean showScrollbar) {
 
   public SelectableListProps {
     items = List.copyOf(items);
   }
 
-  /// Minimal-args factory.
+  /// Minimal-args factory. Scrollbar is on by default.
   public static <T> SelectableListProps<T> of(
       List<T> items,
       Predicate<T> isActivatable,
@@ -69,22 +76,60 @@ public record SelectableListProps<T>(
         onSelectChange,
         Optional.empty(),
         Optional.empty(),
+        true,
         true);
   }
 
   public SelectableListProps<T> withOnActivate(Consumer<T> onActivate) {
     return new SelectableListProps<>(
-        items, isActivatable, rowRenderer, selected, onSelectChange, Optional.of(onActivate), focusId, autoFocus);
+        items,
+        isActivatable,
+        rowRenderer,
+        selected,
+        onSelectChange,
+        Optional.of(onActivate),
+        focusId,
+        autoFocus,
+        showScrollbar);
   }
 
   public SelectableListProps<T> withFocusId(String id) {
     return new SelectableListProps<>(
-        items, isActivatable, rowRenderer, selected, onSelectChange, onActivate, Optional.of(id), autoFocus);
+        items,
+        isActivatable,
+        rowRenderer,
+        selected,
+        onSelectChange,
+        onActivate,
+        Optional.of(id),
+        autoFocus,
+        showScrollbar);
   }
 
   public SelectableListProps<T> withAutoFocus(boolean autoFocus) {
     return new SelectableListProps<>(
-        items, isActivatable, rowRenderer, selected, onSelectChange, onActivate, focusId, autoFocus);
+        items,
+        isActivatable,
+        rowRenderer,
+        selected,
+        onSelectChange,
+        onActivate,
+        focusId,
+        autoFocus,
+        showScrollbar);
+  }
+
+  public SelectableListProps<T> withShowScrollbar(boolean showScrollbar) {
+    return new SelectableListProps<>(
+        items,
+        isActivatable,
+        rowRenderer,
+        selected,
+        onSelectChange,
+        onActivate,
+        focusId,
+        autoFocus,
+        showScrollbar);
   }
 
   // ---- Type-safe lambda surrogates ----

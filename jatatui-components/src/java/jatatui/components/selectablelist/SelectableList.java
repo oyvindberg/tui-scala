@@ -7,6 +7,7 @@ import jatatui.react.Element;
 import jatatui.react.KeyEvent;
 import jatatui.react.MouseEvent;
 import jatatui.react.State;
+import jatatui.widgets.scrollbar.ScrollbarOrientation;
 import java.util.ArrayList;
 import java.util.List;
 import tui.crossterm.KeyCode;
@@ -19,7 +20,9 @@ import tui.crossterm.KeyCode;
 ///     them, Enter / Enter-on-click ignores them.
 ///
 /// Selection is controlled (parent owns `selected`, child notifies via `onSelectChange`); scroll
-/// offset is internal and clamped so the selected row is always visible.
+/// offset is internal and clamped so the selected row is always visible. When the content
+/// overflows the viewport and `props.showScrollbar()` is `true` (the default), a vertical-right
+/// scrollbar is rendered alongside the rows so the user can see their position in the list.
 ///
 /// Triggers:
 ///   - **Up / Down**: move selection to next/prev activatable row.
@@ -41,7 +44,7 @@ public final class SelectableList {
     return component(
         ctx -> {
           List<T> items = props.items();
-          int n         = items.size();
+          int n = items.size();
 
           // Indices of activatable rows — Up/Down skip everything else.
           List<Integer> activatableIdxs = new ArrayList<>();
@@ -53,7 +56,7 @@ public final class SelectableList {
           int sel = n == 0 ? 0 : Math.max(0, Math.min(props.selected(), n - 1));
 
           int areaHeight = ctx.area().map(Rect::height).orElse(20);
-          int visibleH   = Math.max(1, areaHeight);
+          int visibleH = Math.max(1, areaHeight);
 
           // Auto-scroll only when selection actually changed (or on first render). Without this
           // gate, mouse-wheel scrolls would be reverted on the next render — sel hadn't moved
@@ -66,9 +69,7 @@ public final class SelectableList {
           int offset = offsetState.get();
           if (selChanged) {
             int newOffset =
-                (sel < offset) ? sel
-                    : (sel >= offset + visibleH) ? sel - visibleH + 1
-                    : offset;
+                (sel < offset) ? sel : (sel >= offset + visibleH) ? sel - visibleH + 1 : offset;
             if (newOffset != offset) {
               offsetState.set(newOffset);
               offset = newOffset;
@@ -115,7 +116,8 @@ public final class SelectableList {
               (MouseEvent e) -> {
                 switch (e.kind()) {
                   case SCROLL_UP -> offsetState.set(Math.max(0, liveOffset - SCROLL_STEP));
-                  case SCROLL_DOWN -> offsetState.set(Math.min(maxOffset, liveOffset + SCROLL_STEP));
+                  case SCROLL_DOWN ->
+                      offsetState.set(Math.min(maxOffset, liveOffset + SCROLL_STEP));
                   default -> {}
                 }
               });
@@ -125,12 +127,29 @@ public final class SelectableList {
           int upper = Math.min(n, offset + visibleH);
           for (int i = offset; i < upper; i++) {
             final int idx = i;
-            final T item  = items.get(i);
+            final T item = items.get(i);
             visible.add(length(1, renderRow(props, item, idx, sel)));
           }
 
           if (visible.isEmpty()) return empty();
-          return column(visible.toArray(new Element[0]));
+
+          Element rowsColumn = column(visible.toArray(new Element[0]));
+
+          // Render a vertical-right scrollbar when content overflows and the caller wants it.
+          // We use the scrollbar component layered on top via stack so it doesn't steal a column
+          // from the row renderer — rows can use the full width up to the rightmost cell, and
+          // the scrollbar overpaints that last cell when present.
+          //
+          // Content overflows when n > visibleH; otherwise we render nothing (no scrollbar is
+          // visually noise for short lists) so callers get the same behaviour as before.
+          boolean overflows = props.showScrollbar() && n > visibleH;
+          if (overflows) {
+            Element bar =
+                jatatui.components.scrollbar.Components.scrollbar(
+                    offset, n, visibleH, ScrollbarOrientation.VerticalRight);
+            return stack(rowsColumn, bar);
+          }
+          return rowsColumn;
         });
   }
 
@@ -145,13 +164,19 @@ public final class SelectableList {
       if (dir > 0) {
         int found = -1;
         for (int i = 0; i < activatableIdxs.size(); i++) {
-          if (activatableIdxs.get(i) > current) { found = i; break; }
+          if (activatableIdxs.get(i) > current) {
+            found = i;
+            break;
+          }
         }
         newPos = found;
       } else {
         int found = -1;
         for (int i = activatableIdxs.size() - 1; i >= 0; i--) {
-          if (activatableIdxs.get(i) < current) { found = i; break; }
+          if (activatableIdxs.get(i) < current) {
+            found = i;
+            break;
+          }
         }
         newPos = found;
       }
@@ -162,9 +187,10 @@ public final class SelectableList {
     return activatableIdxs.get(newPos);
   }
 
-  private static <T> Element renderRow(SelectableListProps<T> props, T item, int idx, int selected) {
-    final boolean isSel        = idx == selected;
-    final boolean activatable  = props.isActivatable().test(item);
+  private static <T> Element renderRow(
+      SelectableListProps<T> props, T item, int idx, int selected) {
+    final boolean isSel = idx == selected;
+    final boolean activatable = props.isActivatable().test(item);
     return component(
         ctx -> {
           if (activatable) {

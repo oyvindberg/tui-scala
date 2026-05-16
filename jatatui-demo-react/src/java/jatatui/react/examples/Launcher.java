@@ -33,6 +33,7 @@ public final class Launcher {
     EXAMPLES.put("theme", "jatatui.react.examples.theme.ThemeExample");
     EXAMPLES.put("form", "jatatui.react.examples.form.FormExample");
     EXAMPLES.put("router", "jatatui.react.examples.router.RouterExample");
+    EXAMPLES.put("selectablelist", "jatatui.react.examples.selectablelist.SelectableListExample");
   }
 
   private Launcher() {}
