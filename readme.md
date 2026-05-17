@@ -23,8 +23,8 @@ React-style component layer on top.
 | `jatatui-core` | — | Buffer, Cell, Style, Color, Modifier, Layout, Constraint, Rect, Frame, Terminal, Text/Line/Span. Port of `ratatui-core`. |
 | `jatatui-widgets` | `jatatui-core` | Block, Paragraph, List, Table, Tabs, BarChart, Chart, Calendar, Canvas, Gauge, Sparkline, Scrollbar, Clear, Borders, JatatuiLogo, JatatuiMascot, TextInput. Port of `ratatui-widgets`. |
 | `jatatui-crossterm` | `jatatui-core`, `crossterm` | `CrosstermBackend` and the conversion glue (Color/Style/Modifier ↔ JNI). Port of `ratatui-crossterm`. |
-| `jatatui-react` | `jatatui-core`, `jatatui-widgets`, `jatatui-crossterm` | Optional React-style layer: components-as-functions, hooks (`useState` / `useRef` / `useEffect` / `useFocus` / `useContext`), event bubbling with `stopPropagation`, Portal, ReactApp runner. |
-| `jatatui-components` | `jatatui-react` | Higher-level components built on the React layer: List, Table, Gauge, BarChart, Sparkline, Scrollbar, TextInput, Modal, Dropdown, Toast, Form, Router, Theme. |
+| `jatatui-react` | `jatatui-core`, `jatatui-widgets`, `jatatui-crossterm` | Optional React-style layer: components-as-functions, hooks, event bubbling, focus management, portals, `ReactApp` runner + embeddable `Renderer`. |
+| `jatatui-components` | `jatatui-react` | Higher-level components built on the React layer: text input, list/table/gauges, modal, dropdown, picker, selectable list, button, screen frame, confirm dialog, link, scrollable, toasts, forms, router, theme. |
 
 The non-React stack (`crossterm` + `jatatui-core` + `jatatui-widgets` +
 `jatatui-crossterm`) is a complete library on its own. The React layer is
@@ -73,9 +73,13 @@ import jatatui.crossterm.Jatatui;
 import jatatui.widgets.Borders;
 import jatatui.widgets.block.Block;
 import jatatui.widgets.paragraph.Paragraph;
+import tui.crossterm.CrosstermJni;
+import tui.crossterm.Event;
+import tui.crossterm.KeyCode;
 
 public class Hello {
   public static void main(String[] args) throws java.io.IOException {
+    var ct = new CrosstermJni();
     Jatatui.runIo(terminal -> {
       while (true) {
         terminal.draw(frame -> {
@@ -88,7 +92,12 @@ public class Hello {
           block.render(frame.area(), frame.bufferMut());
           content.render(block.inner(frame.area()), frame.bufferMut());
         });
-        // (your event loop here — read keys via the crossterm JNI binding)
+        Event event = ct.read();
+        if (event instanceof Event.Key key
+            && key.keyEvent().code() instanceof KeyCode.Char c
+            && c.c() == 'q') {
+          return;
+        }
       }
     });
   }
@@ -103,43 +112,104 @@ the upstream `examples/apps/*`) and the React-style demos in
 
 > [!WARNING]
 > **`jatatui-react` and `jatatui-components` are proof-of-concept.** They've
-> been used to build a real app (typr), and the core ideas are working, but
-> sweeping API changes are likely as the layer matures. Pin a specific
-> snapshot if you're depending on it for production code, and expect to
-> refactor on each minor version bump.
+> been used to build a real app, and the core ideas are working, but sweeping
+> API changes are likely as the layer matures. Pin a specific snapshot if
+> you're depending on it for production code, and expect to refactor on each
+> minor version bump.
 
 `jatatui-react` and `jatatui-components` add a React-shaped API: components as
-pure functions, hooks for state, event bubbling, focus management. Same buffer
-underneath — just different ergonomics.
+pure functions, hooks for state, focus management, event bubbling, portals for
+overlays. Same buffer underneath — just different ergonomics.
 
 ```java
 import static jatatui.react.Components.*;
-import static jatatui.components.Components.*;
+
+import jatatui.core.style.Color;
+import jatatui.core.style.Style;
 import jatatui.react.ReactApp;
+import jatatui.widgets.Borders;
+import java.util.Optional;
 import tui.crossterm.KeyCode;
 
 public class Counter {
   public static void main(String[] args) throws java.io.IOException {
     ReactApp.run(component(ctx -> {
-      var n = ctx.useState(() -> 0);
-      ctx.onGlobalKey(new KeyCode.Up(),   () -> n.update(v -> v + 1));
-      ctx.onGlobalKey(new KeyCode.Down(), () -> n.update(v -> v - 1));
-      return text("count = " + n.get());
+      var count = ctx.useState(() -> 0);
+      boolean focused = ctx.useFocus(Optional.of("counter"), true);
+
+      if (focused) {
+        ctx.onKey(new KeyCode.Up(),   () -> count.update(n -> n + 1));
+        ctx.onKey(new KeyCode.Down(), () -> count.update(n -> n - 1));
+      }
+
+      return box(
+          focused ? " Counter * " : " Counter ",
+          Borders.ALL,
+          text(
+              "Count: " + count.get(),
+              Style.empty().withFg(focused ? Color.YELLOW : Color.CYAN)),
+          row(
+              button("[ + ]", Style.empty().withFg(Color.GREEN), () -> count.update(n -> n + 1)),
+              button("[ - ]", Style.empty().withFg(Color.RED),   () -> count.update(n -> n - 1))),
+          text(
+              "(↑/↓ when focused, click ± buttons, Ctrl+C to quit)",
+              Style.empty().withFg(Color.GRAY)));
     }));
   }
 }
 ```
 
-What's available: `useState`, `useRef`, `useEffect`, `useFocus`, `useContext`,
-`memo`, `pureComponent`; `column` / `row` / `box` / `stack` layouts; `portal`
-for overlays; `text` / `paragraph` / `button` / `tabs` / `forEach`; bubbling
-mouse/key events with `stopPropagation`; the `widget(...)` escape hatch wraps
-any `jatatui-widgets` widget into the tree.
+### What `jatatui-react` provides
 
-Higher-level components (`jatatui-components`): `textInput`, `titledTextInput`,
-`modal`, `dropdown`, `toastsProvider` + `useToasts`, `formProvider` + `useForm`
-+ `useField`, `router` + `useRouter`, `themeProvider` + `Theme.useTheme`,
-`list`, `table`, `gauge`, `lineGauge`, `barchart`, `sparkline`, `scrollbar`.
+- **Hooks**: `useState`, `useRef`, `useEffect`, `useFocus`, `useContext`,
+  `useTimeout`. Fiber-keyed semantics — order matters, deps arrays gate
+  re-runs.
+- **Imperative focus**: `ctx.focus(id)` and `ctx.blur()` for cross-component
+  focus moves (e.g. opening a modal). `autoFocus=true` on `useFocus`
+  eager-claims on mount so newly-mounted screens get a focused element
+  same-frame.
+- **Reconciliation**: when the component type at a given fiber slot changes
+  (e.g. router screen swap), hook state under that slot is dropped — no
+  state-bleed across screens.
+- **Events**: `onClick` / `onKey` / `onScroll` are area-scoped and bubble
+  through the focused-element chain; `stopPropagation()` halts them.
+  `onGlobalKey` is window-level. `ANY_KEY` / `ANY_CHAR` predicates match by
+  shape rather than equality.
+- **Portals**: `portal(area, child)` renders into an arbitrary rect outside
+  the parent layout — the mechanism behind modals, dropdowns, tooltips. Pairs
+  with the `Clear` widget for opaque overlays.
+- **Layout primitives**: `column`, `row`, `box`, `stack`; per-child
+  `length(n, ...)` / `fill(weight, ...)` / `min` / `max` / `percent` / `ratio`
+  constraints.
+- **Built-ins**: `text`, `paragraph`, `button`, `tabs`, `forEach`, `when` /
+  `ifElse`, `memo`, `pureComponent`. The `widget(...)` escape hatch wraps any
+  `jatatui-widgets` widget into the tree.
+- **Two entry points**:
+  - `ReactApp.run(element)` — turnkey: terminal init, event loop, repaint
+    on dirty. Best for whole-app jatatui-react programs.
+  - `Renderer` — embeddable engine. Call `renderer.render(frame, element)`
+    inside your own draw loop and pump events with `dispatchKey` /
+    `dispatchMouse`. Best when integrating into an existing terminal app or a
+    test harness (`TestHarness` is built on it).
+
+### Higher-level components (`jatatui-components`)
+
+- **Input**: `textInput`, `titledTextInput`, `dropdown`, `picker` (search +
+  ranked list), `selectableList` (heterogeneous rows with double-click
+  activation).
+- **Chrome**: `button`, `backButton`, `screenFrame`, `link`, `confirmDialog`,
+  `modal`, `scrollable`.
+- **Data**: `list`, `table`, `gauge`, `lineGauge`, `barchart`, `sparkline`,
+  `scrollbar`.
+- **Context providers**: `toastsProvider` + `useToasts`, `formProvider` +
+  `useForm` + `useField`, `router` + `useRouter`, `themeProvider` +
+  `Theme.useTheme`.
+- **Search**: `FuzzyMatch` — IntelliJ-style scoring with word-boundary bonuses
+  for ranking lists/pickers.
+
+`Theme` is a `useContext`-style provider; components don't currently
+auto-consume it — read the active theme with `Theme.useTheme()` and apply
+styles explicitly where you want them.
 
 Design notes: [jatatui-react/DESIGN.md](jatatui-react/DESIGN.md).
 
@@ -162,25 +232,26 @@ For consuming jatatui from other local projects without waiting for a release:
 
 ```bash
 cd jatatui
-bleep publish local-ivy --version "0.30.0_$(date +%Y-%m-%d)-SNAPSHOT"
+bleep publish local-ivy
 ```
 
-This publishes the six publishable modules (`crossterm`, `jatatui-core`,
-`jatatui-widgets`, `jatatui-crossterm`, `jatatui-react`, `jatatui-components`)
-to the local Ivy repo (`~/.ivy2/local/`). The version is stable for the day
-(consumers can pin it), and re-publishing the next day produces a fresh
-identifier — handy for picking up changes without a coordinate dance.
+The version is derived from `git describe` via dynver — something like
+`0.30.0+14-shaabcdef`. This publishes the six publishable modules (`crossterm`,
+`jatatui-core`, `jatatui-widgets`, `jatatui-crossterm`, `jatatui-react`,
+`jatatui-components`) to the local Ivy repo (`~/.ivy2/local/`). Pin the same
+identifier in the downstream build; re-publishing after new commits produces a
+fresh identifier — handy for picking up changes without a coordinate dance.
 
 ```kotlin
 // in another project's build
-implementation("com.olvind.jatatui:jatatui-widgets:0.30.0_2026-05-14-SNAPSHOT")
+implementation("com.olvind.jatatui:jatatui-widgets:0.30.0+14-shaabcdef")
 ```
 
 ## Release
 
 Releases are tagged `jatatui-vX.Y.Z` and published to Maven Central by the
-[build workflow](.github/workflows/build.yml). Required
-secrets in the repository: `PGP_SECRET`, `PGP_PASSPHRASE`, `SONATYPE_USERNAME`,
+[build workflow](.github/workflows/build.yml). Required secrets in the
+repository: `PGP_SECRET`, `PGP_PASSPHRASE`, `SONATYPE_USERNAME`,
 `SONATYPE_PASSWORD` (see
 [bleep's publish setup](https://oyvindberg.github.io/bleep/) or
 [sbt-ci-release docs](https://github.com/sbt/sbt-ci-release#sonatype) for the
@@ -193,12 +264,6 @@ git push origin jatatui-v0.30.0
 ```
 The workflow runs `bleep publish sonatype --version 0.30.0 --assert-release`,
 uploads native libraries from all 5 platforms, and creates a GitHub Release.
-
-## Status
-
-Port progresses per upstream source file. See [PORTING_PLAN.md](PORTING_PLAN.md)
-for the live status board and [CLAUDE.md](CLAUDE.md) for the porting workflow
-and translation conventions.
 
 ## License
 

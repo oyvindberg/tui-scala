@@ -1,6 +1,6 @@
 # jatatui — Claude playbook
 
-This file is the durable playbook for Claude across sessions. The active porting plan lives in `PORTING_PLAN.md`.
+This file is the durable playbook for Claude across sessions.
 
 ## What this repo is
 
@@ -15,7 +15,7 @@ This repo is the successor to `tui-scala` (a Java port of the much older 2022-er
 - Test framework: **JUnit 5** (`org.junit.jupiter:junit-jupiter:5.x`).
 - Compile: `bleep compile <project>`.
 - Test: `bleep test jatatui-tests`.
-- Local snapshot publish: `bleep publish local-ivy --version "0.30.0_$(date +%Y-%m-%d)-SNAPSHOT"`.
+- Local snapshot publish: `bleep publish local-ivy` (version derived from `git describe` via dynver — e.g. `0.30.0+14-shaabcdef`).
 - Sonatype release: tag `jatatui-vX.Y.Z`, push — CI runs `bleep publish sonatype --version X.Y.Z --assert-release`.
 
 ## Submodules and what they track
@@ -91,8 +91,7 @@ For each `.rs` source file in `submodules/ratatui/ratatui-core/src/` or `ratatui
 ## Tracking work
 
 - **TaskList**: one task per upstream `.rs` file in ratatui-core and ratatui-widgets. Each task: pending → in_progress → completed. Completed requires both source and tests landed.
-- **PORTING_PLAN.md**: status board for phases, not a backlog.
-- **Forbidden words in commit messages and PORTING_PLAN.md**: "defer", "later", "follow-up", "TODO". Every upstream item is either ported or marked **N/A** with a documented reason in the commit body.
+- **Forbidden words in commit messages**: "defer", "later", "follow-up", "TODO". Every upstream item is either ported or marked **N/A** with a documented reason in the commit body.
 
 ## Test patterns
 
@@ -104,6 +103,6 @@ For each `.rs` source file in `submodules/ratatui/ratatui-core/src/` or `ratatui
 
 - Never call a port phase "done" while any upstream source file in scope hasn't been translated and tested.
 - Never commit code without its tests in the same commit.
-- Never use "defer" / "later" / "follow-up" / "TODO" in commit messages or PORTING_PLAN.md.
+- Never use "defer" / "later" / "follow-up" / "TODO" in commit messages.
 - Never bump submodules without also bumping any project in `bleep.yaml` that depends on the new behavior.
 - Never push to a feature branch without `bleep test jatatui-tests` green and `bleep compile jatatui-demo` green.
