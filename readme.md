@@ -101,6 +101,13 @@ the upstream `examples/apps/*`) and the React-style demos in
 
 ## React-style layer (optional)
 
+> [!WARNING]
+> **`jatatui-react` and `jatatui-components` are proof-of-concept.** They've
+> been used to build a real app (typr), and the core ideas are working, but
+> sweeping API changes are likely as the layer matures. Pin a specific
+> snapshot if you're depending on it for production code, and expect to
+> refactor on each minor version bump.
+
 `jatatui-react` and `jatatui-components` add a React-shaped API: components as
 pure functions, hooks for state, event bubbling, focus management. Same buffer
 underneath — just different ergonomics.
