@@ -10,6 +10,8 @@
 
 [![Build Status](https://github.com/oyvindberg/jatatui/actions/workflows/build.yml/badge.svg?branch=main&event=push)](https://github.com/oyvindberg/jatatui/actions/workflows/build.yml?query=branch%3Amain)
 
+https://github.com/user-attachments/assets/9da930e4-e01f-4307-b519-d0581a10fefa
+
 Build rich terminal UIs from Java. jatatui is a faithful port of ratatui — same
 widgets, same buffer model, same Crossterm backend — translated to idiomatic
 modern Java (records, sealed interfaces, switch expressions). Plus an optional
