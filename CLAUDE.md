@@ -16,7 +16,7 @@ This repo is the successor to `tui-scala` (a Java port of the much older 2022-er
 - Compile: `bleep compile <project>`.
 - Test: `bleep test jatatui-tests`.
 - Local snapshot publish: `bleep publish local-ivy` (version derived from `git describe` via dynver — e.g. `0.30.0+14-shaabcdef`).
-- Sonatype release: tag `jatatui-vX.Y.Z`, push — CI runs `bleep publish sonatype --version X.Y.Z --assert-release`.
+- Sonatype release: tag `vX.Y.Z` (also doubles as the dynver base for snapshot publishing), push — CI runs `bleep publish sonatype --version X.Y.Z --assert-release`.
 
 ## Submodules and what they track
 

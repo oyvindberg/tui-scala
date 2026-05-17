@@ -249,8 +249,9 @@ implementation("com.olvind.jatatui:jatatui-widgets:0.30.0+14-shaabcdef")
 
 ## Release
 
-Releases are tagged `jatatui-vX.Y.Z` and published to Maven Central by the
-[build workflow](.github/workflows/build.yml). Required secrets in the
+Releases are tagged `vX.Y.Z` and published to Maven Central by the
+[build workflow](.github/workflows/build.yml). The same tag doubles as the
+dynver base for in-between snapshot publishes. Required secrets in the
 repository: `PGP_SECRET`, `PGP_PASSPHRASE`, `SONATYPE_USERNAME`,
 `SONATYPE_PASSWORD` (see
 [bleep's publish setup](https://oyvindberg.github.io/bleep/) or
@@ -259,8 +260,8 @@ GPG / Sonatype workflow — bleep's publish reuses the same env vars).
 
 To cut a release: tag the head commit, push the tag.
 ```bash
-git tag jatatui-v0.30.0
-git push origin jatatui-v0.30.0
+git tag v0.30.0
+git push origin v0.30.0
 ```
 The workflow runs `bleep publish sonatype --version 0.30.0 --assert-release`,
 uploads native libraries from all 5 platforms, and creates a GitHub Release.
