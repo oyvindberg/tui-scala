@@ -9,8 +9,14 @@ import jatatui.components.list.ListProps;
 import jatatui.components.dropdown.Dropdown;
 import jatatui.components.dropdown.DropdownProps;
 import jatatui.components.form.FormProvider;
+import jatatui.components.button.Button;
+import jatatui.components.chrome.BackButton;
+import jatatui.components.chrome.ScreenFrame;
+import jatatui.components.link.Link;
+import jatatui.components.modal.ConfirmDialog;
 import jatatui.components.modal.Modal;
 import jatatui.components.modal.ModalProps;
+import jatatui.components.scrollable.Scrollable;
 import jatatui.components.picker.Picker;
 import jatatui.components.picker.PickerProps;
 import jatatui.components.selectablelist.SelectableList;
@@ -213,6 +219,75 @@ public final class Components {
   /// Quick-path: open + title + body + onDismiss. 40x12 default size.
   public static Element modal(boolean open, String title, Element body, Runnable onDismiss) {
     return Modal.of(ModalProps.of(open, title, body, onDismiss));
+  }
+
+  // ---------- Button ----------
+
+  /// Bordered, Tab-focusable button. Enter or click activates. `primary=true` is intended for
+  /// the dominant action on a form.
+  public static Element button(String label, String focusId, boolean primary, Runnable onClick) {
+    return Button.of(label, focusId, primary, onClick);
+  }
+
+  // ---------- Chrome (BackButton + ScreenFrame) ----------
+
+  /// "← label" chip in the upper-left. Clickable; not Tab-focusable (host owns the Esc / b
+  /// keyboard binding).
+  public static Element backButton(String label, Runnable back) {
+    return BackButton.of(label, back);
+  }
+
+  /// Standard top-of-screen chrome: BackButton + gutter + content.
+  public static Element screenFrame(String backLabel, Runnable back, Element content) {
+    return ScreenFrame.of(backLabel, back, content);
+  }
+
+  /// Variant with a brand/title strip alongside the back button.
+  public static Element screenFrame(
+      String backLabel, Runnable back, Element title, Element content) {
+    return ScreenFrame.withTitle(backLabel, back, title, content);
+  }
+
+  // ---------- ConfirmDialog ----------
+
+  /// Yes/No confirmation modal. `danger=true` paints the box red for destructive actions.
+  public static Element confirmDialog(
+      boolean open,
+      String title,
+      String message,
+      String confirmLabel,
+      String cancelLabel,
+      boolean danger,
+      Runnable onConfirm,
+      Runnable onCancel) {
+    return ConfirmDialog.of(
+        open, title, message, confirmLabel, cancelLabel, danger, onConfirm, onCancel);
+  }
+
+  // ---------- Link ----------
+
+  /// Focusable + clickable activation target. `onActivate` runs on Enter (when focused) or on
+  /// click. The most common use is `() -> router.push(screen)`, but any Runnable works.
+  public static Element link(
+      boolean autoFocus, Runnable onActivate, java.util.function.Function<Boolean, Element> content) {
+    return Link.focusable(autoFocus, onActivate, content);
+  }
+
+  /// Link with an explicit focus id.
+  public static Element link(
+      String focusId,
+      boolean autoFocus,
+      Runnable onActivate,
+      java.util.function.Function<Boolean, Element> content) {
+    return Link.focusable(focusId, autoFocus, onActivate, content);
+  }
+
+  // ---------- Scrollable ----------
+
+  /// Wheel-scrollable column. Max offset clamped against the assigned area's height. For
+  /// selectable lists where Up/Down should move selection, use [#selectableList] instead.
+  public static Element scrollable(java.util.List<Element> children) {
+    return Scrollable.column(children);
   }
 
   // ---------- Picker ----------
